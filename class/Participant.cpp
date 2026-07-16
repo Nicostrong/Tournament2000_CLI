@@ -5,7 +5,8 @@
 //	STDLIB
 
 //	INCLUDES
-#include "../includes/Participant.hpp"
+#include "../includes/class/Participant.hpp"
+#include "../includes/utils/FormatUtils.hpp"
 
 //	TYPEDEF
 typedef std::string					STRING;
@@ -18,9 +19,10 @@ typedef const std::string&			C_STRING;
 /****************/
 
 Participant::Participant(C_STRING pseudo, C_STRING firstName, C_STRING lastName, Gender gender)
-	:	_pseudo(capitalize(pseudo)), _firstName(capitalize(firstName)), 
-		_lastName(toUpper(lastName)), _gender(gender), _isEliminated(false),
-		_isMultiTeamPlayer(false) {}
+	:	_pseudo(FormatUtils::capitalize(pseudo)), _firstName(FormatUtils::capitalize(firstName)), 
+		_lastName(FormatUtils::toUpper(lastName)), _gender(gender), _isEliminated(false),
+		_isMultiTeamPlayer(false)
+{}
 
 Participant::Participant(const Participant& p)
 {
@@ -89,17 +91,17 @@ bool								Participant::getIsMultiTeamPlayer() const
 
 void								Participant::setPseudo(C_STRING value)
 {
-	this->_pseudo = capitalize(value);
+	this->_pseudo = FormatUtils::capitalize(value);
 }
 
 void							 	Participant::setFirstName(C_STRING value)
 {
-	this->_firstName = capitalize(value);
+	this->_firstName = FormatUtils::capitalize(value);
 }
 
 void								Participant::setLastName(C_STRING value)
 {
-	this->_lastName = toUpper(value);
+	this->_lastName = FormatUtils::toUpper(value);
 }
 
 void								Participant::setGender(Gender value)
@@ -120,24 +122,6 @@ void								Participant::setIsMultiTeamPlayer(bool value)
 /********************/
 /*	PRIVATE METHODS	*/
 /********************/
-
-STRING								Participant::capitalize(STRING s)
-{
-	if (s.empty())
-		return (s);
-
-	std::transform(s.begin(), s.end(), s.begin(), ::tolower);
-	s[0] = std::toupper(s[0]);
-
-	return (s);
-}
-
-STRING								Participant::toUpper(STRING s)
-{
-	std::transform(s.begin(), s.end(), s.begin(), ::toupper);
-
-	return (s);
-}
 
 /********************/
 /*	PUBLIC METHODS	*/

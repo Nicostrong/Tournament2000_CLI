@@ -5,11 +5,11 @@
 //	STDLIB
 
 //	INCLUDES
-#include "../includes/Team.hpp"
+#include "../includes/class/Team.hpp"
 
 //	TYPEDEF
 typedef const std::string&			C_STRING;
-typedef std::vector<Participant*>	V_PART;
+typedef std::vector<Participant*>	VP_PART;
 
 //	STATIC VARIABLES
 int									Team::_idCounter = 0;
@@ -20,7 +20,8 @@ int									Team::_idCounter = 0;
 
 Team::Team() :	_id(++_idCounter), _point(0), _scoreMarked(0), _scoreAgainst(0),
 				_isEliminated(false), _hasMultiTeamPlayer(false),
-				_name("Team " + std::to_string(_idCounter)) {}
+				_name("Team " + std::to_string(_idCounter))
+{}
 
 Team::~Team() {}
 
@@ -73,7 +74,7 @@ C_STRING							Team::getName() const
 	return (this->_name);		
 }
 
-const V_PART&						Team::getMembers() const
+const VP_PART&						Team::getMembers() const
 {
 	return (this->_members);	
 }

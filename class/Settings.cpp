@@ -6,7 +6,7 @@
 #include <string>
 
 //	INCLUDES
-#include "../includes/Settings.hpp"
+#include "../includes/class/Settings.hpp"
 #include "../includes/Constantes.hpp"
 #include "../includes/Errors.hpp"
 
@@ -28,8 +28,7 @@ Settings::Settings()
 		_nbSetPlayedHeigth(NBSETHEIGTH), _nbSetPlayedQuarters(NBSETQUARTER), _nbSetPlayedSemis(NBSETSEMI),
     	_nbSetPlayedFinal(NBSETFINAL), _nbSetPlayedThirdPlace(NBSETTHIRD), _isMixed(ISMIXED),
     	_isDouble(ISDOUBLE), _allowMultiTeamPlayers(PLAYERMULTITEAM), _isThirdPlaceMatch(PLAYTHIRDPLACE)
-{
-}
+{}
 
 Settings::Settings(const Settings& s)
 {
@@ -62,10 +61,7 @@ Settings&							Settings::operator=(const Settings& s)
 	return (*this);
 }
 
-Settings::~Settings()
-{
-	return ;
-}
+Settings::~Settings() {}
 
 /************/
 /*	GETTER	*/

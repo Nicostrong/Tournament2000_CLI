@@ -5,7 +5,7 @@
 //	STDLIB
 
 //	INCLUDES
-#include "../includes/Match.hpp"
+#include "../includes/class/Match.hpp"
 
 //	TYPEDEF
 
@@ -16,7 +16,8 @@
 /****************/
 
 Match::Match(Team* a, Team* b)
-	: _teamA(a), _teamB(b), _scoreA(0), _scoreB(0), _isFinished(false) {}
+	: _teamA(a), _teamB(b), _scoreA(0), _scoreB(0), _isFinished(false)
+{}
 
 Match::~Match() {}
 

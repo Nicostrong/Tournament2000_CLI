@@ -8,7 +8,7 @@
 #include <vector>
 
 //	INCLUDES
-#include "../includes/SettingsCLI.hpp"
+#include "../includes/cli/SettingsCLI.hpp"
 #include "../includes/Constantes.hpp"
 
 //	TYPEFED

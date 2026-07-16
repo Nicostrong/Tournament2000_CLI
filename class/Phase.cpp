@@ -5,13 +5,13 @@
 //	STDLIB
 
 //	INCLUDES
-#include "../includes/Phase.hpp"
+#include "../includes/class/Phase.hpp"
 
 //	TYPEDEF
 typedef std::string					STRING;
 typedef const std::string&			C_STRING;
-typedef std::vector<Match*>			V_MATCH;
-typedef std::vector<Team*>			V_TEAM;
+typedef std::vector<Match*>			VP_MATCH;
+typedef std::vector<Team*>			VP_TEAM;
 
 //	STATIC VARIABLES
 
@@ -43,23 +43,23 @@ C_STRING							Phase::getName() const
 	return (this->_name);
 }
 
-const V_MATCH&						Phase::getMatches() const
+const VP_MATCH&						Phase::getMatches() const
 {
 	return (this->_matches);
 }
 
 
-V_TEAM								Phase::getWinners() const
+VP_TEAM								Phase::getWinners() const
 {
-	V_TEAM winners;
+	VP_TEAM			winners;
 	
 	for (size_t i = 0; i < this->_matches.size(); i += this->_nbSetsToPlay)
 	{
-		int winsA = 0;
-		int winsB = 0;
+		int			winsA = 0;
+		int			winsB = 0;
 		
-		Team* a = this->_matches[i]->getTeamA();
-		Team* b = this->_matches[i]->getTeamB();
+		Team*		a = this->_matches[i]->getTeamA();
+		Team*		b = this->_matches[i]->getTeamB();
 
 		for (int j = 0; j < this->_nbSetsToPlay; ++j)
 		{

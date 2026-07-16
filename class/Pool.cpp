@@ -5,13 +5,13 @@
 //	STDLIB
 
 //	INCLUDES
-#include "../includes/Pool.hpp"
+#include "../includes/class/Pool.hpp"
 
 //	TYPEDEF
 typedef std::string					STRING;
 typedef const std::string&			C_STRING;
-typedef std::vector<Match*>			V_MATCH;
-typedef std::vector<Team*>			V_TEAM;
+typedef std::vector<Match*>			VP_MATCH;
+typedef std::vector<Team*>			VP_TEAM;
 
 //	STATIC VARIABLES
 int									Pool::_idCounter = 0;
@@ -20,7 +20,8 @@ int									Pool::_idCounter = 0;
 /*	CANONICAL	*/
 /****************/
 
-Pool::Pool() : _name("Pool_" + std::to_string(_idCounter++)) {}
+Pool::Pool() : _name("Pool_" + std::to_string(_idCounter++))
+{}
 
 Pool::~Pool()
 {
@@ -28,8 +29,6 @@ Pool::~Pool()
 		delete m;
 	
 	this->_matches.clear();
-	
-	return ;
 }
 
 /************/
@@ -41,12 +40,12 @@ C_STRING							Pool::getName() const
 	return (this->_name);
 }
 
-const V_TEAM&						Pool::getTeams() const
+const VP_TEAM&						Pool::getTeams() const
 {
 	return (this->_teams);
 }
 
-const V_MATCH&						Pool::getMatches() const
+const VP_MATCH&						Pool::getMatches() const
 {
 	return (this->_matches);
 }
@@ -96,9 +95,9 @@ void								Pool::sortTeams()
 	});
 }
 
-V_TEAM								Pool::getQualifiers() const
+VP_TEAM								Pool::getQualifiers() const
 {
-	std::vector<Team*> qualifiers;
+	VP_TEAM			qualifiers;
 
 	if (this->_teams.size() >= 1)
 		qualifiers.push_back(this->_teams[0]);
