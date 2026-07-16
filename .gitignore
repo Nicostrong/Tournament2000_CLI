@@ -73,3 +73,14 @@ Testing/
 
 # Executable
 Tournament2000
+
+# data
+*.csv
+
+# IDE directory
+.idea/
+.vscode/
+
+# Template files
+template.cpp
+template.hpp
