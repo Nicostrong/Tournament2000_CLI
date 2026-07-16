@@ -27,28 +27,34 @@ class Match
 		int							_scoreB;
 		bool						_isFinished;
 
-		Match();
-		Match(const Match& match);
-
-		Match&						operator=(const Match& match);
-
 	public:
 
+		//	CANONICAL
+		Match() = delete;
 		Match(Team* a, Team* b);
+		Match(const Match& match) = delete;
+		Match&						operator=(const Match& match) = delete;
 		~Match();
 
 		//	GETTER
+		[[nodiscard]]
 		Team*						getTeamA() const;
+		[[nodiscard]]
 		Team*						getTeamB() const;
+		[[nodiscard]]
 		int							getScoreA() const;
+		[[nodiscard]]
 		int							getScoreB() const;
+		[[nodiscard]]
 		bool						isFinished() const;
 
 		//	SETTER
 		void						setScore(int sA, int sB);
 
 		//	METHOD
+		[[nodiscard]]
 		Team*						getWinner() const;
+		[[nodiscard]]
 		Team*						getLoser() const;
 };
 

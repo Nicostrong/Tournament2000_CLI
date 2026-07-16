@@ -6,10 +6,9 @@
 # define MATCHCLI_HPP
 
 //	STDLIB
-# include <cctype>
 
 //	INCLUDES
-# include "./Match.hpp"
+# include "../class/Match.hpp"
 
 //	TYPEDEF
 

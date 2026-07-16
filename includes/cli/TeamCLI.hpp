@@ -6,10 +6,9 @@
 # define TEAMCLI_HPP
 
 //	STDLIB
-# include <cctype>
 
 //	INCLUDES
-# include "Team.hpp"
+# include "../class/Team.hpp"
 
 //	TYPEDEF
 

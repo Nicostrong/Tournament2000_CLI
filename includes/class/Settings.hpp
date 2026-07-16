@@ -136,34 +136,51 @@ class Settings
 
 	public:
 
+		//	CANONICAL
 		Settings();
 		Settings(const Settings& );
 		Settings&					operator=(const Settings& );
 		~Settings();
-		
 
 		/*  GETTERS */
+		[[nodiscard]]
 		const STRING&				getName() const;
-		
+		[[nodiscard]]
 		int							getNbPlayers() const;
+		[[nodiscard]]
 		int							getNbPlayerByPool() const;
+		[[nodiscard]]
 		int							getNbPools() const;
+		[[nodiscard]]
 		int							getNbBadmintonCourt() const;
+		[[nodiscard]]
 		int							getScoreMin() const;
+		[[nodiscard]]
 		int							getScoreMax() const;
+		[[nodiscard]]
 		int							getDiffPointsToWin() const;
-
+		[[nodiscard]]
 		int							getNbSetPlayedPools() const;
+		[[nodiscard]]
 		int							getNbSetPlayedSixteenth() const;
+		[[nodiscard]]
 		int							getNbSetPlayedHeigth() const;
+		[[nodiscard]]
 		int							getNbSetPlayedQuarters() const;
+		[[nodiscard]]
 		int							getNbSetPlayedSemis() const;
+		[[nodiscard]]
 		int							getNbSetPlayedFinal() const;
+		[[nodiscard]]
 		int							getNbSetPlayedThirdPlace() const;
 
+		[[nodiscard]]
 		bool						getIsMixed() const;
+		[[nodiscard]]
 		bool						getIsDouble() const;
+		[[nodiscard]]
 		bool						getAllowMultiTeamPlayers() const;
+		[[nodiscard]]
 		bool						getIsThirdPlaceMatch() const;
 
 		/*  SETTERS */
@@ -191,6 +208,7 @@ class Settings
 
 		/*	METHOD	*/
 		bool						isValid(V_STRING& errors) const;
+		[[nodiscard]]
 		bool						canAccommodate(int actualParticipants) const;
 
 };

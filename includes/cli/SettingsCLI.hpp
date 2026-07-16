@@ -7,10 +7,9 @@
 
 //	STDLIB
 # include <string>
-# include <cctype>
 
 //	INCLUDES
-# include "./Settings.hpp"
+# include "../class/Settings.hpp"
 
 //	TYPEDEF
 typedef std::string					STRING;

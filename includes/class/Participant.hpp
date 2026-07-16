@@ -25,41 +25,38 @@ class Participant
 
 		enum Gender { MALE, FEMALE };
 
-	
 	private:
 
 		STRING						_pseudo;
 		STRING						_firstName;
 		STRING						_lastName;
-
 		Gender						_gender;
-
 		bool						_isEliminated;
 		bool						_isMultiTeamPlayer;
-	
-		Participant();
-
-		//	PRIVATE METHODE
-		static STRING				capitalize(STRING s);
-		static STRING				toUpper(STRING s);
 
 	public:
-	
+
+		//	CANONICAL
+		Participant() = delete;
 		Participant(C_STRING pseudo, C_STRING firstName, C_STRING lastName, Gender gender);
-		
 		Participant(const Participant& p);
-
 		Participant&				operator=(const Participant& p);
-
 		~Participant();
 
 		//	GETTER
+		[[nodiscard]]
 		C_STRING					getPseudo() const;
+		[[nodiscard]]
 		C_STRING					getFirstName() const;
+		[[nodiscard]]
 		C_STRING					getLastName() const;
+		[[nodiscard]]
 		STRING						getGenderStr() const;
+		[[nodiscard]]
 		Gender						getGenderInt() const;
+		[[nodiscard]]
 		bool						getIsEliminated() const;
+		[[nodiscard]]
 		bool						getIsMultiTeamPlayer() const;
 
 		//	SETTER

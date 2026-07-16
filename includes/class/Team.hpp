@@ -15,7 +15,7 @@
 //	TYPEDEF
 typedef std::string					STRING;
 typedef const std::string&			C_STRING;
-typedef std::vector<Participant*>	V_PART;
+typedef std::vector<Participant*>	VP_PART;
 
 /**
  * la classe Team represente un enssemble de Participant qui joueront enssemble
@@ -30,35 +30,42 @@ class Team
 		int							_point;
 		int							_scoreMarked;
         int							_scoreAgainst;
-
 		bool						_isEliminated;
 		bool						_hasMultiTeamPlayer;
-
 		STRING						_name;
+		VP_PART						_members;
 
-		V_PART						_members;
-
-		Team(const STRING& );
-		Team(const Team& );
-
-		Team&						operator=(const Team& );
 
 	public:
 
+		//	CANONICAL
 		Team();
+		explicit Team(const STRING& ) = delete;
+		Team(const Team& ) = delete;
+		Team&						operator=(const Team& ) = delete;
 		~Team();
 
 		//	GETTER
+		[[nodiscard]]
 		size_t						getSize() const;
+		[[nodiscard]]
 		bool						getIsEliminated() const;
+		[[nodiscard]]
 		bool						getHasMultiTeamPlayer() const;
+		[[nodiscard]]
 		int							getId() const;
+		[[nodiscard]]
 		int							getPoint() const;
+		[[nodiscard]]
 		int							getScoreMarked() const;
+		[[nodiscard]]
 		int							getScoreAgainst() const;
+		[[nodiscard]]
 		int							getScoreDiff() const;
+		[[nodiscard]]
 		C_STRING					getName() const;
-		const V_PART&				getMembers() const;
+		[[nodiscard]]
+		const VP_PART&				getMembers() const;
 
 		//	SETTER
 		void						setIsEliminated(bool value);
@@ -66,6 +73,7 @@ class Team
 		void						setName(C_STRING value);
 
 		//	METHOD
+		[[nodiscard]]
 		bool						isComplete(int requiredSize) const;
 		void						addMember(Participant* member);
 		void						addPoint(int point);

@@ -14,8 +14,8 @@
 
 //	TYPEDEF
 typedef std::string					STRING;
-typedef std::vector<Match*>			V_MATCH;
-typedef std::vector<Team*>			V_TEAM;
+typedef std::vector<Match*>			VP_MATCH;
+typedef std::vector<Team*>			VP_TEAM;
 
 //	STATIC VARIABLES
 
@@ -24,30 +24,30 @@ class Phase
 	private:
 	
 		STRING						_name;
-
 		int							_nbSetsToPlay;
-
 		bool						_isFinished;
-
-		V_MATCH						_matches;
-
-		Phase();
-		Phase(const Phase& );
-
-		Phase&						operator=(const Phase& );
+		VP_MATCH					_matches;
 
 	public:
 
+		//	CANONICAL
+		Phase() = delete;
 		Phase(const STRING& name, int nbSets);
+		Phase(const Phase& ) = delete;
+		Phase&						operator=(const Phase& ) = delete;
 		~Phase();
-		
+
 		// GETTER
+		[[nodiscard]]
 		const STRING&				getName() const;
-		const V_MATCH&				getMatches() const;
-		V_TEAM						getWinners() const;
+		[[nodiscard]]
+		const VP_MATCH&				getMatches() const;
+		[[nodiscard]]
+		VP_TEAM						getWinners() const;
 
 		//	METHOD
 		void						addEncounter(Team* a, Team* b);
+		[[nodiscard]]
 		bool						isFinished() const;
 };
 

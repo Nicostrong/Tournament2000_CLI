@@ -6,13 +6,15 @@
 # define PARTICIPANTSCLI_HPP
 
 //	STDLIB
-# include <cctype>
+# include <vector>
 
 //	INCLUDES
-# include "./Participant.hpp"
+# include "../class/Participant.hpp"
 
 //	TYPEDEF
 typedef std::string					STRING;
+typedef const std::string&			C_STRING;
+typedef std::vector<Participant>	V_PART;
 
 //	STATIC VARIABLES
 
@@ -23,6 +25,8 @@ class ParticipantCLI
 		static Participant			create();
 		static void					print(const Participant& participant);
 		static STRING				trim(STRING s);
+		static V_PART				importFromCSV(C_STRING filename);
+		static bool					exportToCSV(const V_PART& participants, C_STRING filename);
 };
 
 #endif

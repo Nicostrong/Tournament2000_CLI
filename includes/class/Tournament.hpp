@@ -6,7 +6,6 @@
 # define TOURNAMANT_HPP
 
 //	STDLIB
-#include <cstddef>
 # include <vector>
 
 //	INCLUDES
@@ -17,9 +16,9 @@
 # include "./Pool.hpp"
 
 //	TYPEDEF
-typedef std::vector<Participant*>	V_PART;
-typedef std::vector<Team*>			V_TEAM;
-typedef std::vector<Pool*>			V_POOL;
+typedef std::vector<Participant*>	VP_PART;
+typedef std::vector<Team*>			VP_TEAM;
+typedef std::vector<Pool*>			VP_POOL;
 
 class Tournament
 {
@@ -27,9 +26,9 @@ class Tournament
 
 		Settings					_settings;
 
-		V_PART						_participants;
-		V_TEAM						_teams;
-		V_POOL						_pools;
+		VP_PART						_participants;
+		VP_TEAM						_teams;
+		VP_POOL						_pools;
 
 		Phase*						_sixteenths;
 		Phase*						_heighths;
@@ -46,18 +45,13 @@ class Tournament
 		void						generateTeams();
 		void						generatePools();
 
-		Tournament();
-		Tournament(const Tournament& );
-
-		Tournament&					operator=(const Tournament& );
-
 		struct TeamCreationCtx
 		{
-			V_PART*					males = nullptr;
-			V_PART*					females = nullptr;			
-			V_PART*					minoritary = nullptr;
-			V_PART*					majoritary = nullptr;
-			V_PART*					missingPool = nullptr;
+			VP_PART*				males = nullptr;
+			VP_PART*				females = nullptr;
+			VP_PART*				minoritary = nullptr;
+			VP_PART*				majoritary = nullptr;
+			VP_PART*				missingPool = nullptr;
 
 			size_t					minIdx = 0;
 			size_t					majIdx = 0;
@@ -72,34 +66,49 @@ class Tournament
 		bool						checkMissingPlayers(int& missing) const;
 		void						generateMissingPool(TeamCreationCtx& ctx);
 
-		void						cloneForEqualGenders(TeamCreationCtx& ctx);
-		void						cloneForUnequalGenders(TeamCreationCtx& ctx);
-		void						createStandardMixedTeams(TeamCreationCtx& ctx);
-		void						createMissingMixedTeams(TeamCreationCtx& ctx);
-		void						createUnigenreTeams(TeamCreationCtx& ctx);
+		static void					cloneForEqualGenders(TeamCreationCtx& ctx);
+		static void					cloneForUnequalGenders(TeamCreationCtx& ctx);
+		static void					createStandardMixedTeams(TeamCreationCtx& ctx);
+		static void					createMissingMixedTeams(TeamCreationCtx& ctx);
+		static void					createUnigenreTeams(TeamCreationCtx& ctx);
 
-		V_PART						getAllMales();
-		V_PART						getAllFemales();
-		V_PART						getMultiTeamsPlayers(V_PART pool);
+		VP_PART						getAllMales();
+		VP_PART						getAllFemales();
+		VP_PART						getMultiTeamsPlayers(VP_PART pool);
 
 	public:
 
-		Tournament(const Settings& settings);
+		//	CANONICAL
+		explicit Tournament(const Settings& settings);
+		Tournament() = delete;
+		Tournament(const Tournament& ) = delete;
 		~Tournament();
 
-		//	GETTER
-		const Settings&				getSettings() const;
-		const V_POOL&				getPools() const;
+		Tournament&					operator=(const Tournament& ) = delete;
 
+		//	GETTER
+		[[nodiscard]]
+		const Settings&				getSettings() const;
+		[[nodiscard]]
+		const VP_POOL&				getPools() const;
+
+		[[nodiscard]]
 		Phase*						getSixteenth() const;
+		[[nodiscard]]
 		Phase*						getHeighth() const;
+		[[nodiscard]]
 		Phase*						getQuarters() const;
+		[[nodiscard]]
 		Phase*						getSemis() const;
+		[[nodiscard]]
 		Phase*						getFinal() const;
+		[[nodiscard]]
 		Phase*						getThirdPlace() const;
 
-		bool						getHasSixteenth();
-		bool						getHasHeighth();
+		[[nodiscard]]
+		bool						getHasSixteenth() const;
+		[[nodiscard]]
+		bool						getHasHeighth() const;
 
 		//	METHOD
 		void						addParticipant(const Participant& p);
