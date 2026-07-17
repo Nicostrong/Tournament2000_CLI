@@ -16,9 +16,10 @@
 # include "./Pool.hpp"
 
 //	TYPEDEF
-typedef std::vector<Participant*>	VP_PART;
-typedef std::vector<Team*>			VP_TEAM;
-typedef std::vector<Pool*>			VP_POOL;
+using				VP_PART		=	std::vector<Participant*>;
+using				VP_TEAM		=	std::vector<Team*>;
+using				VP_POOL		=	std::vector<Pool*>;
+using				CVP_POOL	=	const VP_POOL;
 
 class Tournament
 {
@@ -47,34 +48,37 @@ class Tournament
 
 		struct TeamCreationCtx
 		{
-			VP_PART*				males = nullptr;
-			VP_PART*				females = nullptr;
-			VP_PART*				minoritary = nullptr;
-			VP_PART*				majoritary = nullptr;
-			VP_PART*				missingPool = nullptr;
+			VP_PART*				males			=	nullptr;
+			VP_PART*				females			=	nullptr;
+			VP_PART*				minoritary		=	nullptr;
+			VP_PART*				majoritary		=	nullptr;
+			VP_PART*				missingPool		=	nullptr;
 
-			size_t					minIdx = 0;
-			size_t					majIdx = 0;
-			size_t					missIdx = 0;
+			size_t					minIdx			=	0;
+			size_t					majIdx			=	0;
+			size_t					missIdx			=	0;
 
-			int						missing = 0;
+			int						missing			=	0;
 		};
 
 		void						createTeamsUniplayer();
 		void						createMixedTeams();
 		void						createDoubleTeams();
 		bool						checkMissingPlayers(int& missing) const;
-		void						generateMissingPool(TeamCreationCtx& ctx);
+		static void					generateMissingPool(const TeamCreationCtx& ctx);
 
-		static void					cloneForEqualGenders(TeamCreationCtx& ctx);
-		static void					cloneForUnequalGenders(TeamCreationCtx& ctx);
-		static void					createStandardMixedTeams(TeamCreationCtx& ctx);
-		static void					createMissingMixedTeams(TeamCreationCtx& ctx);
-		static void					createUnigenreTeams(TeamCreationCtx& ctx);
+		static void					cloneForEqualGenders(const TeamCreationCtx& ctx);
+		static void					cloneForUnequalGenders(const TeamCreationCtx& ctx);
+		void						createStandardMixedTeams(TeamCreationCtx& ctx);
+		void						createMissingMixedTeams(TeamCreationCtx& ctx);
+		void						createUnigenreTeams(TeamCreationCtx& ctx);
 
-		VP_PART						getAllMales();
-		VP_PART						getAllFemales();
-		VP_PART						getMultiTeamsPlayers(VP_PART pool);
+		[[nodiscard]]
+		VP_PART						getAllMales() const;
+		[[nodiscard]]
+		VP_PART						getAllFemales() const;
+		[[nodiscard]]
+		VP_PART						getMultiTeamsPlayers(VP_PART participants) const;
 
 	public:
 
@@ -90,8 +94,7 @@ class Tournament
 		[[nodiscard]]
 		const Settings&				getSettings() const;
 		[[nodiscard]]
-		const VP_POOL&				getPools() const;
-
+		CVP_POOL					getPools() const;
 		[[nodiscard]]
 		Phase*						getSixteenth() const;
 		[[nodiscard]]
@@ -104,7 +107,6 @@ class Tournament
 		Phase*						getFinal() const;
 		[[nodiscard]]
 		Phase*						getThirdPlace() const;
-
 		[[nodiscard]]
 		bool						getHasSixteenth() const;
 		[[nodiscard]]

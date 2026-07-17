@@ -13,9 +13,10 @@
 # include "./Participant.hpp"
 
 //	TYPEDEF
-typedef std::string					STRING;
-typedef const std::string&			C_STRING;
-typedef std::vector<Participant*>	VP_PART;
+using				STRING		=	std::string;
+using				C_STRING	=	const std::string&;
+using				VP_PART		=	std::vector<Participant*>;
+using				CVP_PART	=	const VP_PART&;
 
 /**
  * la classe Team represente un enssemble de Participant qui joueront enssemble
@@ -40,10 +41,10 @@ class Team
 
 		//	CANONICAL
 		Team();
-		explicit Team(const STRING& ) = delete;
+		explicit Team(C_STRING ) = delete;
 		Team(const Team& ) = delete;
 		Team&						operator=(const Team& ) = delete;
-		~Team();
+		~Team() = default;
 
 		//	GETTER
 		[[nodiscard]]
@@ -65,7 +66,7 @@ class Team
 		[[nodiscard]]
 		C_STRING					getName() const;
 		[[nodiscard]]
-		const VP_PART&				getMembers() const;
+		CVP_PART					getMembers() const;
 
 		//	SETTER
 		void						setIsEliminated(bool value);

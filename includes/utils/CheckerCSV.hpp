@@ -12,8 +12,8 @@
 //	INCLUDES
 
 //	TYPEDEF
-typedef const std::string&			C_STRING;
-typedef std::vector<std::string>	V_STRING;
+using				C_STRING	=	const std::string&;
+using				V_STRING	=	std::vector<std::string>;
 
 //	GLOBAL VARIABLES
 

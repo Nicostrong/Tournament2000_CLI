@@ -15,32 +15,30 @@
 #include "../class/Participant.hpp"
 
 //	TYPEDEF
-typedef std::string								STRING;
-typedef const std::string&						C_STRING;
-typedef std::vector<std::string>				V_STRING;
-typedef std::vector<const Match*>				V_MATCH;
-typedef std::map<const Participant*, V_MATCH>	M_C_PART_V_MATCH;
+using				C_STRING			=	const std::string&;
+using				V_STRING			=	std::vector<std::string>;
+using				M_CP_PART_VP_MATCH	=	std::map<const Participant*, std::vector<Match*>>;
 
 class TournamentHistory
 {
 	private:
 
-		M_C_PART_V_MATCH			_participantMatches;
+		M_CP_PART_VP_MATCH			_participantMatches;
 		V_STRING					_globalEvents;
 
 	public:
 
 		//	CANONICAL
-		TournamentHistory();
+		TournamentHistory() = default;
 		TournamentHistory(const TournamentHistory& ) = delete;
 		TournamentHistory&			operator=(const TournamentHistory& ) = delete;
-        ~TournamentHistory();
+        ~TournamentHistory() = default;
 
 		//	METHODS
         void						logEvent(C_STRING event);
-        void						recordMatch(const Match* match);
+        void						recordMatch(Match* match);
         void						exportParticipantSummary(const Participant* p, C_STRING filename) const;
-        void						exportFullHistory(C_STRING filename) const;
+        //void						exportFullHistory(C_STRING filename) const;
 
 };
 

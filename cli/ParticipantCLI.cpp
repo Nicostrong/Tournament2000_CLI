@@ -31,10 +31,10 @@ typedef std::vector<Participant>	V_PART;
 
 Participant							ParticipantCLI::create()
 {
-	STRING	pseudo;
-	STRING	lastName;
-	STRING	firstName;
-	int		gender;
+	STRING			pseudo;
+	STRING			lastName;
+	STRING			firstName;
+	int				gender = -1;
 
 	while (lastName.empty())
 	{
@@ -57,8 +57,6 @@ Participant							ParticipantCLI::create()
 		pseudo = trim(pseudo);
 	}
 
-	gender = -1;
-
 	while (gender != 0 && gender != 1)
 	{
 		std::cout << "Sexe (0 = HOMME, 1 = FEMME) : ";
@@ -76,17 +74,6 @@ Participant							ParticipantCLI::create()
 	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 	return (Participant(pseudo, firstName, lastName, static_cast<Participant::Gender>(gender)));
-}
-
-void								ParticipantCLI::print(const Participant& participant)
-{
-	std::cout << std::endl;
-	std::cout << "===== PARTICIPANT =====" << std::endl;
-	std::cout << "Pseudo : " << participant.getPseudo() << std::endl;
-	std::cout << "Nom : " << participant.getLastName() << std::endl;
-	std::cout << "Prenom : " << participant.getFirstName() << std::endl;
-	std::cout << "Sexe : " << participant.getGenderStr() << std::endl;
-	std::cout << "=======================" << std::endl;
 }
 
 STRING								ParticipantCLI::trim(STRING s)
@@ -191,4 +178,28 @@ bool								ParticipantCLI::exportToCSV(const V_PART& participants, C_STRING fil
 	file.close();
 	
 	return (true);
+}
+
+std::ostream&		operator<<(std::ostream& os, const Participant& p)
+{
+	os << std::format(
+		"-----------------------------\n"
+		"|  Participant\n"
+		"-----------------------------\n"
+		"|  Pseudo             : {}\n"
+		"|  Prenom             : {}\n"
+		"|  Nom                : {}\n"
+		"|  Genre              : {}\n"
+		"|  Elimine            : {}\n"
+		"|  Multi-equipe       : {}\n"
+		"-----------------------------\n",
+		p.getPseudo(),
+		p.getFirstName(),
+		p.getLastName(),
+		p.getGenderStr(),
+		p.getIsEliminated() ? "Oui" : "Non",
+		p.getIsMultiTeamPlayer() ? "Oui" : "Non"
+	);
+
+	return (os);
 }

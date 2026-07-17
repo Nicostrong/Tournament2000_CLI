@@ -11,13 +11,16 @@
 
 //	INCLUDES
 # include "./Match.hpp"
+# include "./Team.hpp"
 # include "./Phase.hpp"
 
 //	TYPEDEF
-typedef std::string					STRING;
-typedef const std::string&			C_STRING;
-typedef std::vector<Match*>			VP_MATCH;
-typedef std::vector<Team*>			VP_TEAM;
+using				STRING		=	std::string;
+using				C_STRING	=	const std::string&;
+using				VP_MATCH	=	std::vector<Match*>;
+using				VP_TEAM		=	std::vector<Team*>;
+using				CVP_MATCH	=	const VP_MATCH&;
+using				CVP_TEAM	=	const VP_TEAM&;
 
 class Pool
 {
@@ -39,11 +42,11 @@ class Pool
 
 		//	GETTER
 		[[nodiscard]]
-		const STRING&				getName() const;
+		C_STRING					getName() const;
 		[[nodiscard]]
-		const VP_TEAM&				getTeams() const;
+		CVP_TEAM					getTeams() const;
 		[[nodiscard]]
-		const VP_MATCH&				getMatches() const;
+		CVP_MATCH					getMatches() const;
 
 		//	METHOD
 		void						addTeam(Team* team);

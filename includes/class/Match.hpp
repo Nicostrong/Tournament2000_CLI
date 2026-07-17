@@ -34,7 +34,7 @@ class Match
 		Match(Team* a, Team* b);
 		Match(const Match& match) = delete;
 		Match&						operator=(const Match& match) = delete;
-		~Match();
+		~Match() = default;
 
 		//	GETTER
 		[[nodiscard]]

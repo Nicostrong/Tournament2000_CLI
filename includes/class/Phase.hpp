@@ -10,12 +10,14 @@
 # include <vector>
 
 //	INCLUDES
-# include "Match.hpp"
+# include "./Match.hpp"
+# include "./Team.hpp"
 
 //	TYPEDEF
-typedef std::string					STRING;
-typedef std::vector<Match*>			VP_MATCH;
-typedef std::vector<Team*>			VP_TEAM;
+using				STRING		=	std::string;
+using				C_STRING	=	const std::string&;
+using				VP_MATCH	=	std::vector<Match*>;
+using				VP_TEAM		=	std::vector<Team*>;
 
 //	STATIC VARIABLES
 
@@ -32,7 +34,7 @@ class Phase
 
 		//	CANONICAL
 		Phase() = delete;
-		Phase(const STRING& name, int nbSets);
+		Phase(STRING name, int nbSets);
 		Phase(const Phase& ) = delete;
 		Phase&						operator=(const Phase& ) = delete;
 		~Phase();
@@ -41,9 +43,16 @@ class Phase
 		[[nodiscard]]
 		const STRING&				getName() const;
 		[[nodiscard]]
+		int							getNbSetToPlay() const;
+		[[nodiscard]]
+		bool						getIsFinished() const;
+		[[nodiscard]]
 		const VP_MATCH&				getMatches() const;
 		[[nodiscard]]
 		VP_TEAM						getWinners() const;
+
+		//	SETTER
+		void						setIsFinished(bool isFinished);
 
 		//	METHOD
 		void						addEncounter(Team* a, Team* b);

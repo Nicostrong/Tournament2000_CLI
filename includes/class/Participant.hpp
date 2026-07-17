@@ -11,8 +11,8 @@
 //	INCLUDES
 
 //	TYPEDEF
-typedef std::string					STRING;
-typedef const std::string&			C_STRING;
+using				STRING = std::string;
+using				C_STRING = const std::string&;
 
 //	STATIC VARIABLES
 
@@ -39,9 +39,9 @@ class Participant
 		//	CANONICAL
 		Participant() = delete;
 		Participant(C_STRING pseudo, C_STRING firstName, C_STRING lastName, Gender gender);
-		Participant(const Participant& p);
+		Participant(const Participant& p) = default;
 		Participant&				operator=(const Participant& p);
-		~Participant();
+		~Participant() = default;
 
 		//	GETTER
 		[[nodiscard]]
@@ -63,7 +63,7 @@ class Participant
 		void						setPseudo(C_STRING value);
 		void						setFirstName(C_STRING value);
 		void						setLastName(C_STRING value);
-		void						setGender(Gender gender);
+		void						setGender(Gender value);
 		void						setIsEliminated(bool value);
 		void						setIsMultiTeamPlayer(bool value);
 

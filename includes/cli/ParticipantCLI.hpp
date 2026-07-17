@@ -23,10 +23,11 @@ class ParticipantCLI
 	public:
 
 		static Participant			create();
-		static void					print(const Participant& participant);
 		static STRING				trim(STRING s);
 		static V_PART				importFromCSV(C_STRING filename);
 		static bool					exportToCSV(const V_PART& participants, C_STRING filename);
 };
+
+std::ostream&		operator<<(std::ostream& os, const Participant& p);
 
 #endif

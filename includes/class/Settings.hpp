@@ -11,14 +11,15 @@
 # include <vector>
 # include <array>
 
+//	INCLUDES
+
 //	TYPEDEF
-typedef std::string					STRING;
-typedef const std::string&			C_STRING;
-typedef std::vector<std::string>	V_STRING;
-typedef std::vector<int>			V_INT;
+using				STRING		=	std::string;
+using				C_STRING	=	const std::string&;
+using				V_STRING	=	std::vector<STRING>;
 
 template<std::size_t N>
-using A_INT = std::array<int, N>;
+using				A_INT		=	std::array<int, N>;
 
 //	ENUM
 enum class nbPlayer : int
@@ -126,7 +127,7 @@ class Settings
 		bool						_allowMultiTeamPlayers;
 		bool						_isThirdPlaceMatch;
 
-		bool						addErrorIf(bool condition, C_STRING message, V_STRING& errors) const;
+		static bool					addErrorIf(bool condition, C_STRING message, V_STRING& errors);
 
 		template<typename Container>
 		bool						isInList(int value, const Container& list) const
@@ -138,13 +139,13 @@ class Settings
 
 		//	CANONICAL
 		Settings();
-		Settings(const Settings& );
+		Settings(const Settings& ) = default;
 		Settings&					operator=(const Settings& );
-		~Settings();
+		~Settings() = default;
 
 		/*  GETTERS */
 		[[nodiscard]]
-		const STRING&				getName() const;
+		C_STRING					getName() const;
 		[[nodiscard]]
 		int							getNbPlayers() const;
 		[[nodiscard]]

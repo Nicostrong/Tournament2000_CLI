@@ -3,18 +3,20 @@
 //
 
 //	STDLIB
+#include <algorithm>
 
 //	INCLUDES
 #include "../includes/class/Pool.hpp"
 
 //	TYPEDEF
-typedef std::string					STRING;
-typedef const std::string&			C_STRING;
-typedef std::vector<Match*>			VP_MATCH;
-typedef std::vector<Team*>			VP_TEAM;
+using				C_STRING	=	const std::string&;
+using				VP_MATCH	=	std::vector<Match*>;
+using				VP_TEAM		=	std::vector<Team*>;
+using				CVP_MATCH	=	const VP_MATCH&;
+using				CVP_TEAM	=	const VP_TEAM&;
 
 //	STATIC VARIABLES
-int									Pool::_idCounter = 0;
+int					Pool::_idCounter = 0;
 
 /****************/
 /*	CANONICAL	*/
@@ -25,7 +27,7 @@ Pool::Pool() : _name("Pool_" + std::to_string(_idCounter++))
 
 Pool::~Pool()
 {
-	for (Match* m : this->_matches)
+	for (const Match* m : this->_matches)
 		delete m;
 	
 	this->_matches.clear();
@@ -35,17 +37,17 @@ Pool::~Pool()
 /*	GETTER	*/
 /************/
 
-C_STRING							Pool::getName() const
+C_STRING			Pool::getName() const
 {
 	return (this->_name);
 }
 
-const VP_TEAM&						Pool::getTeams() const
+CVP_TEAM			Pool::getTeams() const
 {
 	return (this->_teams);
 }
 
-const VP_MATCH&						Pool::getMatches() const
+CVP_MATCH			Pool::getMatches() const
 {
 	return (this->_matches);
 }
@@ -62,15 +64,15 @@ const VP_MATCH&						Pool::getMatches() const
 /*	PUBLIC METHODS	*/
 /********************/
 
-void								Pool::addTeam(Team* team)
+void				Pool::addTeam(Team* team)
 {
 	if (team)
 		this->_teams.push_back(team);
 }
 
-void								Pool::generateMatches(int nbSetsPerEncounter)
+void				Pool::generateMatches(const int nbSetsPerEncounter)
 {
-	for (Match* m : this->_matches)
+	for (const Match* m : this->_matches)
 		delete m;
 	
 	this->_matches.clear();
@@ -84,9 +86,9 @@ void								Pool::generateMatches(int nbSetsPerEncounter)
 				this->_matches.push_back(new Match(this->_teams[i], this->_teams[j]));
 }
 
-void								Pool::sortTeams()
+void				Pool::sortTeams()
 {
-	std::sort(this->_teams.begin(), this->_teams.end(), [](Team* a, Team* b)
+	std::sort(this->_teams.begin(), this->_teams.end(), [](const Team* a, const Team* b)
 	{
 		if (a->getPoint() != b->getPoint())
 			return (a->getPoint() > b->getPoint());
@@ -95,12 +97,13 @@ void								Pool::sortTeams()
 	});
 }
 
-VP_TEAM								Pool::getQualifiers() const
+VP_TEAM				Pool::getQualifiers() const
 {
 	VP_TEAM			qualifiers;
 
-	if (this->_teams.size() >= 1)
+	if (!this->_teams.empty())
 		qualifiers.push_back(this->_teams[0]);
+
 	if (this->_teams.size() >= 2)
 		qualifiers.push_back(this->_teams[1]);
 

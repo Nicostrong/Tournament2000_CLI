@@ -11,8 +11,8 @@
 //	INCLUDES
 
 //	TYPEDEF
-typedef std::string					STRING;
-typedef const std::string&			C_STRING;
+using				STRING		=	std::string;
+using				C_STRING	=	const std::string&;
 
 //	GLOBAL VARIABLES
 

@@ -23,7 +23,7 @@ typedef std::string					STRING;
 typedef std::vector<std::string>	V_STRING;
 typedef std::vector<Participant>	V_PART;
 
-void				printMainMenu()
+void				printMainMenu(const Settings& mySettings, const V_PART& pendingParticipants, const bool settingsAreValid)
 {
 	std::cout	<< "\n========== MENU DE PREPARATION ==========\n";
 	std::cout	<< "1. Configurer le tournoi (Valide : " << (settingsAreValid ? "Oui" : "Non") << ")\n";
@@ -36,7 +36,7 @@ void				printMainMenu()
 	std::cout	<< "Choix : ";
 }
 
-void				executeChoice(int choice)
+bool				executeChoice(const int choice, Settings& mySettings, V_PART& pendingParticipants)
 {
 	switch (choice)
 		{
@@ -52,26 +52,29 @@ void				executeChoice(int choice)
 
 			case 3:
 			{
-				if (!settingsAreValid)
+				V_STRING			dummyErrors;
+
+				if (!mySettings.isValid(dummyErrors))
 				{
-					std::cout	<< "\n[!] Impossible : La configuration actuelle est invalide. Allez dans le menu 1.\n";
-					break ;
+					std::cout << "\n[!] Configuration invalide.\n";
+					break;
 				}
 
-				if (pendingParticipants.size() < (size_t)mySettings.getNbPlayers() && !mySettings.getAllowMultiTeamPlayers())
+				if (pendingParticipants.size() <
+					static_cast<size_t>(mySettings.getNbPlayers()) &&
+					!mySettings.getAllowMultiTeamPlayers())
 				{
-					std::cout	<< "\n[!] Impossible : Pas assez de participants. (" << pendingParticipants.size() << "/" << mySettings.getNbPlayers() << ").\n";
-					break ;
+					std::cout << "\n[!] Pas assez de participants.\n";
+					break;
 				}
 
 				if (pendingParticipants.empty())
 				{
-					std::cout	<< "\n[!] Impossible : Vous devez inscrire des participants.\n";
-					break ;
+					std::cout << "\n[!] Aucun participant.\n";
+					break;
 				}
 
-				isTournamentReady = true;
-				break ;
+				return (true);
 			}
 
 			case 4:
@@ -92,6 +95,8 @@ void				executeChoice(int choice)
 					{
 						pendingParticipants.insert(pendingParticipants.end(), imported.begin(), imported.end());
 						std::cout	<< "\n[v] " << imported.size() << " participant(s) ajoute(s) au tournoi !\n";
+						for (const Participant& p: imported)
+							std::cout << p << std::endl;
 					}
 					else
 						std::cout	<< "\n[!] Aucun participant n'a pu etre importe. Verifiez le fichier.\n";
@@ -125,12 +130,13 @@ void				executeChoice(int choice)
 			}
 
 			case 0:
-				return ;
+				return (true);
 
 			default:
 				std::cout	<< "Choix invalide.\n";
-				break ;
 		}
+
+	return (false);
 }
 
 int main()
@@ -144,7 +150,7 @@ int main()
 		V_STRING					dummyErrors;
 		bool						settingsAreValid = mySettings.isValid(dummyErrors);
 		
-		printMainMenu()();
+		printMainMenu(mySettings, pendingParticipants, settingsAreValid);
 
 		STRING						input;
 		std::getline(std::cin, input);
@@ -157,8 +163,7 @@ int main()
 		}
 		catch (...) {}
 
-		executeChoice(choice);
-
+		isTournamentReady = executeChoice(choice, mySettings, pendingParticipants);
 	}
 
 	Tournament						t(mySettings);
