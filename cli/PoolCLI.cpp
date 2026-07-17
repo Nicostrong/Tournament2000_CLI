@@ -7,9 +7,9 @@
 #include <iomanip>
 
 //	INCLUDE
-#include "../includes/PoolCLI.hpp"
-#include "../includes/MatchCLI.hpp"
-#include "../includes/TeamCLI.hpp"
+#include "../includes/cli/PoolCLI.hpp"
+#include "../includes/cli/MatchCLI.hpp"
+#include "../includes/cli/TeamCLI.hpp"
 
 //	TYPEDEF
 

@@ -6,15 +6,16 @@
 #include <iostream>
 
 //	INCLUDES
-#include "../includes/TournamentCLI.hpp"
-#include "../includes/MatchCLI.hpp"
-#include "../includes/PoolCLI.hpp"
+#include "../includes/cli/TournamentCLI.hpp"
+#include "../includes/cli/MatchCLI.hpp"
+#include "../includes/cli/SettingsCLI.hpp"
+#include "../includes/cli/PoolCLI.hpp"
 
 //	TYPEDEF
 typedef std::string					STRING;
 typedef const std::string&			C_STRING;
-typedef std::vector<Pool*>			V_POOL;
-typedef std::vector<Match*>			V_MATCH;
+typedef std::vector<Pool*>			VP_POOL;
+typedef std::vector<Match*>			VP_MATCH;
 
 //	STATIC VARIABLES
 
@@ -33,7 +34,7 @@ void								TournamentCLI::handlePhase(Phase* phase, C_STRING phaseName)
 	handleMatchList(phase->getMatches(), phaseName);
 }
 
-void								TournamentCLI::handleMatchList(const V_MATCH& matches, C_STRING title)
+void								TournamentCLI::handleMatchList(const VP_MATCH& matches, C_STRING title)
 {
 	size_t mIdx = 0;
 
@@ -75,7 +76,7 @@ STRING								TournamentCLI::getTeamNameOrPlaceholder(Phase* phase, size_t match
 	if (!phase)
 		return ("A determiner");
 
-	const V_MATCH& matches = phase->getMatches();
+	const VP_MATCH& matches = phase->getMatches();
 
 	if (matchIdx >= matches.size() || !matches[matchIdx])
 		return ("A determiner");
@@ -157,7 +158,7 @@ void								TournamentCLI::displayMenu(Tournament& tournament)
 		{
 			case 1:
 			{
-				const V_POOL& pools = tournament.getPools();
+				const VP_POOL& pools = tournament.getPools();
 				
 				if (pools.empty())
 				{

@@ -7,7 +7,7 @@
 #include <limits>
 
 //	INCLUDES
-#include "../includes/MatchCLI.hpp"
+#include "../includes/cli/MatchCLI.hpp"
 
 //	TYPEDEF
 

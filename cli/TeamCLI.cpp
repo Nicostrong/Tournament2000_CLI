@@ -6,7 +6,7 @@
 #include <iostream>
 
 //	INCLUDES
-#include "../includes/TeamCLI.hpp"
+#include "../includes/cli/TeamCLI.hpp"
 
 //	TYPEDEF
 

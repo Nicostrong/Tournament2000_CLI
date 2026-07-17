@@ -5,7 +5,7 @@
 //	STDLIB
 
 //	INCLUDES
-#include "../includes/Match.hpp"
+#include "../includes/class/Match.hpp"
 
 //	TYPEDEF
 
@@ -16,35 +16,34 @@
 /****************/
 
 Match::Match(Team* a, Team* b)
-	: _teamA(a), _teamB(b), _scoreA(0), _scoreB(0), _isFinished(false) {}
-
-Match::~Match() {}
+	: _teamA(a), _teamB(b), _scoreA(0), _scoreB(0), _isFinished(false)
+{}
 
 /************/
 /*	GETTER	*/
 /************/
 
-Team*								Match::getTeamA() const
+Team*				Match::getTeamA() const
 {
 	return (this->_teamA);
 }
 
-Team*								Match::getTeamB() const
+Team*				Match::getTeamB() const
 {
 	return (this->_teamB);
 }
 
-int									Match::getScoreA() const
+int					Match::getScoreA() const
 {
 	return (this->_scoreA);
 }
 
-int									Match::getScoreB() const
+int					Match::getScoreB() const
 {
 	return (this->_scoreB);
 }
 
-bool								Match::isFinished() const
+bool				Match::isFinished() const
 {
 	return (this->_isFinished);
 }
@@ -53,7 +52,7 @@ bool								Match::isFinished() const
 /*	SETTER	*/
 /************/
 
-void								Match::setScore(int sA, int sB)
+void				Match::setScore(const int sA, const int sB)
 {
 	this->_scoreA = sA;
 	this->_scoreB = sB;
@@ -85,7 +84,7 @@ void								Match::setScore(int sA, int sB)
 /*	PUBLIC METHOD	*/
 /********************/
 
-Team*								Match::getWinner() const
+Team*				Match::getWinner() const
 {
 	if (!this->_isFinished || this->_scoreA == this->_scoreB)
 		return (nullptr);
@@ -93,7 +92,7 @@ Team*								Match::getWinner() const
 	return ((this->_scoreA > this->_scoreB) ? this->_teamA : this->_teamB);
 }
 
-Team*								Match::getLoser() const
+Team*				Match::getLoser() const
 {
 	if (!this->_isFinished || this->_scoreA == this->_scoreB)
 		return (nullptr);

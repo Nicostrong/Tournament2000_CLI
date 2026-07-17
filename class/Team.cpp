@@ -5,11 +5,12 @@
 //	STDLIB
 
 //	INCLUDES
-#include "../includes/Team.hpp"
+#include "../includes/class/Team.hpp"
 
 //	TYPEDEF
-typedef const std::string&			C_STRING;
-typedef std::vector<Participant*>	V_PART;
+using				C_STRING	=	const std::string&;
+using				VP_PART		=	std::vector<Participant*>;
+using				CVP_PART	=	const VP_PART&;
 
 //	STATIC VARIABLES
 int									Team::_idCounter = 0;
@@ -20,60 +21,59 @@ int									Team::_idCounter = 0;
 
 Team::Team() :	_id(++_idCounter), _point(0), _scoreMarked(0), _scoreAgainst(0),
 				_isEliminated(false), _hasMultiTeamPlayer(false),
-				_name("Team " + std::to_string(_idCounter)) {}
-
-Team::~Team() {}
+				_name("Team " + std::to_string(_idCounter))
+{}
 
 /************/
 /*	GETTER	*/
 /************/
 
-size_t								Team::getSize() const
+size_t				Team::getSize() const
 {
 	return (this->_members.size());
 }
 
-bool								Team::getIsEliminated() const
+bool				Team::getIsEliminated() const
 {
 	return (this->_isEliminated);
 }
 
-bool								Team::getHasMultiTeamPlayer() const
+bool				Team::getHasMultiTeamPlayer() const
 {
 	return (this->_hasMultiTeamPlayer);
 }
 
-int									Team::getId() const
+int					Team::getId() const
 {
 	return (this->_id);			
 }
 
-int									Team::getPoint() const
+int					Team::getPoint() const
 {
 	return (this->_point);
 }
 
-int									Team::getScoreMarked() const
+int					Team::getScoreMarked() const
 {
 	return (this->_scoreMarked);
 }
 
-int									Team::getScoreAgainst() const
+int					Team::getScoreAgainst() const
 {
 	return (this->_scoreAgainst);
 }
 
-int									Team::getScoreDiff() const
+int					Team::getScoreDiff() const
 {
 	return (this->_scoreMarked - this->_scoreAgainst);
 }
 
-C_STRING							Team::getName() const
+C_STRING			Team::getName() const
 {
 	return (this->_name);		
 }
 
-const V_PART&						Team::getMembers() const
+CVP_PART			Team::getMembers() const
 {
 	return (this->_members);	
 }
@@ -82,19 +82,19 @@ const V_PART&						Team::getMembers() const
 /*	SETTER	*/
 /************/
 
-void								Team::setIsEliminated(bool isEliminated)
+void				Team::setIsEliminated(const bool value)
 {
-	this->_isEliminated = isEliminated;
+	this->_isEliminated = value;
 }
 
-void								Team::setHasMultiTeamPlayer(bool hasMultiTeamPlayer)
+void				Team::setHasMultiTeamPlayer(const bool value)
 {
-	this->_hasMultiTeamPlayer = hasMultiTeamPlayer;
+	this->_hasMultiTeamPlayer = value;
 }
 
-void								Team::setName(C_STRING name)
+void				Team::setName(C_STRING value)
 {
-	this->_name = name;
+	this->_name = value;
 }
 
 /********************/
@@ -105,28 +105,28 @@ void								Team::setName(C_STRING name)
 /*	PUBLIC METHOD	*/
 /********************/
 
-bool								Team::isComplete(int requiredSize) const
+bool				Team::isComplete(const int requiredSize) const
 {
 	return (this->_members.size() == static_cast<size_t>(requiredSize));
 }
 
-void								Team::addMember(Participant* member)
+void				Team::addMember(Participant* member)
 {
 	if (member)
 		this->_members.push_back(member);
 }
 
-void								Team::addPoint(int point)
+void				Team::addPoint(const int point)
 {
 	this->_point += point;
 }
 
-void								Team::addScoreMarked(int score)
+void				Team::addScoreMarked(const int score)
 {
 	this->_scoreMarked += score;
 }
 
-void								Team::addScoreAgainst(int score)
+void				Team::addScoreAgainst(const int score)
 {
 	this->_scoreAgainst += score;
 }

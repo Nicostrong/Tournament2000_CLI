@@ -8,46 +8,37 @@
 #include <string>
 
 //	LOGICAL
-#include "../includes/Participant.hpp"
-#include "../includes/Settings.hpp"
-#include "../includes/Tournament.hpp"
+#include "../includes/class/Participant.hpp"
+#include "../includes/class/Settings.hpp"
+#include "../includes/class/Tournament.hpp"
 
 //	CLI
-#include "../includes/SettingsCLI.hpp"
-#include "../includes/TournamentCLI.hpp"
-#include "../includes/ParticipantCLI.hpp"
-#include "../includes/PoolCLI.hpp"
+#include "../includes/cli/SettingsCLI.hpp"
+#include "../includes/cli/TournamentCLI.hpp"
+#include "../includes/cli/ParticipantCLI.hpp"
+#include "../includes/cli/PoolCLI.hpp"
 
-int main()
+//	TYPEDEF
+typedef std::string					STRING;
+typedef std::vector<std::string>	V_STRING;
+typedef std::vector<Participant>	V_PART;
+
+void				printMainMenu(const Settings& mySettings, const V_PART& pendingParticipants, const bool settingsAreValid)
 {
-	Settings mySettings; 
-	std::vector<Participant> pendingParticipants;
-	bool isTournamentReady = false;
+	std::cout	<< "\n========== MENU DE PREPARATION ==========\n";
+	std::cout	<< "1. Configurer le tournoi (Valide : " << (settingsAreValid ? "Oui" : "Non") << ")\n";
+	std::cout	<< "2. Ajouter un participant (" << pendingParticipants.size() << "/" << mySettings.getNbPlayers()
+				<< " inscrits)\n";
+	std::cout	<< "3. Lancer le tournoi\n";
+	std::cout	<< "4. Importer des participants (CSV)\n";
+	std::cout	<< "5. Exporter les participants (CSV)\n";
+	std::cout	<< "0. Quitter\n";
+	std::cout	<< "Choix : ";
+}
 
-	while (!isTournamentReady)
-	{
-		std::vector<std::string> dummyErrors;
-		bool settingsAreValid = mySettings.isValid(dummyErrors);
-		
-		std::cout << "\n========== MENU DE PREPARATION ==========\n";
-		std::cout << "1. Configurer le tournoi (Valide : " << (settingsAreValid ? "Oui" : "Non") << ")\n";
-		std::cout << "2. Ajouter un participant (" << pendingParticipants.size() << "/" << mySettings.getNbPlayers() << " inscrits)\n";
-		std::cout << "3. Lancer le tournoi\n";
-		std::cout << "0. Quitter\n";
-		std::cout << "Choix : ";
-
-		std::string input;
-		std::getline(std::cin, input);
-		
-		int choice = -1;
-
-		try
-		{
-			choice = std::stoi(input);
-		}
-		catch (...) {}
-
-		switch (choice)
+bool				executeChoice(const int choice, Settings& mySettings, V_PART& pendingParticipants)
+{
+	switch (choice)
 		{
 			case 1:
 				SettingsCLI::setupWizard(mySettings);
@@ -56,52 +47,135 @@ int main()
 
 			case 2:
 				pendingParticipants.push_back(ParticipantCLI::create());
-				std::cout << "Participant ajoute avec succes !\n";
+				std::cout	<< "Participant ajoute avec succes !\n";
 				break ;
 
 			case 3:
 			{
-				if (!settingsAreValid)
+				V_STRING			dummyErrors;
+
+				if (!mySettings.isValid(dummyErrors))
 				{
-					std::cout << "\n[!] Impossible : La configuration actuelle est invalide. Allez dans le menu 1.\n";
-					break ;
+					std::cout << "\n[!] Configuration invalide.\n";
+					break;
 				}
 
-				if (pendingParticipants.size() < (size_t)mySettings.getNbPlayers() && !mySettings.getAllowMultiTeamPlayers())
+				if (pendingParticipants.size() <
+					static_cast<size_t>(mySettings.getNbPlayers()) &&
+					!mySettings.getAllowMultiTeamPlayers())
 				{
-					std::cout << "\n[!] Impossible : Pas assez de participants. (" << pendingParticipants.size() << "/" << mySettings.getNbPlayers() << ").\n";
-					break ;
+					std::cout << "\n[!] Pas assez de participants.\n";
+					break;
 				}
 
 				if (pendingParticipants.empty())
 				{
-					std::cout << "\n[!] Impossible : Vous devez inscrire des participants.\n";
+					std::cout << "\n[!] Aucun participant.\n";
+					break;
+				}
+
+				return (true);
+			}
+
+			case 4:
+			{
+				std::cout	<< "\nEntrez le chemin du fichier CSV a importer (ex: joueurs.csv) : ";
+
+				STRING				path;
+
+				std::getline(std::cin, path);
+
+				path = ParticipantCLI::trim(path);
+
+				if (!path.empty())
+				{
+					V_PART			imported = ParticipantCLI::importFromCSV(path);
+
+					if (!imported.empty())
+					{
+						pendingParticipants.insert(pendingParticipants.end(), imported.begin(), imported.end());
+						std::cout	<< "\n[v] " << imported.size() << " participant(s) ajoute(s) au tournoi !\n";
+						for (const Participant& p: imported)
+							std::cout << p << std::endl;
+					}
+					else
+						std::cout	<< "\n[!] Aucun participant n'a pu etre importe. Verifiez le fichier.\n";
+				}
+				break ;
+			}
+
+			case 5:
+			{
+				if (pendingParticipants.empty())
+				{
+					std::cout	<< "\n[!] Aucun participant a exporter.\n";
 					break ;
 				}
 
-				isTournamentReady = true;
+				std::cout	<< "\nEntrez le nom du fichier CSV a generer (ex: export_joueurs.csv) : ";
+
+				STRING				path;
+
+				std::getline(std::cin, path);
+				path = ParticipantCLI::trim(path);
+
+				if (!path.empty())
+				{
+					if (ParticipantCLI::exportToCSV(pendingParticipants, path))
+						std::cout	<< "\n[v] Exportation reussie dans " << path << " !\n";
+					else
+						std::cout	<< "\n[!] Echec de l'exportation.\n";
+				}
 				break ;
 			}
 
 			case 0:
-				return (0);
+				return (true);
 
 			default:
-				std::cout << "Choix invalide.\n";
-				break ;
+				std::cout	<< "Choix invalide.\n";
 		}
+
+	return (false);
+}
+
+int main()
+{
+	Settings						mySettings; 
+	V_PART							pendingParticipants;
+	bool							isTournamentReady = false;
+
+	while (!isTournamentReady)
+	{
+		V_STRING					dummyErrors;
+		bool						settingsAreValid = mySettings.isValid(dummyErrors);
+		
+		printMainMenu(mySettings, pendingParticipants, settingsAreValid);
+
+		STRING						input;
+		std::getline(std::cin, input);
+		
+		int							choice = -1;
+
+		try
+		{
+			choice = std::stoi(input);
+		}
+		catch (...) {}
+
+		isTournamentReady = executeChoice(choice, mySettings, pendingParticipants);
 	}
 
-	Tournament t(mySettings);
+	Tournament						t(mySettings);
 
 	for (const auto& p : pendingParticipants)
 		t.addParticipant(p);
 
 	if (t.initializeTournament())
 	{
-		std::cout << "\n============================================\n";
-		std::cout << "   TOURNOI INITIALISE AVEC SUCCES ! " << std::endl;
-		std::cout << "============================================\n";
+		std::cout	<< "\n============================================\n";
+		std::cout	<< "   TOURNOI INITIALISE AVEC SUCCES ! " << std::endl;
+		std::cout	<< "============================================\n";
 
 		for (const auto& pool : t.getPools())
 			PoolCLI::displayPoolDetails(*pool);

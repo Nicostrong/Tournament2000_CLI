@@ -7,7 +7,7 @@
 #include <fstream>
 
 //	INCLUDES
-#include "../includes/TournamentHistory.hpp"
+#include "../includes/utils/TournamentHistory.hpp"
 
 //	TYPEDEF
 typedef const std::string&			C_STRING;
@@ -17,10 +17,6 @@ typedef const std::string&			C_STRING;
 /****************/
 /*	CANONICAL	*/
 /****************/
-
-TournamentHistory::TournamentHistory() {}
-
-TournamentHistory::~TournamentHistory() {}
 
 /************/
 /*	GETTER	*/
@@ -43,7 +39,7 @@ void								TournamentHistory::logEvent(C_STRING event)
 	this->_globalEvents.push_back(event);
 }
 
-void								TournamentHistory::recordMatch(const Match* match)
+void								TournamentHistory::recordMatch(Match* match)
 {
 	if (!match)
 		return ;
