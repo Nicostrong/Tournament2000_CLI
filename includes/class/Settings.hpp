@@ -16,7 +16,7 @@
 //	TYPEDEF
 using				STRING		=	std::string;
 using				C_STRING	=	const std::string&;
-using				V_STRING	=	std::vector<STRING>;
+using				V_STRING	=	std::vector<std::string>;
 
 template<std::size_t N>
 using				A_INT		=	std::array<int, N>;
@@ -126,6 +126,7 @@ class Settings
 		bool						_isDouble;
 		bool						_allowMultiTeamPlayers;
 		bool						_isThirdPlaceMatch;
+		bool						_isValid;
 
 		static bool					addErrorIf(bool condition, C_STRING message, V_STRING& errors);
 
@@ -183,6 +184,8 @@ class Settings
 		bool						getAllowMultiTeamPlayers() const;
 		[[nodiscard]]
 		bool						getIsThirdPlaceMatch() const;
+		[[nodiscard]]
+		bool						getIsValid() const;
 
 		/*  SETTERS */
 		void						setName(C_STRING value);
@@ -206,9 +209,10 @@ class Settings
 		void						setIsDouble(bool value);
 		void						setAllowMultiTeamPlayers(bool value);
 		void						setIsThirdPlaceMatch(bool value);
+		void						setIsValid(bool value);
 
 		/*	METHOD	*/
-		bool						isValid(V_STRING& errors) const;
+		bool						isValid(V_STRING& errors);
 		[[nodiscard]]
 		bool						canAccommodate(int actualParticipants) const;
 

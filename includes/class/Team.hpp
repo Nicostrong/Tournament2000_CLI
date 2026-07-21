@@ -16,7 +16,7 @@
 using				STRING		=	std::string;
 using				C_STRING	=	const std::string&;
 using				VP_PART		=	std::vector<Participant*>;
-using				CVP_PART	=	const VP_PART&;
+using				CVP_PART	=	const std::vector<Participant*>&;
 
 /**
  * la classe Team represente un enssemble de Participant qui joueront enssemble

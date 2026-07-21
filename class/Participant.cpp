@@ -13,49 +13,58 @@ using				STRING			=	std::string;
 using				C_STRING		=	const std::string&;
 
 //	STATIC VARIABLES
+int					Participant::_idCounter = 0;
 
 /****************/
 /*	CANONICAL	*/
 /****************/
 
-Participant::Participant(C_STRING pseudo, C_STRING firstName, C_STRING lastName, const Gender gender)
-	:	_pseudo(FormatUtils::capitalize(pseudo)), _firstName(FormatUtils::capitalize(firstName)), 
-		_lastName(FormatUtils::toUpper(lastName)), _gender(gender), _isEliminated(false),
-		_isMultiTeamPlayer(false)
-{}
+Participant::Participant(C_STRING pseudo, C_STRING lastName, C_STRING firstName, const Gender gender)
+	:	_id(_idCounter++), _pseudo(pseudo), _lastName(lastName), _firstName(firstName), _gender(gender),
+		_isEliminated(false), _isMultiTeamPlayer(false)
+{
+	FormatUtils::trimAndCapitalize(this->_pseudo);
+	FormatUtils::trimAndCapitalize(this->_lastName);
+	FormatUtils::trimAndCapitalize(this->_firstName);
+}
 
-Participant&		Participant::operator=(const Participant& p)
+/*Participant&		Participant::operator=(const Participant& p)
 {
 	if (this != &p)
 	{
 		this->_pseudo = p._pseudo;
-		this->_firstName = p._firstName;
 		this->_lastName = p._lastName;
+		this->_firstName = p._firstName;
 		this->_gender = p._gender;
 		this->_isEliminated = p._isEliminated;
 		this->_isMultiTeamPlayer = p._isMultiTeamPlayer;
 	}
 
 	return (*this);
-}
+}*/
 
 /************/
 /*	GETTER	*/
 /************/
+
+size_t				Participant::getId() const
+{
+	return (this->_id);
+}
 
 C_STRING			Participant::getPseudo() const
 {
 	return (this->_pseudo);
 }
 
-C_STRING			Participant::getFirstName() const
-{
-	return (this->_firstName);
-}
-
 C_STRING			Participant::getLastName() const
 {
 	return (this->_lastName);
+}
+
+C_STRING			Participant::getFirstName() const
+{
+	return (this->_firstName);
 }
 
 Participant::Gender	Participant::getGenderInt() const
@@ -65,7 +74,7 @@ Participant::Gender	Participant::getGenderInt() const
 
 STRING				Participant::getGenderStr() const
 {
-	return (this->_gender == MALE ? "Homme" :"Femme");
+	return (this->_gender == MALE ? "Homme" : this->_gender == FEMALE ? "Femme" : "Autre");
 }
 
 bool				Participant::getIsEliminated() const
@@ -84,17 +93,20 @@ bool				Participant::getIsMultiTeamPlayer() const
 
 void				Participant::setPseudo(C_STRING value)
 {
-	this->_pseudo = FormatUtils::capitalize(value);
-}
-
-void				Participant::setFirstName(C_STRING value)
-{
-	this->_firstName = FormatUtils::capitalize(value);
+	this->_pseudo = value;
+	FormatUtils::capitalize(this->_pseudo);
 }
 
 void				Participant::setLastName(C_STRING value)
 {
-	this->_lastName = FormatUtils::toUpper(value);
+	this->_lastName = value;
+	FormatUtils::toUpper(this->_lastName);
+}
+
+void				Participant::setFirstName(C_STRING value)
+{
+	this->_firstName = value;
+	FormatUtils::capitalize(this->_firstName);
 }
 
 void				Participant::setGender(const Gender value)

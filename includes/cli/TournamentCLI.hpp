@@ -15,9 +15,9 @@
 # include "../class/Phase.hpp"
 
 //	TYPEDEF
-typedef std::string					STRING;
-typedef const std::string&			C_STRING;
-typedef const std::vector<Match*>&	CVP_MATCH;
+using				STRING		=	std::string;
+using				C_STRING	=	const std::string&;
+using				CVP_MATCH	=	const std::vector<Match*>&;
 
 class TournamentCLI
 {

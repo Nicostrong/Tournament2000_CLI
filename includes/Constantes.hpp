@@ -34,6 +34,7 @@
 # define ISMIXED					false
 # define PLAYERMULTITEAM			false
 # define PLAYTHIRDPLACE				false
+# define ISVALIDE					false
 
 //	Game settings
 # define NBTERRAINMIN				1

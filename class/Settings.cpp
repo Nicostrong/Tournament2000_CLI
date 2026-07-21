@@ -26,7 +26,8 @@ Settings::Settings()
 		_diffPointsToWin(ECART), _nbSetPlayedPools(NBPLAYERPERPOOL), _nbSetPlayedSixteenth(NBSETSIXTEENTH),
 		_nbSetPlayedHeigth(NBSETHEIGTH), _nbSetPlayedQuarters(NBSETQUARTER), _nbSetPlayedSemis(NBSETSEMI),
     	_nbSetPlayedFinal(NBSETFINAL), _nbSetPlayedThirdPlace(NBSETTHIRD), _isMixed(ISMIXED),
-    	_isDouble(ISDOUBLE), _allowMultiTeamPlayers(PLAYERMULTITEAM), _isThirdPlaceMatch(PLAYTHIRDPLACE)
+    	_isDouble(ISDOUBLE), _allowMultiTeamPlayers(PLAYERMULTITEAM), _isThirdPlaceMatch(PLAYTHIRDPLACE),
+		_isValid(ISVALIDE)
 {}
 
 Settings&			Settings::operator=(const Settings& s)
@@ -52,6 +53,7 @@ Settings&			Settings::operator=(const Settings& s)
 		this->_isDouble = s._isDouble;
 		this->_allowMultiTeamPlayers = s._allowMultiTeamPlayers;
 		this->_isThirdPlaceMatch = s._isThirdPlaceMatch;
+		this->_isValid = s._isValid;
 	}
 
 	return (*this);
@@ -156,6 +158,11 @@ bool				Settings::getIsThirdPlaceMatch() const
 	return (this->_isThirdPlaceMatch);
 }
 
+bool				Settings::getIsValid() const
+{
+	return (this->_isValid);
+}
+
 /************/
 /*	SETTER	*/
 /************/
@@ -255,6 +262,11 @@ void				Settings::setIsThirdPlaceMatch(const bool value)
 	this->_isThirdPlaceMatch = value;
 }
 
+void				Settings::setIsValid(const bool value)
+{
+	this->_isValid = value;
+}
+
 /********************/
 /*	PRIVATE METHOD	*/
 /********************/
@@ -275,7 +287,7 @@ bool				Settings::addErrorIf(const bool condition, C_STRING message, V_STRING& e
 /*	PUBLIC METHOD	*/
 /********************/
 
-bool				Settings::isValid(V_STRING& errors) const
+bool				Settings::isValid(V_STRING& errors)
 {
 	errors.clear();
 
@@ -296,6 +308,9 @@ bool				Settings::isValid(V_STRING& errors) const
 
 	if (this->_isThirdPlaceMatch)
 		addErrorIf(!isInList(this->_nbSetPlayedThirdPlace, allowedNbSetToPlay), E_NBSETTHIRD, errors);
+
+	if (errors.empty())
+		this->_isValid = true;
 
 	return (errors.empty());
 }

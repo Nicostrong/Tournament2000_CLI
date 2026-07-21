@@ -9,8 +9,7 @@
 
 //	TYPEDEF
 using				C_STRING	=	const std::string&;
-using				VP_PART		=	std::vector<Participant*>;
-using				CVP_PART	=	const VP_PART&;
+using				CVP_PART	=	const std::vector<Participant*>&;
 
 //	STATIC VARIABLES
 int									Team::_idCounter = 0;

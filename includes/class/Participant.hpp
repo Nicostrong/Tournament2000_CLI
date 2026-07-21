@@ -11,8 +11,8 @@
 //	INCLUDES
 
 //	TYPEDEF
-using				STRING = std::string;
-using				C_STRING = const std::string&;
+using				STRING		=	std::string;
+using				C_STRING	=	const std::string&;
 
 //	STATIC VARIABLES
 
@@ -23,13 +23,15 @@ class Participant
 {
 	public:
 
-		enum Gender { MALE, FEMALE };
+		enum Gender { MALE, FEMALE, OTHER };
 
 	private:
 
+		static int					_idCounter;
+		size_t						_id;
 		STRING						_pseudo;
-		STRING						_firstName;
 		STRING						_lastName;
+		STRING						_firstName;
 		Gender						_gender;
 		bool						_isEliminated;
 		bool						_isMultiTeamPlayer;
@@ -38,12 +40,14 @@ class Participant
 
 		//	CANONICAL
 		Participant() = delete;
-		Participant(C_STRING pseudo, C_STRING firstName, C_STRING lastName, Gender gender);
-		Participant(const Participant& p) = default;
-		Participant&				operator=(const Participant& p);
+		Participant(C_STRING pseudo, C_STRING lastName, C_STRING firstName, Gender gender);
+		Participant(const Participant& p) = delete;
+		Participant&				operator=(const Participant& p) = delete;
 		~Participant() = default;
 
 		//	GETTER
+		[[nodiscard]]
+		size_t						getId() const;
 		[[nodiscard]]
 		C_STRING					getPseudo() const;
 		[[nodiscard]]

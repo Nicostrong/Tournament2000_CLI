@@ -15,10 +15,9 @@
 //	TYPEDEF
 using				VP_PART		=	std::vector<Participant*>;
 using				VP_TEAM		=	std::vector<Team*>;
-using				VP_POOL		=	std::vector<Pool*>;
-using				CVP_PART	=	const VP_PART&;
-using				CVP_TEAM	=	const VP_TEAM&;
-using				CVP_POOL	=	const VP_POOL;
+using				CVP_PART	=	const std::vector<Participant*>&;
+using               CVP_TEAM	=	const std::vector<Team*>&;
+using				CVP_POOL	=	const std::vector<Pool*>;
 
 //	STATIC VARIABLES
 
