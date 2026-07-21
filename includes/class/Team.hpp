@@ -31,6 +31,7 @@ class Team
 		int							_point;
 		int							_scoreMarked;
         int							_scoreAgainst;
+		bool						_isMixed;
 		bool						_isEliminated;
 		bool						_hasMultiTeamPlayer;
 		STRING						_name;
@@ -49,6 +50,8 @@ class Team
 		//	GETTER
 		[[nodiscard]]
 		size_t						getSize() const;
+		[[nodiscard]]
+		bool						getIsMixed() const;
 		[[nodiscard]]
 		bool						getIsEliminated() const;
 		[[nodiscard]]
@@ -69,6 +72,7 @@ class Team
 		CVP_PART					getMembers() const;
 
 		//	SETTER
+		void						setIsMixed(bool value);
 		void						setIsEliminated(bool value);
 		void						setHasMultiTeamPlayer(bool value);
 		void						setName(C_STRING value);
