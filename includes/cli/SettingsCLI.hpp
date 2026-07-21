@@ -12,9 +12,9 @@
 # include "../class/Settings.hpp"
 
 //	TYPEDEF
-typedef std::string					STRING;
-typedef const std::string&			C_STRING;
-typedef const std::vector<int>&		CV_INT;
+using				STRING		=	std::string;
+using				C_STRING	=	const std::string&;
+using				CV_INT		=	const std::vector<int>&;
 
 class SettingsCLI
 {
@@ -22,8 +22,9 @@ class SettingsCLI
 	public:
 
 		static void					setupWizard(Settings& s);
-		static void					display(const Settings& s);
-		static void					editMenu(Settings& s);
+		//static void					display(const Settings& s);
+		//static void					editMenu(Settings& s);
+		//STRING						printToJSON(const Settings& s);
 
 	private:
 
@@ -33,5 +34,7 @@ class SettingsCLI
 		static std::string			inputString(C_STRING prompt, C_STRING defaultVal);
 
 };
+
+std::ostream&		operator<<(std::ostream& os, const Settings& s);
 
 #endif

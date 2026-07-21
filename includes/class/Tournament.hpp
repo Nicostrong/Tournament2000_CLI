@@ -19,7 +19,7 @@
 using				VP_PART		=	std::vector<Participant*>;
 using				VP_TEAM		=	std::vector<Team*>;
 using				VP_POOL		=	std::vector<Pool*>;
-using				CVP_POOL	=	const VP_POOL;
+using				CVP_POOL	=	const std::vector<Pool*>;
 
 class Tournament
 {

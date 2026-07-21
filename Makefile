@@ -59,6 +59,7 @@ CLI				=	./cli/MatchCLI.cpp \
 
 UTILS			=	./utils/CheckerCSV.cpp \
 					./utils/FormatUtils.cpp \
+					./utils/PrintUtils.cpp \
 					./utils/TournamentHistory.cpp
 
 SRC				=	./src/main.cpp \

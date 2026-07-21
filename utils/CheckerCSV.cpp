@@ -13,9 +13,9 @@
 #include "../includes/utils/FormatUtils.hpp"
 
 //	TYPEDEF
-typedef std::string					STRING;
-typedef const std::string&			C_STRING;
-typedef std::vector<std::string>	V_STRING;
+using				STRING		=	std::string;
+using				C_STRING	=	const std::string&;
+using				V_STRING	=	std::vector<std::string>;
 
 //	STATIC VARIABLES
 
@@ -58,12 +58,12 @@ bool								CheckerCSV::validateParticipantCSV(C_STRING filename, V_STRING& erro
 	{
 		lineNumber++;
 		
-		STRING						trimmed = FormatUtils::trim(line);
+		FormatUtils::trim(line);
 		
-		if (trimmed.empty())
+		if (line.empty())
 			continue ;
 
-		size_t						commaCount = std::count(trimmed.begin(), trimmed.end(), ',');
+		size_t						commaCount = std::count(line.begin(), line.end(), ',');
 
 		if (commaCount != 3)
 		{
@@ -78,15 +78,19 @@ bool								CheckerCSV::validateParticipantCSV(C_STRING filename, V_STRING& erro
 			continue;
 		}
 
-		std::stringstream			ssLine(trimmed);
+		std::stringstream			ssLine(line);
 		STRING						cell;
 		bool						hasEmptyField = false;
 
 		while (std::getline(ssLine, cell, ','))
-			if (FormatUtils::trim(cell).empty())
+		{
+			FormatUtils::trim(cell);
+
+			if (cell.empty())
 				hasEmptyField = true;
+		}
 		
-		if (trimmed.back() == ',')
+		if (line.back() == ',')
 			hasEmptyField = true;
 
 		if (hasEmptyField)

@@ -10,12 +10,13 @@
 #include "../includes/cli/MatchCLI.hpp"
 #include "../includes/cli/SettingsCLI.hpp"
 #include "../includes/cli/PoolCLI.hpp"
+#include "../includes/utils/PrintUtils.hpp"
 
 //	TYPEDEF
-typedef std::string					STRING;
-typedef const std::string&			C_STRING;
-typedef std::vector<Pool*>			VP_POOL;
-typedef std::vector<Match*>			VP_MATCH;
+using				STRING		=	std::string;
+using				C_STRING	=	const std::string&;
+using				VP_POOL		=	std::vector<Pool*>;
+using				VP_MATCH	=	std::vector<Match*>;
 
 //	STATIC VARIABLES
 
@@ -102,6 +103,8 @@ void								TournamentCLI::clearInput()
 void								TournamentCLI::displayMenu(Tournament& tournament)
 {
 	int	choice = 0;
+
+	PrintUtils::clear();
 
 	while (true)
 	{
@@ -288,6 +291,8 @@ void								TournamentCLI::displayFullBracket(Tournament& tournament)
 	Phase*	S = tournament.getSemis();
 	Phase*	F = tournament.getFinal();
 
+	PrintUtils::clear();
+	
 	std::cout << "\n=================== ARBRE DE LA PHASE FINALE ===================\n\n";
 
 	STRING	q1_1 = getTeamNameOrPlaceholder(Q, 0, 1);

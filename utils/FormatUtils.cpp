@@ -10,8 +10,7 @@
 #include "../includes/utils/FormatUtils.hpp"
 
 //	TYPEDEF
-typedef std::string					STRING;
-typedef const std::string&			C_STRING;
+using				STRING		=	std::string;
 
 //	STATIC VARIABLES
 
@@ -35,38 +34,99 @@ typedef const std::string&			C_STRING;
 /*	PUBLIC METHOD	*/
 /********************/
 
-STRING								FormatUtils::trim(C_STRING s)
+/**
+ * trim retire touts les espaces en debut et fin de string.
+ * @param s string a modifier
+ */
+void	    		FormatUtils::trim(STRING& s)
 {
-    auto							start = s.begin();
+    const size_t start = s.find_first_not_of(" \t\n\r\f\v");
 
-    while (start != s.end() && std::isspace(static_cast<unsigned char>(*start)))
-        start++;
-
-    auto							end = s.end();
-
-    do
+    if (start == std::string::npos)
     {
-        end--;
-    } while (std::distance(start, end) > 0 && std::isspace(static_cast<unsigned char>(*end)));
+        s.clear();
+        return ;
+    }
 
-    return (std::string(start, end + 1));
+    const size_t end = s.find_last_not_of(" \t\n\r\f\v");
+
+    s.erase(end + 1);
+    s.erase(0, start);
 }
 
-STRING								FormatUtils::capitalize(STRING s)
+/**
+ * capitalize met la premiere lettre d une string en majuscule et passe
+ * touts les autres caracteres en minuscule.
+ * @param s string a modifier
+ */
+void				FormatUtils::capitalize(STRING& s)
 {
     if (s.empty())
-        return (s);
+        return ;
     
     std::transform(s.begin(), s.end(), s.begin(), ::tolower);
 
     s[0] = std::toupper(s[0]);
-    
-	return (s);
 }
 
-STRING								FormatUtils::toUpper(STRING s)
+/**
+ * toUpper transforme touts les caracteres d une string en majuscule.
+ * avant la modification, la string est trimee.
+ * @param s string a modifier
+ */
+void				FormatUtils::toUpper(STRING& s)
 {
     std::transform(s.begin(), s.end(), s.begin(), ::toupper);
+}
 
-    return (s);
+/**
+ * toLower transforme la string en mettant touts les caracteres en minuscule.
+ * @param s string a modifier
+ */
+void				FormatUtils::toLower(STRING& s)
+{
+    std::transform(s.begin(), s.end(), s.begin(), ::tolower);
+}
+
+/**
+ * trimAndCapitalize trim une string puis met la premiere lettre en majuscule et passe
+ * toutes les autres en minuscule.
+ * @param s string a modifier
+ */
+void				FormatUtils::trimAndCapitalize(STRING& s)
+{
+    trim(s);
+
+    if (s.empty())
+        return ;
+
+    capitalize(s);
+}
+
+/**
+ * trimAndPutToUpper trim une string puis transforme touts les caracteres en majuscule.
+ * @param s string a modifier
+ */
+void				FormatUtils::trimAndPutToUpper(STRING& s)
+{
+    trim(s);
+
+    if (s.empty())
+        return ;
+
+    toUpper(s);
+}
+
+/**
+ * trimAndPutToLower trim une string puis transforme touts les caracteres en minuscule
+ * @param s string a modifier
+ */
+void				FormatUtils::trimAndPutToLower(STRING& s)
+{
+    trim(s);
+
+    if (s.empty())
+        return ;
+
+    toLower(s);
 }

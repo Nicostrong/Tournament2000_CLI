@@ -12,10 +12,10 @@
 #include "../includes/Constantes.hpp"
 
 //	TYPEFED
-typedef std::string					STRING;
-typedef const std::string&			C_STRING;
-typedef std::vector<std::string>	V_STRING;
-typedef const std::vector<int>&		CV_INT;
+using				STRING		=	std::string;
+using				C_STRING	=	const std::string&;
+using				V_STRING	=	std::vector<std::string>;
+using				CV_INT		=	const std::vector<int>&;
 
 //	STATIC VARIABLES
 
@@ -23,10 +23,10 @@ typedef const std::vector<int>&		CV_INT;
 /*	PRIVATE METHOD	*/
 /********************/
 
-int									SettingsCLI::inputInt(C_STRING prompt, int min, int max, int defaultVal)
+int					SettingsCLI::inputInt(C_STRING prompt, const int min, const int max, const int defaultVal)
 {
-	STRING	input;
-	int		val;
+	STRING			input;
+	int				val;
 
 	while (true)
 	{
@@ -36,7 +36,7 @@ int									SettingsCLI::inputInt(C_STRING prompt, int min, int max, int default
 		if (input.find_first_not_of(" \t\n\v\f\r") == std::string::npos)
 			return (defaultVal);
 
-		std::stringstream ss(input);
+		std::stringstream			ss(input);
 
 		if (ss >> val && val >= min && val <= max)
 			return (val);
@@ -45,10 +45,10 @@ int									SettingsCLI::inputInt(C_STRING prompt, int min, int max, int default
 	}
 }
 
-bool								SettingsCLI::inputBool(C_STRING prompt, bool defaultVal)
+bool				SettingsCLI::inputBool(C_STRING prompt, const bool defaultVal)
 {
-	STRING	input;
-	STRING	defStr = defaultVal ? "o" : "n";
+	STRING			input;
+	C_STRING		defStr = defaultVal ? "o" : "n";
 
 	while (true)
 	{
@@ -58,21 +58,21 @@ bool								SettingsCLI::inputBool(C_STRING prompt, bool defaultVal)
 		if (input.find_first_not_of(" \t\n\v\f\r") == std::string::npos)
 			return (defaultVal);
 
-		char c = tolower(input[0]);
+		const char	c = tolower(input[0]);
 
 		if (c == 'o')
 			return (true);
 
 		if (c == 'n')
 			return (false);
-		
+
 		std::cout << "Veuillez repondre par 'o' ou 'n'.\n";
 	}
 }
 
-STRING								SettingsCLI::inputString(C_STRING prompt, C_STRING defaultVal)
+STRING				SettingsCLI::inputString(C_STRING prompt, C_STRING defaultVal)
 {
-	STRING	input;
+	STRING			input;
 
 	while (true)
 	{
@@ -81,41 +81,38 @@ STRING								SettingsCLI::inputString(C_STRING prompt, C_STRING defaultVal)
 
 		if (input.find_first_not_of(" \t\n\v\f\r") == std::string::npos)
 			return (defaultVal);
-			
+
 		return (input);
 	}
 }
 
-int									SettingsCLI::inputIntList(C_STRING prompt, CV_INT allowedValues, int defaultVal)
+int					SettingsCLI::inputIntList(C_STRING prompt, CV_INT allowedValues, int defaultVal)
 {
-	STRING  input;
-	int     val;
+	STRING			input;
+	int				val;
 
 	while (true)
 	{
 		std::cout << prompt << " [" << defaultVal << "] (";
-		for (size_t i = 0; i < allowedValues.size(); ++i) {
+
+		for (size_t i = 0; i < allowedValues.size(); ++i)
 			std::cout << allowedValues[i] << (i < allowedValues.size() - 1 ? "/" : "");
-		}
+
 		std::cout << ") : ";
-		
 		std::getline(std::cin, input);
 
 		if (input.find_first_not_of(" \t\n\v\f\r") == std::string::npos)
 			return (defaultVal);
 
-		std::stringstream ss(input);
+		std::stringstream			ss(input);
 
 		if (ss >> val)
-		{
-			for (int allowed : allowedValues)
-			{
+			for (const int allowed : allowedValues)
 				if (val == allowed)
 					return (val);
-			}
-		}
 
 		std::cout << "[!] Saisie invalide. Valeurs autorisees : ";
+
 		for (size_t i = 0; i < allowedValues.size(); ++i)
 			std::cout << allowedValues[i] << (i < allowedValues.size() - 1 ? ", " : "\n");
 	}
@@ -125,9 +122,9 @@ int									SettingsCLI::inputIntList(C_STRING prompt, CV_INT allowedValues, int
 /*	PUBLIC METHOD	*/
 /********************/
 
-void								SettingsCLI::setupWizard(Settings& s)
+void				SettingsCLI::setupWizard(Settings& s)
 {
-	V_STRING errors;
+	V_STRING		errors;
 
 	std::cout << "\n--- CONFIGURATION DU TOURNOI ---" << std::endl;
 	std::cout << "(Appuyez sur 'Entree' pour conserver la valeur entre crochets [])\n";
@@ -138,7 +135,7 @@ void								SettingsCLI::setupWizard(Settings& s)
 		{
 			std::cout << "\n[!] ECHEC DE LA VALIDATION FINALE :\n";
 
-			for (const std::string& err : errors)
+			for (C_STRING err : errors)
 				std::cout << " - " << err << "\n";
 
 			errors.clear();
@@ -146,7 +143,7 @@ void								SettingsCLI::setupWizard(Settings& s)
 		}
 
 		s.setName(inputString("Nom du tournoi", s.getName()));
-		
+
 		std::cout << "\n> Structure des joueurs" << std::endl;
 		s.setNbPlayers(inputInt("Nombre total de participants", MINPLAYERS, MAXPLAYERS, s.getNbPlayers()));
 		s.setIsDouble(inputBool("Est-ce un tournoi en DOUBLE ?", s.getIsDouble()));
@@ -155,19 +152,19 @@ void								SettingsCLI::setupWizard(Settings& s)
 
 		std::cout << "\n> Structure des poules" << std::endl;
 
-		bool isPoolLogicValid = false;
-		
+		bool		isPoolLogicValid = false;
+
 		while (!isPoolLogicValid)
 		{
 			s.setNbPools(inputIntList("Nombre de poules", {4, 8, 16}, s.getNbPools()));
 			s.setNbPlayerByPool(inputInt("Nombre de joueurs/equipes par poule", NBPLAYERPERPOOLMIN, NBPLAYERPERPOOLMAX, s.getNbPlayerByPool()));
 
-			int requieredPlayers = s.getNbPools() * s.getNbPlayerByPool();
+			const int				requieredPlayers = s.getNbPools() * s.getNbPlayerByPool();
 
 			if (s.getNbPlayers() < requieredPlayers && !s.getAllowMultiTeamPlayers())
 			{
 				std::cout << "\n[!] ERREUR LOGIQUE : Vous avez declare " << s.getNbPlayers() << " joueurs.\n";
-				std::cout << "Mais " << s.getNbPools() << " poules de " << s.getNbPlayerByPool() 
+				std::cout << "Mais " << s.getNbPools() << " poules de " << s.getNbPlayerByPool()
 						<< " necessitent au moins " << requieredPlayers << " joueurs.\n";
 				std::cout << "Veuillez reajuster vos poules.\n\n";
 			}
@@ -178,8 +175,8 @@ void								SettingsCLI::setupWizard(Settings& s)
 		std::cout << "\n> Parametres de match (Badminton)" << std::endl;
 
 		s.setNbBadmintonCourt(inputInt("Nombre de terrains disponibles", NBTERRAINMIN, NBTERRAINMAX, s.getNbBadmintonCourt()));
-		
-		bool isScoreLogicValid = false;
+
+		bool		isScoreLogicValid = false;
 
 		while (!isScoreLogicValid)
 		{
@@ -188,7 +185,7 @@ void								SettingsCLI::setupWizard(Settings& s)
 			s.setDiffPointsToWin(inputInt("Ecart de points necessaire", ECARTMIN, ECARTMAX, s.getDiffPointsToWin()));
 
 			if (s.getScoreMin() > s.getScoreMax())
-				std::cout << "\n[!] ERREUR LOGIQUE : Le score minimum (" << s.getScoreMin() 
+				std::cout << "\n[!] ERREUR LOGIQUE : Le score minimum (" << s.getScoreMin()
 						<< ") ne peut pas etre superieur au score maximum (" << s.getScoreMax() << ").\n\n";
 			else
 				isScoreLogicValid = true;
@@ -213,7 +210,7 @@ void								SettingsCLI::setupWizard(Settings& s)
 	} while (!s.isValid(errors));
 }
 
-void								SettingsCLI::display(const Settings& s)
+/*void				SettingsCLI::display(const Settings& s)
 {
 	std::cout << "\n========== CONFIGURATION ACTUELLE ==========" << std::endl;
 	std::cout << "Nom : " << s.getName() << std::endl;
@@ -225,4 +222,66 @@ void								SettingsCLI::display(const Settings& s)
 	std::cout << "Sets : Poules(" << s.getNbSetPlayedPools() << ") Quarts(" << s.getNbSetPlayedQuarters() << ") Demis(" << s.getNbSetPlayedSemis() << ") Finale(" << s.getNbSetPlayedFinal() << ")" << std::endl;
 	std::cout << "Petite finale : " << (s.getIsThirdPlaceMatch() ? "Oui" : "Non") << std::endl;
 	std::cout << "============================================" << std::endl;
+}
+
+STRING				SettingsCLI::printToJSON(const Settings& s)
+{
+	return (std::format("{\n"
+		"\t\"name\" : \"{}\",\n"
+		"\t\"nbPlayers\" : \"{}\",\n"
+		"\t\"nbPlayerByPool\" : \"{}\",\n"
+		"\t\"nbPools\" : \"{}\",\n"
+		"\t\"nbBadmintonCourt\" : \"{}\",\n"
+		"\t\"scoreMin\" : \"{}\",\n"
+		"\t\"scoreMax\" : \"{}\",\n"
+		"\t\"diffPointsToWin\" : \"{}\",\n"
+		"\t\"nbSetPlayedPools\" : \"{}\",\n"
+		"\t\"nbSetPlayedSixteenth\" : \"{}\",\n"
+		"\t\"nbSetPlayedHeigth\" : \"{}\",\n"
+		"\t\"nbSetPlayedQuarters\" : \"{}\",\n"
+		"\t\"nbSetPlayedSemis\" : \"{}\",\n"
+		"\t\"nbSetPlayedFinal\" : \"{}\",\n"
+		"\t\"nbSetPlayedThirdPlace\" : \"{}\",\n"
+		"\t\"isMixed\" : \"{}\",\n"
+		"\t\"isDouble\" : \"{}\",\n"
+		"\t\"allowMultiTeamPlayers\" : \"{}\",\n"
+		"\t\"isThirdPlaceMatch\" : \"{}\",\n"
+		"\t\"isValid\" : \"{}\"\n}"),
+		s.getName(),
+		s.getNbPlayers(),
+		s.getNbPlayerByPool(),
+		s.getNbPools(),
+		s.getNbBadmintonCourt(),
+		s.getScoreMin(),
+		s.getScoreMax(),
+		s.getDiffPointsToWin(),
+		s.getNbSetPlayedPools(),
+		s.getNbSetPlayedSixteenth(),
+		s.getNbSetPlayedHeigth(),
+		s.getNbSetPlayedQuarters(),
+		s.getNbSetPlayedSemis(),
+		s.getNbSetPlayedFinal(),
+		s.getNbSetPlayedThirdPlace(),
+		s.getIsThirdPlaceMatch(),
+		s.getIsValid());
+}*/
+
+/********************/
+/*	PRINT METHOD	*/
+/********************/
+
+std::ostream&		operator<<(std::ostream& os, const Settings& s)
+{
+	os << "\n========== CONFIGURATION ACTUELLE ==========" << std::endl;
+	os << "Nom : " << s.getName() << std::endl;
+	os << "Mode : " << (s.getIsDouble() ? "Double" : "Simple") << (s.getIsMixed() ? " Mixte" : " Open") << std::endl;
+	os << "Un joueur peut jouer dans plusieurs team : " << (s.getAllowMultiTeamPlayers() ? "Oui" : "Non") << std::endl;
+	os << "Joueurs : " << s.getNbPlayers() << " | Poules : " << s.getNbPools() << " (" << s.getNbPlayerByPool() << "/poule)" << std::endl;
+	os << "Terrains : " << s.getNbBadmintonCourt() << std::endl;
+	os << "Regles : " << s.getScoreMin() << " pts (Max " << s.getScoreMax() << "), Ecart: " << s.getDiffPointsToWin() << std::endl;
+	os << "Sets : Poules(" << s.getNbSetPlayedPools() << ") Quarts(" << s.getNbSetPlayedQuarters() << ") Demis(" << s.getNbSetPlayedSemis() << ") Finale(" << s.getNbSetPlayedFinal() << ")" << std::endl;
+	os << "Petite finale : " << (s.getIsThirdPlaceMatch() ? "Oui" : "Non") << std::endl;
+	os << "============================================" << std::endl;
+
+	return (os);
 }

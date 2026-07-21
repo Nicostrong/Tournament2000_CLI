@@ -12,19 +12,22 @@
 
 //	TYPEDEF
 using				STRING		=	std::string;
-using				C_STRING	=	const std::string&;
 
 //	GLOBAL VARIABLES
 
 /**
- *	utilitaire pour le formatage des strings et l harmonisation
+ * Contient plusieurs methodes de modification de strings.
  */
 class FormatUtils
 {
 	public:
-		static STRING				trim(C_STRING s);
-		static STRING				capitalize(STRING s);
-		static STRING				toUpper(STRING s);
+		static void					trim(STRING& s);
+		static void					capitalize(STRING& s);
+		static void					toUpper(STRING& s);
+		static void					toLower(STRING& s);
+		static void					trimAndCapitalize(STRING& s);
+		static void					trimAndPutToUpper(STRING& s);
+		static void					trimAndPutToLower(STRING& s);
 };
 
 #endif

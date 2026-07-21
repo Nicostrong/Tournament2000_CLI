@@ -10,7 +10,7 @@
 #include "../includes/utils/TournamentHistory.hpp"
 
 //	TYPEDEF
-typedef const std::string&			C_STRING;
+using				C_STRING	=	const std::string&;
 
 //	STATIC VARIABLES
 

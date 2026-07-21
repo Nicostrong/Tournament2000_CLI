@@ -19,8 +19,8 @@ using				STRING		=	std::string;
 using				C_STRING	=	const std::string&;
 using				VP_MATCH	=	std::vector<Match*>;
 using				VP_TEAM		=	std::vector<Team*>;
-using				CVP_MATCH	=	const VP_MATCH&;
-using				CVP_TEAM	=	const VP_TEAM&;
+using				CVP_MATCH	=	const std::vector<Match*>&;
+using               CVP_TEAM	=	const std::vector<Team*>&;
 
 class Pool
 {
