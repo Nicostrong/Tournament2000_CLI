@@ -28,21 +28,6 @@ Participant::Participant(C_STRING pseudo, C_STRING lastName, C_STRING firstName,
 	FormatUtils::trimAndCapitalize(this->_firstName);
 }
 
-/*Participant&		Participant::operator=(const Participant& p)
-{
-	if (this != &p)
-	{
-		this->_pseudo = p._pseudo;
-		this->_lastName = p._lastName;
-		this->_firstName = p._firstName;
-		this->_gender = p._gender;
-		this->_isEliminated = p._isEliminated;
-		this->_isMultiTeamPlayer = p._isMultiTeamPlayer;
-	}
-
-	return (*this);
-}*/
-
 /************/
 /*	GETTER	*/
 /************/

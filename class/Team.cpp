@@ -123,7 +123,7 @@ CVP_PART			Team::getMembers() const
 /**
  * Set l equipe comme mixte
  */
-void				Team::setIsMixed(bool value)
+void				Team::setIsMixed(const bool value)
 {
 	this->_isMixed = value;
 }

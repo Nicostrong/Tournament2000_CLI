@@ -24,7 +24,7 @@ using				VP_MATCH	=	std::vector<Match*>;
 /*	PRIVATE METHOD	*/
 /********************/
 
-void								TournamentCLI::handlePhase(Phase* phase, C_STRING phaseName)
+void				TournamentCLI::handlePhase(const Phase* phase, C_STRING phaseName)
 {
 	if (!phase)
 	{
@@ -35,9 +35,9 @@ void								TournamentCLI::handlePhase(Phase* phase, C_STRING phaseName)
 	handleMatchList(phase->getMatches(), phaseName);
 }
 
-void								TournamentCLI::handleMatchList(const VP_MATCH& matches, C_STRING title)
+void				TournamentCLI::handleMatchList(const VP_MATCH& matches, C_STRING title)
 {
-	size_t mIdx = 0;
+	size_t			mIdx = 0;
 
 	while (true)
 	{
@@ -72,17 +72,17 @@ void								TournamentCLI::handleMatchList(const VP_MATCH& matches, C_STRING tit
 	}
 }
 
-STRING								TournamentCLI::getTeamNameOrPlaceholder(Phase* phase, size_t matchIdx, int teamPos)
+STRING				TournamentCLI::getTeamNameOrPlaceholder(const Phase* phase, const size_t matchIdx, const int teamPos)
 {
 	if (!phase)
 		return ("A determiner");
 
-	const VP_MATCH& matches = phase->getMatches();
+	const VP_MATCH	matches = phase->getMatches();
 
 	if (matchIdx >= matches.size() || !matches[matchIdx])
 		return ("A determiner");
 
-	Team* t = (teamPos == 1) ? matches[matchIdx]->getTeamA() : matches[matchIdx]->getTeamB();
+	Team*			t = (teamPos == 1) ? matches[matchIdx]->getTeamA() : matches[matchIdx]->getTeamB();
 	
 	if (t) 
 		return (t->getName());
@@ -90,7 +90,7 @@ STRING								TournamentCLI::getTeamNameOrPlaceholder(Phase* phase, size_t match
 	return ("A determiner");
 }
 
-void								TournamentCLI::clearInput()
+void				TournamentCLI::clearInput()
 {
 	std::cin.clear();
 	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -100,9 +100,9 @@ void								TournamentCLI::clearInput()
 /*	PUBLIC METHOD	*/
 /********************/
 
-void								TournamentCLI::displayMenu(Tournament& tournament)
+void				TournamentCLI::displayMenu(Tournament& tournament)
 {
-	int	choice = 0;
+	int				choice = 0;
 
 	PrintUtils::clear();
 
@@ -161,7 +161,7 @@ void								TournamentCLI::displayMenu(Tournament& tournament)
 		{
 			case 1:
 			{
-				const VP_POOL& pools = tournament.getPools();
+				const VP_POOL&		pools = tournament.getPools();
 				
 				if (pools.empty())
 				{
@@ -177,7 +177,7 @@ void								TournamentCLI::displayMenu(Tournament& tournament)
 				std::cout << (pools.size() + 1) << ". Retour\n";
 				std::cout << "Choisissez une poule : ";
 				
-				size_t pIdx;
+				size_t				pIdx;
 
 				if (std::cin >> pIdx && pIdx >= 1 && pIdx <= pools.size())
 					handleMatchList(pools[pIdx - 1]->getMatches(), "MATCHS POULE " + std::to_string(pIdx));
@@ -285,34 +285,38 @@ void								TournamentCLI::displayMenu(Tournament& tournament)
 	}
 }
 
-void								TournamentCLI::displayFullBracket(Tournament& tournament)
+void				TournamentCLI::displayFullBracket(Tournament& tournament)
 {
-	Phase*	Q = tournament.getQuarters();
-	Phase*	S = tournament.getSemis();
-	Phase*	F = tournament.getFinal();
+	Phase*			Q = tournament.getQuarters();
+	Phase*			S = tournament.getSemis();
+	Phase*			F = tournament.getFinal();
+	Phase*			T = tournament.getThirdPlace();
 
 	PrintUtils::clear();
 	
 	std::cout << "\n=================== ARBRE DE LA PHASE FINALE ===================\n\n";
 
-	STRING	q1_1 = getTeamNameOrPlaceholder(Q, 0, 1);
-	STRING	q1_2 = getTeamNameOrPlaceholder(Q, 0, 2);
-	STRING	q2_1 = getTeamNameOrPlaceholder(Q, 1, 1);
-	STRING	q2_2 = getTeamNameOrPlaceholder(Q, 1, 2);
-	STRING	q3_1 = getTeamNameOrPlaceholder(Q, 2, 1);
-	STRING	q3_2 = getTeamNameOrPlaceholder(Q, 2, 2);
-	STRING	q4_1 = getTeamNameOrPlaceholder(Q, 3, 1);
-	STRING	q4_2 = getTeamNameOrPlaceholder(Q, 3, 2);
+	STRING			q1_1 = getTeamNameOrPlaceholder(Q, 0, 1);
+	STRING			q1_2 = getTeamNameOrPlaceholder(Q, 0, 2);
+	STRING			q2_1 = getTeamNameOrPlaceholder(Q, 1, 1);
+	STRING			q2_2 = getTeamNameOrPlaceholder(Q, 1, 2);
+	STRING			q3_1 = getTeamNameOrPlaceholder(Q, 2, 1);
+	STRING			q3_2 = getTeamNameOrPlaceholder(Q, 2, 2);
+	STRING			q4_1 = getTeamNameOrPlaceholder(Q, 3, 1);
+	STRING			q4_2 = getTeamNameOrPlaceholder(Q, 3, 2);
 
-	STRING	s1_1 = getTeamNameOrPlaceholder(S, 0, 1);
-	STRING	s1_2 = getTeamNameOrPlaceholder(S, 0, 2);
-	STRING	s2_1 = getTeamNameOrPlaceholder(S, 1, 1);
-	STRING	s2_2 = getTeamNameOrPlaceholder(S, 1, 2);
+	STRING			s1_1 = getTeamNameOrPlaceholder(S, 0, 1);
+	STRING			s1_2 = getTeamNameOrPlaceholder(S, 0, 2);
+	STRING			s2_1 = getTeamNameOrPlaceholder(S, 1, 1);
+	STRING			s2_2 = getTeamNameOrPlaceholder(S, 1, 2);
 
-	STRING	f1_1 = getTeamNameOrPlaceholder(F, 0, 1);
-	STRING	f1_2 = getTeamNameOrPlaceholder(F, 0, 2);
+	STRING			f1_1 = getTeamNameOrPlaceholder(F, 0, 1);
+	STRING			f1_2 = getTeamNameOrPlaceholder(F, 0, 2);
 
-	STRING	winner = "A determiner";
+	STRING			t1_1 = getTeamNameOrPlaceholder(T, 0, 1);
+	STRING			t1_2 = getTeamNameOrPlaceholder(T, 0, 2);
+
+	STRING			winner = "A determiner";
 
 	if (F && F->isFinished() && !F->getMatches().empty())
 	{
@@ -325,19 +329,21 @@ void								TournamentCLI::displayFullBracket(Tournament& tournament)
 		}
 	}
 
-	std::cout << "	QUARTS DE FINALE			DEMI-FINALES				FINALE				VAINQUEUR\n\n";
+	std::cout << "	QUARTS DE FINALE			DEMI-FINALES		3eme PLACE			FINALE						VAINQUEUR\n\n";
 	std::cout << "	" << q1_1 << " ---\n";
 	std::cout << "						|---> " << s1_1 << " ---\n";
 	std::cout << "	" << q1_2 << " ---\n";
-	std::cout << "                                              |---> " << f1_1 << " ---\n";
+	std::cout << "																|---> " << f1_1 << " ---\n";
 	std::cout << "	" << q2_1 << " ---\n";
 	std::cout << "						|---> " << s1_2 << " ---\n";
 	std::cout << "	" << q2_2 << " ---\n";
-	std::cout << "																	|---> " << winner << "\n";
+	std::cout << "											|--->" << t1_1 << " ---\n";
+	std::cout << "																							|---> " << winner << "\n";
+	std::cout << "											|--->" << t1_2 << " ---\n";
 	std::cout << "	" << q3_1 << " ---\n";
 	std::cout << "						|---> " << s2_1 << " ---\n";
 	std::cout << "	" << q3_2 << " ---\n";
-	std::cout << "												|---> " << f1_2 << " ---\n";
+	std::cout << "																|---> " << f1_2 << " ---\n";
 	std::cout << "	" << q4_1 << " ---\n";
 	std::cout << "						|---> " << s2_2 << " ---\n";
 	std::cout << "	" << q4_2 << " ---\n";

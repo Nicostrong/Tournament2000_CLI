@@ -58,51 +58,82 @@ Tournament::~Tournament()
 /*	GETTER	*/
 /************/
 
+/**
+ * Retourne l objet Settings qui a permis d initialiser l objet Tournament
+ */
 const Settings&		Tournament::getSettings() const
 {
 	return (this->_settings);
 }
 
+/**
+ * Retourne un vecteur de pointeurs de Pool
+ */
 CVP_POOL			Tournament::getPools() const
 {
 	return (this->_pools);
 }
 
+/**
+ * Retourne un objet Phase qui contient les infos pour les 1/16
+ */
 Phase*				Tournament::getSixteenth() const
 {
 	return (this->_sixteenths);
 }
 
+/**
+ * Retourne un objet Phase qui contient les infos pour les 1/8
+ */
 Phase*				Tournament::getHeighth() const
 {
 	return (this->_heighths);
 }
 
+/**
+ * Retourne un objet Phase qui contient les infos pour les 1/4
+ */
 Phase*				Tournament::getQuarters() const
 {
 	return (this->_quarters);
 }
 
+/**
+ * Retourne un objet Phase qui contient les infos pour les 1/2
+ */
 Phase*				Tournament::getSemis() const
 {
 	return (this->_semis);
 }
 
+/**
+ * Retourne un objet Phase qui contient les infos pour la final
+ */
 Phase*				Tournament::getFinal() const
 {
 	return (this->_final);
 }
 
+/**
+ * Retourne un objet Phase qui contient les infos pour la 3eme place
+ */
 Phase*				Tournament::getThirdPlace() const
 {
 	return (this->_thirdPlace);
 }
 
+/**
+ * Indique s'il y a des 1/16 a jouer
+ */
 bool				Tournament::getHasSixteenth() const
 {
 	return (this->_hasSixteenth);
 }
 
+
+/**
+ * Indique s'il y a des 1/8 a jouer
+ */
 bool				Tournament::getHasHeighth() const
 {
 	return (this->_hasHeighth);
@@ -111,6 +142,38 @@ bool				Tournament::getHasHeighth() const
 /************/
 /*	SETTER	*/
 /************/
+
+/**
+ * Set un tournoi comme pret a etre lance
+ */
+void				Tournament::setIsReady(const bool value)
+{
+	this->_isReady = value;
+}
+
+/**
+ * Set un tournoi comme fini
+ */
+void				Tournament::setIsFinished(const bool value)
+{
+	this->_isFinished = value;
+}
+
+/**
+ * Indique si le tournoi a des 1/16 a jouer
+ */
+void				Tournament::setHasSixteenth(const bool value)
+{
+	this->_hasSixteenth = value;
+}
+
+/**
+ * Indique si le tournoi a des 1/18 a jouer
+ */
+void				Tournament::setHasHeighth(const bool value)
+{
+	this->_hasHeighth = value;
+}
 
 /********************/
 /*	PRIVATE METHOD	*/
@@ -151,11 +214,6 @@ VP_PART				Tournament::getMultiTeamsPlayers(VP_PART participants) const
 {
 	VP_PART			multiTeamsPlayers;
 
-	//const int		actual = static_cast<int>(this->_participants.size());
-	//const int		required = this->_settings.getNbPlayers();
-	//const int		missing = std::max(0, required - actual);
-	//const int		maxRecyclable = std::min(missing, NBPLAYERINMULTITEAMMAX);
-
 	if ((std::min(std::max(0, this->_settings.getNbPlayers() - static_cast<int>(this->_participants.size())), NBPLAYERINMULTITEAMMAX)) <= 0 || participants.empty())
 		return (multiTeamsPlayers);
 
@@ -164,7 +222,6 @@ VP_PART				Tournament::getMultiTeamsPlayers(VP_PART participants) const
 
 	std::shuffle(participants.begin(), participants.end(), g);
 
-	//for (int i = 0; i < maxRecyclable && i < static_cast<int>(pool.size()); i++)
 	for (Participant* p: participants)
 	{
 		p->setIsMultiTeamPlayer(true);
@@ -370,6 +427,8 @@ void				Tournament::createStandardMixedTeams(TeamCreationCtx& ctx)
 		if (t->getMembers()[0]->getIsMultiTeamPlayer() || t->getMembers()[1]->getIsMultiTeamPlayer())
 			t->setHasMultiTeamPlayer(true);
 
+		t->setIsMixed(true);
+
 		this->_teams.push_back(t);
 	}
 }
@@ -430,7 +489,7 @@ void				Tournament::createUnigenreTeams(TeamCreationCtx& ctx)
 */
 void				Tournament::addParticipant(const Participant& p)
 {
-	this->_participants.push_back(new Participant(p.getPseudo(), p.getFirstName(), p.getLastName(), p.getGenderInt()));
+	this->_participants.push_back(new Participant(p.getPseudo(), p.getLastName(), p.getFirstName(), p.getGenderInt()));
 }
 
 /**
@@ -479,9 +538,11 @@ void				Tournament::generateTeams()
 		createMixedTeams();
 	else
 		createDoubleTeams();
-
 }
 
+/**
+ * Genere les pool en respectnt les donnees des settings
+ */
 void				Tournament::generatePools()
 {
 	if (!this->_pools.empty())
@@ -648,5 +709,19 @@ void				Tournament::generateFinal()
 	this->_final = new Phase("Finale", this->_settings.getNbSetPlayedFinal());
 	
 	this->_final->addEncounter(winners[0], winners[1]);
+}
+
+void				Tournament::generateThirdPlace()
+{
+	if (this->_thirdPlace || !this->_semis || !this->_semis->isFinished() || !this->_settings.getIsThirdPlaceMatch())
+		return ;
+
+	const VP_TEAM	losers = this->_semis->getLosers();
+
+	if (losers.size() < 2)
+		return ;
+
+	this->_thirdPlace = new Phase("Petite Finale", this->_settings.getNbSetPlayedThirdPlace());
+	this->_thirdPlace->addEncounter(losers[0], losers[1]);
 }
 

@@ -61,6 +61,7 @@ class Tournament
 			int						missing			=	0;
 		};
 
+		//	METHOD
 		void						createTeamsUniplayer();
 		void						createMixedTeams();
 		void						createDoubleTeams();
@@ -73,12 +74,19 @@ class Tournament
 		void						createMissingMixedTeams(TeamCreationCtx& ctx);
 		void						createUnigenreTeams(TeamCreationCtx& ctx);
 
+		//	GETTER
 		[[nodiscard]]
 		VP_PART						getAllMales() const;
 		[[nodiscard]]
 		VP_PART						getAllFemales() const;
 		[[nodiscard]]
 		VP_PART						getMultiTeamsPlayers(VP_PART participants) const;
+
+		//	SETTER
+		void						setIsReady(bool value);
+		void						setIsFinished(bool value);
+		void						setHasSixteenth(bool value);
+		void						setHasHeighth(bool value);
 
 	public:
 

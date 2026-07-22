@@ -29,7 +29,7 @@ using				CVP_PART	=	const std::vector<Participant*>&;
 
 void				ParticipantCLI::menu()
 {
-	PrintUtils::clear();
+	//PrintUtils::clear();
 	std::cout	<< "\n========== MENU PARTICIPANT ==========\n";
 	std::cout	<< "1. Ajouter un nouveau participant\n";
 	std::cout	<< "2. Modifier un participant\n";
