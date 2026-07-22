@@ -96,6 +96,15 @@ void				Pool::sortTeams()
 	});
 }
 
+bool				Pool::allMatchesFinished() const
+{
+	for (const Match* m: this->_matches)
+		if (!m->isFinished())
+			return (false);
+
+	return (true);
+}
+
 VP_TEAM				Pool::getQualifiers() const
 {
 	VP_TEAM			qualifiers;

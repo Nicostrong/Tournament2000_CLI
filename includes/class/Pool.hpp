@@ -52,6 +52,7 @@ class Pool
 		void						addTeam(Team* team);
 		void						generateMatches(int nbSetsPerEncounter);
 		void						sortTeams();
+		bool						allMatchesFinished() const;
 
 		[[nodiscard]]
 		VP_TEAM						getQualifiers() const;
