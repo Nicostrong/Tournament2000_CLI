@@ -645,6 +645,10 @@ void				Tournament::generatePools()
  */
 void				Tournament::generateSixteenths()
 {
+	for (const Pool* p: this->_pools)
+		if (!p->allMatchesFinished())
+			return ;
+
 	if (this->_sixteenths || !this->_hasSixteenth || this->_pools.size() < 16)
 		return ;
 
@@ -658,6 +662,10 @@ void				Tournament::generateSixteenths()
  */
 void				Tournament::generateHeighths()
 {
+	for (const Pool* p: this->_pools)
+		if (!p->allMatchesFinished())
+			return ;
+
 	if (this->_heighths || !this->_hasHeighth)
 		return ;
 
@@ -680,6 +688,10 @@ void				Tournament::generateHeighths()
  */
 void				Tournament::generateQuarters()
 {
+	for (const Pool* p: this->_pools)
+		if (!p->allMatchesFinished())
+			return ;
+
 	if (this->_quarters)
 		return ;
 
