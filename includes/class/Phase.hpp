@@ -50,6 +50,8 @@ class Phase
 		const VP_MATCH&				getMatches() const;
 		[[nodiscard]]
 		VP_TEAM						getWinners() const;
+		[[nodiscard]]
+		VP_TEAM						getLosers() const;
 
 		//	SETTER
 		void						setIsFinished(bool isFinished);

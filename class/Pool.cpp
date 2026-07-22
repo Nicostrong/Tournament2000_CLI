@@ -15,13 +15,13 @@ using				CVP_MATCH	=	const std::vector<Match*>&;
 using               CVP_TEAM	=	const std::vector<Team*>&;
 
 //	STATIC VARIABLES
-int					Pool::_idCounter = 0;
+int					Pool::_idCounter = 1;
 
 /****************/
 /*	CANONICAL	*/
 /****************/
 
-Pool::Pool() : _name("Pool_" + std::to_string(_idCounter++))
+Pool::Pool() : _name("Pool " + std::to_string(_idCounter++))
 {}
 
 Pool::~Pool()

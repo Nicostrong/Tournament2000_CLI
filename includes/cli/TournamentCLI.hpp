@@ -28,10 +28,10 @@ class TournamentCLI
 
 	private:
 
-		static void					handlePhase(Phase* phase, C_STRING phaseName);
+		static void					handlePhase(const Phase* phase, C_STRING phaseName);
 		static void					handleMatchList(CVP_MATCH matches, C_STRING title);
 		static void					clearInput();
-		static STRING				getTeamNameOrPlaceholder(Phase* phase, size_t matchIdx, int teamSide);
+		static STRING				getTeamNameOrPlaceholder(const Phase* phase, size_t matchIdx, int teamPos);
 };
 
 #endif
