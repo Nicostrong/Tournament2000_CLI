@@ -19,6 +19,7 @@
 using				VP_PART		=	std::vector<Participant*>;
 using				VP_TEAM		=	std::vector<Team*>;
 using				VP_POOL		=	std::vector<Pool*>;
+using				CVP_PART	=	const std::vector<Participant*>&;
 using				CVP_POOL	=	const std::vector<Pool*>;
 
 class Tournament
@@ -74,6 +75,10 @@ class Tournament
 		void						createMissingMixedTeams(TeamCreationCtx& ctx);
 		void						createUnigenreTeams(TeamCreationCtx& ctx);
 
+		void						sortAllPools() const;
+		void						generateSymmetricPoolEncounters(Phase* targetPhase, size_t nbPools) const;
+		static bool					addEncountersFromPreviousPhase(Phase* currentPhase, const Phase* previousPhase);
+
 		//	GETTER
 		[[nodiscard]]
 		VP_PART						getAllMales() const;
@@ -92,6 +97,7 @@ class Tournament
 
 		//	CANONICAL
 		explicit Tournament(const Settings& settings);
+		Tournament(const Settings& settings, CVP_PART participants);
 		Tournament() = delete;
 		Tournament(const Tournament& ) = delete;
 		~Tournament();

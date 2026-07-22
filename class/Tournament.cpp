@@ -28,8 +28,16 @@ using				CVP_POOL	=	const std::vector<Pool*>;
 Tournament::Tournament(const Settings& settings)
 	:	_settings(settings), _sixteenths(nullptr), _heighths(nullptr),  _quarters(nullptr),
 		_semis(nullptr), _final(nullptr), _thirdPlace(nullptr), _isReady(false), _isFinished(false),
-		_hasSixteenth(false), _hasHeighth(false)
+		_hasSixteenth(settings.getNbPools() == 16), _hasHeighth(settings.getNbPools() >= 8)
 {}
+
+Tournament::Tournament(const Settings& settings, CVP_PART participants) : Tournament(settings)
+{
+	for (Participant* p : participants)
+		this->_participants.push_back(p);
+
+	this->initializeTournament();
+}
 
 Tournament::~Tournament()
 {
@@ -129,7 +137,6 @@ bool				Tournament::getHasSixteenth() const
 {
 	return (this->_hasSixteenth);
 }
-
 
 /**
  * Indique s'il y a des 1/8 a jouer
@@ -480,6 +487,45 @@ void				Tournament::createUnigenreTeams(TeamCreationCtx& ctx)
 	}
 }
 
+/**
+ * Trie l ensemble des equipes dans toutes les poules
+ */
+void				Tournament::sortAllPools() const
+{
+	for (Pool* p : this->_pools)
+		p->sortTeams();
+}
+
+/**
+ * Genere les affrontements entre le 1er d une poule (i) et le 2e de la poule opposée (N - 1 - i)
+ */
+void				Tournament::generateSymmetricPoolEncounters(Phase* targetPhase, const size_t nbPools) const
+{
+	this->sortAllPools();
+
+	for (size_t i = 0; i < nbPools / 2; ++i)
+	{
+		targetPhase->addEncounter(this->_pools[i]->getQualifiers()[0], this->_pools[nbPools - 1 - i]->getQualifiers()[1]);
+		targetPhase->addEncounter(this->_pools[nbPools - 1 - i]->getQualifiers()[0], this->_pools[i]->getQualifiers()[1]);
+	}
+}
+
+/**
+ * Recupere les vainqueurs de la phase precedente et les affronte 2 à 2
+ */
+bool				Tournament::addEncountersFromPreviousPhase(Phase* currentPhase, const Phase* previousPhase)
+{
+	if (!previousPhase || !previousPhase->isFinished())
+		return (false);
+
+	CVP_TEAM		winners = previousPhase->getWinners();
+
+	for (size_t i = 0; i + 1 < winners.size(); i += 2)
+		currentPhase->addEncounter(winners[i], winners[i + 1]);
+
+	return (true);
+}
+
 /********************/
 /*	PUBLIC METHOD	*/
 /********************/
@@ -594,23 +640,22 @@ void				Tournament::generatePools()
 		p->generateMatches(this->_settings.getNbSetPlayedPools());
 }
 
+/**
+ * Genere les 1/16 en selectionnant les 1 et 2 de chaque pool
+ */
 void				Tournament::generateSixteenths()
 {
 	if (this->_sixteenths || !this->_hasSixteenth || this->_pools.size() < 16)
 		return ;
 
-	for (Pool* p : this->_pools)
-		p->sortTeams();
-
 	this->_sixteenths = new Phase("1/16 de Finale", this->_settings.getNbSetPlayedSixteenth());
 	
-	for (int i = 0; i < 8; ++i)
-	{
-		this->_sixteenths->addEncounter(this->_pools[i]->getQualifiers()[0], this->_pools[15 - i]->getQualifiers()[1]);
-		this->_sixteenths->addEncounter(this->_pools[15 - i]->getQualifiers()[0], this->_pools[i]->getQualifiers()[1]);
-	}
+	this->generateSymmetricPoolEncounters(this->_sixteenths, 16);
 }
 
+/**
+ * Genere les 1/8 soit en selectionnant les vainqueurs des 1/16 soit les 1 et 2 de chaque pool
+ */
 void				Tournament::generateHeighths()
 {
 	if (this->_heighths || !this->_hasHeighth)
@@ -620,32 +665,19 @@ void				Tournament::generateHeighths()
 
 	if (this->_hasSixteenth)
 	{
-		if (!this->_sixteenths || !this->_sixteenths->isFinished())
+		if (!this->addEncountersFromPreviousPhase(this->_heighths, this->_sixteenths))
 		{
 			delete this->_heighths;
-
 			this->_heighths = nullptr;
-			return ;
 		}
-
-		CVP_TEAM	winners = this->_sixteenths->getWinners();
-
-		for (size_t i = 0; i < winners.size(); i += 2)
-			this->_heighths->addEncounter(winners[i], winners[i + 1]);
 	}
 	else if (this->_pools.size() >= 8)
-	{
-		for (Pool* p : this->_pools)
-			p->sortTeams();
-
-		for (int i = 0; i < 4; ++i)
-		{
-			this->_heighths->addEncounter(this->_pools[i]->getQualifiers()[0], this->_pools[7 - i]->getQualifiers()[1]);
-			this->_heighths->addEncounter(this->_pools[7 - i]->getQualifiers()[0], this->_pools[i]->getQualifiers()[1]);
-		}
-	}
+		this->generateSymmetricPoolEncounters(this->_heighths, 8);
 }
 
+/**
+ * Genere les 1/4 soit en selectionnant les vainqueurs des 1/8 soit les 1 et 2 de chaque pool
+ */
 void				Tournament::generateQuarters()
 {
 	if (this->_quarters)
@@ -655,31 +687,27 @@ void				Tournament::generateQuarters()
 
 	if (this->_hasHeighth)
 	{
-		if (!this->_heighths || !this->_heighths->isFinished())
+		if (!this->addEncountersFromPreviousPhase(this->_quarters, this->_heighths))
 		{
 			delete this->_quarters;
-
 			this->_quarters = nullptr;
-			return ;
 		}
-
-		CVP_TEAM	winners = this->_heighths->getWinners();
-
-		for (size_t i = 0; i < winners.size(); i += 2)
-			this->_quarters->addEncounter(winners[i], winners[i + 1]);
 	}
 	else if (this->_pools.size() >= 4)
 	{
-		for (Pool* p : this->_pools)
-			p->sortTeams();
-		
-		this->_quarters->addEncounter(this->_pools[0]->getQualifiers()[0], this->_pools[2]->getQualifiers()[1]);
-		this->_quarters->addEncounter(this->_pools[1]->getQualifiers()[0], this->_pools[3]->getQualifiers()[1]);
-		this->_quarters->addEncounter(this->_pools[2]->getQualifiers()[0], this->_pools[0]->getQualifiers()[1]);
-		this->_quarters->addEncounter(this->_pools[3]->getQualifiers()[0], this->_pools[1]->getQualifiers()[1]);
+		this->sortAllPools();
+
+		for (size_t i = 0; i < 2; ++i)
+		{
+			this->_quarters->addEncounter(this->_pools[i]->getQualifiers()[0], this->_pools[i + 2]->getQualifiers()[1]);
+			this->_quarters->addEncounter(this->_pools[i + 2]->getQualifiers()[0], this->_pools[i]->getQualifiers()[1]);
+		}
 	}
 }
 
+/**
+ * Genere les 1/2 en recuperant les vainqueurs des 1/4
+ */
 void				Tournament::generateSemis()
 {
 	if (this->_semis || !this->_quarters || !this->_quarters->isFinished())
@@ -696,6 +724,9 @@ void				Tournament::generateSemis()
 	this->_semis->addEncounter(winners[1], winners[3]);
 }
 
+/**
+ * Genere la final en recuperant les vainqueurs des 1/2
+ */
 void				Tournament::generateFinal()
 {
 	if (this->_final || !this->_semis || !this->_semis->isFinished())
@@ -711,6 +742,9 @@ void				Tournament::generateFinal()
 	this->_final->addEncounter(winners[0], winners[1]);
 }
 
+/**
+ * Genere la phase pour la 3eme place en recuperant les perdants des 1/2
+ */
 void				Tournament::generateThirdPlace()
 {
 	if (this->_thirdPlace || !this->_semis || !this->_semis->isFinished() || !this->_settings.getIsThirdPlaceMatch())
