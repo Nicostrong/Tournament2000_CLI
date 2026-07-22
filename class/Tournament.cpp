@@ -243,6 +243,17 @@ VP_PART				Tournament::getMultiTeamsPlayers(VP_PART participants) const
  */
 void				Tournament::createTeamsUniplayer()
 {
+	const int		missing = this->_settings.getNbPlayers() - static_cast<int>(this->_participants.size());
+
+	for (int i = 0; i < missing; i++)
+	{
+		Team*		t = new Team();
+
+		this->_participants[i]->setIsMultiTeamPlayer(true);
+		t->addMember(this->_participants[i]);
+		this->_teams.push_back(t);
+	}
+
 	for (Participant* p : this->_participants)
 	{
 		Team*		t = new Team();

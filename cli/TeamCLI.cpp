@@ -20,16 +20,16 @@
 /*	PUBLIC METHOD	*/
 /********************/
 
-void								TeamCLI::print(const Team& team)
+void				TeamCLI::print(const Team& team)
 {
 	std::cout << "__________ TEAM DESCRIPTION __________" << std::endl;
 	std::cout << "Team ID: " << team.getId() << std::endl;
 	std::cout << "Nom: " << team.getName() << std::endl;
-	
+
 	if (team.getHasMultiTeamPlayer())
 		std::cout << " [Contient un Multi-Joueur]" << std::endl;
 
-	std::cout << "Membres : ";
+	std::cout << "Membres :\n\t";
 
 	for (size_t i = 0; i < team.getMembers().size(); ++i)
 	{
@@ -39,7 +39,7 @@ void								TeamCLI::print(const Team& team)
 			std::cout << " (Multi)";
 
 		if (i < team.getMembers().size() - 1)
-			std::cout << " & ";
+			std::cout << "\t&\t";
 	}
 
 	std::cout << "\n______________________________________" << std::endl;

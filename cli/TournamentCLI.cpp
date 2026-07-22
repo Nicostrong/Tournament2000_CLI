@@ -127,7 +127,7 @@ void				TournamentCLI::writeHeader(std::ofstream& out, const Tournament& tournam
 		<< " x " << s.getNbPlayerByPool() << " équipes\n";
 	out << "  Score mini/maxi: " << s.getScoreMin() << " / " << s.getScoreMax()
 		<< " (écart " << s.getDiffPointsToWin() << ")\n";
-	out << "  Multi-joueurs  : " << (s.getAllowMultiTeamPlayers() ? "Oui" : "Non") << "\n";
+	out << "  Joueur multi team : " << (s.getAllowMultiTeamPlayers() ? "Oui" : "Non") << "\n";
 	out << "  Petite finale  : " << (s.getIsThirdPlaceMatch()    ? "Oui" : "Non") << "\n";
 	out << "\n";
 }
@@ -421,7 +421,7 @@ void				TournamentCLI::displayMenu(Tournament& tournament)
 		std::cout << "E. Exporter une phase en .txt\n";
 		std::cout << "T. Exporter le tournoi complet en .txt\n";
 		std::cout << "──────────────────────────────────────────────────\n";
-		std::cout << "0. Retour au menu principal\n";
+		std::cout << "q. Quitter le programme\n";
 		std::cout << "====================================================\n";
 		std::cout << "Votre choix : ";
 
@@ -434,8 +434,8 @@ void				TournamentCLI::displayMenu(Tournament& tournament)
 			continue;
 		}
 
-		if (input == '0')
-			break;
+		if (input == 'q')
+			return ;
 
 		if (input == 'E' || input == 'e')
 		{
