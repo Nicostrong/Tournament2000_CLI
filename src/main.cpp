@@ -45,11 +45,10 @@ static void			printPreparationMenu(const Settings& s, CVP_PART participants)
 	const bool		settingsValid = const_cast<Settings&>(s).isValid(errors);
 	const int		current = static_cast<int>(participants.size());
 	const int		required = s.getNbPlayers();
-	const bool		enoughPlayers = s.getAllowMultiTeamPlayers()
+	const bool		enoughPlayers = required == 0 ? 0 : (s.getAllowMultiTeamPlayers()
 									? s.canAccommodate(current)
-									: current >= required;
+									: current >= required);
 
-	PrintUtils::clear();
 	std::cout << "\n==========================================\n";
 	std::cout << "\tMENU DE PREPARATION DU TOURNOI\n";
 	std::cout << "==========================================\n";
@@ -60,7 +59,7 @@ static void			printPreparationMenu(const Settings& s, CVP_PART participants)
 	std::cout << "\t1. Configurer le tournoi\n";
 	std::cout << "\t2. Gerer les participants\n";
 	std::cout << "\t3. Lancer le tournoi\n";
-	std::cout << "\t0. Quitter\n";
+	std::cout << "\tq. Quitter\n";
 	std::cout << "==========================================\n";
 	std::cout << "Choix : ";
 }
@@ -109,16 +108,6 @@ static bool			canLaunch(const Settings& s, CVP_PART participants)
 	return (true);
 }
 
-/**
- * Transfere les participants vers le tournoi.
- * Les pointeurs restent valides jusqu a la destruction du tournoi.
- */
-static void			transferParticipants(Tournament& t, CVP_PART participants)
-{
-	for (const Participant* p : participants)
-		t.addParticipant(*p);
-}
-
 /********************/
 /*	MAIN			*/
 /********************/
@@ -127,7 +116,7 @@ int					main()
 {
 	Settings		mySettings;
 	VP_PART			pendingParticipants;
-	int				choice = -1;
+	char			choice;
 
 	PrintUtils::clear();
 	PrintUtils::banner();
@@ -145,7 +134,7 @@ int					main()
 
 		clearInput();
 
-		if (choice == 0)
+		if (choice == 'q')
 		{
 			for (Participant* p : pendingParticipants)
 				delete p;
@@ -154,16 +143,16 @@ int					main()
 			return (0);
 		}
 
-		if (choice == 1)
+		if (choice == '1')
 		{
 			SettingsCLI::setupWizard(mySettings);
 			std::cout << mySettings;
 		}
-		else if (choice == 2)
+		else if (choice == '2')
 		{
 			ParticipantCLI::handleMenu(pendingParticipants);
 		}
-		else if (choice == 3)
+		else if (choice == '3')
 		{
 			if (!canLaunch(mySettings, pendingParticipants))
 				continue ;
@@ -188,9 +177,7 @@ int					main()
 			std::cout << "\033[1;33m[!] Option invalide.\033[0m\n";
 	}
 
-	Tournament		myTournament(mySettings);
-
-	transferParticipants(myTournament, pendingParticipants);
+	Tournament		myTournament(mySettings, pendingParticipants);
 
 	if (!myTournament.initializeTournament())
 	{
@@ -205,9 +192,6 @@ int					main()
 	std::cout << "\033[1;32m\n[v] Tournoi initialise ! Bonne chance a tous !\033[0m\n";
 
 	TournamentCLI::displayMenu(myTournament);
-
-	for (Participant* p : pendingParticipants)
-		delete p;
 
 	return (0);
 }
