@@ -11,16 +11,24 @@
 # include "../class/Pool.hpp"
 
 //	TYPEDEF
+using				C_STRING	=	const std::string&;
 
 //	STATIC VARIABLES
 
 class PoolCLI
 {
+	private:
+
+		static void					writeMatches(std::ostream& out, const Pool& pool, bool toFile);
+		static void					writeTable(std::ostream& out, const Pool& pool, bool toFile);
+
 	public:
 
 		static void					displayTable(const Pool& pool);
+		static void					displayFullTable(const Pool& pool);
 		static void					displayMatches(const Pool& pool);
 		static void					displayPoolDetails(const Pool& pool);
+		static bool					exportToTxt(const Pool& pool, C_STRING filename);
 };
 
 #endif
