@@ -78,10 +78,7 @@ VP_TEAM				Phase::getWinners() const
 				winsB++;
 		}
 		
-		if (winsA > winsB)
-			winners.push_back(a);
-		else
-			winners.push_back(b);
+		winners.push_back(winsA >= winsB ? a : b);
 	}
 
 	return (winners);
@@ -90,27 +87,19 @@ VP_TEAM				Phase::getWinners() const
 VP_TEAM				Phase::getLosers() const
 {
 	VP_TEAM			losers;
+	VP_TEAM			winners = getWinners();
 
-	for (size_t i = 0; i < this->_matches.size(); i += this->_nbSetsToPlay)
+	for (size_t i = 0; i < winners.size(); ++i)
 	{
-		int			losesA = 0;
-		int			losesB = 0;
+		const size_t				matchIdx = i * static_cast<size_t>(this->_nbSetsToPlay);
 
-		Team*		a = this->_matches[i]->getTeamA();
-		Team*		b = this->_matches[i]->getTeamB();
+		if (matchIdx >= this->_matches.size())
+			break ;
 
-		for (int j = 0; j < this->_nbSetsToPlay; ++j)
-		{
-			if (this->_matches[i + j]->getWinner() == a)
-				losesA++;
-			else if (this->_matches[i + j]->getWinner() == b)
-				losesB++;
-		}
+		Team*		a = this->_matches[matchIdx]->getTeamA();
+		Team*		b = this->_matches[matchIdx]->getTeamB();
 
-		if (losesA > losesB)
-			losers.push_back(a);
-		else
-			losers.push_back(b);
+		losers.push_back((winners[i] == a) ? b : a);
 	}
 
 	return (losers);
