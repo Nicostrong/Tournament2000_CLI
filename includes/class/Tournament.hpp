@@ -63,6 +63,8 @@ class Tournament
 		};
 
 		//	METHOD
+		bool						teamsShareMember(const Team* a, const Team* b);
+		bool						poolHasConflict(const Pool* pool, const Team* incoming);
 		void						createTeamsUniplayer();
 		void						createMixedTeams();
 		void						createDoubleTeams();
