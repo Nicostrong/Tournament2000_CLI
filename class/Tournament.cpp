@@ -187,6 +187,31 @@ void				Tournament::setHasHeighth(const bool value)
 /********************/
 
 /**
+ * Retourne true si deux equipes partagent au moins un Participant*.
+ */
+bool				Tournament::teamsShareMember(const Team* a, const Team* b)
+{
+	for (const Participant* pa : a->getMembers())
+		for (const Participant* pb : b->getMembers())
+			if (pa == pb)
+				return (true);
+
+	return (false);
+}
+
+/**
+ * Retourne true si `incoming` partage un membre avec une equipe deja dans `pool`.
+ */
+bool				Tournament::poolHasConflict(const Pool* pool, const Team* incoming)
+{
+	for (const Team* t : pool->getTeams())
+		if (teamsShareMember(t, incoming))
+			return (true);
+
+	return (false);
+}
+
+/**
  *	retourne un vecteur avec tout les participants Homme
  */
 VP_PART				Tournament::getAllMales() const
@@ -219,23 +244,28 @@ VP_PART				Tournament::getAllFemales() const
  */
 VP_PART				Tournament::getMultiTeamsPlayers(VP_PART participants) const
 {
-	VP_PART			multiTeamsPlayers;
+	VP_PART			result;
 
-	if ((std::min(std::max(0, this->_settings.getNbPlayers() - static_cast<int>(this->_participants.size())), NBPLAYERINMULTITEAMMAX)) <= 0 || participants.empty())
-		return (multiTeamsPlayers);
+	const int		actual = static_cast<int>(this->_participants.size());
+	const int		required = this->_settings.getNbPlayers();
+	const int		missing = std::max(0, required - actual);
+	const int		maxRecyclable = std::min(missing, NBPLAYERINMULTITEAMMAX);
+
+	if (maxRecyclable <= 0 || participants.empty())
+		return (result);
 
 	std::random_device				rd;
 	std::mt19937					g(rd());
 
 	std::shuffle(participants.begin(), participants.end(), g);
 
-	for (Participant* p: participants)
+	for (int i = 0; i < maxRecyclable && i < static_cast<int>(participants.size()); ++i)
 	{
-		p->setIsMultiTeamPlayer(true);
-		multiTeamsPlayers.push_back(p);
+		participants[i]->setIsMultiTeamPlayer(true);
+		result.push_back(participants[i]);
 	}
 
-	return (multiTeamsPlayers);
+	return (result);
 }
 
 /**
@@ -243,24 +273,47 @@ VP_PART				Tournament::getMultiTeamsPlayers(VP_PART participants) const
  */
 void				Tournament::createTeamsUniplayer()
 {
-	const int		missing = this->_settings.getNbPlayers() - static_cast<int>(this->_participants.size());
+	int				missing = 0;
 
-	for (int i = 0; i < missing; i++)
+	if (!checkMissingPlayers(missing))
+		return ;
+
+	const int		required = this->_settings.getNbPlayers();
+	const int		actual = static_cast<int>(this->_participants.size());
+
+	std::random_device				rd;
+	std::mt19937					g(rd());
+
+	VP_PART			shuffled = this->_participants;
+
+	std::shuffle(shuffled.begin(), shuffled.end(), g);
+
+	for (int i = 0; i < missing; ++i)
+	{
+		Participant*				p = shuffled[static_cast<size_t>(i)];
+
+		p->setIsMultiTeamPlayer(true);
+
+		Team*		clone = new Team();
+
+		clone->addMember(p);
+		clone->setHasMultiTeamPlayer(true);
+		this->_teams.push_back(clone);
+	}
+
+	const int		normalLimit = std::min(actual, required - missing);
+
+	for (int i = 0; i < normalLimit; ++i)
 	{
 		Team*		t = new Team();
 
-		this->_participants[i]->setIsMultiTeamPlayer(true);
-		t->addMember(this->_participants[i]);
+		t->addMember(shuffled[static_cast<size_t>(i)]);
 		this->_teams.push_back(t);
 	}
 
-	for (Participant* p : this->_participants)
-	{
-		Team*		t = new Team();
-
-		t->addMember(p);
-		this->_teams.push_back(t);
-	}
+	if (static_cast<int>(this->_teams.size()) != required)
+		std::cerr << "[!] createTeamsUniplayer : " << this->_teams.size()
+				  << " equipes creees pour " << required << " attendues.\n";
 }
 
 /**
@@ -598,7 +651,7 @@ void				Tournament::generateTeams()
 }
 
 /**
- * Genere les pool en respectnt les donnees des settings
+ * Genere les pool en respectant les donnees des settings
  */
 void				Tournament::generatePools()
 {
@@ -646,6 +699,71 @@ void				Tournament::generatePools()
 
 	for (Team* t : otherTeams)
 		this->_pools[poolIdx++ % nbPools]->addTeam(t);
+
+	for (int i = 0; i < nbPools; ++i)
+	{
+		VP_TEAM&	teamsI = const_cast<VP_TEAM&>(this->_pools[i]->getTeams());
+
+		for (size_t a = 0; a < teamsI.size(); ++a)
+		{
+			for (size_t b = a + 1; b < teamsI.size(); ++b)
+			{
+				if (!teamsShareMember(teamsI[a], teamsI[b]))
+					continue ;
+
+				bool				swapped = false;
+
+				for (int j = 0; j < nbPools && !swapped; ++j)
+				{
+					if (j == i)
+						continue ;
+
+					VP_TEAM&		teamsJ = const_cast<VP_TEAM&>(this->_pools[j]->getTeams());
+
+					for (size_t c = 0; c < teamsJ.size() && !swapped; ++c)
+					{
+						Team*		candidate = teamsJ[c];
+						bool		candidateHasConflit = true;
+
+						for (size_t k = 0; k < teamsI.size(); ++k)
+						{
+							if (k == b)
+								continue ;
+							if (teamsShareMember(teamsI[k], candidate))
+							{
+								candidateHasConflit = false;
+								break ;
+							}
+						}
+
+						bool		otherCandidateHasConflit = true;
+
+						for (size_t k = 0; k < teamsJ.size(); ++k)
+						{
+							if (k == c)
+								continue ;
+							if (teamsShareMember(teamsJ[k], teamsI[b]))
+							{
+								otherCandidateHasConflit = false;
+								break ;
+							}
+						}
+
+						if (candidateHasConflit && otherCandidateHasConflit)
+						{
+							std::swap(teamsI[b], teamsJ[c]);
+							swapped = true;
+						}
+					}
+				}
+
+				if (!swapped)
+					std::cerr << "[!] generatePools : conflit non resolu dans "
+							  << this->_pools[i]->getName()
+							  << " - un multi-team player jouera contre lui-meme.\n";
+			}
+		}
+	}
 
 	for (Pool* p : this->_pools)
 		p->generateMatches(this->_settings.getNbSetPlayedPools());
