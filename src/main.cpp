@@ -7,6 +7,8 @@
 #include <vector>
 #include <string>
 #include <limits>
+#include <csignal>
+#include <cstdlib>
 
 //	LOGICAL
 #include "../includes/class/Participant.hpp"
@@ -25,6 +27,33 @@ using				STRING		=	std::string;
 using				V_STRING	=	std::vector<std::string>;
 using				VP_PART		=	std::vector<Participant*>;
 using				CVP_PART	=	const std::vector<Participant*>&;
+
+/********************/
+/*	SIGNALS			*/
+/********************/
+
+static VP_PART*		g_pendingParticipants = nullptr;
+
+/**
+ * Fonction appelee automatiquement lors de la reception d un SIGINT (Ctrl+C).
+ */
+static void			handleSigint(int signum)
+{
+	std::cout << "\n\n\033[1;31m[!] Interruption (SIGINT) detectee. Nettoyage de la memoire...\033[0m\n";
+
+	if (g_pendingParticipants)
+	{
+		for (Participant* p : *g_pendingParticipants)
+			delete p;
+		
+		g_pendingParticipants->clear();
+		VP_PART().swap(*g_pendingParticipants);
+		g_pendingParticipants = nullptr;
+	}
+
+	std::cout << "Memoire liberee. Fermeture du programme.\n";
+	std::exit(signum);
+}
 
 /********************/
 /*	HELPERS			*/
@@ -49,18 +78,18 @@ static void			printPreparationMenu(const Settings& s, CVP_PART participants)
 									? s.canAccommodate(current)
 									: current >= required);
 
-	std::cout << "\n==========================================\n";
-	std::cout << "\tMENU DE PREPARATION DU TOURNOI\n";
-	std::cout << "==========================================\n";
-	std::cout << "\tConfig  : " << (settingsValid  ? "\033[1;32m[OK]\033[0m" : "\033[1;31m[INVALIDE]\033[0m") << "\n";
-	std::cout << "\tJoueurs : " << current << " / " << required
+	std::cout << "\n===========================================================\n";
+	std::cout << "\t\tMENU DE PREPARATION DU TOURNOI\n";
+	std::cout << "===========================================================\n";
+	std::cout << "\t\tConfig  : " << (settingsValid  ? "\033[1;32m[OK]\033[0m" : "\033[1;31m[INVALIDE]\033[0m") << "\n";
+	std::cout << "\t\tJoueurs : " << current << " / " << required
 			  << (enoughPlayers ? "  \033[1;32m[OK]\033[0m" : "  \033[1;31m[INCOMPLET]\033[0m") << "\n";
-	std::cout << "==========================================\n";
-	std::cout << "\t1. Configurer le tournoi\n";
-	std::cout << "\t2. Gerer les participants\n";
-	std::cout << "\t3. Lancer le tournoi\n";
-	std::cout << "\tq. Quitter\n";
-	std::cout << "==========================================\n";
+	std::cout << "===========================================================\n";
+	std::cout << "\t\t1. Configurer le tournoi\n";
+	std::cout << "\t\t2. Gerer les participants\n";
+	std::cout << "\t\t3. Lancer le tournoi\n";
+	std::cout << "\t\tq. Quitter\n";
+	std::cout << "===========================================================\n";
 	std::cout << "Choix : ";
 }
 
@@ -117,6 +146,10 @@ int					main()
 	Settings		mySettings;
 	VP_PART			pendingParticipants;
 	char			choice;
+
+	g_pendingParticipants = &pendingParticipants;
+	
+	std::signal(SIGINT, handleSigint);
 
 	PrintUtils::clear();
 	PrintUtils::banner();

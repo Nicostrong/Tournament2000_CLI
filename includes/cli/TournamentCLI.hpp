@@ -8,6 +8,7 @@
 //	STDLIB
 # include <string>
 # include <vector>
+# include <functional>
 
 //	INCLUDES
 # include "../class/Tournament.hpp"
