@@ -2,9 +2,7 @@
 
 <center><img src="/docs/title.png" width="400" height="300"></center>
 
-Une application en ligne de commande pour gerer les tournois de bad au sein d un
-club.
-
+Une application en ligne de commande pour gerer les tournois de bad au sein d un club.
 
 ---
 
@@ -12,6 +10,7 @@ club.
 
 **[Fonctionnalites](#fonctionlites)** => toutes les fonctionnalites disponible du programme.
 **[Installation](#installation)** => Comment l installer et l executer.
+**[Menu Principale](#mainMenu)** => vui du menu principale.
 **[Personnalisation](#personnalisation)** => personnaliser votre propre tournois.
 **[Avancement](#avancement)** => Avancement du projet.
 
@@ -33,22 +32,18 @@ club.
    ```bash
    git clone git@github.com:Nicostrong/Bad2000_Tournament_CLI.git
    ```
-
 2. Rentrer dans le dossier clone:
    ```bash
    cd Bad2000_Tournament_CLI
    ```
-
 3. Executer le Makefile:
    ```bash
    make
    ```
-
 4. Apres la compilation du programme, executer le:
    ```bash
    ./Tournament2000
    ```
-
 *[remonter](#sommaire)*
 
 ---
