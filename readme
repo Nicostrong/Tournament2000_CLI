@@ -1,0 +1,157 @@
+# Tournament2000 (CLI)
+
+<p align="center">
+   <img src="./docs/screenshoots/title.png" width="400" height="300"></center>
+</p>
+
+Une application en ligne de commande pour gerer les tournois de bad au sein d un club.
+
+---
+
+## Sommaire
+
++ **[Fonctionnalites](#fonctionlites)** => toutes les fonctionnalites disponible du programme.
++ **[Installation](#installation)** => Comment l installer et l executer.
++ **[Menus](#menus)** => arbre des menus.
++ **[Parametrage](#parametrage)** => toute la puissance de la personalisation.
++ **[Joueurs](#joueurs)** => import / export des joueurs.
++ **[Avancement](#avancement)** => Avancement du projet.
+
+---
+
+## Fonctionnalites
+
++ Personnalisation complete du tournois
++ Import / export de liste de joueurs
++ Affichage et exportations des resultats
++ ...
+[remonter](#sommaire)
+
+---
+
+## <ins>Installation</ins>
+
+1. Cloner le depot:
+   ```bash
+   git clone git@github.com:Nicostrong/Bad2000_Tournament_CLI.git
+   ```
+2. Rentrer dans le dossier clone:
+   ```bash
+   cd Bad2000_Tournament_CLI
+   ```
+3. Executer le Makefile:
+   ```bash
+   make
+   ```
+4. Apres la compilation du programme, executer le:
+   ```bash
+   ./Tournament2000
+   ```
+
+<p align="center">
+   <video src="./docs/videos/compiling.webm" autoplay loop muted playsinline width="600"></video>
+</p>
+
+*[remonter](#sommaire)*
+
+---
+
+## <ins>Menu Principale</ins>
+
+<p align="center">
+   <img src="./docs/screenshoots/mainMenu.png" width="400" height="300"></center>
+</p>
+
+> :warning: **Settings** :warning:
+> Vous devez imperativement definir les settings avant de lancer un tournois
+
+```code
+[ Tournament2000 ]
+        |
+   [ 1 ] [ Parametrage ]
+   [ 2 ] [ Joueurs ]
+   [ 3 ] [ Tournois ]
+   [ q ] [ Quitter ]
+```
+
+---
+
+## <ins>Parametrage</ins>
+
+Voici la liste des settings a configurer imperativement:
+
+> :memo: Attention il y a un checker qui verifie la logique des settings, si vous voulez un tournois de 12 joueurs, il en va de soit que le tournois ne peut pas etre en double.
+
+### Configuration de tournois
+
++ Intitule du tournois
+
+#### Parametrage des joueurs
+
++ Nombre total de participant [12:92]
++ Tournois en double [o/n]
++ Tournois mixte [o/n]
+
+> :bulb: Si vous n etes pas certain d avoir le nombre suffisant de participants cette option permet a des joueurs de jouer dans plusieurs equipes
+
++ Joueur multi-team [o/n] 
+
+### Parametrage des pools
+
++ Nombre de pool[4/8/16]
++ Nombre de joueur/equipes par pool [3:8]
+
+### Parametrage des matchs
+
++ Nombre de terrain disponible [1:12]
++ Score pour gagner un set [5:30]
++ Score maxi pour gagner un set [5:30]
++ Ecart de points necessaire [1:5]
+
+### Parametrage des phases
+
++ Nombre de set en pool [1:3]
++ Nombre de set en 1/16^eme^ [1:3]
++ Nombre de et en 8^eme^ [1:3]
++ Nombre de set en quarts [1:3]
++ Nombre de set en demis [1:3]
++ Nombre de set en final [1:5]
++ Match pour la 3^eme^ place [o/n]
++ Nombre de set en petite final [1:3]
+
+*[remonter](#sommaire)*
+
+---
+
+## Avancement
+
+- [x] definir les differentes classes du programme.
+- [x] definir les differentes relation entre les classes.
+- [x] implementer la logique metier d un tournois.
+- [x] implementer l import et l expoprt des joueurs.
+- [x] implementer les menus.
+- [x] implementer les differents affichages des stages du tournois.
+- [x] implementer les differents export des stages du tournois.
+- [ ] tester avec Valgrind.
+
+*[remonter](#sommaire)*
+
+---
+
+# HELPER
+
+> [!NOTE]
+> note
+
+> [!WARNING]
+> warning
+
+> [!CAUTION]
+> caution
+
+> [!TIP]
+> tip
+
+> [!IMPORTANT]
+> important
+
