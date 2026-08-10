@@ -1,23 +1,25 @@
 # Tournament2000 (CLI)
 
-<center><img src="/docs/screenshoots/title.png" width="400" height="300"></center>
+<p align="center">
+   <img src="./docs/screenshoots/title.png" width="400" height="300"></center>
+</p>
 
 Une application en ligne de commande pour gerer les tournois de bad au sein d un club.
 
 ---
 
-## <ins>Sommaire</ins>
+## Sommaire
 
-**[Fonctionnalites](#fonctionlites)** => toutes les fonctionnalites disponible du programme.
-**[Installation](#installation)** => Comment l installer et l executer.
-**[Menus](#menus)** => arbre des menus.
-**[Parametrage](#parametrage)** => toute la puissance de la personalisation.
-**[Joueurs](#joueurs)** => import / export des joueurs.
-**[Avancement](#avancement)** => Avancement du projet.
++ **[Fonctionnalites](#fonctionlites)** => toutes les fonctionnalites disponible du programme.
++ **[Installation](#installation)** => Comment l installer et l executer.
++ **[Menus](#menus)** => arbre des menus.
++ **[Parametrage](#parametrage)** => toute la puissance de la personalisation.
++ **[Joueurs](#joueurs)** => import / export des joueurs.
++ **[Avancement](#avancement)** => Avancement du projet.
 
 ---
 
-## <ins>Fonctionnalites</ins>
+## Fonctionnalites
 
 + Personnalisation complete du tournois
 + Import / export de liste de joueurs
@@ -46,7 +48,9 @@ Une application en ligne de commande pour gerer les tournois de bad au sein d un
    ./Tournament2000
    ```
 
-<video src="/docs/videos/compiling.webm" autoplay loop muted playsinline width="600"></video>
+<p align="center">
+   <video src="./docs/videos/compiling.webm" autoplay loop muted playsinline width="600"></video>
+</p>
 
 *[remonter](#sommaire)*
 
@@ -54,7 +58,9 @@ Une application en ligne de commande pour gerer les tournois de bad au sein d un
 
 ## <ins>Menu Principale</ins>
 
-<center><img src="/docs/screenshoots/mainMenu.png" width="400" height="300"></center>
+<p align="center">
+   <img src="./docs/screenshoots/mainMenu.png" width="400" height="300"></center>
+</p>
 
 > :warning: **Settings** :warning:
 > Vous devez imperativement definir les settings avant de lancer un tournois
