@@ -1,0 +1,74 @@
+# Tournament2000 (CLI)
+
+<center><img src="/docs/title.png" width="400" height="300"></center>
+
+Une application en ligne de commande pour gerer les tournois de bad au sein d un
+club.
+
+
+---
+
+## Sommaire
+
+**[Fonctionnalites](#fonctionlites)** => toutes les fonctionnalites disponible du programme.
+**[Installation](#installation)** => Comment l installer et l executer.
+**[Personnalisation](#personnalisation)** => personnaliser votre propre tournois.
+**[Avancement](#avancement)** => Avancement du projet.
+
+---
+
+## Fonctionnalites
+
++ Personnalisation complete du tournois
++ Import / export de liste de joueurs
++ Affichage et exportations des resultats
++ ...
+[remonter](#sommaire)
+
+---
+
+## Installation
+
+1. Cloner le depot:
+   ```bash
+   git clone git@github.com:Nicostrong/Bad2000_Tournament_CLI.git
+   ```
+
+2. Rentrer dans le dossier clone:
+   ```bash
+   cd Bad2000_Tournament_CLI
+   ```
+
+3. Executer le Makefile:
+   ```bash
+   make
+   ```
+
+4. Apres la compilation du programme, executer le:
+   ```bash
+   ./Tournament2000
+   ```
+
+*[remonter](#sommaire)*
+
+---
+
+## Main Menu
+
+
+<center><img src="/docs/mainMenu.png" width="400" height="300"></center>
+
+---
+
+## Avancement
+
+- [x] definir les differentes classes du programme.
+- [x] definir les differentes relation entre les classes.
+- [x] implementer la logique metier d un tournois.
+- [x] implementer l import et l expoprt des joueurs.
+- [x] implementer les menus.
+- [x] implementer les differents affichages des stages du tournois.
+- [x] implementer les differents export des stages du tournois.
+- [ ] tester avec Valgrind.
+
+*[remonter](#sommaire)*
