@@ -178,6 +178,31 @@ void				Team::addMember(Participant* member)
 }
 
 /**
+ *	Renome le nom de la team en prenant les pseudo des players
+ */
+void				Team::renameTeam()
+{
+	if (this->_members.empty())
+		return ;
+
+	std::string newName = "";
+
+	for (size_t i = 0; i < this->_members.size(); ++i)
+	{
+		if (this->_members[i])
+		{
+			if (i > 0)
+				newName += " & ";
+			
+			newName += this->_members[i]->getPseudo();
+		}
+	}
+
+	if (!newName.empty())
+		this->_name = newName;
+}
+
+/**
  * Cumule les points de la rencontre
  */
 void				Team::addPoint(const int point)
