@@ -60,9 +60,9 @@ Une application en ligne de commande pour gerer les tournois de bad au sein d un
 
 ## Menu
 
-> [!warning] Vous devez imperativement definir les settings avant de lancer un tournoi.
+> [!CAUTION] Vous devez imperativement definir les settings avant de lancer un tournoi.
 
-> [!info] Certains menus sont accessibles selon les reglages definis dans les settings.
+> [!IMPORTANT] Certains menus sont accessibles selon les reglages definis dans les settings.
 
 *[remonter](#sommaire)*
 
@@ -84,7 +84,7 @@ Et lorsque vous aurez parametre les settings sans erreurs et que le nombre de pa
 C est dans le menu ***players*** que se fait la gestion complete des participants.
 Vous pouvez les saisir a la volee ou les importer depuis un fichier csv.
 
-> [!INFO] Pensez a exporter vos participants, il vous suffira seulement de les importer pour gagner du temps.
+> [!TIP] Pensez a exporter vos participants, il vous suffira seulement de les importer pour gagner du temps.
 
 <p><img src="./docs/images/menu/PlayersMenu.png" width="200" height="200"></p>
 
@@ -118,7 +118,7 @@ Pour les differentes phases du tournoi, chaque menu a le meme sous-menu qui perm
 
 ### Export
 
-> [!INFO] Ce menu vous permet d exporter la quasi-totalite des donnees liees au tournoi.
+> [!NOTE] Ce menu vous permet d exporter la quasi-totalite des donnees liees au tournoi.
 
 <p><img src="./docs/images/menu/ExportMenu.png" width="200" height="200"></p>
 
@@ -147,7 +147,7 @@ Voici la liste des settings a configurer imperativement:
 + Tournoi en double [o/n]
 + Tournoi mixte [o/n]
 
-> [!INFO] Si vous n etes pas certain d avoir le nombre suffisant de participants cette option permet a des joueurs de jouer dans plusieurs equipes.
+> [!TIP] Si vous n etes pas certain d avoir le nombre suffisant de participants cette option permet a des joueurs de jouer dans plusieurs equipes.
 
 + Joueur multi-team [o/n] 
 
@@ -197,7 +197,7 @@ Voici la liste des settings a configurer imperativement:
 
 ## Bug
 
-> [!INFO] La perfection n existant pas, si vous recontrer un probleme, merci d ouvrir une [PR](https://github.com/Nicostrong/Tournament2000_CLI/pulls)
+> [!CAUTION] La perfection n existant pas, si vous recontrer un probleme, merci d ouvrir une [PR](https://github.com/Nicostrong/Tournament2000_CLI/pulls)
 
 
 ---
@@ -207,41 +207,11 @@ Voici la liste des settings a configurer imperativement:
 > [!note]
 > note
 
-> [!info]
-> info
-
-> [!success]
-> success
-
-> [!question]
-> question
-
 > [!warning]
 > warning
 
 > [!CAUTION]
 > caution
-
-> [!failure]
-> failure
-
-> [!danger]
-> danger
-
-> [!bug]
-> bug
-
-> [!example]
-> exemple
-
-> [!todo]
-> todo
-
-> [!quote]
-> quote
-
-> [!abstract]
-> abstract
 
 > [!tip]
 > tip
