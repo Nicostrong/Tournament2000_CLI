@@ -72,7 +72,7 @@ OBJ				=	$(SRC:.cpp=.o)
 
 DEP				=	$(SRC:.cpp=.d)
 
-NAME			=	Tournament2000
+NAME			=Tournament2000
 
 ################################################################################
 #	Tester part
