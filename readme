@@ -43,14 +43,14 @@ Une application en ligne de commande pour gerer les tournois de bad au sein d un
    ```bash
    make
    ```
+   <p align="center">
+   <img src="./docs/videos/compiling.gif" >
+</p>
+
 4. Apres la compilation du programme, executer le:
    ```bash
    ./Tournament2000
    ```
-
-<p align="center">
-   <video src="./docs/videos/compiling.webm" autoplay loop muted playsinline width="600"></video>
-</p>
 
 *[remonter](#sommaire)*
 
@@ -59,13 +59,12 @@ Une application en ligne de commande pour gerer les tournois de bad au sein d un
 ## <ins>Menu Principale</ins>
 
 <p align="center">
-   <img src="./docs/screenshoots/mainMenu.png" width="400" height="300"></center>
+   <img src="./docs/screenshoots/mainMenu.png" width="400" height="300">
 </p>
 
-> :warning: **Settings** :warning:
-> Vous devez imperativement definir les settings avant de lancer un tournois
+> [!WARNING] Vous devez imperativement definir les settings avant de lancer un tournois
 
-```code
+```
 [ Tournament2000 ]
         |
    [ 1 ] [ Parametrage ]
@@ -80,7 +79,7 @@ Une application en ligne de commande pour gerer les tournois de bad au sein d un
 
 Voici la liste des settings a configurer imperativement:
 
-> :memo: Attention il y a un checker qui verifie la logique des settings, si vous voulez un tournois de 12 joueurs, il en va de soit que le tournois ne peut pas etre en double.
+> [!WARNING] Attention il y a un checker qui verifie la logique des settings, si vous voulez un tournois de 12 joueurs, il en va de soit que le tournois ne peut pas etre en double.
 
 ### Configuration de tournois
 
@@ -92,7 +91,7 @@ Voici la liste des settings a configurer imperativement:
 + Tournois en double [o/n]
 + Tournois mixte [o/n]
 
-> :bulb: Si vous n etes pas certain d avoir le nombre suffisant de participants cette option permet a des joueurs de jouer dans plusieurs equipes
+> [!TIP] Si vous n etes pas certain d avoir le nombre suffisant de participants cette option permet a des joueurs de jouer dans plusieurs equipes
 
 + Joueur multi-team [o/n] 
 
@@ -146,12 +145,6 @@ Voici la liste des settings a configurer imperativement:
 > [!WARNING]
 > warning
 
-> [!CAUTION]
-> caution
-
 > [!TIP]
 > tip
-
-> [!IMPORTANT]
-> important
 
