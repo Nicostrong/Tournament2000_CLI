@@ -81,6 +81,7 @@ class Team
 		[[nodiscard]]
 		bool						isComplete(int requiredSize) const;
 		void						addMember(Participant* member);
+		void						renameTeam();
 		void						addPoint(int point);
 		void						addScoreMarked(int score);
 		void						addScoreAgainst(int score);
