@@ -59,9 +59,9 @@ A command-line application to manage badminton tournaments within a club.
 
 ## Menu
 
-> [!warning] You must define the settings before launching a tournament.
+> [!CAUTION] You must define the settings before launching a tournament.
 
-> [!info] Some menus are accessible depending on the parameters defined in the settings.
+> [!IMPORTANT] Some menus are accessible depending on the parameters defined in the settings.
 
 [back to top](#table-of-contents)
 
@@ -85,7 +85,7 @@ And once you have configured the settings without errors and have enough partici
 Complete management of participants is done in the players menu.
 You can enter them on the fly or import them from a CSV file.
 
-> [!INFO] Remember to export your participants; you will only need to import them later to save time.
+> [!TIP] Remember to export your participants; you will only need to import them later to save time.
 
 <p><img src="./docs/images/menu/PlayersMenu.png" width="200" height="200"></p>
 
@@ -119,7 +119,7 @@ For the different phases of the tournament, each menu shares the same submenu to
 
 ### Export
 
-> [!INFO] This menu allows you to export almost all data related to the tournament.
+> [!NOTE] This menu allows you to export almost all data related to the tournament.
 
 <p><img src="./docs/images/menu/ExportMenu.png" width="200" height="200"></p>
 
@@ -148,7 +148,7 @@ Here is the list of settings that must be configured:
 + Doubles tournament [y/n]
 + Mixed tournament [y/n]
 
-> [!INFO] If you are not sure you will have enough participants, this option allows players to play in multiple teams.
+> [!TIP] If you are not sure you will have enough participants, this option allows players to play in multiple teams.
 
 + Multi-team player [y/n]
 
@@ -199,4 +199,4 @@ Here is the list of settings that must be configured:
 
 ## Bugs
 
-> [!INFO] Perfection does not exist. If you encounter an issue, please feel free to open a PR.
+> [!CAUTION] Perfection does not exist. If you encounter an issue, please feel free to open a PR.
