@@ -60,9 +60,11 @@ Une application en ligne de commande pour gerer les tournois de bad au sein d un
 
 ## Menu
 
-> [!CAUTION] Vous devez imperativement definir les settings avant de lancer un tournoi.
+> [!CAUTION]
+> Vous devez imperativement definir les settings avant de lancer un tournoi.
 
-> [!IMPORTANT] Certains menus sont accessibles selon les reglages definis dans les settings.
+> [!IMPORTANT]
+> Certains menus sont accessibles selon les reglages definis dans les settings.
 
 *[remonter](#sommaire)*
 
@@ -84,7 +86,8 @@ Et lorsque vous aurez parametre les settings sans erreurs et que le nombre de pa
 C est dans le menu ***players*** que se fait la gestion complete des participants.
 Vous pouvez les saisir a la volee ou les importer depuis un fichier csv.
 
-> [!TIP] Pensez a exporter vos participants, il vous suffira seulement de les importer pour gagner du temps.
+> [!TIP]
+> Pensez a exporter vos participants, il vous suffira seulement de les importer pour gagner du temps.
 
 <p><img src="./docs/images/menu/PlayersMenu.png" width="200" height="200"></p>
 
@@ -135,7 +138,8 @@ Pour les differentes phases du tournoi, chaque menu a le meme sous-menu qui perm
 
 Voici la liste des settings a configurer imperativement:
 
-> [!WARNING] Attention il y a un checker qui verifie la logique des settings, si vous voulez un tournoi de 12 joueurs, il en va de soi que le tournoi ne peut pas etre en double.
+> [!WARNING]
+> Attention il y a un checker qui verifie la logique des settings, si vous voulez un tournoi de 12 joueurs, il en va de soi que le tournoi ne peut pas etre en double.
 
 ### Configuration de tournoi
 
@@ -147,7 +151,8 @@ Voici la liste des settings a configurer imperativement:
 + Tournoi en double [o/n]
 + Tournoi mixte [o/n]
 
-> [!TIP] Si vous n etes pas certain d avoir le nombre suffisant de participants cette option permet a des joueurs de jouer dans plusieurs equipes.
+> [!TIP]
+> Si vous n etes pas certain d avoir le nombre suffisant de participants cette option permet a des joueurs de jouer dans plusieurs equipes.
 
 + Joueur multi-team [o/n] 
 
@@ -197,7 +202,8 @@ Voici la liste des settings a configurer imperativement:
 
 ## Bug
 
-> [!CAUTION] La perfection n existant pas, si vous recontrer un probleme, merci d ouvrir une [PR](https://github.com/Nicostrong/Tournament2000_CLI/pulls)
+> [!CAUTION]
+> La perfection n existant pas, si vous recontrer un probleme, merci d ouvrir une [PR](https://github.com/Nicostrong/Tournament2000_CLI/pulls)
 
 
 ---
