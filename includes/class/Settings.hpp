@@ -105,6 +105,7 @@ class Settings
 	private:
 
 		STRING						_name;
+		STRING						_error;
 
 		int							_nbPlayers;
 		int							_nbPlayerByPool;
@@ -141,7 +142,7 @@ class Settings
 		//	CANONICAL
 		Settings();
 		Settings(const Settings& ) = default;
-		Settings&					operator=(const Settings& );
+		Settings&					operator=(const Settings& ) = default;
 		~Settings() = default;
 
 		/*  GETTERS */

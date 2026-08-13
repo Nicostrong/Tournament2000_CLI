@@ -7,6 +7,7 @@
 
 //	STDLIB
 # include <vector>
+# include <csignal>
 
 //	INCLUDES
 # include "./Settings.hpp"
@@ -129,6 +130,7 @@ class Tournament
 		bool						getHasHeighth() const;
 
 		//	METHOD
+		void						clean();
 		void						addParticipant(const Participant& p);
 		void						generateSixteenths();
 		void						generateHeighths();

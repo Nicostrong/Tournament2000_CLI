@@ -14,13 +14,25 @@
 //	GLOBAL VARIABLES
 
 /**
- * Contient plusieurs methodes de modification de strings.
+ * Contient les methodes pour efface l ecran ou afficher des titres
  */
 class PrintUtils
 {
 	public:
 		static void					clear();
 		static void					banner();
+		static void					setting();
+		static void					players();
+		static void					tournament();
+		static void					teams();
+		static void					pools();
+		static void					sixteenths();
+		static void					heighths();
+		static void					quarters();
+		static void					semis();
+		static void					thirdPlace();
+		static void					final();
+		static void					exportMenu();
 };
 
 #endif

@@ -41,25 +41,7 @@ Tournament::Tournament(const Settings& settings, CVP_PART participants) : Tourna
 
 Tournament::~Tournament()
 {
-	for (const Participant* p : this->_participants)
-		delete p;
-
-	for (const Team* t : this->_teams)
-		delete t;
-
-	for (const Pool* p: this->_pools)
-		delete p;
-	
-	this->_participants.clear();
-	this->_teams.clear();
-	this->_pools.clear();
-
-	delete this->_sixteenths;
-	delete this->_heighths;
-	delete this->_quarters;
-	delete this->_semis;
-	delete this->_final;
-	delete this->_thirdPlace;
+	this->clean();
 }
 
 /************/
@@ -603,6 +585,32 @@ bool				Tournament::addEncountersFromPreviousPhase(Phase* currentPhase, const Ph
 /********************/
 /*	PUBLIC METHOD	*/
 /********************/
+
+/**
+ *	Libere toute la memoire utilise par l objet Tournament
+ */
+void				Tournament::clean()
+{
+	for (const Participant* p : this->_participants)
+		delete p;
+
+	for (const Team* t : this->_teams)
+		delete t;
+
+	for (const Pool* p: this->_pools)
+		delete p;
+	
+	this->_participants.clear();
+	this->_teams.clear();
+	this->_pools.clear();
+
+	delete this->_sixteenths;
+	delete this->_heighths;
+	delete this->_quarters;
+	delete this->_semis;
+	delete this->_final;
+	delete this->_thirdPlace;
+}
 
 /**
 *	Ajoute un participant dans la liste

@@ -200,7 +200,7 @@ $(NAME):	$(OBJ)
 	$(call compile_c_to_o)
 
 deb:			all
-	@echo "$(BBLUE)==========	RUN DEBUG MODE	==========$(RESET)"
+	@echo "$(RESET)$(BBLUE)==========	RUN DEBUG MODE	==========$(RESET)"
 	$(DEB) $(DEB_OPT) ./$(NAME) $(ARG0) $(DEB_OUT)
 
 clean:

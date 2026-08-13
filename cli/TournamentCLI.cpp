@@ -15,6 +15,7 @@
 #include "../includes/cli/PhaseCLI.hpp"
 #include "../includes/cli/PoolCLI.hpp"
 #include "../includes/utils/PrintUtils.hpp"
+#include "../includes/Global.hpp"
 
 //	TYPEDEF
 using				STRING		=	std::string;
@@ -88,6 +89,8 @@ STRING				TournamentCLI::getTeamNameOrPlaceholder(const Phase* phase,
  */
 void				TournamentCLI::printMenu(const Tournament& tournament)
 {
+	PrintUtils::clear();
+	PrintUtils::banner();
 	std::cout << "\n========== TOURNOI : " << tournament.getSettings().getName() << " ==========\n";
 	std::cout << "1. Poules (Scores / Classement)\n";
 	std::cout << "2. Composition des equipes par Poule\n";
@@ -340,8 +343,9 @@ void				TournamentCLI::handleExportPhase(Tournament& tournament)
 void				TournamentCLI::displayMenu(Tournament& tournament)
 {
 	PrintUtils::clear();
+	PrintUtils::banner();
 
-	while (true)
+	while (g_running)
 	{
 		printMenu(tournament);
 

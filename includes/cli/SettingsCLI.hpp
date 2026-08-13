@@ -32,6 +32,10 @@ class SettingsCLI
 		static int					inputIntList(C_STRING prompt, CV_INT allowedValues, int defaultVal);
 		static bool					inputBool(C_STRING prompt, bool defaultVal);
 		static std::string			inputString(C_STRING prompt, C_STRING defaultVal);
+		static void					setupPlayers(Settings& s);
+		static void					setupPools(Settings& s);
+		static void					setupMatchRules(Settings& s);
+		static void					setupPhaseSets(Settings& s);
 
 };
 

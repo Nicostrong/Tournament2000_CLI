@@ -16,7 +16,7 @@
 //	Default settings
 # define TOURNAMENTNAME				"Tournoi"
 
-# define NBPLAYER					0 //ISDOUBLE ? (NBPOOL * NBPLAYERPERPOOL * 2) : (NBPOOL * NBPLAYERPERPOOL)
+# define NBPLAYER					12 //ISDOUBLE ? (NBPOOL * NBPLAYERPERPOOL * 2) : (NBPOOL * NBPLAYERPERPOOL)
 # define NBPOOL						4
 # define NBTERRAIN					5
 # define SCOREMIN					21
