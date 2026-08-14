@@ -7,6 +7,7 @@
 
 //	INCLUDES
 #include "../includes/utils/PrintUtils.hpp"
+#include "../includes/Color.hpp"
 
 //	TYPEDEF
 
@@ -37,6 +38,9 @@ void				PrintUtils::clear()
 	std::cout << "\033[2J\033[1;1H";
 }
 
+/**
+ *	Banniere du programme
+ */
 void				PrintUtils::banner()
 {
 	std::cout << R"(
@@ -53,9 +57,12 @@ void				PrintUtils::banner()
                  / /| | | | | | | | | |
                 / /_| |_| | |_| | |_| |
                |____|\___/ \___/ \___/
-)" << std::endl;
+)" << std::endl << Color::HIDDEN << "By Nicostrong\n" <<Color::RESET;
 }
 
+/**
+ *	Titre du menu Setting
+ */
 void           PrintUtils::setting()
 {
     std::cout << R"(
@@ -72,6 +79,9 @@ void           PrintUtils::setting()
 )" << std::endl;
 }
 
+/**
+ *	Titre du menu Players
+ */
 void PrintUtils::players()
 {
     std::cout << R"(
@@ -89,6 +99,9 @@ void PrintUtils::players()
 )" << std::endl;
 }
 
+/**
+ *	Titre du menu Tournament
+ */
 void				PrintUtils::tournament()
 {
 	std::cout << R"(
@@ -104,6 +117,9 @@ void				PrintUtils::tournament()
 )" << std::endl;
 }
 
+/**
+ *	Titre du menu Teams
+ */
 void				PrintUtils::teams()
 {
 	std::cout << R"(
@@ -119,6 +135,9 @@ void				PrintUtils::teams()
 )" << std::endl;
 }
 
+/**
+ *	Titre du menu Pools
+ */
 void           PrintUtils::pools()
 {
     std::cout << R"(
@@ -134,6 +153,9 @@ void           PrintUtils::pools()
 )" << std::endl;
 }
 
+/**
+ *	Titre du menu 1/16
+ */
 void           PrintUtils::sixteenths()
 {
     std::cout << R"(
@@ -149,6 +171,9 @@ void           PrintUtils::sixteenths()
 )" << std::endl;
 }
 
+/**
+ *	Titre du menu 1/8
+ */
 void           PrintUtils::heighths()
 {
     std::cout << R"(
@@ -166,6 +191,9 @@ void           PrintUtils::heighths()
 )" << std::endl;
 }
 
+/**
+ *	Titre du menu 1/4
+ */
 void           PrintUtils::quarters()
 {
     std::cout << R"(
@@ -181,6 +209,9 @@ void           PrintUtils::quarters()
 )" << std::endl;
 }
 
+/**
+ *	Titre du menu 1/2
+ */
 void           PrintUtils::semis()
 {
     std::cout << R"(
@@ -196,6 +227,9 @@ void           PrintUtils::semis()
 )" << std::endl;
 }
 
+/**
+ *	Titre du menu 3eme place
+ */
 void           PrintUtils::thirdPlace()
 {
     std::cout << R"(
@@ -211,6 +245,9 @@ void           PrintUtils::thirdPlace()
 )" << std::endl;
 }
 
+/**
+ *	Titre du menu Finale
+ */
 void           PrintUtils::final()
 {
     std::cout << R"(
@@ -226,6 +263,9 @@ void           PrintUtils::final()
 )" << std::endl;
 }
 
+/**
+ *	Titre du menu Exports
+ */
 void           PrintUtils::exportMenu()
 {
     std::cout << R"(

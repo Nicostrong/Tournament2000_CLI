@@ -38,11 +38,21 @@ enum class nbPlayer : int
 	centSoixante = 160
 };
 
-constexpr A_INT<12>					allowedNbPlayers =
-{ 
+constexpr A_INT<9> allowedNbPlayersSimple =
+{
 	static_cast<int>(nbPlayer::douze),
 	static_cast<int>(nbPlayer::seize),
 	static_cast<int>(nbPlayer::vingt),
+	static_cast<int>(nbPlayer::vingtQuatre),
+	static_cast<int>(nbPlayer::trenteDeux),
+	static_cast<int>(nbPlayer::quarante),
+	static_cast<int>(nbPlayer::quaranteHuit),
+	static_cast<int>(nbPlayer::soixanteQuatre),
+	static_cast<int>(nbPlayer::quatreVingt)
+};
+
+constexpr A_INT<9> allowedNbPlayersDouble =
+{
 	static_cast<int>(nbPlayer::vingtQuatre),
 	static_cast<int>(nbPlayer::trenteDeux),
 	static_cast<int>(nbPlayer::quarante),
@@ -105,7 +115,6 @@ class Settings
 	private:
 
 		STRING						_name;
-		STRING						_error;
 
 		int							_nbPlayers;
 		int							_nbPlayerByPool;
@@ -130,6 +139,7 @@ class Settings
 		bool						_isValid;
 
 		static bool					addErrorIf(bool condition, C_STRING message, V_STRING& errors);
+		void						checkLogicalTournament(V_STRING& errors) const;
 
 		template<typename Container>
 		bool						isInList(int value, const Container& list) const

@@ -29,22 +29,24 @@ using				V_STRING	=	std::vector<std::string>;
 using				VP_PART		=	std::vector<Participant*>;
 using				CVP_PART	=	const std::vector<Participant*>&;
 
-
-//	ENUM
-enum class			AppState
+namespace
 {
-	SETTING,
-	PLAYER,
-	INIT_TOURNAMENT,
-	POOL_PHASE,
-	SIXTEENTH_PHASE,
-	EIGHTH_PHASE,
-	QUARTER_PHASE,
-	SEMI_PHASE,
-	FINAL_PHASE,
-	THIRD_PHASE,
-	EXIT
-};
+	//	ENUM
+	enum class			AppState
+	{
+		SETTING,
+		PLAYER,
+		INIT_TOURNAMENT,
+		POOL_PHASE,
+		SIXTEENTH_PHASE,
+		EIGHTH_PHASE,
+		QUARTER_PHASE,
+		SEMI_PHASE,
+		FINAL_PHASE,
+		THIRD_PHASE,
+		EXIT
+	};
+}
 
 /************/
 /*	SIGNALS	*/
@@ -53,7 +55,7 @@ enum class			AppState
 /**
  * Fonction appelee automatiquement lors de la reception d un SIGINT (Ctrl+C).
  */
-static void			handleSigint(int signum)
+static void			handleSigint(const int signum)
 {
 	(void)signum;
 
@@ -85,7 +87,7 @@ static void			handleSigint(int signum)
 /**
  *	Lance la phase de parametrage des settings
  */
-AppState			runSettingsPhase(Settings& settings)
+static AppState			runSettingsPhase(Settings& settings)
 {
 	V_STRING errors;
 	
@@ -108,7 +110,7 @@ AppState			runSettingsPhase(Settings& settings)
 /**
  *	Lance la phase de gestion des joueurs
  */
-AppState			runPlayersPhase(const Settings& settings, VP_PART& participants)
+static AppState			runPlayersPhase(const Settings& settings, VP_PART& participants)
 {
 	while (g_running)
 	{
@@ -117,8 +119,8 @@ AppState			runPlayersPhase(const Settings& settings, VP_PART& participants)
 		if (!g_running)
 			return (AppState::EXIT);
 		
-		int current = static_cast<int>(participants.size());
-		int required = settings.getNbPlayers();
+		const int current = static_cast<int>(participants.size());
+		const int required = settings.getNbPlayers();
 		
 		if (current >= required)
 		{
@@ -158,9 +160,6 @@ int					main()
 	sa.sa_flags = 0;
 
 	sigaction(SIGINT, &sa, NULL);
-
-	PrintUtils::clear();
-	PrintUtils::banner();
 
 	while (g_running && currentState != AppState::EXIT)
 	{

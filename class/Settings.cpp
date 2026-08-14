@@ -21,7 +21,7 @@ using				V_STRING	=	std::vector<std::string>;
 /****************/
 
 Settings::Settings()
-    :	_name(TOURNAMENTNAME), _error(""), _nbPlayers(NBPLAYER), _nbPlayerByPool(NBPLAYERPERPOOL),
+    :	_name(TOURNAMENTNAME), _nbPlayers(NBPLAYER), _nbPlayerByPool(NBPLAYERPERPOOL),
 		_nbPools(NBPOOL), _nbBadmintonCourt(NBTERRAIN), _scoreMin(SCOREMIN), _scoreMax(SCOREMAX),
 		_diffPointsToWin(ECART), _nbSetPlayedPools(NBPLAYERPERPOOL), _nbSetPlayedSixteenth(NBSETSIXTEENTH),
 		_nbSetPlayedHeigth(NBSETHEIGTH), _nbSetPlayedQuarters(NBSETQUARTER), _nbSetPlayedSemis(NBSETSEMI),
@@ -96,6 +96,40 @@ bool				Settings::addErrorIf(const bool condition, C_STRING message, V_STRING& e
 	return (false);
 }
 
+void				Settings::checkLogicalTournament(V_STRING& errors) const
+{
+	const int totalTeamsRequired = this->_nbPools * this->_nbPlayerByPool;
+	const int playersPerTeam = this->_isDouble ? 2 : 1;
+	const int totalPlayersRequired = totalTeamsRequired * playersPerTeam;
+
+	if (this->_nbPlayers > totalPlayersRequired)
+		addErrorIf(true,
+			"Nombre de joueurs trop eleve (" + std::to_string(this->_nbPlayers) +
+			") pour la structure actuelle (" + std::to_string(this->_nbPools) +
+			" poules de " + std::to_string(this->_nbPlayerByPool) +
+			" " + (this->_isDouble ? "equipes" : "joueurs") +
+			" = " + std::to_string(totalPlayersRequired) + " joueurs max).",
+			errors);
+	else if (this->_nbPlayers < totalPlayersRequired && !this->_allowMultiTeamPlayers)
+		addErrorIf(true,
+			"Pas assez de joueurs (" + std::to_string(this->_nbPlayers) +
+			"). La structure necessite exactement " + std::to_string(totalPlayersRequired) +
+			" joueurs (ou activez le mode multi-equipes).",
+			errors);
+	else if (this->_nbPlayers < totalPlayersRequired && this->_allowMultiTeamPlayers)
+	{
+		const int missingPlayers = totalPlayersRequired - this->_nbPlayers;
+
+		if (missingPlayers > NBPLAYERINMULTITEAMMAX)
+		{
+			addErrorIf(true,
+				"Ecart de joueurs trop important (" + std::to_string(missingPlayers) +
+				" manquants). Le mode multi-equipes tolere au maximum " +
+				std::to_string(NBPLAYERINMULTITEAMMAX) + " joueurs manquants.",
+				errors);
+		}
+	}
+}
 /********************/
 /*	PUBLIC METHOD	*/
 /********************/
@@ -104,8 +138,12 @@ bool				Settings::isValid(V_STRING& errors)
 {
 	errors.clear();
 
+	const std::vector<int> allowedPlayers = this->_isDouble
+		? std::vector<int>(allowedNbPlayersDouble.begin(), allowedNbPlayersDouble.end())
+		: std::vector<int>(allowedNbPlayersSimple.begin(), allowedNbPlayersSimple.end());
+
 	addErrorIf(this->_name.empty(), E_NAME, errors);
-	addErrorIf(!isInList(this->_nbPlayers, allowedNbPlayers), E_NBPLAYER, errors);
+	addErrorIf(!isInList(this->_nbPlayers, allowedPlayers), E_NBPLAYER, errors);
 	addErrorIf(!isInList(this->_nbPlayerByPool, allowedNbPlayersOrTeamsPerPools), E_NBPLAYERPERPOOL, errors);
 	addErrorIf(!isInList(this->_nbPools, allowedNbPools), E_NBPOOL, errors);
 	addErrorIf(this->_nbBadmintonCourt <= 0, E_NBTERRAIN, errors);
@@ -121,6 +159,8 @@ bool				Settings::isValid(V_STRING& errors)
 
 	if (this->_isThirdPlaceMatch)
 		addErrorIf(!isInList(this->_nbSetPlayedThirdPlace, allowedNbSetToPlay), E_NBSETTHIRD, errors);
+
+	checkLogicalTournament(errors);
 
 	if (errors.empty())
 		this->_isValid = true;
