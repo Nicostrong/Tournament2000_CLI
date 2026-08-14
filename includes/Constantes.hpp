@@ -5,6 +5,8 @@
 #ifndef CONSTANTES_HPP
 # define CONSTANTES_HPP
 
+# include "./class/Participant.hpp"
+
 //	Valeurs acceptables
 //
 //	NBPOOL							[4, 8, 16]
@@ -35,6 +37,8 @@
 # define PLAYERMULTITEAM			false
 # define PLAYTHIRDPLACE				false
 # define ISVALIDE					false
+
+# define GENDER						Participant::Gender::MIXED
 
 //	Game settings
 # define NBTERRAINMIN				1

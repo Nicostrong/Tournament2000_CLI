@@ -11,6 +11,7 @@
 
 //	INCLUDES
 # include "../class/Participant.hpp"
+# include "../class/Settings.hpp"
 
 //	TYPEDEF
 using				STRING		=	std::string;
@@ -30,12 +31,12 @@ class ParticipantCLI
 	public:
 
 		//	MENU
-		static void					menu();
+		static void					menu(const VP_PART& participants, const Settings& settings);
 
 		//	SUBMENU
-		static Participant*			create(CVP_PART participants);
+		static Participant*			create(CVP_PART participants, const Settings& settings);
 		static void					destroy(size_t id, VP_PART& participants);
-		static void					modify(size_t id, CVP_PART participants);
+		static void					modify(size_t id, CVP_PART participants, const Settings& settings);
 		static void					displayOne(const Participant& p);
 		static void					displayAll(CVP_PART participants);
 
@@ -46,11 +47,11 @@ class ParticipantCLI
 		static bool					exportToCSV(CVP_PART participants, C_STRING filename);
 
 		//	HANDLER
-		static void					handleMenu(VP_PART& participants);
-		static void					handleAddParticipant(VP_PART& participants);
-		static void					handleModifyParticipant(VP_PART& participants);
+		static void					handleMenu(VP_PART& participants, const Settings& settings);
+		static void					handleAddParticipant(VP_PART& participants, const Settings& settings);
+		static void					handleModifyParticipant(VP_PART& participants, const Settings& settings);
 		static void					handleDeleteParticipant(VP_PART& participants);
-		static void					handleImport(VP_PART& participants);
+		static void					handleImport(VP_PART& participants, const Settings& settings);
 		static void					handleExport(CVP_PART participants);
 		static void					handledisplay(CVP_PART participants);
 

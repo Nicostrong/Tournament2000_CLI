@@ -183,6 +183,16 @@ void				SettingsCLI::setupPlayers(Settings& s)
 	s.setIsDouble(inputBool("Est-ce un tournoi en DOUBLE ?", s.getIsDouble()));
 	s.setIsMixed(inputBool("Est-ce un tournoi MIXTE ?", s.getIsMixed()));
 
+	if (!s.getIsMixed())
+	{
+		const int defaultG = (s.getTournamentGender() == Participant::FEMALE) ? 1 : 0;
+		const int g = inputInt("Genre du tournoi (0 = HOMME, 1 = FEMME)", 0, 1, defaultG);
+
+		s.setTournamentGender(g == 0 ? Participant::MALE : Participant::FEMALE);
+	}
+	else
+		s.setTournamentGender(Participant::MIXED);
+
 	std::vector<int> allowedPlayers;
 
 	if (s.getIsDouble())
@@ -341,7 +351,7 @@ std::ostream&		operator<<(std::ostream& os, const Settings& s)
 	os << Color::BLUE << "[ TOURNOI ]\n" << Color::RESET;
     os << "\tNom\t\t\t:\t" << s.getName() << "\n";
     os << "\tFormat\t\t\t:\t" << (s.getIsDouble() ? "Double" : "Simple")
-       << (s.getIsMixed() ? " (Mixte)" : " (Open)") << "\n";
+       << (s.getIsMixed() ? " (Mixte)" : (s.getTournamentGender() == Participant::MALE ? " (Homme)" : " (Femme)")) << "\n";
     os << "\tJoueur multi-equipes\t:\t" << (s.getAllowMultiTeamPlayers() ? "Autorise" : "Interdit") << "\n\n";
 
 	os << Color::BLUE << "[ PARTICIPANTS & TERRAINS ]\n" << Color::RESET;

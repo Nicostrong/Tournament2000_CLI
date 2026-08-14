@@ -114,7 +114,7 @@ static AppState			runPlayersPhase(const Settings& settings, VP_PART& participant
 {
 	while (g_running)
 	{
-		ParticipantCLI::handleMenu(participants); 
+		ParticipantCLI::handleMenu(participants, settings);
 		
 		if (!g_running)
 			return (AppState::EXIT);

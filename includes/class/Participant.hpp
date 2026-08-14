@@ -23,7 +23,7 @@ class Participant
 {
 	public:
 
-		enum Gender { MALE, FEMALE, OTHER };
+		enum Gender { MALE, FEMALE, MIXED };
 
 	private:
 

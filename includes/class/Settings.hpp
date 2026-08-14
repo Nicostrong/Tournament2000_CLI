@@ -12,6 +12,7 @@
 # include <array>
 
 //	INCLUDES
+# include "./Participant.hpp"
 
 //	TYPEDEF
 using				STRING		=	std::string;
@@ -138,6 +139,8 @@ class Settings
 		bool						_isThirdPlaceMatch;
 		bool						_isValid;
 
+		Participant::Gender			_gender;
+
 		static bool					addErrorIf(bool condition, C_STRING message, V_STRING& errors);
 		void						checkLogicalTournament(V_STRING& errors) const;
 
@@ -198,6 +201,9 @@ class Settings
 		[[nodiscard]]
 		bool						getIsValid() const;
 
+		[[nodiscard]]
+		Participant::Gender			getTournamentGender() const;
+
 		/*  SETTERS */
 		void						setName(C_STRING value);
 		void						setNbPlayers(int value);
@@ -221,6 +227,7 @@ class Settings
 		void						setAllowMultiTeamPlayers(bool value);
 		void						setIsThirdPlaceMatch(bool value);
 		void						setIsValid(bool value);
+		void						setTournamentGender(Participant::Gender value);
 
 		/*	METHOD	*/
 		bool						isValid(V_STRING& errors);
