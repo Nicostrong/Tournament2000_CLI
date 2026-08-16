@@ -53,7 +53,7 @@ int					SettingsCLI::inputInt(C_STRING prompt, const int min, const int max, con
 	while (true)
 	{
 		checkInterruption();
-		std::cout << prompt << " [" << defaultVal << "] (" << min << "-" << max << ") : ";
+		std::cout << prompt << " [" << Color::YELLOW << defaultVal << Color::RESET << "] (" << min << "-" << max << ") : ";
 
 		if (!std::getline(std::cin, input))
 		{
@@ -84,7 +84,7 @@ bool				SettingsCLI::inputBool(C_STRING prompt, const bool defaultVal)
 	while (true)
 	{
 		checkInterruption();
-		std::cout << prompt << " [" << defStr << "] (o/n) : ";
+		std::cout << prompt << " [" << Color::YELLOW << defStr << Color::RESET << "] (o/n) : ";
 
 		if (!std::getline(std::cin, input))
 		{
@@ -117,7 +117,7 @@ STRING				SettingsCLI::inputString(C_STRING prompt, C_STRING defaultVal)
 	while (true)
 	{
 		checkInterruption();
-		std::cout << prompt << " [" << defaultVal << "] : ";
+		std::cout << prompt << " [" << Color::YELLOW << defaultVal << Color::RESET << "] : ";
 
 		if (!std::getline(std::cin, input))
 		{
@@ -143,7 +143,7 @@ int					SettingsCLI::inputIntList(C_STRING prompt, CV_INT allowedValues, int def
 	while (true)
 	{
 		checkInterruption();
-		std::cout << prompt << " [" << defaultVal << "] (";
+		std::cout << prompt << " [" << Color::YELLOW << defaultVal << Color::RESET << "] (";
 
 		for (size_t i = 0; i < allowedValues.size(); ++i)
 			std::cout << allowedValues[i] << (i < allowedValues.size() - 1 ? "/" : "");
@@ -268,10 +268,10 @@ void				SettingsCLI::setupPhaseSets(Settings& s)
 	std::cout << Color::BLUE << "\n> Nombre de sets par phase" << std::endl << Color::RESET;
 
 	s.setNbSetPlayedPools(inputInt("Sets en poules", NBSETPOOLMIN, NBSETPOOLMAX, s.getNbSetPlayedPools()));
-	s.setNbSetPlayedSixteenth(inputInt("Sets en 1/16 (0 pour desactiver)", 0, NBSETSIXTEENTHMAX, s.getNbSetPlayedSixteenth()));
-	s.setNbSetPlayedHeigth(inputInt("Sets en 1/8 (0 pour desactiver)", 0, NBSETHEIGTHMAX, s.getNbSetPlayedHeigth()));
-	s.setNbSetPlayedQuarters(inputInt("Sets en Quarts (0 pour desactiver)", 0, NBSETQUARTERMAX, s.getNbSetPlayedQuarters()));
-	s.setNbSetPlayedSemis(inputInt("Sets en Demis (0 pour desactiver)", 0, NBSETSEMIMAX, s.getNbSetPlayedSemis()));
+	s.setNbSetPlayedSixteenth(inputInt("Sets en 1/16", NBSETSIXTEENTHMIN, NBSETSIXTEENTHMAX, s.getNbSetPlayedSixteenth()));
+	s.setNbSetPlayedHeigth(inputInt("Sets en 1/8", NBSETHEIGTHMIN, NBSETHEIGTHMAX, s.getNbSetPlayedHeigth()));
+	s.setNbSetPlayedQuarters(inputInt("Sets en Quarts", NBSETQUARTERMIN, NBSETQUARTERMAX, s.getNbSetPlayedQuarters()));
+	s.setNbSetPlayedSemis(inputInt("Sets en Demis", NBSETSEMIMIN, NBSETSEMIMAX, s.getNbSetPlayedSemis()));
 	s.setNbSetPlayedFinal(inputInt("Sets en Finale", NBSETFINALMIN, NBSETFINALMAX, s.getNbSetPlayedFinal()));
 
 	s.setIsThirdPlaceMatch(inputBool("Jouer la petite finale (3eme place) ?", s.getIsThirdPlaceMatch()));
@@ -356,11 +356,11 @@ std::ostream&		operator<<(std::ostream& os, const Settings& s)
 
 	os << Color::BLUE << "[ PARTICIPANTS & TERRAINS ]\n" << Color::RESET;
     os << "\tNombre de participants\t:\t" << s.getNbPlayers() << "\n";
-    os << "\tPoules\t\t\t:\t" << s.getNbPools() << " poule(s) de " << s.getNbPlayerByPool() << " joueur(s)/equipe(s)\n";
+    os << "\tPoules\t\t\t:\t" << s.getNbPools() << " poules de " << s.getNbPlayerByPool() << " joueurs/equipes\n";
     os << "\tTerrains disponibles\t:\t" << s.getNbBadmintonCourt() << "\n\n";
 
 	os << Color::BLUE << "[ REGLES DU MATCH ]\n" << Color::RESET;
-    os << "\tScore de gain du set\t:\t" << s.getScoreMin() << " pts (Plafond : " << s.getScoreMax() << " pts)\n";
+    os << "\tScore de gain du set\t:\t" << s.getScoreMin() << " pts (Maximum : " << s.getScoreMax() << " pts)\n";
     os << "\tEcart requis\t\t:\t" << s.getDiffPointsToWin() << " pt(s)\n\n";
 
 	os << Color::BLUE << "[ SETS PAR PHASE ]\n" << Color::RESET;

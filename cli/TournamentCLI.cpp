@@ -48,7 +48,7 @@ STRING				TournamentCLI::promptFilename(C_STRING prompt)
 {
 	std::cout << prompt;
 
-	STRING			filename;
+	STRING filename;
 
 	std::getline(std::cin, filename);
 
@@ -64,7 +64,7 @@ STRING				TournamentCLI::promptFilename(C_STRING prompt)
  */
 STRING				TournamentCLI::getTeamNameOrPlaceholder(const Phase* phase,
 															const size_t matchIdx,
-															 const int teamPos)
+															const int teamPos)
 {
 	if (!phase)
 		return ("A determiner");
@@ -74,8 +74,8 @@ STRING				TournamentCLI::getTeamNameOrPlaceholder(const Phase* phase,
 	if (matchIdx >= matches.size() || !matches[matchIdx])
 		return ("A determiner");
 
-	Team*			t = (teamPos == 1)	? matches[matchIdx]->getTeamA()
-										: matches[matchIdx]->getTeamB();
+	Team* t = (teamPos == 1)	? matches[matchIdx]->getTeamA()
+								: matches[matchIdx]->getTeamB();
 
 	return (t ? t->getName() : "A determiner");
 }
@@ -125,7 +125,7 @@ void				TournamentCLI::printMenu(const Tournament& tournament)
  */
 void				TournamentCLI::handleMatchList(CVP_MATCH matches, C_STRING title)
 {
-	size_t			mIdx = 0;
+	size_t mIdx = 0;
 
 	while (true)
 	{
@@ -179,7 +179,7 @@ void				TournamentCLI::handlePhase(Phase* phase, C_STRING phaseName)
  */
 void				TournamentCLI::handlePoolSelection(Tournament& tournament)
 {
-	const VP_POOL	pools = tournament.getPools();
+	const VP_POOL pools = tournament.getPools();
 
 	if (pools.empty())
 	{
@@ -195,7 +195,7 @@ void				TournamentCLI::handlePoolSelection(Tournament& tournament)
 	std::cout << (pools.size() + 1) << ". Retour\n";
 	std::cout << "Choisissez une poule : ";
 
-	size_t			pIdx;
+	size_t pIdx;
 
 	if (!(std::cin >> pIdx) || pIdx < 1 || pIdx > pools.size())
 	{
@@ -203,7 +203,7 @@ void				TournamentCLI::handlePoolSelection(Tournament& tournament)
 		return ;
 	}
 
-	const STRING	title = "MATCHS " + pools[pIdx - 1]->getName();
+	const STRING title = "MATCHS " + pools[pIdx - 1]->getName();
 
 	handleMatchList(pools[pIdx - 1]->getMatches(), title);
 }
@@ -215,8 +215,7 @@ void				TournamentCLI::handlePoolSelection(Tournament& tournament)
  */
 void				TournamentCLI::handleEliminationPhase(Phase* phase,
 															const std::function<void()>& generateFn,
-															C_STRING phaseName,
-															C_STRING successMsg,
+															C_STRING phaseName, C_STRING successMsg,
 															C_STRING errorMsg)
 {
 	if (!phase)
@@ -267,7 +266,7 @@ const Phase*		TournamentCLI::getPhaseByMenuChoice(const Tournament& tournament, 
  */
 bool				TournamentCLI::exportPoolsToFile(const Tournament& tournament, C_STRING filename)
 {
-	std::ofstream	out(filename);
+	std::ofstream out(filename);
 
 	if (!out.is_open())
 	{
@@ -297,7 +296,7 @@ void				TournamentCLI::handleExportPhase(Tournament& tournament)
 	std::cout << "  7. Match pour la 3e Place\n";
 	std::cout << "Choix : ";
 
-	int			phaseChoice;
+	int phaseChoice;
 
 	if (!(std::cin >> phaseChoice))
 	{
@@ -307,18 +306,18 @@ void				TournamentCLI::handleExportPhase(Tournament& tournament)
 
 	clearInput();
 
-	const STRING	filename = promptFilename("Nom du fichier de sortie : ");
+	const STRING filename = promptFilename("Nom du fichier de sortie : ");
 
 	if (filename.empty())
 		return ;
 
-	bool			ok = false;
+	bool ok = false;
 
 	if (phaseChoice == 1)
 		ok = exportPoolsToFile(tournament, filename);
 	else
 	{
-		const Phase*	target = getPhaseByMenuChoice(tournament, phaseChoice);
+		const Phase* target = getPhaseByMenuChoice(tournament, phaseChoice);
 
 		if (!target)
 		{
@@ -349,7 +348,7 @@ void				TournamentCLI::displayMenu(Tournament& tournament)
 	{
 		printMenu(tournament);
 
-		char		input;
+		char input;
 
 		if (!(std::cin >> input))
 		{
@@ -371,7 +370,7 @@ void				TournamentCLI::displayMenu(Tournament& tournament)
 		{
 			clearInput();
 
-			const STRING			filename = promptFilename("Nom du fichier de sortie : ");
+			const STRING filename = promptFilename("Nom du fichier de sortie : ");
 
 			if (!filename.empty() && exportTournamentToTxt(tournament, filename))
 				std::cout << "\033[1;32m[v] Tournoi exporté dans '" << filename << "'.\033[0m\n";
@@ -379,7 +378,7 @@ void				TournamentCLI::displayMenu(Tournament& tournament)
 			continue ;
 		}
 
-		const int	choice = input - '0';
+		const int choice = input - '0';
 
 		switch (choice)
 		{
@@ -468,36 +467,36 @@ void				TournamentCLI::displayMenu(Tournament& tournament)
  */
 void				TournamentCLI::displayFullBracket(Tournament& tournament)
 {
-	const Phase*	Q = tournament.getQuarters();
-	const Phase*	S = tournament.getSemis();
-	const Phase*	F = tournament.getFinal();
-	const Phase*	T = tournament.getThirdPlace();
+	const Phase* Q = tournament.getQuarters();
+	const Phase* S = tournament.getSemis();
+	const Phase* F = tournament.getFinal();
+	const Phase* T = tournament.getThirdPlace();
 
 	PrintUtils::clear();
 
 	std::cout << "\n=================== ARBRE DE LA PHASE FINALE ===================\n\n";
 	std::cout << "\tQUARTS\t\t\tDEMIS\t\t\t\t\t3e PLACE\tFINALE\t\t\tVAINQUEUR\n\n";
 
-	const STRING	q[4][2] = {
+	const STRING q[4][2] = {
 		{ getTeamNameOrPlaceholder(Q, 0, 1), getTeamNameOrPlaceholder(Q, 0, 2) },
 		{ getTeamNameOrPlaceholder(Q, 1, 1), getTeamNameOrPlaceholder(Q, 1, 2) },
 		{ getTeamNameOrPlaceholder(Q, 2, 1), getTeamNameOrPlaceholder(Q, 2, 2) },
 		{ getTeamNameOrPlaceholder(Q, 3, 1), getTeamNameOrPlaceholder(Q, 3, 2) }
 	};
-	const STRING	s[2][2] = {
+	const STRING s[2][2] = {
 		{ getTeamNameOrPlaceholder(S, 0, 1), getTeamNameOrPlaceholder(S, 0, 2) },
 		{ getTeamNameOrPlaceholder(S, 1, 1), getTeamNameOrPlaceholder(S, 1, 2) }
 	};
-	const STRING	f[2]    = {
+	const STRING f[2]    = {
 		getTeamNameOrPlaceholder(F, 0, 1),
 		getTeamNameOrPlaceholder(F, 0, 2)
 	};
-	const STRING	t3[2]   = {
+	const STRING t3[2]   = {
 		getTeamNameOrPlaceholder(T, 0, 1),
 		getTeamNameOrPlaceholder(T, 0, 2)
 	};
 
-	STRING			winner = "A determiner";
+	STRING winner = "A determiner";
 
 	if (F && F->isFinished() && !F->getMatches().empty())
 	{
@@ -507,7 +506,7 @@ void				TournamentCLI::displayFullBracket(Tournament& tournament)
 			winner = w->getName();
 	}
 
-	const bool		hasThird = tournament.getSettings().getIsThirdPlaceMatch();
+	const bool hasThird = tournament.getSettings().getIsThirdPlaceMatch();
 
 	std::cout << "\t" << q[0][0] << " ---\n";
 	std::cout << "\t\t\t\t|---> " << s[0][0] << " ---\n";
@@ -540,8 +539,8 @@ void				TournamentCLI::displayFullBracket(Tournament& tournament)
  */
 void				TournamentCLI::displayPodium(const Tournament& tournament)
 {
-	const Phase*	final = tournament.getFinal();
-	const Phase*	thirdPlace = tournament.getThirdPlace();
+	const Phase* final = tournament.getFinal();
+	const Phase* thirdPlace = tournament.getThirdPlace();
 
 	std::cout << "\n╔══════════════════════════════════════╗\n";
 	std::cout << "║            PALMARES FINAL            ║\n";
@@ -553,8 +552,8 @@ void				TournamentCLI::displayPodium(const Tournament& tournament)
 		return ;
 	}
 
-	CVP_TEAM		winners = final->getWinners();
-	CVP_TEAM		losers = final->getLosers();
+	CVP_TEAM winners = final->getWinners();
+	CVP_TEAM losers = final->getLosers();
 
 	if (!winners.empty() && winners[0])
 		std::cout << "\033[1;33m  1er : " << winners[0]->getName() << "\033[0m\n";
@@ -564,8 +563,8 @@ void				TournamentCLI::displayPodium(const Tournament& tournament)
 
 	if (thirdPlace && thirdPlace->isFinished())
 	{
-		CVP_TEAM	third = thirdPlace->getWinners();
-		CVP_TEAM	fourth = thirdPlace->getLosers();
+		CVP_TEAM third = thirdPlace->getWinners();
+		CVP_TEAM fourth = thirdPlace->getLosers();
 
 		if (!third.empty()  && third[0])
 			std::cout << "\033[0;33m  3e  : " << third[0]->getName()  << "\033[0m\n";
@@ -601,7 +600,7 @@ bool				TournamentCLI::exportPhaseToTxt(const Phase* phase, C_STRING filename)
  */
 bool				TournamentCLI::exportTournamentToTxt(const Tournament& tournament, C_STRING filename)
 {
-	std::ofstream	out(filename);
+	std::ofstream out(filename);
 
 	if (!out.is_open())
 	{
@@ -661,7 +660,7 @@ void				TournamentCLI::writeHeader(std::ofstream& out, const Tournament& tournam
  */
 void				TournamentCLI::writePools(std::ofstream& out, const Tournament& tournament)
 {
-	const VP_POOL	pools = tournament.getPools();
+	const VP_POOL pools = tournament.getPools();
 
 	out << "============================================================\n";
 	out << "\tPHASE DE POULES\n";
@@ -696,7 +695,7 @@ void				TournamentCLI::writePoolMatches(std::ofstream& out, const Pool& pool)
 {
 	out << "\n\t[MATCHS]\n";
 
-	int				idx = 1;
+	int idx = 1;
 
 	for (const Match* m : pool.getMatches())
 	{
@@ -725,14 +724,14 @@ void				TournamentCLI::writePoolMatches(std::ofstream& out, const Pool& pool)
  */
 void				TournamentCLI::writePoolStandings(std::ofstream& out, const Pool& pool)
 {
-	CVP_TEAM		teams = pool.getTeams();
-	size_t			maxLen = 6;
+	CVP_TEAM teams = pool.getTeams();
+	size_t maxLen = 6;
 
 	for (const Team* t : teams)
 		if (t->getName().size() > maxLen)
 			maxLen = t->getName().size();
 
-	const int		w = static_cast<int>(maxLen) + 2;
+	const int w = static_cast<int>(maxLen) + 2;
 
 	out << "\n\t[CLASSEMENT]\n";
 	out << "\t\t" << std::left << std::setw(4) << "#"
@@ -743,7 +742,7 @@ void				TournamentCLI::writePoolStandings(std::ofstream& out, const Pool& pool)
 
 	for (size_t i = 0; i < teams.size(); ++i)
 	{
-		const int	diff = teams[i]->getScoreDiff();
+		const int diff = teams[i]->getScoreDiff();
 
 		out << "\t\t" << std::left << std::setw(4) << (i + 1)
 			<< std::setw(w) << teams[i]->getName()
@@ -760,8 +759,8 @@ void				TournamentCLI::writePhaseBlock(std::ofstream& out, const Phase* phase)
 	if (!phase)
 		return ;
 
-	CVP_MATCH		matches = phase->getMatches();
-	const int		nbSets = phase->getNbSetToPlay();
+	CVP_MATCH matches = phase->getMatches();
+	const int nbSets = phase->getNbSetToPlay();
 
 	out << "============================================================\n";
 	out << "\t" << phase->getName() << "  (" << nbSets << " set(s) par rencontre)\n";
@@ -773,7 +772,7 @@ void				TournamentCLI::writePhaseBlock(std::ofstream& out, const Phase* phase)
 		return ;
 	}
 
-	int				encounterNum = 1;
+	int encounterNum = 1;
 
 	for (size_t i = 0; i < matches.size(); i += static_cast<size_t>(nbSets))
 		writeEncounterBlock(out, matches, i, nbSets, encounterNum++);
@@ -787,33 +786,31 @@ void				TournamentCLI::writePhaseBlock(std::ofstream& out, const Phase* phase)
 /**
  * Ecrit une rencontre (N sets consecutifs) dans out.
  */
-void				TournamentCLI::writeEncounterBlock(std::ofstream& out,
-														CVP_MATCH matches,
-														const size_t startIdx,
-														const int nbSets,
+void				TournamentCLI::writeEncounterBlock(std::ofstream& out, CVP_MATCH matches,
+														const size_t startIdx, const int nbSets,
 														const int encounterNum)
 {
 	if (startIdx >= matches.size() || !matches[startIdx])
 		return ;
 
-	const Match*	first = matches[startIdx];
-	C_STRING		nameA = first->getTeamA() ? first->getTeamA()->getName() : "?";
-	C_STRING		nameB = first->getTeamB() ? first->getTeamB()->getName() : "?";
+	const Match* first = matches[startIdx];
+	C_STRING nameA = first->getTeamA() ? first->getTeamA()->getName() : "?";
+	C_STRING nameB = first->getTeamB() ? first->getTeamB()->getName() : "?";
 
 	out << "\n\tRencontre " << encounterNum << " :  " << nameA << "  vs  " << nameB << "\n";
 	out << "\t" << STRING(nameA.size() + nameB.size() + 14, '-') << "\n";
 
-	int				winsA = 0;
-	int				winsB = 0;
+	int winsA = 0;
+	int winsB = 0;
 
 	for (int s = 0; s < nbSets; ++s)
 	{
-		const size_t				idx = startIdx + static_cast<size_t>(s);
+		const size_t idx = startIdx + static_cast<size_t>(s);
 
 		if (idx >= matches.size() || !matches[idx])
 			break ;
 
-		const Match*				m = matches[idx];
+		const Match* m = matches[idx];
 
 		out << "\tSet " << (s + 1) << " : ";
 
@@ -853,8 +850,8 @@ void				TournamentCLI::writeEncounterBlock(std::ofstream& out,
  */
 void				TournamentCLI::writePhaseResults(std::ofstream& out, const Phase& phase)
 {
-	CVP_TEAM		winners = phase.getWinners();
-	CVP_TEAM		losers = phase.getLosers();
+	CVP_TEAM winners = phase.getWinners();
+	CVP_TEAM losers = phase.getLosers();
 
 	out << "\n\tQualifies :\n";
 
@@ -877,8 +874,8 @@ void				TournamentCLI::writePhaseResults(std::ofstream& out, const Phase& phase)
  */
 void				TournamentCLI::writePalmares(std::ofstream& out, const Tournament& tournament)
 {
-	const Phase*	final = tournament.getFinal();
-	const Phase*	thirdPlace = tournament.getThirdPlace();
+	const Phase* final = tournament.getFinal();
+	const Phase* thirdPlace = tournament.getThirdPlace();
 
 	out << "============================================================\n";
 	out << "\tPALMARES\n";
@@ -890,8 +887,8 @@ void				TournamentCLI::writePalmares(std::ofstream& out, const Tournament& tourn
 		return ;
 	}
 
-	CVP_TEAM		winners = final->getWinners();
-	CVP_TEAM		losers  = final->getLosers();
+	CVP_TEAM winners = final->getWinners();
+	CVP_TEAM losers  = final->getLosers();
 
 	if (!winners.empty() && winners[0])
 		out << "\t1. (Or)\t\t" << winners[0]->getName() << "\n";
@@ -901,8 +898,8 @@ void				TournamentCLI::writePalmares(std::ofstream& out, const Tournament& tourn
 
 	if (thirdPlace && thirdPlace->isFinished())
 	{
-		CVP_TEAM	third = thirdPlace->getWinners();
-		CVP_TEAM	fourth = thirdPlace->getLosers();
+		CVP_TEAM third = thirdPlace->getWinners();
+		CVP_TEAM fourth = thirdPlace->getLosers();
 
 		if (!third.empty()  && third[0])
 			out << "\t3. (Bronze)\t" << third[0]->getName()  << "\n";

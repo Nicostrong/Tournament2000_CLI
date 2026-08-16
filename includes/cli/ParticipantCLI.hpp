@@ -7,7 +7,8 @@
 
 //	STDLIB
 # include <vector>
-# include <iostream>
+# include <tuple>
+# include <string>
 
 //	INCLUDES
 # include "../class/Participant.hpp"
@@ -16,6 +17,8 @@
 //	TYPEDEF
 using				STRING		=	std::string;
 using				C_STRING	=	const std::string&;
+using				VSTRING		=	std::vector<std::string>;
+using				VTUPLE_MSG	=	std::vector<std::tuple<std::string, bool>>;
 using				VP_PART		=	std::vector<Participant*>;
 using				CVP_PART	=	const std::vector<Participant*>&;
 using				CV_PART		=	const std::vector<Participant>&;
@@ -28,10 +31,15 @@ using				CV_PART		=	const std::vector<Participant>&;
  */
 class ParticipantCLI
 {
+	private:
+
+		static VTUPLE_MSG			messages;
+		static VP_PART				partList;
+
 	public:
 
 		//	MENU
-		static void					menu(const VP_PART& participants, const Settings& settings);
+		static void					menu(CVP_PART participants, const Settings& settings, bool showMenu);
 
 		//	SUBMENU
 		static Participant*			create(CVP_PART participants, const Settings& settings);
@@ -49,11 +57,14 @@ class ParticipantCLI
 		//	HANDLER
 		static void					handleMenu(VP_PART& participants, const Settings& settings);
 		static void					handleAddParticipant(VP_PART& participants, const Settings& settings);
-		static void					handleModifyParticipant(VP_PART& participants, const Settings& settings);
+		static void					handleModifyParticipant(CVP_PART& participants, const Settings& settings);
 		static void					handleDeleteParticipant(VP_PART& participants);
 		static void					handleImport(VP_PART& participants, const Settings& settings);
 		static void					handleExport(CVP_PART participants);
 		static void					handledisplay(CVP_PART participants);
+		static void					handleMessages();
+		static void					handleList();
+		static void					handleTitle();
 
 		//	HELPER
 		static bool					checkPseudo(C_STRING pseudo, CVP_PART participants);
