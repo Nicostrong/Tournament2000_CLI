@@ -6,16 +6,12 @@
 # define CHECKERCSV_HPP
 
 //	STDLIB
-# include <tuple>
 # include <string>
-# include <vector>
 
 //	INCLUDES
 
 //	TYPEDEF
 using				C_STRING	=	const std::string&;
-using				V_STRING	=	std::vector<std::string>;
-using				VTUPLE_MSG	=	std::vector<std::tuple<std::string, bool>>;
 
 //	GLOBAL VARIABLES
 
@@ -26,7 +22,7 @@ class CheckerCSV
 {
 	public:
 
-		static bool					validateParticipantCSV(C_STRING filename, VTUPLE_MSG& messages);
+		static bool					validateParticipantCSV(C_STRING filename);
 };
 
 #endif

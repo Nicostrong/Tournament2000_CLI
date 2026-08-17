@@ -22,6 +22,7 @@
 #include "../includes/utils/PrintUtils.hpp"
 
 #include "../includes/Global.hpp"
+#include "../includes/Color.hpp"
 
 //	TYPEDEF
 using				STRING		=	std::string;
@@ -32,19 +33,19 @@ using				CVP_PART	=	const std::vector<Participant*>&;
 namespace
 {
 	//	ENUM
-	enum class			AppState
+	enum class		AppState
 	{
-		SETTING,
-		PLAYER,
-		INIT_TOURNAMENT,
-		POOL_PHASE,
-		SIXTEENTH_PHASE,
-		EIGHTH_PHASE,
-		QUARTER_PHASE,
-		SEMI_PHASE,
-		FINAL_PHASE,
-		THIRD_PHASE,
-		EXIT
+					SETTING,
+					PLAYER,
+					INIT_TOURNAMENT,
+					POOL_PHASE,
+					SIXTEENTH_PHASE,
+					EIGHTH_PHASE,
+					QUARTER_PHASE,
+					SEMI_PHASE,
+					FINAL_PHASE,
+					THIRD_PHASE,
+					EXIT
 	};
 }
 
@@ -59,7 +60,7 @@ static void			handleSigint(const int signum)
 {
 	(void)signum;
 
-	std::cout << "\n\n\033[1;31m[!] Interruption detectee. Arret du programme...\033[0m\n";
+	std::cout << Color::RED << "\n\n[!] Interruption detectee. Arret du programme...\n" << Color::RESET;
 
 	g_running = false;
 }
@@ -71,7 +72,7 @@ static void			handleSigint(const int signum)
 /**
  *	Vide le buffer de l input
  */
-/*static void			clearInput()
+/*static void		clearInput()
 {
 	if (!g_running)
 		return ;
@@ -87,7 +88,7 @@ static void			handleSigint(const int signum)
 /**
  *	Lance la phase de parametrage des settings
  */
-static AppState			runSettingsPhase(Settings& settings)
+static AppState		runSettingsPhase(Settings& settings)
 {
 	V_STRING errors;
 	
@@ -110,31 +111,33 @@ static AppState			runSettingsPhase(Settings& settings)
 /**
  *	Lance la phase de gestion des joueurs
  */
-static AppState			runPlayersPhase(const Settings& settings, VP_PART& participants)
+static AppState		runPlayersPhase(const Settings& settings, VP_PART& participants)
 {
 	while (g_running)
 	{
-		ParticipantCLI::handleMenu(participants, settings);
+		ParticipantCLI::handleMenuParticipant(participants, settings);
 		
 		if (!g_running)
 			return (AppState::EXIT);
 		
-		const int current = static_cast<int>(participants.size());
-		const int required = settings.getNbPlayers();
-		
-		if (current >= required)
-		{
-			std::cout << "\nNombre de joueurs atteint ! Impossible d'en ajouter plus.\n";
-			std::cout << "Appuyez sur Entrée pour lancer la génération du tournoi...\n";
-			
-			STRING dummy;
-			std::getline(std::cin, dummy);
+		return (AppState::INIT_TOURNAMENT);
+	}
+	return (AppState::EXIT);
+}
 
-			if (!g_running)
-				return (AppState::EXIT);
-			
-			return (AppState::INIT_TOURNAMENT);
-		}
+/**
+ *	Lance la phase de pool du tournoi
+ */
+ static AppState	runPoolsPhase(Tournament& myTournament)
+{
+	while (g_running)
+	{
+		TournamentCLI::handleMenuTournament(myTournament);
+		
+		if (!g_running)
+			return (AppState::EXIT);
+		
+		return (AppState::EXIT);
 	}
 	return (AppState::EXIT);
 }
@@ -188,10 +191,10 @@ int					main()
 					currentState = AppState::POOL_PHASE;
 				break ;
 				
-			/*case AppState::POOL_PHASE:
+			case AppState::POOL_PHASE:
 				currentState = runPoolsPhase(*myTournament);
 				break ;
-
+			/*
 			case AppState::SIXTEENTH_PHASE:
 				currentState = runKnockoutPhase(*myTournament, currentState);
 				break ;
@@ -227,12 +230,11 @@ int					main()
 
 	if (myTournament)
 		delete myTournament;
-
-	if (!pendingParticipants.empty())
+	else if (!pendingParticipants.empty())
 		for (Participant* p : pendingParticipants)
 			delete p;
 
-	std::cout << "\nAu revoir !\n";
+	std::cout << Color::BBLUE << "\nAu revoir !\n" << Color::RESET;
 
 	return (0);
 }

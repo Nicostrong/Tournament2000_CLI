@@ -18,7 +18,6 @@
 using				STRING		=	std::string;
 using				C_STRING	=	const std::string&;
 using				VSTRING		=	std::vector<std::string>;
-using				VTUPLE_MSG	=	std::vector<std::tuple<std::string, bool>>;
 using				VP_PART		=	std::vector<Participant*>;
 using				CVP_PART	=	const std::vector<Participant*>&;
 using				CV_PART		=	const std::vector<Participant>&;
@@ -33,15 +32,10 @@ class ParticipantCLI
 {
 	private:
 
-		static VTUPLE_MSG			messages;
 		static VP_PART				partList;
 
-		static Participant*			extractParticipantFromLine(C_STRING line, bool isFirstLine);
-
-	public:
-
 		//	MENU
-		static void					menu(CVP_PART participants, const Settings& settings, bool showMenu);
+		static void					menuParticipant(CVP_PART participants, const Settings& settings, bool showMenu);
 
 		//	SUBMENU
 		static Participant*			create(CVP_PART participants, const Settings& settings);
@@ -57,19 +51,22 @@ class ParticipantCLI
 		static bool					exportToCSV(CVP_PART participants, C_STRING filename);
 
 		//	HANDLER
-		static void					handleMenu(VP_PART& participants, const Settings& settings);
 		static void					handleAddParticipant(VP_PART& participants, const Settings& settings);
 		static void					handleModifyParticipant(CVP_PART& participants, const Settings& settings);
 		static void					handleDeleteParticipant(VP_PART& participants);
 		static void					handleImport(VP_PART& participants, const Settings& settings);
 		static void					handleExport(CVP_PART participants);
 		static void					handledisplay(CVP_PART participants);
-		static void					handleMessages();
 		static void					handleList();
 		static void					handleTitle();
 
 		//	HELPER
 		static bool					checkPseudo(C_STRING pseudo, CVP_PART participants);
+		static Participant*			extractParticipantFromLine(C_STRING line, bool isFirstLine);
+
+	public:
+
+		static void					handleMenuParticipant(VP_PART& participants, const Settings& settings);
 };
 
 std::ostream&		operator<<(std::ostream& os, const Participant& p);

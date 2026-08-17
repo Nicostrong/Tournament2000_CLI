@@ -12,17 +12,14 @@
 #include <exception>
 
 //	INCLUDES
-#include "../includes/class/Settings.hpp"
-#include "../includes/cli/ParticipantCLI.hpp"
-
-#include <set>
-
 #include "../includes/Color.hpp"
+#include "../includes/Global.hpp"
 #include "../includes/Constantes.hpp"
+#include "../includes/class/Settings.hpp"
 #include "../includes/utils/FormatUtils.hpp"
 #include "../includes/utils/PrintUtils.hpp"
 #include "../includes/utils/CheckerCSV.hpp"
-#include "../includes/Global.hpp"
+#include "../includes/cli/ParticipantCLI.hpp"
 
 //	TYPEDEF
 using				STRING		=	std::string;
@@ -31,7 +28,6 @@ using				VP_PART		=	std::vector<Participant*>;
 using				CVP_PART	=	const std::vector<Participant*>&;
 
 //	STATIC VARIABLES
-VTUPLE_MSG			ParticipantCLI::messages;
 VP_PART				ParticipantCLI::partList;
 
 /****************/
@@ -50,36 +46,86 @@ namespace
 }
 
 /************/
-/*	PRIVATE	*/
+/*	PUBLIC	*/
 /************/
 
-Participant*		ParticipantCLI::extractParticipantFromLine(C_STRING line, bool isFirstLine)
+void				ParticipantCLI::handleMenuParticipant(VP_PART& participants, const Settings& settings)
 {
-	std::stringstream ss(line);
-	STRING pseudo;
-	STRING firstName;
-	STRING lastName;
-	STRING genderStr;
+	try
+	{
+		int choice = -1;
+		bool showMenu = false;
 
-	std::getline(ss, pseudo, ',');
-	std::getline(ss, lastName, ',');
-	std::getline(ss, firstName, ',');
-	std::getline(ss, genderStr, ',');
+		while (choice != 0)
+		{
+			showMenu = !participants.empty();
 
-	FormatUtils::trim(pseudo);
-	FormatUtils::trim(lastName);
-	FormatUtils::trim(firstName);
-	FormatUtils::trim(genderStr);
+			handleTitle();
+			PrintUtils::handleMessages();
+			handleList();
+			menuParticipant(participants, settings, showMenu);
+			checkInterruption();
 
-	if (isFirstLine && pseudo == "pseudo")
-		return (nullptr);
+			if (!(std::cin >> choice))
+			{
+				checkInterruption();
 
-	Participant::Gender gender = Participant::MALE;
+				std::cin.clear();
+				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-	if (genderStr == "1")
-		gender = Participant::FEMALE;
+				PrintUtils::addError("Saisie invalide.");
+				continue ;
+			}
 
-	return (new Participant(pseudo, lastName, firstName, gender));
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+			switch (choice)
+			{
+				case 1:
+					handleAddParticipant(participants, settings);
+					break ;
+
+				case 2:
+					if (!showMenu)
+						break ;
+					handleModifyParticipant(participants, settings);
+					break ;
+
+				case 3:
+					if (!showMenu)
+						break ;
+					handleDeleteParticipant(participants);
+					break ;
+
+				case 4:
+					handleImport(participants, settings);
+					break ;
+
+				case 5:
+					if (!showMenu)
+						break ;
+					handleExport(participants);
+					break;
+
+				case 6:
+					if (!showMenu)
+						break ;
+					handledisplay(participants);
+					break ;
+
+				case 7:
+					return ;
+
+				default:
+					PrintUtils::addError("Option invalide.");
+					continue ;
+			}
+		}
+	}
+	catch (const UserInterruptedException&)
+	{
+		return ;
+	}
 }
 
 /************/
@@ -89,7 +135,7 @@ Participant*		ParticipantCLI::extractParticipantFromLine(C_STRING line, bool isF
 /**
  *	Affiche le menu Player avec sous-menu sous conditions
  */
-void				ParticipantCLI::menu(CVP_PART participants, const Settings& settings,  const bool showMenu)
+void				ParticipantCLI::menuParticipant(CVP_PART participants, const Settings& settings,  const bool showMenu)
 {
 	const int nbPlayersRequired = settings.getAllowMultiTeamPlayers()	? (settings.getNbPlayers() - NBPLAYERINMULTITEAMMAX)
 																		: settings.getNbPlayers();
@@ -207,7 +253,7 @@ Participant*		ParticipantCLI::create(CVP_PART participants, const Settings& sett
 
 	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-	messages.push_back({std::format("Nouveau participant avec le pseudo {} ajoute avec succes.", pseudo), false});
+	PrintUtils::addSuccess(std::format("Nouveau participant avec le pseudo {} ajoute avec succes.", pseudo));
 
 	return (new Participant(pseudo, lastName, firstName, static_cast<Participant::Gender>(gender)));
 }
@@ -218,14 +264,14 @@ void				ParticipantCLI::destroy(const size_t id, VP_PART& participants)
 	{
 		if ((*it)->getId() == id)
 		{
-			messages.push_back({std::format("Le participant avec l'id {} et le pseudo {}, a ete supprime avec succes.", id, (*it)->getPseudo()), false});
+			PrintUtils::addSuccess(std::format("Le participant avec l'id {} et le pseudo {}, a ete supprime avec succes.", id, (*it)->getPseudo()));
 			delete *it;
 			participants.erase(it);
 			return ;
 		}
 	}
 
-	messages.push_back({std::format("Aucun participant avec l'ID {} n'a ete trouve.", id), true});
+	PrintUtils::addError(std::format("Aucun participant avec l'ID {} n'a ete trouve.", id));
 }
 
 void				ParticipantCLI::modify(const size_t id, CVP_PART participants, const Settings& settings)
@@ -238,7 +284,7 @@ void				ParticipantCLI::modify(const size_t id, CVP_PART participants, const Set
 
 	if (!pToModify)
 	{
-		messages.push_back({std::format("Le participant avec l'id {} est introuvable.", id), true});
+		PrintUtils::addError(std::format("Le participant avec l'id {} est introuvable.", id));
 		return ;
 	}
 
@@ -335,7 +381,7 @@ void				ParticipantCLI::modify(const size_t id, CVP_PART participants, const Set
 		}
 	}
 
-	messages.push_back({std::format("Le participant avec le pseudo {} a ete modifie avec succes.", pToModify->getPseudo()), false});
+	PrintUtils::addSuccess(std::format("Le participant avec le pseudo {} a ete modifie avec succes.", pToModify->getPseudo()));
 }
 
 void				ParticipantCLI::displayOne(const Participant& p)
@@ -347,7 +393,7 @@ void				ParticipantCLI::displayAll(CVP_PART participants)
 {
 	if (participants.empty())
 	{
-		messages.push_back({"Aucun participant enregistre.", true});
+		PrintUtils::addError("Aucun participant enregistre.");
 		return ;
 	}
 
@@ -419,7 +465,7 @@ VP_PART				ParticipantCLI::importFromCSV(C_STRING filename)
 {
 	VP_PART list;
 
-	if (!CheckerCSV::validateParticipantCSV(filename, messages))
+	if (!CheckerCSV::validateParticipantCSV(filename))
 		return (list);
 
 	std::ifstream file(filename);
@@ -457,7 +503,7 @@ bool				ParticipantCLI::exportToCSV(CVP_PART participants, C_STRING filename)
 
 	if (!file.is_open())
 	{
-		messages.push_back({std::format("Impossible d'ouvrir le fichier : {}", filename), true});
+		PrintUtils::addError(std::format("Impossible d'ouvrir le fichier : {}", filename));
 		return (false);
 	}
 
@@ -472,7 +518,7 @@ bool				ParticipantCLI::exportToCSV(CVP_PART participants, C_STRING filename)
 
 	file.close();
 
-	messages.push_back({std::format("Tous les participants ont bien ete exportes dans le fichier {}.", filename), false});
+	PrintUtils::addSuccess(std::format("Tous les participants ont bien ete exportes dans le fichier {}.", filename));
 
 	return (true);
 }
@@ -481,104 +527,25 @@ bool				ParticipantCLI::exportToCSV(CVP_PART participants, C_STRING filename)
 /*	HANDLER	*/
 /************/
 
-void				ParticipantCLI::handleMenu(VP_PART& participants, const Settings& settings)
-{
-	try
-	{
-		int choice = -1;
-		bool showMenu = false;
-
-		while (choice != 0)
-		{
-			showMenu = !participants.empty();
-
-			handleTitle();
-			handleMessages();
-			handleList();
-			menu(participants, settings, showMenu);
-			checkInterruption();
-
-			if (!(std::cin >> choice))
-			{
-				checkInterruption();
-
-				std::cin.clear();
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-				messages.push_back({"Saisie invalide.", true});
-				continue ;
-			}
-
-			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-			switch (choice)
-			{
-				case 1:
-					handleAddParticipant(participants, settings);
-					break ;
-
-				case 2:
-					if (!showMenu)
-						break ;
-					handleModifyParticipant(participants, settings);
-					break ;
-
-				case 3:
-					if (!showMenu)
-						break ;
-					handleDeleteParticipant(participants);
-					break ;
-
-				case 4:
-					handleImport(participants, settings);
-					break ;
-
-				case 5:
-					if (!showMenu)
-						break ;
-					handleExport(participants);
-					break;
-
-				case 6:
-					if (!showMenu)
-						break ;
-					handledisplay(participants);
-					break ;
-
-				case 7:
-					return ;
-
-				default:
-					messages.push_back({"Option invalide.", true});
-					continue ;
-			}
-		}
-	}
-	catch (const UserInterruptedException&)
-	{
-		return ;
-	}
-}
-
 void				ParticipantCLI::handleAddParticipant(VP_PART& participants, const Settings& settings)
 {
 	if (participants.size() >= static_cast<size_t>(settings.getNbPlayers()))
 	{
-		messages.push_back({"Impossible d'ajouter un participant : le nombre maximum de joueurs est deja atteint.", true});
+		PrintUtils::addError("Impossible d'ajouter un participant : le nombre maximum de joueurs est deja atteint.");
 		return ;
 	}
 
 	Participant*	newParticipant = create(participants, settings);
 
 	participants.push_back(newParticipant);
-	messages.push_back({"Participant ajoute avec succes !", false});
+	PrintUtils::addSuccess("Participant ajoute avec succes !");
 }
 
 void				ParticipantCLI::handleModifyParticipant(CVP_PART& participants, const Settings& settings)
 {
 	if (participants.empty())
 	{
-		messages.push_back({"Aucun participant a modifier.", true});
+		PrintUtils::addError("Aucun participant a modifier.");
 		return ;
 	}
 
@@ -592,7 +559,7 @@ void				ParticipantCLI::handleModifyParticipant(CVP_PART& participants, const Se
 	{
 		std::cin.clear();
 		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-		messages.push_back({std::format("L'id saisi est invalide => {}.", id), true});
+		PrintUtils::addError(std::format("L'id saisi est invalide => {}.", id));
 		return ;
 	}
 
@@ -605,7 +572,7 @@ void				ParticipantCLI::handleDeleteParticipant(VP_PART& participants)
 {
 	if (participants.empty())
 	{
-		messages.push_back({"Aucun participant a supprimer.", true});
+		PrintUtils::addError("Aucun participant a supprimer.");
 		return ;
 	}
 
@@ -619,7 +586,7 @@ void				ParticipantCLI::handleDeleteParticipant(VP_PART& participants)
 	{
 		std::cin.clear();
 		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-		messages.push_back({std::format("L'id saisi est invalide => {}.", id), true});
+		PrintUtils::addError(std::format("L'id saisi est invalide => {}.", id));
 		return ;
 	}
 
@@ -634,7 +601,7 @@ void				ParticipantCLI::handleDeleteParticipant(VP_PART& participants)
 
 	if (confirm.empty() || std::tolower(confirm[0]) != 'o')
 	{
-		messages.push_back({"Suppression annulee.", false});
+		PrintUtils::addSuccess("Suppression annulee.");
 		return ;
 	}
 
@@ -655,7 +622,7 @@ void				ParticipantCLI::handleImport(VP_PART& participants, const Settings& sett
 
 	if (path.empty())
 	{
-		messages.push_back({"Chemin vide. Import annule.", true});
+		PrintUtils::addError("Chemin vide. Import annule.");
 		return ;
 	}
 
@@ -663,7 +630,7 @@ void				ParticipantCLI::handleImport(VP_PART& participants, const Settings& sett
 
 	if (imported.empty())
 	{
-		messages.push_back({"Aucun participant importe. Verifiez le fichier.", true});
+		PrintUtils::addError("Aucun participant importe. Verifiez le fichier.");
 		return ;
 	}
 
@@ -676,7 +643,7 @@ void				ParticipantCLI::handleImport(VP_PART& participants, const Settings& sett
 		{
 			if (!maxReachedMsgShown)
 			{
-				messages.push_back({"Le quota du tournoi est atteint. Les joueurs restants n'ont pas pu etre ajoutes.", true});
+				PrintUtils::addError("Le quota du tournoi est atteint.\n\t\tLes joueurs restants n'ont pas pu etre ajoutes.");
 				maxReachedMsgShown = true;
 			}
 			delete p;
@@ -684,13 +651,13 @@ void				ParticipantCLI::handleImport(VP_PART& participants, const Settings& sett
 		}
 		else if (!checkPseudo(p->getPseudo(), participants))
 		{
-			messages.push_back({std::format("Pseudo: {} deja utilise -> ignore.", p->getPseudo()), true});
+			PrintUtils::addError(std::format("Pseudo: {} deja utilise -> ignore.", p->getPseudo()));
 			delete p;
 			skipped++;
 		}
 		else if (!settings.getIsMixed() && p->getGenderInt() != settings.getTournamentGender())
 		{
-			messages.push_back({std::format("Participant {} refuse (genre incompatible avec ce tournoi unisexe) -> ignore.", p->getPseudo()), true});
+			PrintUtils::addError(std::format("Participant {} refuse (genre incompatible avec ce tournoi unisexe) -> ignore.", p->getPseudo()));
 			delete p;
 			skipped++;
 		}
@@ -700,14 +667,14 @@ void				ParticipantCLI::handleImport(VP_PART& participants, const Settings& sett
 
 	const int added = static_cast<int>(imported.size()) - skipped;
 
-	messages.push_back({std::format("{} participant(s) importe(s) et {} participant(s) ignore(s).", added, skipped), false});
+	PrintUtils::addSuccess(std::format("{} participant(s) importe(s) et {} participant(s) ignore(s).", added, skipped));
 }
 
 void				ParticipantCLI::handleExport(CVP_PART participants)
 {
 	if (participants.empty())
 	{
-		messages.push_back({"Aucun participant a exporter.", true});
+		PrintUtils::addError("Aucun participant a exporter.");
 		return ;
 	}
 
@@ -720,21 +687,21 @@ void				ParticipantCLI::handleExport(CVP_PART participants)
 
 	if (path.empty())
 	{
-		messages.push_back({"Chemin vide. Export annule.", true});
+		PrintUtils::addError("Chemin vide. Export annule.");
 		return ;
 	}
 
 	if (exportToCSV(participants, path))
-		messages.push_back({std::format("{} participant(s) exporte(s) dans {}.", participants.size(), path), false});
+		PrintUtils::addSuccess(std::format("{} participant(s) exporte(s) dans {}.", participants.size(), path));
 	else
-		messages.push_back({"Echec de l'exportation. Verifiez le chemin.", true});
+		PrintUtils::addError("Echec de l'exportation. Verifiez le chemin.");
 }
 
 void				ParticipantCLI::handledisplay(CVP_PART participants)
 {
 	if (participants.empty())
 	{
-		messages.push_back({"Aucun participant enregistre.", true});
+		PrintUtils::addError("Aucun participant enregistre.");
 		return ;
 	}
 
@@ -748,7 +715,7 @@ void				ParticipantCLI::handledisplay(CVP_PART participants)
 	{
 		std::cin.clear();
 		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-		messages.push_back({"La saisie est invalide.", true});
+		PrintUtils::addError("La saisie est invalide.");
 		return ;
 	}
 
@@ -766,7 +733,7 @@ void				ParticipantCLI::handledisplay(CVP_PART participants)
 		{
 			std::cin.clear();
 			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-			messages.push_back({std::format("L'id {} est invalide.", id), true});
+			PrintUtils::addError(std::format("L'id {} est invalide.", id));
 			return ;
 		}
 
@@ -785,35 +752,10 @@ void				ParticipantCLI::handledisplay(CVP_PART participants)
 		}
 
 		if (!found)
-			messages.push_back({std::format("Aucun participant avec cet ID {}.", id), true});
+			PrintUtils::addError(std::format("Aucun participant avec cet ID {}.", id));
 	}
 	else
-		messages.push_back({"Option invalide.", true});
-}
-
-void				ParticipantCLI::handleMessages()
-{
-	if (!messages.empty())
-	{
-		std::cout << Color::BBLUE << "============================================================\n" << Color::RESET;
-		std::cout << Color::BBLUE << "  MESSAGES | MESSAGES | MESSAGES | MESSAGES | MESSAGES\n" << Color::RESET;
-		std::cout << Color::BBLUE << "============================================================\n" << Color::RESET;
-
-		for (const auto& msgTuple : messages)
-		{
-			const STRING& msg = std::get<0>(msgTuple);
-			const bool isError = std::get<1>(msgTuple);
-
-			if (isError)
-				std::cout << Color::RED << "\t[!]\t" << msg;
-			else
-				std::cout << Color::GREEN << "\t[v]\t" << msg;
-
-			std::cout << Color::RESET << std::endl;
-		}
-		messages.clear();
-		std::cout << Color::BBLUE << "============================================================" << Color::RESET;
-	}
+		PrintUtils::addError("Option invalide.");
 }
 
 void				ParticipantCLI::handleList()
@@ -852,6 +794,34 @@ bool				ParticipantCLI::checkPseudo(C_STRING pseudo, CVP_PART participants)
 	return (true);
 }
 
+Participant*		ParticipantCLI::extractParticipantFromLine(C_STRING line, bool isFirstLine)
+{
+	std::stringstream ss(line);
+	STRING pseudo;
+	STRING firstName;
+	STRING lastName;
+	STRING genderStr;
+
+	std::getline(ss, pseudo, ',');
+	std::getline(ss, lastName, ',');
+	std::getline(ss, firstName, ',');
+	std::getline(ss, genderStr, ',');
+
+	FormatUtils::trim(pseudo);
+	FormatUtils::trim(lastName);
+	FormatUtils::trim(firstName);
+	FormatUtils::trim(genderStr);
+
+	if (isFirstLine && pseudo == "pseudo")
+		return (nullptr);
+
+	Participant::Gender gender = Participant::MALE;
+
+	if (genderStr == "1")
+		gender = Participant::FEMALE;
+
+	return (new Participant(pseudo, lastName, firstName, gender));
+}
 
 /*STRING				ParticipantCLI::printToTerminal(const Participant& p)
 {

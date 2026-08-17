@@ -3,10 +3,12 @@
 //
 
 //	STDLIB
-#include <iostream>
+#include <limits>
+#include <format>
 #include <fstream>
 #include <iomanip>
-#include <limits>
+#include <iostream>
+#include <exception>
 
 //	INCLUDES
 #include "../includes/cli/TournamentCLI.hpp"
@@ -16,6 +18,7 @@
 #include "../includes/cli/PoolCLI.hpp"
 #include "../includes/utils/PrintUtils.hpp"
 #include "../includes/Global.hpp"
+#include "../includes/Color.hpp"
 
 //	TYPEDEF
 using				STRING		=	std::string;
@@ -27,9 +30,20 @@ using               CVP_TEAM	=	const std::vector<Team*>&;
 
 //	STATIC VARIABLES
 
-/************************************************/
-/*  HELPERS INTERNES — utilitaires sans état	*/
-/************************************************/
+/****************/
+/*	EXCEPTION	*/
+/****************/
+
+namespace
+{
+	struct	UserInterruptedException : public std::exception {};
+
+	void checkInterruption()
+	{
+		if (!g_running || std::cin.eof())
+			throw UserInterruptedException();
+	}
+}
 
 /**
  * Vide le buffer stdin apres une lecture echouee.
@@ -53,7 +67,7 @@ STRING				TournamentCLI::promptFilename(C_STRING prompt)
 	std::getline(std::cin, filename);
 
 	if (filename.empty())
-		std::cout << "[!] Nom de fichier vide — opération annulée.\n";
+		PrintUtils::addError("Nom de fichier vide — opération annulée.");
 
 	return (filename);
 }
@@ -87,32 +101,45 @@ STRING				TournamentCLI::getTeamNameOrPlaceholder(const Phase* phase,
 /**
  * Affiche les options du menu en fonction de l etat courant du tournoi.
  */
-void				TournamentCLI::printMenu(const Tournament& tournament)
+void				TournamentCLI::menuTournament(const Tournament& tournament)
+{
+	std::cout << "\n========== TOURNOI : " << tournament.getSettings().getName() << " ==========" << std::endl;
+	std::cout <<  Color::YELLOW << "\t1.\t" << Color::RESET << "Pools" << std::endl;
+	std::cout <<  Color::YELLOW << "\t2.\t" << Color::RESET << "Teams" << std::endl;
+
+	if (tournament.getHasSixteenth() && isSixteenthUnlocked(tournament))
+		std::cout <<  Color::YELLOW << "\t3.\t" << Color::RESET << "1/16" << std::endl;
+
+	if (tournament.getHasHeighth() && isHeighthUnlocked(tournament))
+		std::cout <<  Color::YELLOW << "\t4.\t" << Color::RESET << "1/8" << std::endl;
+
+	if (isQuartersUnlocked(tournament))
+		std::cout <<  Color::YELLOW << "\t5.\t" << Color::RESET << "1/4" << std::endl;
+
+	if (isSemisUnlocked(tournament))
+		std::cout <<  Color::YELLOW << "\t6.\t" << Color::RESET << "1/2" << std::endl;
+
+	//if (isThirdUnlocked(tournament))
+	std::cout <<  Color::YELLOW << "\t7.\t" << Color::RESET << "3eme place" << std::endl;
+
+	if (isFinalUnlocked(tournament))
+		std::cout <<  Color::YELLOW << "\t7.\t" << Color::RESET << "Final" << std::endl;
+
+	std::cout << "────────────────────────────────────────────────────────────" << std::endl;
+	std::cout <<  Color::YELLOW << "\t8.\t" << Color::RESET << "Export" << std::endl;
+	std::cout << "────────────────────────────────────────────────────────────" << std::endl;
+	std::cout <<  Color::YELLOW << "\t9.\t" << Color::RESET << "Show" << std::endl;
+	std::cout << "────────────────────────────────────────────────────────────" << std::endl;
+	std::cout <<  Color::YELLOW << "\tQ.\t" << Color::RESET << "Quit" << std::endl;
+	std::cout << "============================================================" << std::endl;
+	std::cout << "Votre choix : ";
+}
+
+void				TournamentCLI::handleTitle()
 {
 	PrintUtils::clear();
 	PrintUtils::banner();
-	std::cout << "\n========== TOURNOI : " << tournament.getSettings().getName() << " ==========\n";
-	std::cout << "1. Poules (Scores / Classement)\n";
-	std::cout << "2. Composition des equipes par Poule\n";
-
-	if (tournament.getHasSixteenth())
-		std::cout << "3. " << (tournament.getSixteenth() ? "Acceder aux" : "Generer les") << " 1/16 de Finale\n";
-
-	if (tournament.getHasHeighth())
-		std::cout << "4. " << (tournament.getHeighth() ? "Acceder aux" : "Generer les") << " 1/8 de Finale\n";
-
-	std::cout << "5. " << (tournament.getQuarters() ? "Acceder aux" : "Generer les") << " Quarts de Finale\n";
-	std::cout << "6. " << (tournament.getSemis()    ? "Acceder aux" : "Generer les") << " Demi-Finales\n";
-	std::cout << "7. " << (tournament.getFinal()    ? "Acceder a la" : "Generer la") << " Finale\n";
-	std::cout << "8. Afficher l'arbre complet (Bracket)\n";
-	std::cout << "9. Afficher le podium\n";
-	std::cout << "──────────────────────────────────\n";
-	std::cout << "E. Exporter une phase en .txt\n";
-	std::cout << "T. Exporter le tournoi complet en .txt\n";
-	std::cout << "──────────────────────────────────\n";
-	std::cout << "q. Quitter\n";
-	std::cout << "==================================\n";
-	std::cout << "Votre choix : ";
+	PrintUtils::tournament();
 }
 
 /************************/
@@ -147,7 +174,7 @@ void				TournamentCLI::handleMatchList(CVP_MATCH matches, C_STRING title)
 		if (!(std::cin >> mIdx) || mIdx < 1 || mIdx > matches.size() + 1)
 		{
 			clearInput();
-			std::cout << "Choix invalide.\n";
+			PrintUtils::addError("Choix invalide.");
 			continue ;
 		}
 
@@ -166,7 +193,7 @@ void				TournamentCLI::handlePhase(Phase* phase, C_STRING phaseName)
 {
 	if (phase == nullptr)
 	{
-		std::cout << "Cette phase n'est pas encore active.\n";
+		PrintUtils::addError("Cette phase n'est pas encore active.");
 		return ;
 	}
 
@@ -183,7 +210,7 @@ void				TournamentCLI::handlePoolSelection(Tournament& tournament)
 
 	if (pools.empty())
 	{
-		std::cout << "Aucune poule disponible.\n";
+		PrintUtils::addError("Aucune poule disponible.");
 		return ;
 	}
 
@@ -222,7 +249,10 @@ void				TournamentCLI::handleEliminationPhase(Phase* phase,
 	{
 		generateFn();
 
-		std::cout << (phase ? successMsg : errorMsg) << "\n";
+		if (phase)
+			PrintUtils::addSuccess(successMsg);
+		else
+			PrintUtils::addError(errorMsg);
 	}
 	else
 		handlePhase(phase, phaseName);
@@ -270,7 +300,7 @@ bool				TournamentCLI::exportPoolsToFile(const Tournament& tournament, C_STRING 
 
 	if (!out.is_open())
 	{
-		std::cerr << "[!] Impossible de créer le fichier : " << filename << "\n";
+		PrintUtils::addError(std::format("Impossible de créer le fichier : {}", filename));
 		return (false);
 	}
 
@@ -286,175 +316,351 @@ bool				TournamentCLI::exportPoolsToFile(const Tournament& tournament, C_STRING 
  */
 void				TournamentCLI::handleExportPhase(Tournament& tournament)
 {
-	std::cout << "\nQuelle phase exporter ?\n";
-	std::cout << "  1. Poules\n";
-	std::cout << "  2. 1/16 de Finale\n";
-	std::cout << "  3. 1/8 de Finale\n";
-	std::cout << "  4. Quarts de Finale\n";
-	std::cout << "  5. Demi-Finales\n";
-	std::cout << "  6. Finale\n";
-	std::cout << "  7. Match pour la 3e Place\n";
-	std::cout << "Choix : ";
-
-	int phaseChoice;
-
-	if (!(std::cin >> phaseChoice))
+	while (true)
 	{
-		clearInput();
-		return ;
-	}
+		handleTitle();
+		PrintUtils::exportMenu();
+		std::cout << Color::YELLOW << "\t1.\t" << Color::RESET << "Players\n";
+		std::cout << Color::YELLOW << "\t2.\t" << Color::RESET << "Teams\n";
+		std::cout << Color::YELLOW << "\t3.\t" << Color::RESET << "Pools\n";
 
-	clearInput();
+		int menuIdx = 4;
+		int sixteenthIdx = -1;
+		int heighthIdx = -1;
+		int quarterIdx = -1;
+		int semiIdx = -1;
+		int finalIdx = -1;
+		int thirdIdx = -1;
 
-	const STRING filename = promptFilename("Nom du fichier de sortie : ");
-
-	if (filename.empty())
-		return ;
-
-	bool ok = false;
-
-	if (phaseChoice == 1)
-		ok = exportPoolsToFile(tournament, filename);
-	else
-	{
-		const Phase* target = getPhaseByMenuChoice(tournament, phaseChoice);
-
-		if (!target)
+		if (tournament.getSixteenth() != nullptr)
 		{
-			std::cout << "[!] Phase non disponible ou non encore générée.\n";
+			std::cout << Color::YELLOW << std::format("\t{}.\t", menuIdx) << Color::RESET << "1/16" << std::endl;
+			sixteenthIdx = menuIdx++;
+		}
+
+		if (tournament.getHeighth() != nullptr)
+		{
+			std::cout << Color::YELLOW << std::format("\t{}.\t", menuIdx) << Color::RESET << "1/8" << std::endl;
+			heighthIdx = menuIdx++;
+		}
+
+		if (tournament.getQuarters() != nullptr)
+		{
+			std::cout << Color::YELLOW << std::format("\t{}.\t", menuIdx) << Color::RESET << "1/4" << std::endl;
+			quarterIdx = menuIdx++;
+		}
+
+		if (tournament.getSemis() != nullptr)
+		{
+			std::cout << Color::YELLOW << std::format("\t{}.\t", menuIdx) << Color::RESET << "1/2" << std::endl;
+			semiIdx = menuIdx++;
+		}
+
+		if (tournament.getFinal() != nullptr)
+		{
+			std::cout << Color::YELLOW << std::format("\t{}.\t", menuIdx) << Color::RESET << "Final" << std::endl;
+			finalIdx = menuIdx++;
+		}
+
+		if (tournament.getThirdPlace() != nullptr)
+		{
+			std::cout << Color::YELLOW << std::format("\t{}.\t", menuIdx) << Color::RESET << "3 place" << std::endl;
+			thirdIdx = menuIdx++;
+		}
+
+		int fullIdx = menuIdx++;
+
+		std::cout << "────────────────────────────────────────────────────────────\n";
+		std::cout << std::format("  {}. Tournoi Complet\n", fullIdx);
+		std::cout << Color::YELLOW << "\t0.\t" << Color::RESET << "Quitter" <<std::endl;
+		std::cout << "=============================================================\n";
+		std::cout << "\tChoix :\t";
+
+		STRING rawInput;
+
+		if (!(std::cin >> rawInput))
+		{
+			clearInput();
 			return ;
 		}
 
-		ok = exportPhaseToTxt(target, filename);
-	}
+		int choice;
 
-	if (ok)
-		std::cout << "\033[1;32m[v] Export réussi dans '" << filename << "'.\033[0m\n";
+		try
+		{
+			choice = std::stoi(rawInput);
+		}
+		catch (...)
+		{
+			PrintUtils::addError("Saisie invalide.");
+			continue ;
+		}
+
+		if (choice == 0)
+			return ;
+
+		clearInput();
+
+		const STRING filename = promptFilename("Nom du fichier de sortie : ");
+
+		if (filename.empty())
+			continue ;
+
+		bool ok = false;
+
+		if (choice == 1)
+		{
+			std::ofstream out(filename);
+
+			if (out.is_open())
+			{
+				out << "========== LISTE DES PARTICIPANTS ==========\n";
+				for (const Pool* p : tournament.getPools())
+				{
+					if (!p)
+						continue ;
+
+					for (const Team* t : p->getTeams())
+					{
+						if (!t)
+							continue ;
+
+						out << "Equipe : " << t->getName() << "\n";
+					}
+				}
+				out.close();
+				ok = true;
+			}
+		} 
+		else if (choice == 2)
+		{
+			std::ofstream out(filename);
+
+			if (out.is_open())
+			{
+				out << "========== LISTE DES EQUIPES ==========\n";
+
+				for (const Pool* p : tournament.getPools())
+				{
+					if (!p)
+						continue ;
+
+					out << "\n[" << p->getName() << "]\n";
+
+					for (const Team* t : p->getTeams())
+						if (t)
+							out << "  - " << t->getName() << "\n";
+				}
+				out.close();
+				ok = true;
+			}
+		} 
+		else if (choice == 3)
+			ok = exportPoolsToFile(tournament, filename);
+		else if (choice == sixteenthIdx)
+			ok = exportPhaseToTxt(tournament.getSixteenth(), filename);
+		else if (choice == heighthIdx)
+			ok = exportPhaseToTxt(tournament.getHeighth(), filename);
+		else if (choice == quarterIdx)
+			ok = exportPhaseToTxt(tournament.getQuarters(), filename);
+		else if (choice == semiIdx)
+			ok = exportPhaseToTxt(tournament.getSemis(), filename);
+		else if (choice == finalIdx)
+			ok = exportPhaseToTxt(tournament.getFinal(), filename);
+		else if (choice == thirdIdx)
+			ok = exportPhaseToTxt(tournament.getThirdPlace(), filename);
+		else if (choice == fullIdx)
+			ok = exportTournamentToTxt(tournament, filename);
+		else
+		{
+			PrintUtils::addError("Choix non valide.");
+			continue ;
+		}
+
+		if (ok)
+		{
+			PrintUtils::addSuccess(std::format("Export réussi dans {}.", filename));
+			break ;
+		}
+		else
+			PrintUtils::addError("Echec de l'export.");
+	}
 }
 
-/****************************/
-/*  PUBLIC — displayMenu	*/
-/****************************/
+bool				TournamentCLI::isPoolsFinished(const Tournament& tournament)
+{
+	for (const Pool* pool : tournament.getPools())
+	{
+		if (!pool)
+			continue ;
+
+		for (const Match* m : pool->getMatches())
+			if (m && !m->isFinished())
+				return (false);
+	}
+
+	return (!tournament.getPools().empty());
+}
+
+bool				TournamentCLI::isSixteenthUnlocked(const Tournament& tournament)
+{
+	return (tournament.getHasSixteenth() && isPoolsFinished(tournament));
+}
+
+bool				TournamentCLI::isHeighthUnlocked(const Tournament& tournament)
+{
+	if (!tournament.getHasHeighth())
+		return (false);
+
+	if (tournament.getHasSixteenth())
+		return (tournament.getSixteenth() && tournament.getSixteenth()->isFinished());
+
+	return (isPoolsFinished(tournament));
+}
+
+bool				TournamentCLI::isQuartersUnlocked(const Tournament& tournament)
+{
+	if (tournament.getHasHeighth())
+		return (tournament.getHeighth() && tournament.getHeighth()->isFinished());
+
+	if (tournament.getHasSixteenth())
+		return (tournament.getSixteenth() && tournament.getSixteenth()->isFinished());
+
+	return (isPoolsFinished(tournament));
+}
+
+bool				TournamentCLI::isSemisUnlocked(const Tournament& tournament)
+{
+	return (tournament.getQuarters() && tournament.getQuarters()->isFinished());
+}
+
+bool				TournamentCLI::isFinalUnlocked(const Tournament& tournament)
+{
+	return (tournament.getSemis() && tournament.getSemis()->isFinished());
+}
+
+/************/
+/*  PUBLIC	*/
+/************/
 
 /**
  * Point d entree du tournoi.
  */
-void				TournamentCLI::displayMenu(Tournament& tournament)
+void				TournamentCLI::handleMenuTournament(Tournament& tournament)
 {
-	PrintUtils::clear();
-	PrintUtils::banner();
-
-	while (g_running)
+	try
 	{
-		printMenu(tournament);
+		STRING input;
+		int choice;
 
-		char input;
-
-		if (!(std::cin >> input))
+		while (true)
 		{
-			clearInput();
-			std::cout << "Saisie invalide.\n";
-			continue ;
+			handleTitle();
+			PrintUtils::handleMessages();
+			menuTournament(tournament);
+			checkInterruption();
+
+			if (!(std::cin >> input))
+			{
+				checkInterruption();
+				clearInput();
+				PrintUtils::addError("Saisie invalide.");
+				continue ;
+			}
+
+			if (input == "q" || input == "Q")
+				return ;
+
+			if (input == "e" || input == "E")
+			{
+				handleExportPhase(tournament);
+				continue ;
+			}
+
+			try
+			{
+				choice = std::stoi(input);
+			}
+			catch (...)
+			{
+				PrintUtils::addError("Saisie invalide.");
+				continue ;
+			}
+
+			switch (choice)
+			{
+				case 1:
+					handlePoolSelection(tournament);
+					break ;
+
+				case 2:
+					for (const Pool* pool : tournament.getPools())
+						PoolCLI::displayPoolDetails(*pool);
+					break ;
+
+				case 3:
+					if (tournament.getHasSixteenth() && isSixteenthUnlocked(tournament))
+						handleEliminationPhase(tournament.getSixteenth(),[&]() { tournament.generateSixteenths(); },
+							"1/16 DE FINALE", "1/16 generes avec succes !",	"Impossible : verifiez que les poules soient terminees.");
+					else
+						PrintUtils::addError("Menu non disponible pour le moment.");
+					break ;
+
+				case 4:
+					if (tournament.getHasHeighth() && isHeighthUnlocked(tournament))
+						handleEliminationPhase(tournament.getHeighth(), [&]() { tournament.generateHeighths(); },
+							"1/8 DE FINALE", "1/8 generes avec succes !", "Impossible : verifiez que la phase precedente soit terminee.");
+					else
+						PrintUtils::addError("Menu non disponible pour le moment.");
+					break ;
+
+				case 5:
+					if (isQuartersUnlocked(tournament))
+						handleEliminationPhase(tournament.getQuarters(), [&]() { tournament.generateQuarters(); },
+							"QUARTS DE FINALE", "Quarts de finale generes avec succes !", "Impossible : verifiez que les poules/phases precedentes soient terminees.");
+					else
+						PrintUtils::addError("Menu non disponible pour le moment.");
+					break ;
+
+				case 6:
+					if (isSemisUnlocked(tournament))
+						handleEliminationPhase(tournament.getSemis(), [&]() { tournament.generateSemis(); },
+							"DEMI-FINALES", "Demi-finales generees avec succes !", "Impossible : verifiez que les quarts soient termines.");
+					else
+						PrintUtils::addError("Menu non disponible pour le moment.");
+					break ;
+
+				case 7:
+					if (isFinalUnlocked(tournament))
+						handleEliminationPhase(tournament.getFinal(), [&]() { tournament.generateFinal(); },
+							"FINALE", "Finale generee avec succes !", "Impossible : verifiez que les demi-finales soient terminees.");
+					else
+						PrintUtils::addError("Menu non disponible pour le moment.");
+					break ;
+
+				case 8:
+					if (tournament.getQuarters() != nullptr)
+						displayFullBracket(tournament);
+					else
+						PrintUtils::addError("L'arbre n'est pas encore disponible.");
+					break ;
+
+				case 9:
+					if (tournament.getFinal() && tournament.getFinal()->isFinished())
+						displayPodium(tournament);
+					else
+						PrintUtils::addError("Le podium n'est pas encore disponible.");
+					break ;
+
+				default:
+					PrintUtils::addError("Choix non disponible.");
+					break ;
+			}
 		}
-
-		if (input == 'q' || input == 'Q')
-			return ;
-
-		if (input == 'E' || input == 'e')
-		{
-			handleExportPhase(tournament);
-			continue ;
-		}
-
-		if (input == 'T' || input == 't')
-		{
-			clearInput();
-
-			const STRING filename = promptFilename("Nom du fichier de sortie : ");
-
-			if (!filename.empty() && exportTournamentToTxt(tournament, filename))
-				std::cout << "\033[1;32m[v] Tournoi exporté dans '" << filename << "'.\033[0m\n";
-
-			continue ;
-		}
-
-		const int choice = input - '0';
-
-		switch (choice)
-		{
-			case 1:
-				handlePoolSelection(tournament);
-				break ;
-
-			case 2:
-				for (const Pool* pool : tournament.getPools())
-					PoolCLI::displayPoolDetails(*pool);
-				break ;
-
-			case 3:
-				if (tournament.getHasSixteenth())
-					handleEliminationPhase(
-						tournament.getSixteenth(),
-						[&]() { tournament.generateSixteenths(); },
-						"1/16 DE FINALE",
-						"1/16 generes avec succes !",
-						"Impossible : verifiez que les poules soient terminees."
-					);
-				break ;
-
-			case 4:
-				if (tournament.getHasHeighth())
-					handleEliminationPhase(
-						tournament.getHeighth(),
-						[&]() { tournament.generateHeighths(); },
-						"1/8 DE FINALE",
-						"1/8 generes avec succes !",
-						"Impossible : verifiez que la phase precedente soit terminee."
-					);
-				break ;
-
-			case 5:
-				handleEliminationPhase(
-					tournament.getQuarters(),
-					[&]() { tournament.generateQuarters(); },
-					"QUARTS DE FINALE",
-					"Quarts de finale generes avec succes !",
-					"Impossible : verifiez que les poules soient terminees."
-				);
-				break ;
-
-			case 6:
-				handleEliminationPhase(
-					tournament.getSemis(),
-					[&]() { tournament.generateSemis(); },
-					"DEMI-FINALES",
-					"Demi-finales generees avec succes !",
-					"Impossible : verifiez que les quarts soient termines."
-				);
-				break ;
-
-			case 7:
-				handleEliminationPhase(
-					tournament.getFinal(),
-					[&]() { tournament.generateFinal(); },
-					"FINALE",
-					"Finale generee avec succes !",
-					"Impossible : verifiez que les demi-finales soient terminees."
-				);
-				break ;
-
-			case 8:
-				displayFullBracket(tournament);
-				break ;
-
-			case 9:
-				displayPodium(tournament);
-				break ;
-
-			default:
-				std::cout << "Choix non disponible.\n";
-				break ;
-		}
+	}
+	catch (const UserInterruptedException&)
+	{
+		return ;
 	}
 }
 
@@ -534,9 +740,6 @@ void				TournamentCLI::displayFullBracket(Tournament& tournament)
 	std::cout << "==============================================================================\n";
 }
 
-/**
- * Affiche le podium final avec couleurs ANSI.
- */
 void				TournamentCLI::displayPodium(const Tournament& tournament)
 {
 	const Phase* final = tournament.getFinal();
@@ -548,7 +751,7 @@ void				TournamentCLI::displayPodium(const Tournament& tournament)
 
 	if (!final || !final->isFinished())
 	{
-		std::cout << "\033[1;33m  La finale n'est pas encore terminee.\033[0m\n";
+		PrintUtils::addError("La finale n'est pas encore terminee.");
 		return ;
 	}
 
@@ -556,10 +759,10 @@ void				TournamentCLI::displayPodium(const Tournament& tournament)
 	CVP_TEAM losers = final->getLosers();
 
 	if (!winners.empty() && winners[0])
-		std::cout << "\033[1;33m  1er : " << winners[0]->getName() << "\033[0m\n";
+		std::cout << "\t\t\t\t1er:\t" << winners[0]->getName() << std::endl;
 
 	if (!losers.empty() && losers[0])
-		std::cout << "\033[0;37m  2e  : " << losers[0]->getName() << "\033[0m\n";
+		std::cout << "\t\t\t2e:\t\t" << losers[0]->getName() << std::endl;
 
 	if (thirdPlace && thirdPlace->isFinished())
 	{
@@ -567,10 +770,10 @@ void				TournamentCLI::displayPodium(const Tournament& tournament)
 		CVP_TEAM fourth = thirdPlace->getLosers();
 
 		if (!third.empty()  && third[0])
-			std::cout << "\033[0;33m  3e  : " << third[0]->getName()  << "\033[0m\n";
+			std::cout << "\t\t3e:\t\t\t" << third[0]->getName()  << std::endl;
 
 		if (!fourth.empty() && fourth[0])
-			std::cout << "  4e  : " << fourth[0]->getName() << "\n";
+			std::cout << "\t4e:\t\t\t\t" << fourth[0]->getName() << std::endl;
 	}
 
 	std::cout << "══════════════════════════════════════\n";
@@ -580,31 +783,24 @@ void				TournamentCLI::displayPodium(const Tournament& tournament)
 /*  PUBLIC — Export fichier	*/
 /****************************/
 
-/**
- * Exporte une phase dans un fichier .txt via PhaseCLI.
- */
 bool				TournamentCLI::exportPhaseToTxt(const Phase* phase, C_STRING filename)
 {
 	if (!phase)
 	{
-		std::cerr << "[!] Phase inexistante ou non generee — export annule.\n";
+		PrintUtils::addError("Phase inexistante ou non generee — export annule.");
 		return (false);
 	}
 
 	return (PhaseCLI::exportToTxt(*phase, filename));
 }
 
-/**
- * Exporte le tournoi complet en .txt.
- * Sequence fixe : en-tête → poules → phases → palmarès.
- */
 bool				TournamentCLI::exportTournamentToTxt(const Tournament& tournament, C_STRING filename)
 {
 	std::ofstream out(filename);
 
 	if (!out.is_open())
 	{
-		std::cerr << "[!] Impossible de creer le fichier : " << filename << "\n";
+		PrintUtils::addError(std::format("Impossible de creer le fichier : {}", filename));
 		return (false);
 	}
 
@@ -627,9 +823,6 @@ bool				TournamentCLI::exportTournamentToTxt(const Tournament& tournament, C_STR
 /*  HELPERS ECRITURE FICHIER	*/
 /********************************/
 
-/**
- * Ecrit l en-tete du fichier export (nom + settings essentiels).
- */
 void				TournamentCLI::writeHeader(std::ofstream& out, const Tournament& tournament)
 {
 	const Settings&	s = tournament.getSettings();
@@ -655,9 +848,6 @@ void				TournamentCLI::writeHeader(std::ofstream& out, const Tournament& tournam
 	out << "\tPetite finale\t:\t" << (s.getIsThirdPlaceMatch()    ? "Oui" : "Non") << "\n\n";
 }
 
-/**
- * Ecrit le bloc [POULES] : pour chaque poule, matchs + classement.
- */
 void				TournamentCLI::writePools(std::ofstream& out, const Tournament& tournament)
 {
 	const VP_POOL pools = tournament.getPools();
@@ -668,7 +858,7 @@ void				TournamentCLI::writePools(std::ofstream& out, const Tournament& tourname
 
 	if (pools.empty())
 	{
-		out << "\tAucune poule enregistree.\n\n";
+		PrintUtils::addError("Aucune poule enregistree.");
 		return ;
 	}
 
@@ -688,9 +878,6 @@ void				TournamentCLI::writePools(std::ofstream& out, const Tournament& tourname
 	out << "\n";
 }
 
-/**
- * Ecrit la liste des matchs d une poule dans out.
- */
 void				TournamentCLI::writePoolMatches(std::ofstream& out, const Pool& pool)
 {
 	out << "\n\t[MATCHS]\n";
@@ -719,9 +906,6 @@ void				TournamentCLI::writePoolMatches(std::ofstream& out, const Pool& pool)
 	}
 }
 
-/**
- * Ecrit le tableau de classement d une poule dans out.
- */
 void				TournamentCLI::writePoolStandings(std::ofstream& out, const Pool& pool)
 {
 	CVP_TEAM teams = pool.getTeams();
@@ -751,9 +935,6 @@ void				TournamentCLI::writePoolStandings(std::ofstream& out, const Pool& pool)
 	}
 }
 
-/**
- * Ecrit le bloc d une phase eliminatoire dans out.
- */
 void				TournamentCLI::writePhaseBlock(std::ofstream& out, const Phase* phase)
 {
 	if (!phase)
@@ -768,7 +949,7 @@ void				TournamentCLI::writePhaseBlock(std::ofstream& out, const Phase* phase)
 
 	if (matches.empty())
 	{
-		out << "\tAucun match enregistre.\n\n";
+		PrintUtils::addError("Aucun match enregistre.");
 		return ;
 	}
 
@@ -783,9 +964,6 @@ void				TournamentCLI::writePhaseBlock(std::ofstream& out, const Phase* phase)
 	out << "\n";
 }
 
-/**
- * Ecrit une rencontre (N sets consecutifs) dans out.
- */
 void				TournamentCLI::writeEncounterBlock(std::ofstream& out, CVP_MATCH matches,
 														const size_t startIdx, const int nbSets,
 														const int encounterNum)
@@ -845,9 +1023,6 @@ void				TournamentCLI::writeEncounterBlock(std::ofstream& out, CVP_MATCH matches
 	out << "\n  " << STRING(50, '-') << "\n";
 }
 
-/**
- * Ecrit le rEcapitulatif qualifiEs/EliminEs d une phase terminee dans out.
- */
 void				TournamentCLI::writePhaseResults(std::ofstream& out, const Phase& phase)
 {
 	CVP_TEAM winners = phase.getWinners();
@@ -869,9 +1044,6 @@ void				TournamentCLI::writePhaseResults(std::ofstream& out, const Phase& phase)
 	}
 }
 
-/**
- * Ecrit le bloc [PALMARES] dans out.
- */
 void				TournamentCLI::writePalmares(std::ofstream& out, const Tournament& tournament)
 {
 	const Phase* final = tournament.getFinal();
@@ -883,7 +1055,7 @@ void				TournamentCLI::writePalmares(std::ofstream& out, const Tournament& tourn
 
 	if (!final || !final->isFinished())
 	{
-		out << "\tFinale non terminee — palmares indisponible.\n\n";
+		PrintUtils::addError("Finale non terminee — palmares indisponible.");
 		return ;
 	}
 

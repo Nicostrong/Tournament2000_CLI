@@ -10,8 +10,12 @@
 #include "../includes/Color.hpp"
 
 //	TYPEDEF
+using				STRING		=	std::string;
+using				C_STRING	=	const std::string&;
+using				VTUPLE_MSG	=	std::vector<std::tuple<std::string, bool>>;
 
 //	STATIC VARIABLES
+VTUPLE_MSG          PrintUtils::_messages;
 
 /****************/
 /*	CANONICAL	*/
@@ -281,4 +285,39 @@ void           PrintUtils::exportMenu()
 
 ============================================================
 )" << std::endl;
+}
+
+void                PrintUtils::addSuccess(C_STRING msg)
+{
+    _messages.push_back({msg, false});
+}
+
+void                PrintUtils::addError(C_STRING msg)
+{
+    _messages.push_back({msg, true});
+}
+
+void				PrintUtils::handleMessages()
+{
+	if (!_messages.empty())
+	{
+		std::cout << Color::BBLUE << "============================================================\n" << Color::RESET;
+		std::cout << Color::BBLUE << "  MESSAGES | MESSAGES | MESSAGES | MESSAGES | MESSAGES\n" << Color::RESET;
+		std::cout << Color::BBLUE << "============================================================\n" << Color::RESET;
+
+		for (const auto& msgTuple : _messages)
+		{
+			C_STRING msg = std::get<0>(msgTuple);
+			const bool isError = std::get<1>(msgTuple);
+
+			if (isError)
+				std::cout << Color::RED << "\t[!]\t" << msg;
+			else
+				std::cout << Color::GREEN << "\t[v]\t" << msg;
+
+			std::cout << Color::RESET << std::endl;
+		}
+		_messages.clear();
+		std::cout << Color::BBLUE << "============================================================" << Color::RESET;
+	}
 }

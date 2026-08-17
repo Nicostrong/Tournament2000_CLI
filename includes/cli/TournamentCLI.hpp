@@ -27,7 +27,7 @@ class TournamentCLI
 	public:
 
 		//	Menu principal
-		static void					displayMenu(Tournament& tournament);
+		static void					handleMenuTournament(Tournament& tournament);
 
 		//	Affichage terminal
 		static void					displayFullBracket(Tournament& tournament);
@@ -40,8 +40,17 @@ class TournamentCLI
 	private:
 
 		//	Affichage du menu
-		static void					printMenu(const Tournament& tournament);
+		static void					menuTournament(const Tournament& tournament);
+		static void					handleTitle();
 
+		//	Verification de phase
+		static bool					isPoolsFinished(const Tournament& tournament);
+		static bool					isSixteenthUnlocked(const Tournament& tournament);
+		static bool					isHeighthUnlocked(const Tournament& tournament);
+		static bool					isQuartersUnlocked(const Tournament& tournament);
+		static bool					isSemisUnlocked(const Tournament& tournament);
+		static bool					isFinalUnlocked(const Tournament& tournament);
+		
 		//	Handlers de saisie
 		static STRING				promptFilename(C_STRING prompt);
 		static void					handlePoolSelection(Tournament& tournament);

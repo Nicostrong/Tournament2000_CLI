@@ -13,6 +13,7 @@
 //	INCLUDES
 #include "../includes/utils/CheckerCSV.hpp"
 #include "../includes/utils/FormatUtils.hpp"
+#include "../includes/utils/PrintUtils.hpp"
 #include "../includes/cli/ParticipantCLI.hpp"
 
 //	TYPEDEF
@@ -42,13 +43,13 @@ using				V_STRING	=	std::vector<std::string>;
 /*	PUBLIC METHOD	*/
 /********************/
 
-bool								CheckerCSV::validateParticipantCSV(C_STRING filename, VTUPLE_MSG& messages)
+bool								CheckerCSV::validateParticipantCSV(C_STRING filename)
 {
 	std::ifstream file(filename);
 
 	if (!file.is_open())
 	{
-		messages.push_back({std::format("Impossible d'ouvrir le fichier : {}", filename), true});
+		PrintUtils::addError(std::format("Impossible d'ouvrir le fichier : {}", filename));
 		return (false);
 	}
 
@@ -71,10 +72,10 @@ bool								CheckerCSV::validateParticipantCSV(C_STRING filename, VTUPLE_MSG& me
 		{
 			std::stringstream ss;
 
-			ss << "Ligne " << lineNumber << " : Structure incorrecte. Attendu : 4 colonnes, Trouve : " 
-			<< (commaCount + 1) << " colonnes.";
+			//ss << "Ligne " << lineNumber << " : Structure incorrecte. Attendu : 4 colonnes, Trouve : " 
+			//<< (commaCount + 1) << " colonnes.";
 			
-			messages.push_back({ss.str(), true});
+			PrintUtils::addError(std::format("Ligne {} : Structure incorrecte. Attendu : 4 colonnes, Trouve : {} colonnes.", lineNumber, (commaCount + 1)));
 			isValid = false;
 
 			continue;
@@ -99,9 +100,9 @@ bool								CheckerCSV::validateParticipantCSV(C_STRING filename, VTUPLE_MSG& me
 		{
 			std::stringstream ss;
 
-			ss << "Ligne " << lineNumber << " : Un des champs obligatoires est vide.";
+			//ss << "Ligne " << lineNumber << " : Un des champs obligatoires est vide.";
 			
-			messages.push_back({ss.str(), true});
+			PrintUtils::addError(std::format("Ligne {}: Un des champs obligatoires est vide", lineNumber ));
 			isValid = false;
 		}
 	}
