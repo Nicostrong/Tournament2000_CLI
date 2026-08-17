@@ -50,6 +50,39 @@ namespace
 }
 
 /************/
+/*	PRIVATE	*/
+/************/
+
+Participant*		ParticipantCLI::extractParticipantFromLine(C_STRING line, bool isFirstLine)
+{
+	std::stringstream ss(line);
+	STRING pseudo;
+	STRING firstName;
+	STRING lastName;
+	STRING genderStr;
+
+	std::getline(ss, pseudo, ',');
+	std::getline(ss, lastName, ',');
+	std::getline(ss, firstName, ',');
+	std::getline(ss, genderStr, ',');
+
+	FormatUtils::trim(pseudo);
+	FormatUtils::trim(lastName);
+	FormatUtils::trim(firstName);
+	FormatUtils::trim(genderStr);
+
+	if (isFirstLine && pseudo == "pseudo")
+		return (nullptr);
+
+	Participant::Gender gender = Participant::MALE;
+
+	if (genderStr == "1")
+		gender = Participant::FEMALE;
+
+	return (new Participant(pseudo, lastName, firstName, gender));
+}
+
+/************/
 /*	MENU	*/
 /************/
 
@@ -89,85 +122,6 @@ void				ParticipantCLI::menu(CVP_PART participants, const Settings& settings,  c
 		std::cout << Color::YELLOW << "\t7.\t" << Color::RESET << "Lancer le tournoi\n\n";
 
 	std::cout << "\tChoix : ";
-}
-
-void				ParticipantCLI::handleMenu(VP_PART& participants, const Settings& settings)
-{
-	try
-	{
-		int choice = -1;
-		bool showMenu = false;
-
-		while (choice != 0)
-		{
-			showMenu = !participants.empty();
-
-			handleTitle();
-			handleMessages();
-			handleList();
-			menu(participants, settings, showMenu);
-			checkInterruption();
-
-			if (!(std::cin >> choice))
-			{
-				checkInterruption();
-
-				std::cin.clear();
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-				messages.push_back({"Saisie invalide.", true});
-				continue ;
-			}
-
-			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-			switch (choice)
-			{
-				case 1:
-					handleAddParticipant(participants, settings);
-					break ;
-
-				case 2:
-					if (!showMenu)
-						break ;
-					handleModifyParticipant(participants, settings);
-					break ;
-
-				case 3:
-					if (!showMenu)
-						break ;
-					handleDeleteParticipant(participants);
-					break ;
-
-				case 4:
-					handleImport(participants, settings);
-					break ;
-
-				case 5:
-					if (!showMenu)
-						break ;
-					handleExport(participants);
-					break;
-
-				case 6:
-					if (!showMenu)
-						break ;
-					handledisplay(participants);
-					break ;
-
-				case 7:
-					return ;
-
-				default:
-					messages.push_back({"Option invalide.", true});
-					continue ;
-			}
-		}
-	}
-	catch (const UserInterruptedException&)
-	{
-		return ;
-	}
 }
 
 /****************/
@@ -464,25 +418,11 @@ void				ParticipantCLI::displayAll(CVP_PART participants)
 VP_PART				ParticipantCLI::importFromCSV(C_STRING filename)
 {
 	VP_PART list;
-	V_STRING validationErrors;
 
-	if (!CheckerCSV::validateParticipantCSV(filename, validationErrors))
-	{
-		messages.push_back({"ERREUR : Le fichier CSV contient des erreurs de format.", true});
-
-		for (const auto& err : validationErrors)
-			messages.push_back({std::format("\t\t-> {}", err), true});
-
+	if (!CheckerCSV::validateParticipantCSV(filename, messages))
 		return (list);
-	}
 
 	std::ifstream file(filename);
-
-	if (!file.is_open())
-	{
-		messages.push_back({std::format("Impossible d'ouvrir le fichier : {}", filename), true});
-		return (list);
-	}
 
 	STRING line;
 	bool isFirstLine = true;
@@ -494,34 +434,12 @@ VP_PART				ParticipantCLI::importFromCSV(C_STRING filename)
 		if (line.empty())
 			continue ;
 
-		std::stringstream ss(line);
-		STRING pseudo;
-		STRING firstName;
-		STRING lastName;
-		STRING genderStr;
+		Participant* newParticipant = extractParticipantFromLine(line, isFirstLine);
+		
+		if (newParticipant != nullptr)
+			list.push_back(newParticipant);
 
-		std::getline(ss, pseudo, ',');
-		std::getline(ss, lastName, ',');
-		std::getline(ss, firstName, ',');
-		std::getline(ss, genderStr, ',');
-
-		FormatUtils::trim(pseudo);
-		FormatUtils::trim(lastName);
-		FormatUtils::trim(firstName);
-		FormatUtils::trim(genderStr);
-
-		if (isFirstLine && pseudo == "pseudo")
-		{
-			isFirstLine = false;
-			continue ;
-		}
-
-		Participant::Gender gender = Participant::MALE;
-
-		if (genderStr == "1")
-			gender = Participant::FEMALE;
-
-		list.push_back(new Participant(pseudo, lastName, firstName, gender));
+		isFirstLine = false;
 	}
 
 	file.close();
@@ -563,8 +481,93 @@ bool				ParticipantCLI::exportToCSV(CVP_PART participants, C_STRING filename)
 /*	HANDLER	*/
 /************/
 
+void				ParticipantCLI::handleMenu(VP_PART& participants, const Settings& settings)
+{
+	try
+	{
+		int choice = -1;
+		bool showMenu = false;
+
+		while (choice != 0)
+		{
+			showMenu = !participants.empty();
+
+			handleTitle();
+			handleMessages();
+			handleList();
+			menu(participants, settings, showMenu);
+			checkInterruption();
+
+			if (!(std::cin >> choice))
+			{
+				checkInterruption();
+
+				std::cin.clear();
+				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+				messages.push_back({"Saisie invalide.", true});
+				continue ;
+			}
+
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+			switch (choice)
+			{
+				case 1:
+					handleAddParticipant(participants, settings);
+					break ;
+
+				case 2:
+					if (!showMenu)
+						break ;
+					handleModifyParticipant(participants, settings);
+					break ;
+
+				case 3:
+					if (!showMenu)
+						break ;
+					handleDeleteParticipant(participants);
+					break ;
+
+				case 4:
+					handleImport(participants, settings);
+					break ;
+
+				case 5:
+					if (!showMenu)
+						break ;
+					handleExport(participants);
+					break;
+
+				case 6:
+					if (!showMenu)
+						break ;
+					handledisplay(participants);
+					break ;
+
+				case 7:
+					return ;
+
+				default:
+					messages.push_back({"Option invalide.", true});
+					continue ;
+			}
+		}
+	}
+	catch (const UserInterruptedException&)
+	{
+		return ;
+	}
+}
+
 void				ParticipantCLI::handleAddParticipant(VP_PART& participants, const Settings& settings)
 {
+	if (participants.size() >= static_cast<size_t>(settings.getNbPlayers()))
+	{
+		messages.push_back({"Impossible d'ajouter un participant : le nombre maximum de joueurs est deja atteint.", true});
+		return ;
+	}
+
 	Participant*	newParticipant = create(participants, settings);
 
 	participants.push_back(newParticipant);
@@ -665,10 +668,21 @@ void				ParticipantCLI::handleImport(VP_PART& participants, const Settings& sett
 	}
 
 	int skipped = 0;
+	bool maxReachedMsgShown = false;
 
 	for (Participant* p : imported)
 	{
-		if (!checkPseudo(p->getPseudo(), participants))
+		if (participants.size() >= static_cast<size_t>(settings.getNbPlayers()))
+		{
+			if (!maxReachedMsgShown)
+			{
+				messages.push_back({"Le quota du tournoi est atteint. Les joueurs restants n'ont pas pu etre ajoutes.", true});
+				maxReachedMsgShown = true;
+			}
+			delete p;
+			skipped++;
+		}
+		else if (!checkPseudo(p->getPseudo(), participants))
 		{
 			messages.push_back({std::format("Pseudo: {} deja utilise -> ignore.", p->getPseudo()), true});
 			delete p;
@@ -782,7 +796,7 @@ void				ParticipantCLI::handleMessages()
 	if (!messages.empty())
 	{
 		std::cout << Color::BBLUE << "============================================================\n" << Color::RESET;
-		std::cout << Color::BBLUE << "\tMESSAGES | MESSAGES | MESSAGES | MESSAGES | MESSAGES\n" << Color::RESET;
+		std::cout << Color::BBLUE << "  MESSAGES | MESSAGES | MESSAGES | MESSAGES | MESSAGES\n" << Color::RESET;
 		std::cout << Color::BBLUE << "============================================================\n" << Color::RESET;
 
 		for (const auto& msgTuple : messages)

@@ -4,6 +4,8 @@
 
 //	STDLIB
 #include <string>
+#include <vector>
+#include <format>
 #include <fstream>
 #include <sstream>
 #include <algorithm>
@@ -11,6 +13,7 @@
 //	INCLUDES
 #include "../includes/utils/CheckerCSV.hpp"
 #include "../includes/utils/FormatUtils.hpp"
+#include "../includes/cli/ParticipantCLI.hpp"
 
 //	TYPEDEF
 using				STRING		=	std::string;
@@ -39,20 +42,19 @@ using				V_STRING	=	std::vector<std::string>;
 /*	PUBLIC METHOD	*/
 /********************/
 
-bool								CheckerCSV::validateParticipantCSV(C_STRING filename, V_STRING& errorMessages)
+bool								CheckerCSV::validateParticipantCSV(C_STRING filename, VTUPLE_MSG& messages)
 {
-	std::ifstream					file(filename);
+	std::ifstream file(filename);
 
 	if (!file.is_open())
 	{
-		errorMessages.push_back("Impossible d'ouvrir le fichier : " + filename);
-		
+		messages.push_back({std::format("Impossible d'ouvrir le fichier : {}", filename), true});
 		return (false);
 	}
 
-	STRING							line;
-	int								lineNumber = 0;
-	bool							isValid = true;
+	STRING line;
+	int lineNumber = 0;
+	bool isValid = true;
 
 	while (std::getline(file, line))
 	{
@@ -63,24 +65,24 @@ bool								CheckerCSV::validateParticipantCSV(C_STRING filename, V_STRING& erro
 		if (line.empty())
 			continue ;
 
-		size_t						commaCount = std::count(line.begin(), line.end(), ',');
+		size_t commaCount = std::count(line.begin(), line.end(), ',');
 
 		if (commaCount != 3)
 		{
-			std::stringstream		ss;
+			std::stringstream ss;
 
 			ss << "Ligne " << lineNumber << " : Structure incorrecte. Attendu : 4 colonnes, Trouve : " 
 			<< (commaCount + 1) << " colonnes.";
 			
-			errorMessages.push_back(ss.str());
+			messages.push_back({ss.str(), true});
 			isValid = false;
 
 			continue;
 		}
 
-		std::stringstream			ssLine(line);
-		STRING						cell;
-		bool						hasEmptyField = false;
+		std::stringstream ssLine(line);
+		STRING cell;
+		bool hasEmptyField = false;
 
 		while (std::getline(ssLine, cell, ','))
 		{
@@ -95,11 +97,11 @@ bool								CheckerCSV::validateParticipantCSV(C_STRING filename, V_STRING& erro
 
 		if (hasEmptyField)
 		{
-			std::stringstream		ss;
+			std::stringstream ss;
 
 			ss << "Ligne " << lineNumber << " : Un des champs obligatoires est vide.";
 			
-			errorMessages.push_back(ss.str());
+			messages.push_back({ss.str(), true});
 			isValid = false;
 		}
 	}

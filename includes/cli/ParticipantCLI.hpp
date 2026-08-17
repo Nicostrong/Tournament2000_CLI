@@ -36,6 +36,8 @@ class ParticipantCLI
 		static VTUPLE_MSG			messages;
 		static VP_PART				partList;
 
+		static Participant*			extractParticipantFromLine(C_STRING line, bool isFirstLine);
+
 	public:
 
 		//	MENU
