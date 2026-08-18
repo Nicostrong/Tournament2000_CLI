@@ -11,6 +11,7 @@
 #include "../includes/cli/PoolCLI.hpp"
 #include "../includes/cli/MatchCLI.hpp"
 #include "../includes/cli/TeamCLI.hpp"
+#include "../includes/utils/PrintUtils.hpp"
 
 //	TYPEDEF
 using				C_STRING	=	const std::string&;
@@ -30,15 +31,15 @@ using				CVP_MATCH	=	const std::vector<Match*>&;
  */
 void				PoolCLI::writeMatches(std::ostream& out, const Pool& pool, const bool toFile)
 {
-	CVP_MATCH		matches = pool.getMatches();
+	CVP_MATCH matches = pool.getMatches();
 
 	if (matches.empty())
 	{
-		out << "  Aucun match enregistré.\n";
+		PrintUtils::addError("Aucun match enregistre.");
 		return ;
 	}
 
-	int				i = 1;
+	int i = 1;
 
 	for (const Match* m : matches)
 	{
@@ -85,21 +86,21 @@ void				PoolCLI::writeMatches(std::ostream& out, const Pool& pool, const bool to
  */
 void				PoolCLI::writeTable(std::ostream& out, const Pool& pool, const bool toFile)
 {
-	CVP_TEAM		teams = pool.getTeams();
+	CVP_TEAM teams = pool.getTeams();
 
 	if (teams.empty())
 	{
-		out << "  Aucune équipe dans cette poule.\n";
+		PrintUtils::addError("Aucune equipe dans cette poule.");
 		return ;
 	}
 
-	size_t			maxLen = 6;
+	size_t maxLen = 6;
 
 	for (const Team* t : teams)
 		if (t->getName().size() > maxLen)
 			maxLen = t->getName().size();
 
-	const int		w = static_cast<int>(maxLen) + 2;
+	const int w = static_cast<int>(maxLen) + 2;
 
 	out << "  " << std::left << std::setw(4)  << "#"
 		<< std::setw(w)   << "Equipe"
@@ -111,9 +112,9 @@ void				PoolCLI::writeTable(std::ostream& out, const Pool& pool, const bool toFi
 
 	for (size_t i = 0; i < teams.size(); ++i)
 	{
-		const Team*	t = teams[i];
-		const int	diff = t->getScoreDiff();
-		const bool	isTop2 = (i < 2);
+		const Team* t = teams[i];
+		const int diff = t->getScoreDiff();
+		const bool isTop2 = (i < 2);
 
 		if (!toFile && isTop2)
 			out << "\033[1;32m";
@@ -177,60 +178,4 @@ void				PoolCLI::displayPoolDetails(const Pool& pool)
 
 	for (const Team* t : pool.getTeams())
 		TeamCLI::print(*t);
-}
-
-/**
- * Exporte l historique complet de la poule (matchs + classement) dans un .txt.
- */
-bool				PoolCLI::exportToTxt(const Pool& pool, C_STRING filename)
-{
-	std::ofstream	file(filename);
-
-	if (!file.is_open())
-	{
-		std::cerr << "\033[1;31m[!] Impossible de créer : " << filename << "\033[0m\n";
-		return (false);
-	}
-
-	file << "============================================================\n";
-	file << "  POULE : " << pool.getName() << "\n";
-	file << "============================================================\n";
-
-	file << "\n[EQUIPES]\n";
-
-	for (const Team* t : pool.getTeams())
-	{
-		file << "  - " << t->getName();
-
-		if (t->getHasMultiTeamPlayer())
-			file << " [Multi-joueur]";
-
-		file << " : ";
-
-		CVP_PART	members = t->getMembers();
-
-		for (size_t i = 0; i < members.size(); ++i)
-		{
-			file << members[i]->getPseudo();
-
-			if (members[i]->getIsMultiTeamPlayer())
-				file << " (Multi)";
-
-			if (i + 1 < members.size())
-				file << " & ";
-		}
-
-		file << "\n";
-	}
-
-	file << "\n[MATCHS]\n";
-	writeMatches(file, pool, true);
-
-	file << "\n[CLASSEMENT FINAL]\n";
-	writeTable(file, pool, true);
-
-	file << "\n============================================================\n";
-	file.close();
-
-	return (true);
 }

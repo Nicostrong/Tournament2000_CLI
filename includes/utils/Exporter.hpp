@@ -12,6 +12,7 @@
 //	INCLUDES
 # include "../class/Tournament.hpp"
 # include "../class/Participant.hpp"
+# include "../class/Pool.hpp"
 
 //	TYPEDEF
 using				STRING		=	std::string;
@@ -32,6 +33,7 @@ class Exporter
 		static bool					exportTournamentToTxt(const Tournament& tournament, C_STRING filename);
 		static bool					exportPhaseToTxt(const Phase* phase, C_STRING filename);
 		static bool					exportPoolsToTxt(const Tournament& tournament, C_STRING filename);
+		static bool					exportToTxt(const Pool& pool, C_STRING filename);
 
 		// Exports CSV
 		static bool					exportParticipantsToCSV(CVP_PART participants, C_STRING filename);
@@ -51,6 +53,11 @@ class Exporter
 		static void					writePhaseBlock(std::ofstream& out, const Phase* phase);
 		static void					writePhaseResults(std::ofstream& out, const Phase& phase);
 		static void					writePalmares(std::ofstream& out, const Tournament& tournament);
+		
+		//	POOL
+		static void					writeMatches(std::ostream& out, const Pool& pool, bool toFile);
+		static void					writeTable(std::ostream& out, const Pool& pool, bool toFile);
+
 };
 
 #endif

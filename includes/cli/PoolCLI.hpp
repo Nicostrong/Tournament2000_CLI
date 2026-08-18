@@ -18,7 +18,7 @@ using				C_STRING	=	const std::string&;
 class PoolCLI
 {
 	private:
-
+		
 		static void					writeMatches(std::ostream& out, const Pool& pool, bool toFile);
 		static void					writeTable(std::ostream& out, const Pool& pool, bool toFile);
 
@@ -28,7 +28,6 @@ class PoolCLI
 		static void					displayFullTable(const Pool& pool);
 		static void					displayMatches(const Pool& pool);
 		static void					displayPoolDetails(const Pool& pool);
-		static bool					exportToTxt(const Pool& pool, C_STRING filename);
 };
 
 #endif
