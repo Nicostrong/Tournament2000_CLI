@@ -6,18 +6,43 @@
 # define SETTINGS_HPP
 
 //	STDLIB
-# include <algorithm>
+# include <array>
 # include <string>
 # include <vector>
-# include <array>
+# include <algorithm>
 
 //	INCLUDES
+# include "./Pool.hpp"
+# include "./Team.hpp"
+# include "./Match.hpp"
+# include "./Phase.hpp"
+# include "./Settings.hpp"
+# include "./Tournament.hpp"
 # include "./Participant.hpp"
 
 //	TYPEDEF
-using				STRING		=	std::string;
-using				C_STRING	=	const std::string&;
-using				V_STRING	=	std::vector<std::string>;
+using				string		=	std::string;
+using				cString		=	const std::string&;
+using				vString		=	std::vector<std::string>&;
+
+using				cPool		=	const Pool&;
+using				cTeam		=	const Team&;
+using				cMatch		=	const Match&;
+using				cPhase		=	const Phase&;
+using				cSet		=	const Settings&;
+using				cPart		=	const Participant&;
+
+using				vpPool		=	std::vector<Pool*>;
+using				vpTeam		=	std::vector<Team*>;
+using				vpMatch		=	std::vector<Match*>;
+using				vpPhase		=	std::vector<Phase*>;
+using				vpPart		=	std::vector<Participant*>;
+
+using				cvpPool		=	const std::vector<Pool*>&;
+using				cvpTeam		=	const std::vector<Team*>&;
+using				cvpMatch	=	const std::vector<Match*>&;
+using				cvpPhase	=	const std::vector<Phase*>&;
+using				cvpPart		=	const std::vector<Participant*>&;
 
 template<std::size_t N>
 using				A_INT		=	std::array<int, N>;
@@ -115,7 +140,7 @@ class Settings
 {
 	private:
 
-		STRING						_name;
+		string						_name;
 
 		int							_nbPlayers;
 		int							_nbPlayerByPool;
@@ -141,8 +166,8 @@ class Settings
 
 		Participant::Gender			_gender;
 
-		static bool					addErrorIf(bool condition, C_STRING message, V_STRING& errors);
-		void						checkLogicalTournament(V_STRING& errors) const;
+		static bool					addErrorIf(bool condition, cString message, vString errors);
+		void						checkLogicalTournament(vString errors) const;
 
 		template<typename Container>
 		bool						isInList(int value, const Container& list) const
@@ -154,13 +179,13 @@ class Settings
 
 		//	CANONICAL
 		Settings();
-		Settings(const Settings& ) = default;
-		Settings&					operator=(const Settings& ) = default;
+		Settings(cSet ) = default;
+		Settings&					operator=(cSet ) = default;
 		~Settings() = default;
 
 		/*  GETTERS */
 		[[nodiscard]]
-		C_STRING					getName() const;
+		cString						getName() const;
 		[[nodiscard]]
 		int							getNbPlayers() const;
 		[[nodiscard]]
@@ -205,7 +230,7 @@ class Settings
 		Participant::Gender			getTournamentGender() const;
 
 		/*  SETTERS */
-		void						setName(C_STRING value);
+		void						setName(cString value);
 		void						setNbPlayers(int value);
 		void						setNbPlayerByPool(int value);
 		void						setNbPools(int value);
@@ -230,7 +255,7 @@ class Settings
 		void						setTournamentGender(Participant::Gender value);
 
 		/*	METHOD	*/
-		bool						isValid(V_STRING& errors);
+		bool						isValid(vString errors);
 		[[nodiscard]]
 		bool						canAccommodate(int actualParticipants) const;
 

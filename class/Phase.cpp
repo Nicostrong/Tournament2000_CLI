@@ -3,24 +3,49 @@
 //
 
 //	STDLIB
-# include <utility>
+#include <string>
+#include <vector>
+#include <utility>
 
 //	INCLUDES
+#include "../includes/class/Pool.hpp"
+#include "../includes/class/Team.hpp"
+#include "../includes/class/Match.hpp"
 #include "../includes/class/Phase.hpp"
+#include "../includes/class/Settings.hpp"
+#include "../includes/class/Tournament.hpp"
+#include "../includes/class/Participant.hpp"
 
 //	TYPEDEF
-using				STRING		=	std::string;
-using				C_STRING	=	const std::string&;
-using				VP_MATCH	=	std::vector<Match*>;
-using				VP_TEAM		=	std::vector<Team*>;
+using				string		=	std::string;
+using				cString		=	const std::string&;
+
+using				cPool		=	const Pool&;
+using				cTeam		=	const Team&;
+using				cMatch		=	const Match&;
+using				cPhase		=	const Phase&;
+using				cSet		=	const Settings&;
+using				cPart		=	const Participant&;
+
+using				vpPool		=	std::vector<Pool*>;
+using				vpTeam		=	std::vector<Team*>;
+using				vpMatch		=	std::vector<Match*>;
+using				vpPhase		=	std::vector<Phase*>;
+using				vpPart		=	std::vector<Participant*>;
+
+using				cvpPool		=	const std::vector<Pool*>&;
+using				cvpTeam		=	const std::vector<Team*>&;
+using				cvpMatch	=	const std::vector<Match*>&;
+using				cvpPhase	=	const std::vector<Phase*>&;
+using				cvpPart		=	const std::vector<Participant*>&;
 
 //	STATIC VARIABLES
 
-/****************/
-/*	CANONICAL	*/
-/****************/
+/************************************************************************************************/
+/*	CONSTRUCTOR / DESTRUCTOR																	*/
+/************************************************************************************************/
 
-Phase::Phase(STRING name, const int nbSets): _name(std::move(name)), _nbSetsToPlay(nbSets), _isFinished(false)
+Phase::Phase(string name, const int nbSets): _name(std::move(name)), _nbSetsToPlay(nbSets), _isFinished(false)
 {
 	this->_matches.clear();
 }
@@ -34,41 +59,25 @@ Phase::~Phase()
 	this->_matches.clear();
 }
 
-/************/
-/*	GETTER	*/
-/************/
+/************************************************************************************************/
+/*	GETTER																						*/
+/************************************************************************************************/
 
-C_STRING			Phase::getName() const
-{
-	return (this->_name);
-}
+cString				Phase::getName() const			{	return (this->_name);		}
+int					Phase::getNbSetToPlay() const	{	return (this->_nbSetsToPlay);	}
+bool				Phase::getIsFinished() const	{	return (this->_isFinished);		}
+cvpMatch			Phase::getMatches() const		{	return (this->_matches);		}
 
-int					Phase::getNbSetToPlay() const
+vpTeam				Phase::getWinners() const
 {
-	return (this->_nbSetsToPlay);
-}
+	vpTeam winners;	
 
-bool				Phase::getIsFinished() const
-{
-	return (this->_isFinished);
-}
-
-const VP_MATCH&		Phase::getMatches() const
-{
-	return (this->_matches);
-}
-
-VP_TEAM				Phase::getWinners() const
-{
-	VP_TEAM			winners;
-	
 	for (size_t i = 0; i < this->_matches.size(); i += this->_nbSetsToPlay)
 	{
-		int			winsA = 0;
-		int			winsB = 0;
-		
-		Team*		a = this->_matches[i]->getTeamA();
-		Team*		b = this->_matches[i]->getTeamB();
+		int winsA = 0;
+		int winsB = 0;
+		Team* a = this->_matches[i]->getTeamA();
+		Team* b = this->_matches[i]->getTeamB();
 
 		for (int j = 0; j < this->_nbSetsToPlay; ++j)
 		{
@@ -84,20 +93,20 @@ VP_TEAM				Phase::getWinners() const
 	return (winners);
 }
 
-VP_TEAM				Phase::getLosers() const
+vpTeam				Phase::getLosers() const
 {
-	VP_TEAM			losers;
-	VP_TEAM			winners = getWinners();
+	vpTeam losers;
+	vpTeam winners = getWinners();
 
 	for (size_t i = 0; i < winners.size(); ++i)
 	{
-		const size_t				matchIdx = i * static_cast<size_t>(this->_nbSetsToPlay);
+		const size_t matchIdx = i * static_cast<size_t>(this->_nbSetsToPlay);
 
 		if (matchIdx >= this->_matches.size())
 			break ;
 
-		Team*		a = this->_matches[matchIdx]->getTeamA();
-		Team*		b = this->_matches[matchIdx]->getTeamB();
+		Team* a = this->_matches[matchIdx]->getTeamA();
+		Team* b = this->_matches[matchIdx]->getTeamB();
 
 		losers.push_back((winners[i] == a) ? b : a);
 	}
@@ -105,22 +114,19 @@ VP_TEAM				Phase::getLosers() const
 	return (losers);
 }
 
-/************/
-/*	SETTER	*/
-/************/
+/************************************************************************************************/
+/*	SETTER																						*/
+/************************************************************************************************/
 
-void				Phase::setIsFinished(const bool isFinished)
-{
-	this->_isFinished = isFinished;
-}
+void				Phase::setIsFinished(const bool isFinished)	{	this->_isFinished = isFinished;	}
 
-/********************/
-/*	PRIVATE METHODS	*/
-/********************/
+/************************************************************************************************/
+/*	PRIVATE METHODS																				*/
+/************************************************************************************************/
 
-/********************/
-/*	PUBLIC METHODS	*/
-/********************/
+/************************************************************************************************/
+/*	PUBLIC METHODS																				*/
+/************************************************************************************************/
 
 void				Phase::addEncounter(Team* a, Team* b)
 {

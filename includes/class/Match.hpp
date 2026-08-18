@@ -6,11 +6,40 @@
 # define MATCH_HPP
 
 //	STDLIB
+# include <string>
+# include <vector>
 
 //	INCLUDES
+# include "./Pool.hpp"
 # include "./Team.hpp"
+# include "./Match.hpp"
+# include "./Phase.hpp"
+# include "./Settings.hpp"
+# include "./Tournament.hpp"
+# include "./Participant.hpp"
 
 //	TYPEDEF
+using				string		=	std::string;
+using				cString		=	const std::string&;
+
+using				cPool		=	const Pool&;
+using				cTeam		=	const Team&;
+using				cMatch		=	const Match&;
+using				cPhase		=	const Phase&;
+using				cSet		=	const Settings&;
+using				cPart		=	const Participant&;
+
+using				vpPool		=	std::vector<Pool*>;
+using				vpTeam		=	std::vector<Team*>;
+using				vpMatch		=	std::vector<Match*>;
+using				vpPhase		=	std::vector<Phase*>;
+using				vpPart		=	std::vector<Participant*>;
+
+using				cvpPool		=	const std::vector<Pool*>&;
+using				cvpTeam		=	const std::vector<Team*>&;
+using				cvpMatch	=	const std::vector<Match*>&;
+using				cvpPhase	=	const std::vector<Phase*>&;
+using				cvpPart		=	const std::vector<Participant*>&;ng				cpvPool		=	const std::vector<Pool*>;
 
 //	STATIC VARIABLES
 
@@ -32,8 +61,8 @@ class Match
 		//	CANONICAL
 		Match() = delete;
 		Match(Team* a, Team* b);
-		Match(const Match& match) = delete;
-		Match&						operator=(const Match& match) = delete;
+		Match(cMatch match) = delete;
+		Match&						operator=(cMatch match) = delete;
 		~Match() = default;
 
 		//	GETTER

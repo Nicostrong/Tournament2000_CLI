@@ -10,43 +10,62 @@
 # include <vector>
 
 //	INCLUDES
-# include "./Match.hpp"
+# include "./Pool.hpp"
 # include "./Team.hpp"
+# include "./Match.hpp"
 # include "./Phase.hpp"
+# include "./Settings.hpp"
+# include "./Tournament.hpp"
+# include "./Participant.hpp"
 
 //	TYPEDEF
-using				STRING		=	std::string;
-using				C_STRING	=	const std::string&;
-using				VP_MATCH	=	std::vector<Match*>;
-using				VP_TEAM		=	std::vector<Team*>;
-using				CVP_MATCH	=	const std::vector<Match*>&;
-using               CVP_TEAM	=	const std::vector<Team*>&;
+using				string		=	std::string;
+using				cString		=	const std::string&;
+
+using				cPool		=	const Pool&;
+using				cTeam		=	const Team&;
+using				cMatch		=	const Match&;
+using				cPhase		=	const Phase&;
+using				cSet		=	const Settings&;
+using				cPart		=	const Participant&;
+
+using				vpPool		=	std::vector<Pool*>;
+using				vpTeam		=	std::vector<Team*>;
+using				vpMatch		=	std::vector<Match*>;
+using				vpPhase		=	std::vector<Phase*>;
+using				vpPart		=	std::vector<Participant*>;
+
+using				cvpPool		=	const std::vector<Pool*>&;
+using				cvpTeam		=	const std::vector<Team*>&;
+using				cvpMatch	=	const std::vector<Match*>&;
+using				cvpPhase	=	const std::vector<Phase*>&;
+using				cvpPart		=	const std::vector<Participant*>&;
 
 class Pool
 {
 	private:
 
 		static int					_idCounter;
-		STRING						_name;
-		VP_TEAM						_teams;
-		VP_MATCH					_matches;
+		string						_name;
+		vpTeam						_teams;
+		vpMatch						_matches;
 
 	public:
 
 		//	CANONICAL
 		Pool();
-		explicit Pool(C_STRING ) = delete;
-		Pool(const Pool& ) = delete;
-		Pool&						operator=(const Pool& ) = delete;
+		explicit Pool(cString ) = delete;
+		Pool(cPool ) = delete;
+		Pool&						operator=(cPool ) = delete;
 		~Pool();
 
 		//	GETTER
 		[[nodiscard]]
-		C_STRING					getName() const;
+		cString						getName() const;
 		[[nodiscard]]
-		CVP_TEAM					getTeams() const;
+		cvpTeam						getTeams() const;
 		[[nodiscard]]
-		CVP_MATCH					getMatches() const;
+		cvpMatch					getMatches() const;
 
 		//	METHOD
 		void						addTeam(Team* team);
@@ -55,7 +74,7 @@ class Pool
 		bool						allMatchesFinished() const;
 
 		[[nodiscard]]
-		VP_TEAM						getQualifiers() const;
+		vpTeam						getQualifiers() const;
 };
 
 #endif

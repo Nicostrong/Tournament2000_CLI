@@ -10,13 +10,36 @@
 # include <vector>
 
 //	INCLUDES
+# include "./Pool.hpp"
+# include "./Team.hpp"
+# include "./Match.hpp"
+# include "./Phase.hpp"
+# include "./Settings.hpp"
+# include "./Tournament.hpp"
 # include "./Participant.hpp"
 
 //	TYPEDEF
-using				STRING		=	std::string;
-using				C_STRING	=	const std::string&;
-using				VP_PART		=	std::vector<Participant*>;
-using				CVP_PART	=	const std::vector<Participant*>&;
+using				string		=	std::string;
+using				cString		=	const std::string&;
+
+using				cPool		=	const Pool&;
+using				cTeam		=	const Team&;
+using				cMatch		=	const Match&;
+using				cPhase		=	const Phase&;
+using				cSet		=	const Settings&;
+using				cPart		=	const Participant&;
+
+using				vpPool		=	std::vector<Pool*>;
+using				vpTeam		=	std::vector<Team*>;
+using				vpMatch		=	std::vector<Match*>;
+using				vpPhase		=	std::vector<Phase*>;
+using				vpPart		=	std::vector<Participant*>;
+
+using				cvpPool		=	const std::vector<Pool*>&;
+using				cvpTeam		=	const std::vector<Team*>&;
+using				cvpMatch	=	const std::vector<Match*>&;
+using				cvpPhase	=	const std::vector<Phase*>&;
+using				cvpPart		=	const std::vector<Participant*>&;
 
 /**
  * la classe Team represente un enssemble de Participant qui joueront enssemble
