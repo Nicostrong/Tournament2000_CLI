@@ -5,6 +5,8 @@
 #ifndef CONSTANTES_HPP
 # define CONSTANTES_HPP
 
+# include "./class/Participant.hpp"
+
 //	Valeurs acceptables
 //
 //	NBPOOL							[4, 8, 16]
@@ -16,7 +18,7 @@
 //	Default settings
 # define TOURNAMENTNAME				"Tournoi"
 
-# define NBPLAYER					0 //ISDOUBLE ? (NBPOOL * NBPLAYERPERPOOL * 2) : (NBPOOL * NBPLAYERPERPOOL)
+# define NBPLAYER					12 //ISDOUBLE ? (NBPOOL * NBPLAYERPERPOOL * 2) : (NBPOOL * NBPLAYERPERPOOL)
 # define NBPOOL						4
 # define NBTERRAIN					5
 # define SCOREMIN					21
@@ -36,6 +38,8 @@
 # define PLAYTHIRDPLACE				false
 # define ISVALIDE					false
 
+# define GENDER						Participant::Gender::MIXED
+
 //	Game settings
 # define NBTERRAINMIN				1
 # define NBTERRAINMAX				12
@@ -52,8 +56,8 @@
 //	POOL
 # define NBPOOLMIN					4
 # define NBPOOLMAX					12
-# define NBPLAYERPERPOOLMIN			MINPLAYERS / NBPOOLMIN
-# define NBPLAYERPERPOOLMAX			MAXPLAYERS / NBPOOLMAX
+# define NBPLAYERPERPOOLMIN			(MINPLAYERS / NBPOOLMIN)
+# define NBPLAYERPERPOOLMAX			(MAXPLAYERS / NBPOOLMAX)
 
 //	SET
 # define NBSETPOOLMIN				1

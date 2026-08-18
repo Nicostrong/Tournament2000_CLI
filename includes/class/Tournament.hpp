@@ -7,6 +7,7 @@
 
 //	STDLIB
 # include <vector>
+# include <csignal>
 
 //	INCLUDES
 # include "./Settings.hpp"
@@ -138,6 +139,7 @@ class Tournament
 		void						setHasThirdMatch(bool value);
 
 		//	METHOD
+		void						clean();
 		void						addParticipant(const Participant& p);
 		void						generateSixteenths();
 		void						generateHeighths();

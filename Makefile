@@ -56,9 +56,11 @@ CLI				=	./cli/MatchCLI.cpp \
 					./cli/PoolCLI.cpp \
 					./cli/SettingsCLI.cpp \
 					./cli/TeamCLI.cpp \
-					./cli/TournamentCLI.cpp
+					./cli/TournamentCLI.cpp \
+					./cli/TournamentViewer.cpp
 
 UTILS			=	./utils/CheckerCSV.cpp \
+					./utils/Exporter.cpp \
 					./utils/FormatUtils.cpp \
 					./utils/PrintUtils.cpp \
 					./utils/TournamentHistory.cpp
@@ -200,7 +202,7 @@ $(NAME):	$(OBJ)
 	$(call compile_c_to_o)
 
 deb:			all
-	@echo "$(BBLUE)==========	RUN DEBUG MODE	==========$(RESET)"
+	@echo "$(RESET)$(BBLUE)==========	RUN DEBUG MODE	==========$(RESET)"
 	$(DEB) $(DEB_OPT) ./$(NAME) $(ARG0) $(DEB_OUT)
 
 clean:

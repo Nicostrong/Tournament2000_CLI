@@ -7,14 +7,17 @@
 
 //	STDLIB
 # include <vector>
-# include <iostream>
+# include <tuple>
+# include <string>
 
 //	INCLUDES
 # include "../class/Participant.hpp"
+# include "../class/Settings.hpp"
 
 //	TYPEDEF
 using				STRING		=	std::string;
 using				C_STRING	=	const std::string&;
+using				VSTRING		=	std::vector<std::string>;
 using				VP_PART		=	std::vector<Participant*>;
 using				CVP_PART	=	const std::vector<Participant*>&;
 using				CV_PART		=	const std::vector<Participant>&;
@@ -27,15 +30,17 @@ using				CV_PART		=	const std::vector<Participant>&;
  */
 class ParticipantCLI
 {
-	public:
+	private:
+
+		static VP_PART				partList;
 
 		//	MENU
-		static void					menu();
+		static void					menuParticipant(CVP_PART participants, const Settings& settings, bool showMenu);
 
 		//	SUBMENU
-		static Participant*			create(CVP_PART participants);
+		static Participant*			create(CVP_PART participants, const Settings& settings);
 		static void					destroy(size_t id, VP_PART& participants);
-		static void					modify(size_t id, CVP_PART participants);
+		static void					modify(size_t id, CVP_PART participants, const Settings& settings);
 		static void					displayOne(const Participant& p);
 		static void					displayAll(CVP_PART participants);
 
@@ -46,16 +51,22 @@ class ParticipantCLI
 		static bool					exportToCSV(CVP_PART participants, C_STRING filename);
 
 		//	HANDLER
-		static void					handleMenu(VP_PART& participants);
-		static void					handleAddParticipant(VP_PART& participants);
-		static void					handleModifyParticipant(VP_PART& participants);
+		static void					handleAddParticipant(VP_PART& participants, const Settings& settings);
+		static void					handleModifyParticipant(CVP_PART& participants, const Settings& settings);
 		static void					handleDeleteParticipant(VP_PART& participants);
-		static void					handleImport(VP_PART& participants);
+		static void					handleImport(VP_PART& participants, const Settings& settings);
 		static void					handleExport(CVP_PART participants);
 		static void					handledisplay(CVP_PART participants);
+		static void					handleList();
+		static void					handleTitle();
 
 		//	HELPER
 		static bool					checkPseudo(C_STRING pseudo, CVP_PART participants);
+		static Participant*			extractParticipantFromLine(C_STRING line, bool isFirstLine);
+
+	public:
+
+		static void					handleMenuParticipant(VP_PART& participants, const Settings& settings);
 };
 
 std::ostream&		operator<<(std::ostream& os, const Participant& p);

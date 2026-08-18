@@ -32,82 +32,25 @@ Participant::Participant(C_STRING pseudo, C_STRING lastName, C_STRING firstName,
 /*	GETTER	*/
 /************/
 
-size_t				Participant::getId() const
-{
-	return (this->_id);
-}
-
-C_STRING			Participant::getPseudo() const
-{
-	return (this->_pseudo);
-}
-
-C_STRING			Participant::getLastName() const
-{
-	return (this->_lastName);
-}
-
-C_STRING			Participant::getFirstName() const
-{
-	return (this->_firstName);
-}
-
-Participant::Gender	Participant::getGenderInt() const
-{
-	return (this->_gender);
-}
-
-STRING				Participant::getGenderStr() const
-{
-	return (this->_gender == MALE ? "Homme" : this->_gender == FEMALE ? "Femme" : "Autre");
-}
-
-bool				Participant::getIsEliminated() const
-{
-	return (this->_isEliminated);
-}
-
-bool				Participant::getIsMultiTeamPlayer() const
-{
-	return (this->_isMultiTeamPlayer);
-}
+size_t				Participant::getId() const					{	return (this->_id);																			}
+C_STRING			Participant::getPseudo() const				{	return (this->_pseudo);																		}
+C_STRING			Participant::getLastName() const			{	return (this->_lastName);																	}
+C_STRING			Participant::getFirstName() const			{	return (this->_firstName);																	}
+Participant::Gender	Participant::getGenderInt() const			{	return (this->_gender);																		}
+STRING				Participant::getGenderStr() const			{	return (this->_gender == MALE ? "Homme" : this->_gender == FEMALE ? "Femme" : "Mixte");	}
+bool				Participant::getIsEliminated() const		{	return (this->_isEliminated);																}
+bool				Participant::getIsMultiTeamPlayer() const	{	return (this->_isMultiTeamPlayer);															}
 
 /************/
 /*	SETTER	*/
 /************/
 
-void				Participant::setPseudo(C_STRING value)
-{
-	this->_pseudo = value;
-	FormatUtils::capitalize(this->_pseudo);
-}
-
-void				Participant::setLastName(C_STRING value)
-{
-	this->_lastName = value;
-	FormatUtils::toUpper(this->_lastName);
-}
-
-void				Participant::setFirstName(C_STRING value)
-{
-	this->_firstName = value;
-	FormatUtils::capitalize(this->_firstName);
-}
-
-void				Participant::setGender(const Gender value)
-{
-	this->_gender = value;
-}
-
-void				Participant::setIsEliminated(const bool value)
-{
-	this->_isEliminated = value;
-}
-
-void				Participant::setIsMultiTeamPlayer(const bool value)
-{
-	this->_isMultiTeamPlayer = value;
-}
+void				Participant::setPseudo(C_STRING value)				{	this->_pseudo = value; FormatUtils::capitalize(this->_pseudo);		}
+void				Participant::setLastName(C_STRING value)			{	this->_lastName = value; FormatUtils::toUpper(this->_lastName);		}
+void				Participant::setFirstName(C_STRING value)			{	this->_firstName = value; FormatUtils::capitalize(this->_firstName);	}
+void				Participant::setGender(const Gender value)			{	this->_gender = value;													}
+void				Participant::setIsEliminated(const bool value)		{	this->_isEliminated = value;											}
+void				Participant::setIsMultiTeamPlayer(const bool value)	{	this->_isMultiTeamPlayer = value;										}
 
 /********************/
 /*	PRIVATE METHODS	*/

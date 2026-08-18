@@ -12,6 +12,7 @@
 # include <array>
 
 //	INCLUDES
+# include "./Participant.hpp"
 
 //	TYPEDEF
 using				STRING		=	std::string;
@@ -38,11 +39,21 @@ enum class nbPlayer : int
 	centSoixante = 160
 };
 
-constexpr A_INT<12>					allowedNbPlayers =
-{ 
+constexpr A_INT<9> allowedNbPlayersSimple =
+{
 	static_cast<int>(nbPlayer::douze),
 	static_cast<int>(nbPlayer::seize),
 	static_cast<int>(nbPlayer::vingt),
+	static_cast<int>(nbPlayer::vingtQuatre),
+	static_cast<int>(nbPlayer::trenteDeux),
+	static_cast<int>(nbPlayer::quarante),
+	static_cast<int>(nbPlayer::quaranteHuit),
+	static_cast<int>(nbPlayer::soixanteQuatre),
+	static_cast<int>(nbPlayer::quatreVingt)
+};
+
+constexpr A_INT<9> allowedNbPlayersDouble =
+{
 	static_cast<int>(nbPlayer::vingtQuatre),
 	static_cast<int>(nbPlayer::trenteDeux),
 	static_cast<int>(nbPlayer::quarante),
@@ -128,7 +139,10 @@ class Settings
 		bool						_isThirdPlaceMatch;
 		bool						_isValid;
 
+		Participant::Gender			_gender;
+
 		static bool					addErrorIf(bool condition, C_STRING message, V_STRING& errors);
+		void						checkLogicalTournament(V_STRING& errors) const;
 
 		template<typename Container>
 		bool						isInList(int value, const Container& list) const
@@ -141,7 +155,7 @@ class Settings
 		//	CANONICAL
 		Settings();
 		Settings(const Settings& ) = default;
-		Settings&					operator=(const Settings& );
+		Settings&					operator=(const Settings& ) = default;
 		~Settings() = default;
 
 		/*  GETTERS */
@@ -187,6 +201,9 @@ class Settings
 		[[nodiscard]]
 		bool						getIsValid() const;
 
+		[[nodiscard]]
+		Participant::Gender			getTournamentGender() const;
+
 		/*  SETTERS */
 		void						setName(C_STRING value);
 		void						setNbPlayers(int value);
@@ -210,6 +227,7 @@ class Settings
 		void						setAllowMultiTeamPlayers(bool value);
 		void						setIsThirdPlaceMatch(bool value);
 		void						setIsValid(bool value);
+		void						setTournamentGender(Participant::Gender value);
 
 		/*	METHOD	*/
 		bool						isValid(V_STRING& errors);

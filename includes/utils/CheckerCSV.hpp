@@ -7,13 +7,11 @@
 
 //	STDLIB
 # include <string>
-# include <vector>
 
 //	INCLUDES
 
 //	TYPEDEF
 using				C_STRING	=	const std::string&;
-using				V_STRING	=	std::vector<std::string>;
 
 //	GLOBAL VARIABLES
 
@@ -24,7 +22,7 @@ class CheckerCSV
 {
 	public:
 
-		static bool					validateParticipantCSV(C_STRING filename, V_STRING& errorMessages);
+		static bool					validateParticipantCSV(C_STRING filename);
 };
 
 #endif
