@@ -44,6 +44,7 @@ class Tournament
 		bool						_isFinished;
 		bool						_hasSixteenth;
 		bool						_hasHeighth;
+		bool						_hasThirdMatch;
 
 		void						generateTeams();
 		void						generatePools();
@@ -89,13 +90,14 @@ class Tournament
 		VP_PART						getAllFemales() const;
 		[[nodiscard]]
 		VP_PART						getMultiTeamsPlayers(VP_PART participants) const;
-
+		[[nodiscard]]
+		bool						getIsReady() const;
+		[[nodiscard]]
+		bool						getIsFinished() const;
+		
 		//	SETTER
 		void						setIsReady(bool value);
 		void						setIsFinished(bool value);
-		void						setHasSixteenth(bool value);
-		void						setHasHeighth(bool value);
-
 	public:
 
 		//	CANONICAL
@@ -128,6 +130,13 @@ class Tournament
 		bool						getHasSixteenth() const;
 		[[nodiscard]]
 		bool						getHasHeighth() const;
+		[[nodiscard]]
+		bool						getHasThirdMatch() const;
+
+		//	SETTER
+		void						setHasSixteenth(bool value);
+		void						setHasHeighth(bool value);
+		void						setHasThirdMatch(bool value);
 
 		//	METHOD
 		void						clean();

@@ -28,7 +28,8 @@ using				CVP_POOL	=	const std::vector<Pool*>;
 Tournament::Tournament(const Settings& settings)
 	:	_settings(settings), _sixteenths(nullptr), _heighths(nullptr),  _quarters(nullptr),
 		_semis(nullptr), _final(nullptr), _thirdPlace(nullptr), _isReady(false), _isFinished(false),
-		_hasSixteenth(settings.getNbPools() == 16), _hasHeighth(settings.getNbPools() >= 8)
+		_hasSixteenth(settings.getNbPools() == 16), _hasHeighth(settings.getNbPools() >= 8),
+		_hasThirdMatch(settings.getIsThirdPlaceMatch())
 {}
 
 Tournament::Tournament(const Settings& settings, CVP_PART participants) : Tournament(settings)
@@ -48,121 +49,27 @@ Tournament::~Tournament()
 /*	GETTER	*/
 /************/
 
-/**
- * Retourne l objet Settings qui a permis d initialiser l objet Tournament
- */
-const Settings&		Tournament::getSettings() const
-{
-	return (this->_settings);
-}
-
-/**
- * Retourne un vecteur de pointeurs de Pool
- */
-CVP_POOL			Tournament::getPools() const
-{
-	return (this->_pools);
-}
-
-/**
- * Retourne un objet Phase qui contient les infos pour les 1/16
- */
-Phase*				Tournament::getSixteenth() const
-{
-	return (this->_sixteenths);
-}
-
-/**
- * Retourne un objet Phase qui contient les infos pour les 1/8
- */
-Phase*				Tournament::getHeighth() const
-{
-	return (this->_heighths);
-}
-
-/**
- * Retourne un objet Phase qui contient les infos pour les 1/4
- */
-Phase*				Tournament::getQuarters() const
-{
-	return (this->_quarters);
-}
-
-/**
- * Retourne un objet Phase qui contient les infos pour les 1/2
- */
-Phase*				Tournament::getSemis() const
-{
-	return (this->_semis);
-}
-
-/**
- * Retourne un objet Phase qui contient les infos pour la final
- */
-Phase*				Tournament::getFinal() const
-{
-	return (this->_final);
-}
-
-/**
- * Retourne un objet Phase qui contient les infos pour la 3eme place
- */
-Phase*				Tournament::getThirdPlace() const
-{
-	return (this->_thirdPlace);
-}
-
-/**
- * Indique s'il y a des 1/16 a jouer
- */
-bool				Tournament::getHasSixteenth() const
-{
-	return (this->_hasSixteenth);
-}
-
-/**
- * Indique s'il y a des 1/8 a jouer
- */
-bool				Tournament::getHasHeighth() const
-{
-	return (this->_hasHeighth);
-}
+const Settings&		Tournament::getSettings() const			{	return (this->_settings);		}
+CVP_POOL			Tournament::getPools() const			{	return (this->_pools);			}
+Phase*				Tournament::getSixteenth() const		{	return (this->_sixteenths);		}
+Phase*				Tournament::getHeighth() const			{	return (this->_heighths);		}
+Phase*				Tournament::getQuarters() const			{	return (this->_quarters);		}
+Phase*				Tournament::getSemis() const			{	return (this->_semis);			}
+Phase*				Tournament::getFinal() const			{	return (this->_final);			}
+Phase*				Tournament::getThirdPlace() const		{	return (this->_thirdPlace);		}
+bool				Tournament::getHasSixteenth() const		{	return (this->_hasSixteenth);	}
+bool				Tournament::getHasHeighth() const		{	return (this->_hasHeighth);		}
+bool				Tournament::getHasThirdMatch() const	{	return (this->_hasHeighth);		}
 
 /************/
 /*	SETTER	*/
 /************/
 
-/**
- * Set un tournoi comme pret a etre lance
- */
-void				Tournament::setIsReady(const bool value)
-{
-	this->_isReady = value;
-}
-
-/**
- * Set un tournoi comme fini
- */
-void				Tournament::setIsFinished(const bool value)
-{
-	this->_isFinished = value;
-}
-
-/**
- * Indique si le tournoi a des 1/16 a jouer
- */
-void				Tournament::setHasSixteenth(const bool value)
-{
-	this->_hasSixteenth = value;
-}
-
-/**
- * Indique si le tournoi a des 1/18 a jouer
- */
-void				Tournament::setHasHeighth(const bool value)
-{
-	this->_hasHeighth = value;
-}
+void				Tournament::setIsReady(const bool value)		{	this->_isReady = value;			}
+void				Tournament::setIsFinished(const bool value)		{	this->_isFinished = value;		}
+void				Tournament::setHasSixteenth(const bool value)	{	this->_hasSixteenth = value;	}
+void				Tournament::setHasHeighth(const bool value)		{	this->_hasHeighth = value;		}
+void				Tournament::setHasThirdMatch(bool value)		{	this->_hasThirdMatch = value;	}
 
 /********************/
 /*	PRIVATE METHOD	*/
