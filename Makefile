@@ -56,9 +56,11 @@ CLI				=	./cli/MatchCLI.cpp \
 					./cli/PoolCLI.cpp \
 					./cli/SettingsCLI.cpp \
 					./cli/TeamCLI.cpp \
-					./cli/TournamentCLI.cpp
+					./cli/TournamentCLI.cpp \
+					./cli/TournamentViewer.cpp
 
 UTILS			=	./utils/CheckerCSV.cpp \
+					./utils/Exporter.cpp \
 					./utils/FormatUtils.cpp \
 					./utils/PrintUtils.cpp \
 					./utils/TournamentHistory.cpp
