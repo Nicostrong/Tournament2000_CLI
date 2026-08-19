@@ -2,17 +2,15 @@
 // Created by Nicolas Fordoxcel on 09/07/2026.
 //
 
-//	STDLIB
+
+/****************************************************************************************************/
+/*	INCLUDES																						*/
+/****************************************************************************************************/
+
 #include <iostream>
 #include <fstream>
 
-//	INCLUDES
 #include "../includes/utils/TournamentHistory.hpp"
-
-//	TYPEDEF
-using				C_STRING	=	const std::string&;
-
-//	STATIC VARIABLES
 
 /****************/
 /*	CANONICAL	*/
@@ -34,31 +32,31 @@ using				C_STRING	=	const std::string&;
 /*	PUBLIC METHOD	*/
 /********************/
 
-void								TournamentHistory::logEvent(C_STRING event)
+void				TournamentHistory::logEvent(cString event)
 {
 	this->_globalEvents.push_back(event);
 }
 
-void								TournamentHistory::recordMatch(Match* match)
+void				TournamentHistory::recordMatch(Match* match)
 {
 	if (!match)
-		return ;
+		return;
 
-	for (const Participant* p : match->getTeamA()->getMembers())
+	for (cpPart p : match->getTeamA()->getMembers())
 		this->_participantMatches[p].push_back(match);
 
-	for (const Participant* p : match->getTeamB()->getMembers())
+	for (cpPart p : match->getTeamB()->getMembers())
 		this->_participantMatches[p].push_back(match);
 }
 
-void								TournamentHistory::exportParticipantSummary(const Participant* p, C_STRING filename) const
+void				TournamentHistory::exportParticipantSummary(cpPar p, cString filename) const
 {
 	std::ofstream file(filename);
 
 	if (!file.is_open())
 	{
-		std::cerr << "Erreur : Impossible d'ouvrir le fichier " << filename << std::endl;
-		return ;
+		PrintUtils::addError(std::format("Erreur : Impossible d'ouvrir le fichier {}.", filename));
+		return;
 	}
 
 	file << "=== RESUME DU TOURNOI POUR " << p->getPseudo() << " ===\n\n";
@@ -67,7 +65,7 @@ void								TournamentHistory::exportParticipantSummary(const Participant* p, C_
 
 	if (it != this->_participantMatches.end() && !it->second.empty())
 	{
-		for (const Match* m : it->second)
+		for (cpMatch m : it->second)
 		{
 			file << m->getTeamA()->getName() << " [" << m->getScoreA() << "] - ["
 				<< m->getScoreB() << "] " << m->getTeamB()->getName();

@@ -2,56 +2,51 @@
 // Created by Nicolas Fordoxcel on 13/06/2026.
 //
 
-//	STDLIB
-#include <string>
-#include <vector>
+/****************************************************************************************************/
+/*	INCLUDES																						*/
+/****************************************************************************************************/
 
-//	INCLUDES
-#include "../includes/class/Pool.hpp"
 #include "../includes/class/Team.hpp"
-#include "../includes/class/Match.hpp"
-#include "../includes/class/Phase.hpp"
-#include "../includes/class/Settings.hpp"
-#include "../includes/class/Tournament.hpp"
-#include "../includes/class/Participant.hpp"
 
-//	TYPEDEF
-using				string		=	std::string;
-using				cString		=	const std::string&;
+/****************************************************************************************************/
+/*	TYPEDEF																							*/
+/****************************************************************************************************/
 
-using				cPool		=	const Pool&;
-using				cTeam		=	const Team&;
-using				cMatch		=	const Match&;
-using				cPhase		=	const Phase&;
-using				cSet		=	const Settings&;
-using				cPart		=	const Participant&;
+using				String			=	std::string;
+using				cString			=	const std::string&;
+using				vString			=	std::vector<std::string>;
+using				vtupleMsg		=	std::vector<std::tuple<std::string, bool>>;
 
-using				vpPool		=	std::vector<Pool*>;
-using				vpTeam		=	std::vector<Team*>;
-using				vpMatch		=	std::vector<Match*>;
-using				vpPhase		=	std::vector<Phase*>;
-using				vpPart		=	std::vector<Participant*>;
+using				cInt			=	const int;
+using				vInt			=	std::vector<int>;
+using				cvInt			=	const std::vector<int>;
+template<std::size_t N>
+using				aInt			=	std::array<int, N>;
 
-using				cvpPool		=	const std::vector<Pool*>&;
-using				cvpTeam		=	const std::vector<Team*>&;
-using				cvpMatch	=	const std::vector<Match*>&;
-using				cvpPhase	=	const std::vector<Phase*>&;
-using				cvpPart		=	const std::vector<Participant*>&;
+using				cBool			=	const bool;
 
-//	STATIC VARIABLES
-int									Team::_idCounter = 0;
+using				cTeam			=	const Team&;
+using				cpTeam			=	const Team*;
+using				vpTeam			=	std::vector<Team*>;
+using				cvpTeam			=	const std::vector<Team*>&;
 
-/************************************************************************************************/
-/*	CONSTRUCTOR / DESTRUCTOR																	*/
-/************************************************************************************************/
+/****************************************************************************************************/
+/*	STATIC VARIABLES																				*/
+/****************************************************************************************************/
+
+int					Team::_idCounter = 0;
+
+/****************************************************************************************************/
+/*	CONSTRUCTOR / DESTRUCTOR																		*/
+/****************************************************************************************************/
 
 Team::Team():	_id(++_idCounter), _point(0), _scoreMarked(0), _scoreAgainst(0), _isMixed(false),
 	_isEliminated(false), _hasMultiTeamPlayer(false), _name("Team " + std::to_string(_idCounter))
 {}
 
-/************************************************************************************************/
-/*	GETTER																						*/
-/************************************************************************************************/
+/****************************************************************************************************/
+/*	GETTER																							*/
+/****************************************************************************************************/
 
 size_t				Team::getSize() const				{	return (this->_members.size());						}
 bool				Team::getIsMixed() const			{	return (this->_isMixed);							}
@@ -65,27 +60,27 @@ int					Team::getScoreDiff() const			{	return (this->_scoreMarked - this->_score
 cString				Team::getName() const				{	return (this->_name);								}
 cvpPart				Team::getMembers() const			{	return (this->_members);							}
 
-/************************************************************************************************/
-/*	SETTER																						*/
-/************************************************************************************************/
+/****************************************************************************************************/
+/*	SETTER																							*/
+/****************************************************************************************************/
 
-void				Team::setIsMixed(const bool value)				{	this->_isMixed = value;				}
-void				Team::setIsEliminated(const bool value)			{	this->_isEliminated = value;		}
-void				Team::setHasMultiTeamPlayer(const bool value)	{	this->_hasMultiTeamPlayer = value;	}
-void				Team::setName(cString value)					{	this->_name = value;				}
+void				Team::setIsMixed(cBool value)				{	this->_isMixed = value;				}
+void				Team::setIsEliminated(cBool value)			{	this->_isEliminated = value;		}
+void				Team::setHasMultiTeamPlayer(cBool value)	{	this->_hasMultiTeamPlayer = value;	}
+void				Team::setName(cString value)				{	this->_name = value;				}
 
-/************************************************************************************************/
-/*	PRIVATE METHODS																				*/
-/************************************************************************************************/
+/****************************************************************************************************/
+/*	PRIVATE METHODS																					*/
+/****************************************************************************************************/
 
-/************************************************************************************************/
-/*	PUBLIC METHODS																				*/
-/************************************************************************************************/
+/****************************************************************************************************/
+/*	PUBLIC METHODS																					*/
+/****************************************************************************************************/
 
 /**
  * Indique si une equipe est complete ou pas
  */
-bool				Team::isComplete(const int requiredSize) const
+bool				Team::isComplete(cInt requiredSize) const
 {
 	return (this->_members.size() == static_cast<size_t>(requiredSize));
 }
@@ -105,9 +100,9 @@ void				Team::addMember(Participant* member)
 void				Team::renameTeam()
 {
 	if (this->_members.empty())
-		return ;
+		return;
 
-	string newName = "";
+	String newName = "";
 
 	for (size_t i = 0; i < this->_members.size(); ++i)
 	{
@@ -127,7 +122,7 @@ void				Team::renameTeam()
 /**
  * Cumule les points de la rencontre
  */
-void				Team::addPoint(const int point)
+void				Team::addPoint(cInt point)
 {
 	this->_point += point;
 }
@@ -135,7 +130,7 @@ void				Team::addPoint(const int point)
 /**
  * Cumule les points marque contre une autre equipe
  */
-void				Team::addScoreMarked(const int score)
+void				Team::addScoreMarked(cInt score)
 {
 	this->_scoreMarked += score;
 }
@@ -143,7 +138,7 @@ void				Team::addScoreMarked(const int score)
 /**
  * Cumule les points encaisse contre une autre equipe
  */
-void				Team::addScoreAgainst(const int score)
+void				Team::addScoreAgainst(cInt score)
 {
 	this->_scoreAgainst += score;
 }

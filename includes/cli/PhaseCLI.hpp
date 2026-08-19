@@ -5,17 +5,21 @@
 #ifndef PHASECLI_HPP
 # define PHASECLI_HPP
 
-//	STDLIB
-# include <string>
+/****************************************************************************************************/
+/*	INCLUDES																						*/
+/****************************************************************************************************/
+
 # include <fstream>
 
-//	INCLUDES
-# include "../class/Phase.hpp"
+#include "../Global.hpp"
 
-//	TYPEDEF
-using				STRING		=	std::string;
-using				C_STRING	=	const std::string&;
-using				CVP_MATCH	=	const std::vector<Match*>&;
+/****************************************************************************************************/
+/*	STATIC VARIABLES																				*/
+/****************************************************************************************************/
+
+/****************************************************************************************************/
+/*	CLASS																							*/
+/****************************************************************************************************/
 
 /**
 * Gere l affichage terminal et l export fichier d un objet Phase.
@@ -25,14 +29,15 @@ class PhaseCLI
 
 	private:
 
-		static void					writeEncounter(std::ostream& out, CVP_MATCH matches,
+		static void					writeEncounter(std::ostream& out, cvpMatch matches,
 									size_t startIdx, int nbSets, int encounterNum, bool toFile);
 
 	public:
 
-		static void					displayPhase(const Phase& phase);
-		static void					displayResults(const Phase& phase);
-		static bool					exportToTxt(const Phase& phase, C_STRING filename);
+		static void					displayPhase(cPhase phase);
+		static void					displayResults(cPhase phase);
+		static bool					exportToTxt(cPhase phase, cString filename);
 
 };
-#endif //PHASECLI_HPP
+
+#endif

@@ -2,30 +2,25 @@
 // Created by Nicolas Fordoxcel on 23/06/2026.
 //
 
-//	STDLIB
-#include <iostream>
+/****************************************************************************************************/
+/*	INCLUDES																						*/
+/****************************************************************************************************/
+
 #include <sstream>
-#include <vector>
+#include <iostream>
 #include <exception>
 
-//	INCLUDES
 #include "../includes/cli/SettingsCLI.hpp"
+
 #include "../includes/Constantes.hpp"
-#include "../includes/utils/PrintUtils.hpp"
-#include "../includes/Global.hpp"
-#include "../includes/Color.hpp"
 
-//	TYPEFED
-using				STRING		=	std::string;
-using				C_STRING	=	const std::string&;
-using				V_STRING	=	std::vector<std::string>;
-using				CV_INT		=	const std::vector<int>&;
+/****************************************************************************************************/
+/*	STATIC VARIABLES																				*/
+/****************************************************************************************************/
 
-//	STATIC VARIABLES
-
-/****************/
-/*	EXCEPTION	*/
-/****************/
+/****************************************************************************************************/
+/*	EXCEPTION																						*/
+/****************************************************************************************************/
 
 namespace
 {
@@ -38,16 +33,16 @@ namespace
 	}
 }
 
-/********************/
-/*	PRIVATE METHOD	*/
-/********************/
+/****************************************************************************************************/
+/*	PRIVATE METHOD																					*/
+/****************************************************************************************************/
 
 /**
  *	Lit l input de l utilisateur et en valide la valeur numerique
  */
-int					SettingsCLI::inputInt(C_STRING prompt, const int min, const int max, const int defaultVal)
+int					SettingsCLI::inputInt(cString prompt, cInt min, cInt max, cInt defaultVal)
 {
-	STRING input;
+	String input;
 	int val;
 
 	while (true)
@@ -76,10 +71,10 @@ int					SettingsCLI::inputInt(C_STRING prompt, const int min, const int max, con
 /**
  *	Lit l input de l utilisateur pour une question boolean et en valide la valeur
  */
-bool				SettingsCLI::inputBool(C_STRING prompt, const bool defaultVal)
+bool				SettingsCLI::inputBool(cString prompt, cBool defaultVal)
 {
-	STRING input;
-	C_STRING defStr = defaultVal ? "o" : "n";
+	String input;
+	cString defStr = defaultVal ? "o" : "n";
 
 	while (true)
 	{
@@ -110,9 +105,9 @@ bool				SettingsCLI::inputBool(C_STRING prompt, const bool defaultVal)
 /**
  *	Lit l input de l utilisateur
  */
-STRING				SettingsCLI::inputString(C_STRING prompt, C_STRING defaultVal)
+String				SettingsCLI::inputString(cString prompt, cString defaultVal)
 {
-	STRING input;
+	String input;
 
 	while (true)
 	{
@@ -135,9 +130,9 @@ STRING				SettingsCLI::inputString(C_STRING prompt, C_STRING defaultVal)
 /**
  *	Lit l input de l utilisateur et en valide la valeur d apres une liste predefinie
  */
-int					SettingsCLI::inputIntList(C_STRING prompt, CV_INT allowedValues, int defaultVal)
+int					SettingsCLI::inputIntList(cString prompt, cvInt allowedValues, int defaultVal)
 {
-	STRING input;
+	String input;
 	int val;
 
 	while (true)
@@ -185,15 +180,15 @@ void				SettingsCLI::setupPlayers(Settings& s)
 
 	if (!s.getIsMixed())
 	{
-		const int defaultG = (s.getTournamentGender() == Participant::FEMALE) ? 1 : 0;
-		const int g = inputInt("Genre du tournoi (0 = HOMME, 1 = FEMME)", 0, 1, defaultG);
+		cInt defaultG = (s.getTournamentGender() == Participant::FEMALE) ? 1 : 0;
+		cInt g = inputInt("Genre du tournoi (0 = HOMME, 1 = FEMME)", 0, 1, defaultG);
 
 		s.setTournamentGender(g == 0 ? Participant::MALE : Participant::FEMALE);
 	}
 	else
 		s.setTournamentGender(Participant::MIXED);
 
-	std::vector<int> allowedPlayers;
+	vInt allowedPlayers;
 
 	if (s.getIsDouble())
 		allowedPlayers.assign(allowedNbPlayersDouble.begin(), allowedNbPlayersDouble.end());
@@ -221,7 +216,7 @@ void				SettingsCLI::setupPools(Settings& s)
 		s.setNbPools(inputIntList("Nombre de poules", {4, 8, 16}, s.getNbPools()));
 		s.setNbPlayerByPool(inputInt("Nombre de joueurs/equipes par poule", NBPLAYERPERPOOLMIN, NBPLAYERPERPOOLMAX, s.getNbPlayerByPool()));
 
-		const int requiredPlayers = s.getNbPools() * s.getNbPlayerByPool();
+		cInt requiredPlayers = s.getNbPools() * s.getNbPlayerByPool();
 
 		if (s.getNbPlayers() < requiredPlayers && !s.getAllowMultiTeamPlayers())
 		{
@@ -231,7 +226,7 @@ void				SettingsCLI::setupPools(Settings& s)
 			std::cout << "Veuillez reajuster vos poules.\n\n" << Color::RESET;
 		}
 		else
-			break ;
+			break;
 	}
 }
 
@@ -256,7 +251,7 @@ void				SettingsCLI::setupMatchRules(Settings& s)
 					<< ") ne peut pas etre superieur au score maximum (" << s.getScoreMax() << ").\n\n" << Color::RESET;
 		}
 		else
-			break ;
+			break;
 	}
 }
 
@@ -282,9 +277,9 @@ void				SettingsCLI::setupPhaseSets(Settings& s)
 		s.setNbSetPlayedThirdPlace(0);
 }
 
-/********************/
-/*	PUBLIC METHOD	*/
-/********************/
+/****************************************************************************************************/
+/*	PUBLIC METHOD																					*/
+/****************************************************************************************************/
 
 /**
  *	Initialisation des settings via les donnees utilisateur
@@ -293,7 +288,7 @@ void				SettingsCLI::setupWizard(Settings& s)
 {
 	try
 	{
-		V_STRING errors;
+		vString errors;
 		bool confirmed = false;
 
 		std::cout << Color::BLINK << Color::YELLOW << "(Appuyez sur 'Entree' pour conserver la valeur entre crochets [])\n" << Color::RESET;
@@ -308,7 +303,7 @@ void				SettingsCLI::setupWizard(Settings& s)
 			{
 				std::cout << Color::RED << "\n[!] ECHEC DE LA VALIDATION FINALE :\n";
 
-				for (C_STRING err : errors)
+				for (cString err : errors)
 					std::cout << " - " << err << "\n";
 
 				errors.clear();
@@ -325,7 +320,7 @@ void				SettingsCLI::setupWizard(Settings& s)
 			std::cout << s << std::endl;
 
 			if (!s.isValid(errors))
-				continue ;
+				continue;
 
 			if (inputBool("Validez-vous ces parametres pour passer a l'etape suivante ?", true))
 				confirmed = true;
@@ -333,7 +328,7 @@ void				SettingsCLI::setupWizard(Settings& s)
 	}
 	catch (const UserInterruptedException&)
 	{
-		return ;
+		return;
 	}
 }
 
@@ -341,7 +336,7 @@ void				SettingsCLI::setupWizard(Settings& s)
 /*	PRINT METHOD	*/
 /********************/
 
-std::ostream&		operator<<(std::ostream& os, const Settings& s)
+std::ostream&		operator<<(std::ostream& os, cSet s)
 {
 	os << Color::YELLOW;
 	os << "\n============================================================\n";

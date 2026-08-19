@@ -5,24 +5,19 @@
 #ifndef PARTICIPANTSCLI_HPP
 # define PARTICIPANTSCLI_HPP
 
-//	STDLIB
-# include <vector>
-# include <tuple>
-# include <string>
+/****************************************************************************************************/
+/*	INCLUDES																						*/
+/****************************************************************************************************/
 
-//	INCLUDES
-# include "../class/Participant.hpp"
-# include "../class/Settings.hpp"
+#include "../Global.hpp"
 
-//	TYPEDEF
-using				STRING		=	std::string;
-using				C_STRING	=	const std::string&;
-using				VSTRING		=	std::vector<std::string>;
-using				VP_PART		=	std::vector<Participant*>;
-using				CVP_PART	=	const std::vector<Participant*>&;
-using				CV_PART		=	const std::vector<Participant>&;
+/****************************************************************************************************/
+/*	STATIC VARIABLES																				*/
+/****************************************************************************************************/
 
-//	STATIC VARIABLES
+/****************************************************************************************************/
+/*	CLASS																							*/
+/****************************************************************************************************/
 
 /**
  * Gere la representation de l objet Participants en CLI
@@ -32,43 +27,43 @@ class ParticipantCLI
 {
 	private:
 
-		static VP_PART				partList;
+		static vpPart				partList;
 
 		//	MENU
-		static void					menuParticipant(CVP_PART participants, const Settings& settings, bool showMenu);
+		static void					menuParticipant(cvpPart participants, cSet settings, bool showMenu);
 
 		//	SUBMENU
-		static Participant*			create(CVP_PART participants, const Settings& settings);
-		static void					destroy(size_t id, VP_PART& participants);
-		static void					modify(size_t id, CVP_PART participants, const Settings& settings);
-		static void					displayOne(const Participant& p);
-		static void					displayAll(CVP_PART participants);
+		static Participant*			create(cvpPart participants, cSet settings);
+		static void					destroy(size_t id, vpPart& participants);
+		static void					modify(size_t id, cvpPart participants, cSet settings);
+		static void					displayOne(cPart p);
+		static void					displayAll(cvpPart participants);
 
 		//	IMPORT
-		static VP_PART				importFromCSV(C_STRING filename);
+		static vpPart				importFromCSV(cString filename);
 
 		//	EXPORT
-		static bool					exportToCSV(CVP_PART participants, C_STRING filename);
+		static bool					exportToCSV(cvpPart participants, cString filename);
 
 		//	HANDLER
-		static void					handleAddParticipant(VP_PART& participants, const Settings& settings);
-		static void					handleModifyParticipant(CVP_PART& participants, const Settings& settings);
-		static void					handleDeleteParticipant(VP_PART& participants);
-		static void					handleImport(VP_PART& participants, const Settings& settings);
-		static void					handleExport(CVP_PART participants);
-		static void					handledisplay(CVP_PART participants);
+		static void					handleAddParticipant(vpPart& participants, cSet settings);
+		static void					handleModifyParticipant(cvpPart participants, cSet settings);
+		static void					handleDeleteParticipant(vpPart& participants);
+		static void					handleImport(vpPart& participants, cSet settings);
+		static void					handleExport(cvpPart participants);
+		static void					handledisplay(cvpPart participants);
 		static void					handleList();
 		static void					handleTitle();
 
 		//	HELPER
-		static bool					checkPseudo(C_STRING pseudo, CVP_PART participants);
-		static Participant*			extractParticipantFromLine(C_STRING line, bool isFirstLine);
+		static bool					checkPseudo(cString pseudo, cvpPart participants);
+		static Participant*			extractParticipantFromLine(cString line, bool isFirstLine);
 
 	public:
 
-		static void					handleMenuParticipant(VP_PART& participants, const Settings& settings);
+		static void					handleMenuParticipant(vpPart& participants, cSet settings);
 };
 
-std::ostream&		operator<<(std::ostream& os, const Participant& p);
+std::ostream&		operator<<(std::ostream& os, cPart p);
 
 #endif

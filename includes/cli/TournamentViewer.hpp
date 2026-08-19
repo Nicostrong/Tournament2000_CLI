@@ -5,18 +5,19 @@
 #ifndef TOURNAMENTVIEWER_HPP
 # define TOURNAMENTVIEWER_HPP
 
-//	STDLIB
-# include <string>
+/****************************************************************************************************/
+/*	INCLUDES																						*/
+/****************************************************************************************************/
 
-//	INCLUDES
-# include "../class/Tournament.hpp"
-# include "../class/Participant.hpp"
-# include "../class/Phase.hpp"
+#include "../Global.hpp"
 
-//	TYPEDEF
-using				STRING		=	std::string;
+/****************************************************************************************************/
+/*	STATIC VARIABLES																				*/
+/****************************************************************************************************/
 
-//	GLOBAL VARIABLES
+/****************************************************************************************************/
+/*	CLASS																							*/
+/****************************************************************************************************/
 
 /**
  *	La classe Exporter gere toutes les exportations du programme
@@ -25,12 +26,12 @@ class TournamentViewer
 {
 	private:
 
-		static STRING				getTeamNameOrPlaceholder(const Phase* phase, size_t matchIdx, int teamPos);
+		static String				getTeamNameOrPlaceholder(cpPhase phase, size_t matchIdx, cInt teamPos);
 
 	public:
 
-		static void					displayFullBracket(const Tournament& tournament);
-		static void					displayPodium(const Tournament& tournament);
+		static void					displayFullBracket(cTour tournament);
+		static void					displayPodium(cTour tournament);
 
 };
 

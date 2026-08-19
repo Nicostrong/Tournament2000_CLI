@@ -5,15 +5,19 @@
 #ifndef CHECKERCSV_HPP
 # define CHECKERCSV_HPP
 
-//	STDLIB
-# include <string>
+/****************************************************************************************************/
+/*	INCLUDES																						*/
+/****************************************************************************************************/
 
-//	INCLUDES
+#include "../Global.hpp"
 
-//	TYPEDEF
-using				C_STRING	=	const std::string&;
+/****************************************************************************************************/
+/*	STATIC VARIABLES																				*/
+/****************************************************************************************************/
 
-//	GLOBAL VARIABLES
+/****************************************************************************************************/
+/*	CLASS																							*/
+/****************************************************************************************************/
 
 /**
  *	utilitaire pour le formatage des strings et l harmonisation
@@ -22,7 +26,7 @@ class CheckerCSV
 {
 	public:
 
-		static bool					validateParticipantCSV(C_STRING filename);
+		static bool					validateParticipantCSV(cString filename);
 };
 
 #endif

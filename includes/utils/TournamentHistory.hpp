@@ -5,26 +5,28 @@
 #ifndef TOURNAMANTHISTORY_HPP
 # define TOURNAMANTHISTORY_HPP
 
-//	STDLIB
-#include <string>
-#include <vector>
+/****************************************************************************************************/
+/*	INCLUDES																						*/
+/****************************************************************************************************/
+
 #include <map>
 
-//	INCLUDES
-#include "../class/Match.hpp"
-#include "../class/Participant.hpp"
+#include "../Global.hpp"
 
-//	TYPEDEF
-using				C_STRING			=	const std::string&;
-using				V_STRING			=	std::vector<std::string>;
-using				M_CP_PART_VP_MATCH	=	std::map<const Participant*, std::vector<Match*>>;
+/****************************************************************************************************/
+/*	STATIC VARIABLES																				*/
+/****************************************************************************************************/
+
+/****************************************************************************************************/
+/*	CLASS																							*/
+/****************************************************************************************************/
 
 class TournamentHistory
 {
 	private:
 
-		M_CP_PART_VP_MATCH			_participantMatches;
-		V_STRING					_globalEvents;
+		mcpPartvpMatch				_participantMatches;
+		vString						_globalEvents;
 
 	public:
 
@@ -35,10 +37,9 @@ class TournamentHistory
         ~TournamentHistory() = default;
 
 		//	METHODS
-        void						logEvent(C_STRING event);
-        void						recordMatch(Match* match);
-        void						exportParticipantSummary(const Participant* p, C_STRING filename) const;
-        //void						exportFullHistory(C_STRING filename) const;
+        void						logEvent(cString event);
+        void						recordMatch(cpMatch match);
+        void						exportParticipantSummary(cpPart p, cString filename) const;
 
 };
 

@@ -5,16 +5,19 @@
 #ifndef SETTINGSCLI_H
 # define SETTINGSCLI_H
 
-//	STDLIB
-# include <string>
+/****************************************************************************************************/
+/*	INCLUDES																						*/
+/****************************************************************************************************/
 
-//	INCLUDES
-# include "../class/Settings.hpp"
+#include "../Global.hpp"
 
-//	TYPEDEF
-using				STRING		=	std::string;
-using				C_STRING	=	const std::string&;
-using				CV_INT		=	const std::vector<int>&;
+/****************************************************************************************************/
+/*	STATIC VARIABLES																				*/
+/****************************************************************************************************/
+
+/****************************************************************************************************/
+/*	CLASS																							*/
+/****************************************************************************************************/
 
 class SettingsCLI
 {
@@ -22,23 +25,20 @@ class SettingsCLI
 	public:
 
 		static void					setupWizard(Settings& s);
-		//static void					display(const Settings& s);
-		//static void					editMenu(Settings& s);
-		//STRING						printToJSON(const Settings& s);
 
 	private:
 
-		static int					inputInt(C_STRING prompt, int min, int max, int defaultVal);
-		static int					inputIntList(C_STRING prompt, CV_INT allowedValues, int defaultVal);
-		static bool					inputBool(C_STRING prompt, bool defaultVal);
-		static std::string			inputString(C_STRING prompt, C_STRING defaultVal);
+		static int					inputInt(cString prompt, cInt min, cInt max, cInt defaultVal);
+		static int					inputIntList(cString prompt, cvInt allowedValues, cInt defaultVal);
+		static bool					inputBool(cString prompt, cBool defaultVal);
+		static String				inputString(cString prompt, cString defaultVal);
 		static void					setupPlayers(Settings& s);
-		static void					setupPools(Settings& s);
-		static void					setupMatchRules(Settings& s);
-		static void					setupPhaseSets(Settings& s);
+		static void					setupPools(cSet s);
+		static void					setupMatchRules(cSet s);
+		static void					setupPhaseSets(cSet s);
 
 };
 
-std::ostream&		operator<<(std::ostream& os, const Settings& s);
+std::ostream&		operator<<(std::ostream& os, cSet s);
 
 #endif

@@ -5,29 +5,33 @@
 #ifndef POOLCLI_HPP
 # define POOLCLI_HPP
 
-//	STDLIB
+/****************************************************************************************************/
+/*	INCLUDES																						*/
+/****************************************************************************************************/
 
-//	INCLUDES
-# include "../class/Pool.hpp"
+#include "../Global.hpp"
 
-//	TYPEDEF
-using				C_STRING	=	const std::string&;
+/****************************************************************************************************/
+/*	STATIC VARIABLES																				*/
+/****************************************************************************************************/
 
-//	STATIC VARIABLES
+/****************************************************************************************************/
+/*	CLASS																							*/
+/****************************************************************************************************/
 
 class PoolCLI
 {
 	private:
 		
-		static void					writeMatches(std::ostream& out, const Pool& pool, bool toFile);
-		static void					writeTable(std::ostream& out, const Pool& pool, bool toFile);
+		static void					writeMatches(std::ostream& out, cPool pool, bool toFile);
+		static void					writeTable(std::ostream& out, cPool pool, bool toFile);
 
 	public:
 
-		static void					displayTable(const Pool& pool);
-		static void					displayFullTable(const Pool& pool);
-		static void					displayMatches(const Pool& pool);
-		static void					displayPoolDetails(const Pool& pool);
+		static void					displayTable(cPool pool);
+		static void					displayFullTable(cPool pool);
+		static void					displayMatches(cPool pool);
+		static void					displayPoolDetails(cPool pool);
 };
 
 #endif

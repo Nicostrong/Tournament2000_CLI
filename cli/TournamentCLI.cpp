@@ -2,39 +2,32 @@
 // Created by Nicolas Fordoxcel on 15/06/2026.
 //
 
-//	STDLIB
+/****************************************************************************************************/
+/*	INCLUDES																						*/
+/****************************************************************************************************/
+
 #include <limits>
-#include <format>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <exception>
 
-//	INCLUDES
-#include "../includes/Color.hpp"
-#include "../includes/Global.hpp"
 #include "../includes/cli/PoolCLI.hpp"
 #include "../includes/cli/MatchCLI.hpp"
 #include "../includes/cli/PhaseCLI.hpp"
-#include "../includes/utils/Exporter.hpp"
 #include "../includes/cli/SettingsCLI.hpp"
-#include "../includes/utils/PrintUtils.hpp"
 #include "../includes/cli/TournamentCLI.hpp"
 #include "../includes/cli/TournamentViewer.hpp"
 
-//	TYPEDEF
-using				STRING		=	std::string;
-using				C_STRING	=	const std::string&;
-using				VP_POOL		=	std::vector<Pool*>;
-using				VP_MATCH	=	std::vector<Match*>;
-using				CVP_MATCH	=	const std::vector<Match*>&;
-using               CVP_TEAM	=	const std::vector<Team*>&;
+#include "../includes/utils/Exporter.hpp"
 
-//	STATIC VARIABLES
+/****************************************************************************************************/
+/*	STATIC VARIABLES																				*/
+/****************************************************************************************************/
 
-/**************************************************************************************************/
-/*	EXCEPTION																					  */
-/**************************************************************************************************/
+/****************************************************************************************************/
+/*	EXCEPTION																						*/
+/****************************************************************************************************/
 
 namespace
 {
@@ -47,9 +40,9 @@ namespace
 	}
 }
 
-/**************************************************************************************************/
-/*	PRIVATE METHOD																				  */
-/**************************************************************************************************/
+/****************************************************************************************************/
+/*	PRIVATE METHOD																					*/
+/****************************************************************************************************/
 
 /************************/
 /*  GESTION DU MENU		*/
@@ -58,7 +51,7 @@ namespace
 /**
  *	Gestion de l affichage des menu
  */
-void				TournamentCLI::displayMenuUI(const Tournament& tournament)
+void				TournamentCLI::displayMenuUI(cTour tournament)
 {
 	handleTitle();
     PrintUtils::handleMessages();
@@ -79,7 +72,7 @@ void				TournamentCLI::handleTitle()
 /**
  *	Affiche les menus sous conditions du tournoi
  */
-void				TournamentCLI::menuTournament(const Tournament& tournament)
+void				TournamentCLI::menuTournament(cTour& tournament)
 {
 	std::cout << "\n========== TOURNOI : " << tournament.getSettings().getName() << " ==========" << std::endl;
 	std::cout <<  Color::YELLOW << "\t1.\t" << Color::RESET << "Pools" << std::endl;
@@ -130,9 +123,9 @@ void				TournamentCLI::clearInput()
 /**
  *	Recupere la string entree par l utilisateur
  */
-STRING				TournamentCLI::fetchInput()
+String				TournamentCLI::fetchInput()
 {
-	STRING input;
+	String input;
 	
 	if (!(std::cin >> input))
 	{
@@ -148,7 +141,7 @@ STRING				TournamentCLI::fetchInput()
 /**
  *	Tramsforme la saisie utilisateur en int
  */
-int					TournamentCLI::parseChoice(C_STRING input)
+int					TournamentCLI::parseChoice(cString input)
 {
 	try
 	{
@@ -240,11 +233,11 @@ void				TournamentCLI::executeChoice(int choice, Tournament& tournament)
 /**
  *	Demande un nom de fichier a l utilisateur
  */
-STRING				TournamentCLI::promptFilename(C_STRING prompt)
+String				TournamentCLI::promptFilename(cString prompt)
 {
 	std::cout << prompt;
 
-	STRING filename;
+	String filename;
 
 	std::getline(std::cin, filename);
 
@@ -260,12 +253,12 @@ STRING				TournamentCLI::promptFilename(C_STRING prompt)
  */
 void				TournamentCLI::handlePoolSelection(Tournament& tournament)
 {
-	const VP_POOL pools = tournament.getPools();
+	cvpPool pools = tournament.getPools();
 
 	if (pools.empty())
 	{
 		PrintUtils::addError("Aucune poule disponible.");
-		return ;
+		return;
 	}
 
 	std::cout << "\n--- Liste des Poules ---\n";
@@ -281,10 +274,10 @@ void				TournamentCLI::handlePoolSelection(Tournament& tournament)
 	if (!(std::cin >> pIdx) || pIdx < 1 || pIdx > pools.size())
 	{
 		clearInput();
-		return ;
+		return;
 	}
 
-	const STRING title = "MATCHS " + pools[pIdx - 1]->getName();
+	const String title = "MATCHS " + pools[pIdx - 1]->getName();
 
 	handleMatchList(pools[pIdx - 1]->getMatches(), title);
 }
@@ -294,10 +287,8 @@ void				TournamentCLI::handlePoolSelection(Tournament& tournament)
  *   - si phase == nullptr → appelle generateFn(), affiche succes ou erreur
  *   - sinon → affiche les matchs via handlePhase()
  */
-void				TournamentCLI::handleEliminationPhase(Phase* phase,
-															const std::function<void()>& generateFn,
-															C_STRING phaseName, C_STRING successMsg,
-															C_STRING errorMsg)
+void				TournamentCLI::handleEliminationPhase(Phase* phase,	const std::function<void()>& generateFn,
+						cString phaseName, cString successMsg, cString errorMsg)
 {
 	if (!phase)
 	{
@@ -378,12 +369,12 @@ void				TournamentCLI::handleExport(Tournament& tournament)
 		std::cout << "=============================================================\n";
 		std::cout << "\tChoix :\t";
 
-		STRING rawInput;
+		String rawInput;
 
 		if (!(std::cin >> rawInput))
 		{
 			clearInput();
-			return ;
+			return;
 		}
 
 		int choice;
@@ -395,18 +386,18 @@ void				TournamentCLI::handleExport(Tournament& tournament)
 		catch (...)
 		{
 			PrintUtils::addError("Saisie invalide.");
-			continue ;
+			continue;
 		}
 
 		if (choice == 0)
-			return ;
+			return;
 
 		clearInput();
 
-		const STRING filename = promptFilename("Nom du fichier de sortie : ");
+		const String filename = promptFilename("Nom du fichier de sortie : ");
 
 		if (filename.empty())
-			continue ;
+			continue;
 
 		bool ok = false;
 
@@ -420,12 +411,12 @@ void				TournamentCLI::handleExport(Tournament& tournament)
 				for (const Pool* p : tournament.getPools())
 				{
 					if (!p)
-						continue ;
+						continue;
 
 					for (const Team* t : p->getTeams())
 					{
 						if (!t)
-							continue ;
+							continue;
 
 						out << "Equipe : " << t->getName() << "\n";
 					}
@@ -445,7 +436,7 @@ void				TournamentCLI::handleExport(Tournament& tournament)
 				for (const Pool* p : tournament.getPools())
 				{
 					if (!p)
-						continue ;
+						continue;
 
 					out << "\n[" << p->getName() << "]\n";
 
@@ -476,13 +467,13 @@ void				TournamentCLI::handleExport(Tournament& tournament)
 		else
 		{
 			PrintUtils::addError("Choix non valide.");
-			continue ;
+			continue;
 		}
 
 		if (ok)
 		{
 			PrintUtils::addSuccess(std::format("Export réussi dans {}.", filename));
-			break ;
+			break;
 		}
 		else
 			PrintUtils::addError("Echec de l'export.");
@@ -495,7 +486,7 @@ void				TournamentCLI::handleExport(Tournament& tournament)
  *
  * 2→1/16  3→1/8  4→Quarts  5→Demis  6→Finale  7→3e Place
  */
-const Phase*		TournamentCLI::getPhaseByMenuChoice(const Tournament& tournament, const int choice)
+cpPhase				TournamentCLI::getPhaseByMenuChoice(cTour tournament, cInt choice)
 {
 	switch (choice)
 	{
@@ -529,14 +520,14 @@ const Phase*		TournamentCLI::getPhaseByMenuChoice(const Tournament& tournament, 
 /**
  *	Verifie si tout les matchs de pools sont finis
  */
-bool				TournamentCLI::isPoolsFinished(const Tournament& tournament)
+bool				TournamentCLI::isPoolsFinished(cTour tournament)
 {
-	for (const Pool* pool : tournament.getPools())
+	for (cpPool pool : tournament.getPools())
 	{
 		if (!pool)
-			continue ;
+			continue;
 
-		for (const Match* m : pool->getMatches())
+		for (cpMatch m : pool->getMatches())
 			if (m && !m->isFinished())
 				return (false);
 	}
@@ -547,7 +538,7 @@ bool				TournamentCLI::isPoolsFinished(const Tournament& tournament)
 /**
  *	Active la phase de 1/16 si les maths de pools sont finis et qu il y a des 1/16 a jouer
  */
-bool				TournamentCLI::isSixteenthUnlocked(const Tournament& tournament)
+bool				TournamentCLI::isSixteenthUnlocked(cTour tournament)
 {
 	return (tournament.getHasSixteenth() && isPoolsFinished(tournament));
 }
@@ -555,7 +546,7 @@ bool				TournamentCLI::isSixteenthUnlocked(const Tournament& tournament)
 /**
  *	Active la phase de 1/8 si les maths de pools ou de 1/16 sont finis et qu il y a des 1/8 a jouer
  */
-bool				TournamentCLI::isHeighthUnlocked(const Tournament& tournament)
+bool				TournamentCLI::isHeighthUnlocked(cTour tournament)
 {
 	if (!tournament.getHasHeighth())
 		return (false);
@@ -569,7 +560,7 @@ bool				TournamentCLI::isHeighthUnlocked(const Tournament& tournament)
 /**
  *	Active la phase de 1/4 si les maths de pools ou les 1/8 sont finis
  */
-bool				TournamentCLI::isQuartersUnlocked(const Tournament& tournament)
+bool				TournamentCLI::isQuartersUnlocked(cTour tournament)
 {
 	if (tournament.getHasHeighth())
 		return (tournament.getHeighth() && tournament.getHeighth()->isFinished());
@@ -580,7 +571,7 @@ bool				TournamentCLI::isQuartersUnlocked(const Tournament& tournament)
 /**
  *	Active la phase de 1/2 si les maths de 1/4 sont finis
  */
-bool				TournamentCLI::isSemisUnlocked(const Tournament& tournament)
+bool				TournamentCLI::isSemisUnlocked(cTour tournament)
 {
 	return (tournament.getQuarters() && tournament.getQuarters()->isFinished());
 }
@@ -588,7 +579,7 @@ bool				TournamentCLI::isSemisUnlocked(const Tournament& tournament)
 /**
  *	Active la phase finale si les maths de 1/2 sont finis
  */
-bool				TournamentCLI::isFinalUnlocked(const Tournament& tournament)
+bool				TournamentCLI::isFinalUnlocked(cTour tournament)
 {
 	return (tournament.getSemis() && tournament.getSemis()->isFinished());
 }
@@ -596,7 +587,7 @@ bool				TournamentCLI::isFinalUnlocked(const Tournament& tournament)
 /**
  *	Active le match de la 3 place si les maths de 1/2 sont finis
  */
-bool				TournamentCLI::isThirdUnlocked(const Tournament& tournament)
+bool				TournamentCLI::isThirdUnlocked(cTour tournament)
 {
 	if (!tournament.getHasThirdMatch())
 		return (false);
@@ -612,7 +603,7 @@ bool				TournamentCLI::isThirdUnlocked(const Tournament& tournament)
  * Affiche la liste des matchs d une phase et permet d en saisir les scores.
  * Boucle jusqu a ce que l utilisateur choisisse "Retour".
  */
-void				TournamentCLI::handleMatchList(CVP_MATCH matches, C_STRING title)
+void				TournamentCLI::handleMatchList(cvpMatch matches, cString title)
 {
 	size_t mIdx = 0;
 
@@ -637,11 +628,11 @@ void				TournamentCLI::handleMatchList(CVP_MATCH matches, C_STRING title)
 		{
 			clearInput();
 			PrintUtils::addError("Choix invalide.");
-			continue ;
+			continue;
 		}
 
 		if (mIdx == matches.size() + 1)
-			break ;
+			break;
 
 		if (matches[mIdx - 1])
 			MatchCLI::inputScore(*matches[mIdx - 1]);
@@ -651,20 +642,20 @@ void				TournamentCLI::handleMatchList(CVP_MATCH matches, C_STRING title)
 /**
  * Affiche une phase si elle existe, sinon informe l utilisateur.
  */
-void				TournamentCLI::handlePhase(Phase* phase, C_STRING phaseName)
+void				TournamentCLI::handlePhase(Phase* phase, cString phaseName)
 {
 	if (phase == nullptr)
 	{
 		PrintUtils::addError("Cette phase n'est pas encore active.");
-		return ;
+		return;
 	}
 
 	handleMatchList(phase->getMatches(), phaseName);
 }
 
-/**************************************************************************************************/
-/*	PUBLIC METHOD																				  */
-/**************************************************************************************************/
+/****************************************************************************************************/
+/*	PUBLIC METHOD																					*/
+/****************************************************************************************************/
 
 /**
  *	Gestion du menu Tournament du programme
@@ -677,7 +668,7 @@ void				TournamentCLI::handleMenuTournament(Tournament& tournament)
 		{
 			displayMenuUI(tournament);
 
-			STRING input = fetchInput();
+			String input = fetchInput();
 			
 			if (input.empty())
 				continue;
@@ -699,6 +690,6 @@ void				TournamentCLI::handleMenuTournament(Tournament& tournament)
 	}
 	catch (const UserInterruptedException&)
 	{
-		return ;
+		return;
 	}
 }

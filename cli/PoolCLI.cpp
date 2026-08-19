@@ -2,49 +2,50 @@
 // Created by Nicolas Fordoxcel on 15/06/2026.
 //
 
-//	STDLIB
-#include <iostream>
+/****************************************************************************************************/
+/*	INCLUDES																						*/
+/****************************************************************************************************/
+
 #include <iomanip>
 #include <fstream>
+#include <iostream>
 
-//	INCLUDE
 #include "../includes/cli/PoolCLI.hpp"
 #include "../includes/cli/MatchCLI.hpp"
 #include "../includes/cli/TeamCLI.hpp"
-#include "../includes/utils/PrintUtils.hpp"
 
-//	TYPEDEF
-using				C_STRING	=	const std::string&;
-using				CVP_PART	=	const std::vector<Participant*>&;
-using               CVP_TEAM	=	const std::vector<Team*>&;
-using				CVP_MATCH	=	const std::vector<Match*>&;
+/****************************************************************************************************/
+/*	STATIC VARIABLES																				*/
+/****************************************************************************************************/
 
-//	STATIC VARIABLES
+/****************************************************************************************************/
+/*	EXCEPTION																						*/
+/****************************************************************************************************/
 
-/********************/
-/*	PRIVATE METHOD	*/
-/********************/
+/****************************************************************************************************/
+/*	PRIVATE METHOD																					*/
+/****************************************************************************************************/
 
 /**
  * Ecrit la liste des matchs de la poule dans le flux out.
  * Si toFile = true : pas de codes couleur ANSI.
  */
-void				PoolCLI::writeMatches(std::ostream& out, const Pool& pool, const bool toFile)
+void				PoolCLI::writeMatches(std::ostream& out, cPool pool, cBool toFile)
 {
-	CVP_MATCH matches = pool.getMatches();
+	cvpMatch matches = pool.getMatches();
 
 	if (matches.empty())
 	{
 		PrintUtils::addError("Aucun match enregistre.");
-		return ;
+		return;
 	}
 
 	int i = 1;
 
-	for (const Match* m : matches)
+	for (cpMatch m : matches)
 	{
 		if (!m)
-			continue ;
+			continue;
 
 		out << "  " << std::setw(2) << i++ << ". ";
 		out << m->getTeamA()->getName() << " vs " << m->getTeamB()->getName();
@@ -84,14 +85,14 @@ void				PoolCLI::writeMatches(std::ostream& out, const Pool& pool, const bool to
  * Colonnes : Rang | Equipe | Pts | Diff
  * Si toFile = true : pas de codes couleur ANSI.
  */
-void				PoolCLI::writeTable(std::ostream& out, const Pool& pool, const bool toFile)
+void				PoolCLI::writeTable(std::ostream& out, cPool pool, cBool toFile)
 {
-	CVP_TEAM teams = pool.getTeams();
+	cvpTeam teams = pool.getTeams();
 
 	if (teams.empty())
 	{
 		PrintUtils::addError("Aucune equipe dans cette poule.");
-		return ;
+		return;
 	}
 
 	size_t maxLen = 6;
@@ -100,7 +101,7 @@ void				PoolCLI::writeTable(std::ostream& out, const Pool& pool, const bool toFi
 		if (t->getName().size() > maxLen)
 			maxLen = t->getName().size();
 
-	const int w = static_cast<int>(maxLen) + 2;
+	cInt w = static_cast<int>(maxLen) + 2;
 
 	out << "  " << std::left << std::setw(4)  << "#"
 		<< std::setw(w)   << "Equipe"
@@ -112,9 +113,9 @@ void				PoolCLI::writeTable(std::ostream& out, const Pool& pool, const bool toFi
 
 	for (size_t i = 0; i < teams.size(); ++i)
 	{
-		const Team* t = teams[i];
-		const int diff = t->getScoreDiff();
-		const bool isTop2 = (i < 2);
+		cpTeam t = teams[i];
+		cInt diff = t->getScoreDiff();
+		cBool isTop2 = (i < 2);
 
 		if (!toFile && isTop2)
 			out << "\033[1;32m";
@@ -130,14 +131,14 @@ void				PoolCLI::writeTable(std::ostream& out, const Pool& pool, const bool toFi
 	}
 }
 
-/********************/
-/*	PUBLIC METHOD	*/
-/********************/
+/****************************************************************************************************/
+/*	PUBLIC METHOD																					*/
+/****************************************************************************************************/
 
 /**
  * Affiche la classement dans le terminal
  */
-void				PoolCLI::displayTable(const Pool& pool)
+void				PoolCLI::displayTable(cPool pool)
 {
 	std::cout << "\n=== CLASSEMENT " << pool.getName() << " ===" << std::endl;
 	std::cout << std::left << std::setw(15) << "Equipe" << " | " << "Points" << std::endl;
@@ -151,7 +152,7 @@ void				PoolCLI::displayTable(const Pool& pool)
  * Affiche le classement enrichi avec points et difference de score.
  * Les 2 premiers qualifies sont mis en vert.
  */
-void				PoolCLI::displayFullTable(const Pool& pool)
+void				PoolCLI::displayFullTable(cPool pool)
 {
 	std::cout << "\n=== CLASSEMENT " << pool.getName() << " ===\n";
 	writeTable(std::cout, pool, false);
@@ -160,7 +161,7 @@ void				PoolCLI::displayFullTable(const Pool& pool)
 /**
  * Affiche liste des matchs
  */
-void				PoolCLI::displayMatches(const Pool& pool)
+void				PoolCLI::displayMatches(cPool pool)
 {
 	std::cout << "\n=== MATCHS " << pool.getName() << " ===" << std::endl;
 
@@ -170,12 +171,12 @@ void				PoolCLI::displayMatches(const Pool& pool)
 /**
  * Affiche la composition detaillee des equipes
  */
-void				PoolCLI::displayPoolDetails(const Pool& pool)
+void				PoolCLI::displayPoolDetails(cPool pool)
 {
 	std::cout << "\n============================================" << std::endl;
 	std::cout << "   COMPOSITION DES EQUIPES - " << pool.getName() << std::endl;
 	std::cout << "============================================" << std::endl;
 
-	for (const Team* t : pool.getTeams())
+	for (cpTeam t : pool.getTeams())
 		TeamCLI::print(*t);
 }

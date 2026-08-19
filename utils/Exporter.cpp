@@ -2,40 +2,41 @@
 // Created by Nicolas Fordoxcel on 18/08/2026.
 //
 
-//	STDLIB
-#include <string>
-#include <vector>
-#include <format>
+/****************************************************************************************************/
+/*	INCLUDES																						*/
+/****************************************************************************************************/
+
 #include <fstream>
 #include <iomanip>
 
-//	INCLUDES
-#include "../includes/class/Pool.hpp"
-#include "../includes/class/Team.hpp"
 #include "../includes/cli/PhaseCLI.hpp"
+
 #include "../includes/utils/Exporter.hpp"
-#include "../includes/utils/PrintUtils.hpp"
 
-//	TYPEDEF
-using				STRING		=	std::string;
-using				C_STRING	=	const std::string&;
-using				CVP_PART	=	const std::vector<Participant*>& ;
-using				CVP_MATCH	=	const std::vector<Match*>&;
-using               CVP_TEAM	=	const std::vector<Team*>&;
+/****************************************************************************************************/
+/*	CONSTRUCTOR / DESTRUCTOR																		*/
+/****************************************************************************************************/
 
-//	STATIC VARIABLES
+/****************************************************************************************************/
+/*	GETTER																							*/
+/****************************************************************************************************/
 
-/**************************************************************************************************/
-/*	PRIVATE METHOD																				  */
-/**************************************************************************************************/
+/****************************************************************************************************/
+/*	SETTER																							*/
+/****************************************************************************************************/
+
+/****************************************************************************************************/
+/*	PRIVATE METHOD																					*/
+/****************************************************************************************************/
+************************************************************************************************/
 
 /************/
 /*  HELPERS	*/
 /************/
 
-void				Exporter::writeHeader(std::ofstream& out, const Tournament& tournament)
+void				Exporter::writeHeader(std::ofstream& out, cTour tournament)
 {
-	const Settings&	s = tournament.getSettings();
+	cSet s = tournament.getSettings();
 
 	out << "############################################################\n";
 	out << "##\t\tTOURNOI :\t" << s.getName() << "\n";
@@ -58,9 +59,9 @@ void				Exporter::writeHeader(std::ofstream& out, const Tournament& tournament)
 	out << "\tPetite finale\t:\t" << (s.getIsThirdPlaceMatch()    ? "Oui" : "Non") << "\n\n";
 }
 
-void				Exporter::writePools(std::ofstream& out, const Tournament& tournament)
+void				Exporter::writePools(std::ofstream& out, cTour tournament)
 {
-	const VP_POOL pools = tournament.getPools();
+	cvpPool pools = tournament.getPools();
 
 	out << "============================================================\n";
 	out << "\tPHASE DE POULES\n";
@@ -69,13 +70,13 @@ void				Exporter::writePools(std::ofstream& out, const Tournament& tournament)
 	if (pools.empty())
 	{
 		PrintUtils::addError("Aucune poule enregistree.");
-		return ;
+		return;
 	}
 
-	for (const Pool* pool : pools)
+	for (cpPool pool : pools)
 	{
 		if (!pool)
-			continue ;
+			continue;
 
 		out << "\n------------------------------------------------------------\n";
 		out << "\t" << pool->getName() << "\n";
@@ -88,16 +89,16 @@ void				Exporter::writePools(std::ofstream& out, const Tournament& tournament)
 	out << "\n";
 }
 
-void				Exporter::writePoolMatches(std::ofstream& out, const Pool& pool)
+void				Exporter::writePoolMatches(std::ofstream& out, cPool pool)
 {
 	out << "\n\t[MATCHS]\n";
 
 	int idx = 1;
 
-	for (const Match* m : pool.getMatches())
+	for (cpMatch m : pool.getMatches())
 	{
 		if (!m)
-			continue ;
+			continue;
 
 		out << "\t\t" << std::setw(2) << idx++ << ". "
 			<< m->getTeamA()->getName() << " vs " << m->getTeamB()->getName();
@@ -116,16 +117,16 @@ void				Exporter::writePoolMatches(std::ofstream& out, const Pool& pool)
 	}
 }
 
-void				Exporter::writePoolStandings(std::ofstream& out, const Pool& pool)
+void				Exporter::writePoolStandings(std::ofstream& out, cPool pool)
 {
-	CVP_TEAM teams = pool.getTeams();
+	cvpTeam teams = pool.getTeams();
 	size_t maxLen = 6;
 
-	for (const Team* t : teams)
+	for (cpTeam t : teams)
 		if (t->getName().size() > maxLen)
 			maxLen = t->getName().size();
 
-	const int w = static_cast<int>(maxLen) + 2;
+	cInt w = static_cast<int>(maxLen) + 2;
 
 	out << "\n\t[CLASSEMENT]\n";
 	out << "\t\t" << std::left << std::setw(4) << "#"
@@ -136,7 +137,7 @@ void				Exporter::writePoolStandings(std::ofstream& out, const Pool& pool)
 
 	for (size_t i = 0; i < teams.size(); ++i)
 	{
-		const int diff = teams[i]->getScoreDiff();
+		cInt diff = teams[i]->getScoreDiff();
 
 		out << "\t\t" << std::left << std::setw(4) << (i + 1)
 			<< std::setw(w) << teams[i]->getName()
@@ -145,16 +146,15 @@ void				Exporter::writePoolStandings(std::ofstream& out, const Pool& pool)
 	}
 }
 
-void				Exporter::writeEncounterBlock(std::ofstream& out, CVP_MATCH matches,
-														const size_t startIdx, const int nbSets,
-														const int encounterNum)
+void				Exporter::writeEncounterBlock(std::ofstream& out, cvpMatch matches,
+						const size_t startIdx, cInt nbSets, cInt encounterNum)
 {
 	if (startIdx >= matches.size() || !matches[startIdx])
-		return ;
+		return;
 
-	const Match* first = matches[startIdx];
-	C_STRING nameA = first->getTeamA() ? first->getTeamA()->getName() : "?";
-	C_STRING nameB = first->getTeamB() ? first->getTeamB()->getName() : "?";
+	cpMatch first = matches[startIdx];
+	cString nameA = first->getTeamA() ? first->getTeamA()->getName() : "?";
+	cString nameB = first->getTeamB() ? first->getTeamB()->getName() : "?";
 
 	out << "\n\tRencontre " << encounterNum << " :  " << nameA << "  vs  " << nameB << "\n";
 	out << "\t" << STRING(nameA.size() + nameB.size() + 14, '-') << "\n";
@@ -167,16 +167,16 @@ void				Exporter::writeEncounterBlock(std::ofstream& out, CVP_MATCH matches,
 		const size_t idx = startIdx + static_cast<size_t>(s);
 
 		if (idx >= matches.size() || !matches[idx])
-			break ;
+			break;
 
-		const Match* m = matches[idx];
+		cpMatch m = matches[idx];
 
 		out << "\tSet " << (s + 1) << " : ";
 
 		if (!m->isFinished())
 		{
 			out << "[ a jouer ]\n";
-			continue ;
+			continue;
 		}
 
 		out << std::setw(3) << m->getScoreA() << " - " << std::setw(3) << m->getScoreB();
@@ -185,8 +185,10 @@ void				Exporter::writeEncounterBlock(std::ofstream& out, CVP_MATCH matches,
 		{
 			out << "  ->  " << m->getWinner()->getName();
 
-			if (m->getWinner() == first->getTeamA()) winsA++;
-			else                                      winsB++;
+			if (m->getWinner() == first->getTeamA())
+				winsA++;
+			else
+				winsB++;
 		}
 
 		out << "\n";
@@ -204,13 +206,13 @@ void				Exporter::writeEncounterBlock(std::ofstream& out, CVP_MATCH matches,
 	out << "\n  " << STRING(50, '-') << "\n";
 }
 
-void				Exporter::writePhaseBlock(std::ofstream& out, const Phase* phase)
+void				Exporter::writePhaseBlock(std::ofstream& out, cpPhase phase)
 {
 	if (!phase)
-		return ;
+		return;
 
-	CVP_MATCH matches = phase->getMatches();
-	const int nbSets = phase->getNbSetToPlay();
+	cvpMatch matches = phase->getMatches();
+	cInt nbSets = phase->getNbSetToPlay();
 
 	out << "============================================================\n";
 	out << "\t" << phase->getName() << "  (" << nbSets << " set(s) par rencontre)\n";
@@ -219,7 +221,7 @@ void				Exporter::writePhaseBlock(std::ofstream& out, const Phase* phase)
 	if (matches.empty())
 	{
 		PrintUtils::addError("Aucun match enregistre.");
-		return ;
+		return;
 	}
 
 	int encounterNum = 1;
@@ -233,10 +235,10 @@ void				Exporter::writePhaseBlock(std::ofstream& out, const Phase* phase)
 	out << "\n";
 }
 
-void				Exporter::writePhaseResults(std::ofstream& out, const Phase& phase)
+void				Exporter::writePhaseResults(std::ofstream& out, cPhase phase)
 {
-	CVP_TEAM winners = phase.getWinners();
-	CVP_TEAM losers = phase.getLosers();
+	cvpTeam winners = phase.getWinners();
+	cvpTeam losers = phase.getLosers();
 
 	out << "\n\tQualifies :\n";
 
@@ -248,16 +250,16 @@ void				Exporter::writePhaseResults(std::ofstream& out, const Phase& phase)
 	{
 		out << "\tElimines :\n";
 
-		for (const Team* t : losers)
+		for (cpTeam t : losers)
 			if (t)
 				out << "\t\t- " << t->getName() << "\n";
 	}
 }
 
-void				Exporter::writePalmares(std::ofstream& out, const Tournament& tournament)
+void				Exporter::writePalmares(std::ofstream& out, cTour tournament)
 {
-	const Phase* final = tournament.getFinal();
-	const Phase* thirdPlace = tournament.getThirdPlace();
+	cpPhase final = tournament.getFinal();
+	cpPhase thirdPlace = tournament.getThirdPlace();
 
 	out << "============================================================\n";
 	out << "\tPALMARES\n";
@@ -266,11 +268,11 @@ void				Exporter::writePalmares(std::ofstream& out, const Tournament& tournament
 	if (!final || !final->isFinished())
 	{
 		PrintUtils::addError("Finale non terminee — palmares indisponible.");
-		return ;
+		return;
 	}
 
-	CVP_TEAM winners = final->getWinners();
-	CVP_TEAM losers  = final->getLosers();
+	cvpTeam winners = final->getWinners();
+	cvpTeam losers  = final->getLosers();
 
 	if (!winners.empty() && winners[0])
 		out << "\t1. (Or)\t\t" << winners[0]->getName() << "\n";
@@ -280,8 +282,8 @@ void				Exporter::writePalmares(std::ofstream& out, const Tournament& tournament
 
 	if (thirdPlace && thirdPlace->isFinished())
 	{
-		CVP_TEAM third = thirdPlace->getWinners();
-		CVP_TEAM fourth = thirdPlace->getLosers();
+		cvpTeam third = thirdPlace->getWinners();
+		cvpTeam fourth = thirdPlace->getLosers();
 
 		if (!third.empty()  && third[0])
 			out << "\t3. (Bronze)\t" << third[0]->getName()  << "\n";
@@ -297,22 +299,22 @@ void				Exporter::writePalmares(std::ofstream& out, const Tournament& tournament
  * Ecrit la liste des matchs de la poule dans le flux out.
  * Si toFile = true : pas de codes couleur ANSI.
  */
-void				Exporter::writeMatches(std::ostream& out, const Pool& pool, const bool toFile)
+void				Exporter::writeMatches(std::ostream& out, cPool pool, cBool toFile)
 {
-	CVP_MATCH matches = pool.getMatches();
+	cvpMatch matches = pool.getMatches();
 
 	if (matches.empty())
 	{
 		PrintUtils::addError("Aucun match enregistre.");
-		return ;
+		return;
 	}
 
 	int i = 1;
 
-	for (const Match* m : matches)
+	for (cpMatch m : matches)
 	{
 		if (!m)
-			continue ;
+			continue;
 
 		out << "  " << std::setw(2) << i++ << ". ";
 		out << m->getTeamA()->getName() << " vs " << m->getTeamB()->getName();
@@ -352,23 +354,23 @@ void				Exporter::writeMatches(std::ostream& out, const Pool& pool, const bool t
  * Colonnes : Rang | Equipe | Pts | Diff
  * Si toFile = true : pas de codes couleur ANSI.
  */
-void				Exporter::writeTable(std::ostream& out, const Pool& pool, const bool toFile)
+void				Exporter::writeTable(std::ostream& out, cPool pool, cBool toFile)
 {
-	CVP_TEAM teams = pool.getTeams();
+	cvpTeam teams = pool.getTeams();
 
 	if (teams.empty())
 	{
 		PrintUtils::addError("Aucune equipe dans cette poule.");
-		return ;
+		return;
 	}
 
 	size_t maxLen = 6;
 
-	for (const Team* t : teams)
+	for (cpTeam t : teams)
 		if (t->getName().size() > maxLen)
 			maxLen = t->getName().size();
 
-	const int w = static_cast<int>(maxLen) + 2;
+	cInt w = static_cast<int>(maxLen) + 2;
 
 	out << "  " << std::left << std::setw(4)  << "#"
 		<< std::setw(w)   << "Equipe"
@@ -380,9 +382,9 @@ void				Exporter::writeTable(std::ostream& out, const Pool& pool, const bool toF
 
 	for (size_t i = 0; i < teams.size(); ++i)
 	{
-		const Team* t = teams[i];
-		const int diff = t->getScoreDiff();
-		const bool isTop2 = (i < 2);
+		cpTeam t = teams[i];
+		cInt diff = t->getScoreDiff();
+		cBool isTop2 = (i < 2);
 
 		if (!toFile && isTop2)
 			out << "\033[1;32m";
@@ -406,7 +408,7 @@ void				Exporter::writeTable(std::ostream& out, const Pool& pool, const bool toF
 /*	EXPORTS TXT	*/
 /****************/
 
-bool				Exporter::exportTournamentToTxt(const Tournament& tournament, C_STRING filename)
+bool				Exporter::exportTournamentToTxt(cTour tournament, cString filename)
 {
 	std::ofstream out(filename);
 
@@ -428,7 +430,7 @@ bool				Exporter::exportTournamentToTxt(const Tournament& tournament, C_STRING f
 	return (true);
 }
 
-bool				Exporter::exportPhaseToTxt(const Phase* phase, C_STRING filename)
+bool				Exporter::exportPhaseToTxt(cpPhase phase, cString filename)
 {
 	if (!phase)
 	{
@@ -439,7 +441,7 @@ bool				Exporter::exportPhaseToTxt(const Phase* phase, C_STRING filename)
 	return (PhaseCLI::exportToTxt(*phase, filename));
 }
 
-bool				Exporter::exportPoolsToTxt(const Tournament& tournament, C_STRING filename)
+bool				Exporter::exportPoolsToTxt(cTour tournament, cString filename)
 {
 	std::ofstream out(filename);
 
@@ -458,9 +460,9 @@ bool				Exporter::exportPoolsToTxt(const Tournament& tournament, C_STRING filena
 /**
  * Exporte l historique complet de la poule (matchs + classement) dans un .txt.
  */
-bool				Exporter::exportToTxt(const Pool& pool, C_STRING filename)
+bool				Exporter::exportToTxt(cPool pool, cString filename)
 {
-	std::ofstream	file(filename);
+	std::ofstream file(filename);
 
 	if (!file.is_open())
 	{
@@ -474,7 +476,7 @@ bool				Exporter::exportToTxt(const Pool& pool, C_STRING filename)
 
 	file << "\n[EQUIPES]\n";
 
-	for (const Team* t : pool.getTeams())
+	for (cpTeam t : pool.getTeams())
 	{
 		file << "  - " << t->getName();
 
@@ -483,7 +485,7 @@ bool				Exporter::exportToTxt(const Pool& pool, C_STRING filename)
 
 		file << " : ";
 
-		CVP_PART	members = t->getMembers();
+		cvpPart members = t->getMembers();
 
 		for (size_t i = 0; i < members.size(); ++i)
 		{
@@ -515,7 +517,7 @@ bool				Exporter::exportToTxt(const Pool& pool, C_STRING filename)
 /*	EXPORTS CSV	*/
 /****************/
 
-bool				Exporter::exportParticipantsToCSV(CVP_PART participants, C_STRING filename)
+bool				Exporter::exportParticipantsToCSV(cvpPart participants, cString filename)
 {
 	std::ofstream file(filename);
 
@@ -524,7 +526,7 @@ bool				Exporter::exportParticipantsToCSV(CVP_PART participants, C_STRING filena
 
 	file << "pseudo,nom,prenom,genre\n";
 
-	for (const Participant* p : participants)
+	for (cpPart p : participants)
 		if (p)
 			file << p->getPseudo() << ","
 				<< p->getLastName() << ","

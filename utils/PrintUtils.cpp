@@ -2,32 +2,25 @@
 // Created by Nicolas Fordoxcel on 09/07/2026.
 //
 
-//	STDLIB
+/****************************************************************************************************/
+/*	INCLUDES																						*/
+/****************************************************************************************************/
+
 #include <iostream>
 
-//	INCLUDES
-#include "../includes/utils/PrintUtils.hpp"
-#include "../includes/Color.hpp"
+# include "../includes/utils/PrintUtils.hpp"
 
-//	TYPEDEF
-using				STRING		=	std::string;
-using				C_STRING	=	const std::string&;
-using				VTUPLE_MSG	=	std::vector<std::tuple<std::string, bool>>;
+/****************************************************************************************************/
+/*	EXCEPTION																						*/
+/****************************************************************************************************/
 
-//	STATIC VARIABLES
-VTUPLE_MSG          PrintUtils::_messages;
+/****************************************************************************************************/
+/*	PRIVATE METHOD																					*/
+/****************************************************************************************************/
 
-/**************************************************************************************************/
-/*	EXCEPTION																					  */
-/**************************************************************************************************/
-
-/**************************************************************************************************/
-/*	PRIVATE METHOD																				  */
-/**************************************************************************************************/
-
-/**************************************************************************************************/
-/*	PUBLIC METHOD																				  */
-/**************************************************************************************************/
+/****************************************************************************************************/
+/*	PUBLIC METHOD																					*/
+/****************************************************************************************************/
 
 void				PrintUtils::clear()
 {
@@ -279,12 +272,12 @@ void           PrintUtils::exportMenu()
 )" << std::endl;
 }
 
-void                PrintUtils::addSuccess(C_STRING msg)
+void                PrintUtils::addSuccess(cString msg)
 {
     _messages.push_back({msg, false});
 }
 
-void                PrintUtils::addError(C_STRING msg)
+void                PrintUtils::addError(cString msg)
 {
     _messages.push_back({msg, true});
 }
@@ -299,8 +292,8 @@ void				PrintUtils::handleMessages()
 
 		for (const auto& msgTuple : _messages)
 		{
-			C_STRING msg = std::get<0>(msgTuple);
-			const bool isError = std::get<1>(msgTuple);
+			cString msg = std::get<0>(msgTuple);
+			cBool isError = std::get<1>(msgTuple);
 
 			if (isError)
 				std::cout << Color::RED << "\t[!]\t" << msg;
@@ -309,7 +302,9 @@ void				PrintUtils::handleMessages()
 
 			std::cout << Color::RESET << std::endl;
 		}
-		_messages.clear();
+        
 		std::cout << Color::BBLUE << "============================================================" << Color::RESET;
+        
+		_messages.clear();
 	}
 }

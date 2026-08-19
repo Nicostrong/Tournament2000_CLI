@@ -5,60 +5,56 @@
 #ifndef PARTICIPANT_HPP
 # define PARTICIPANT_HPP
 
-//	STDLIB
+/****************************************************************************************************/
+/*	INCLUDES																						*/
+/****************************************************************************************************/
+
 # include <string>
-# include <vector>
 
-//	INCLUDES
-# include "./Pool.hpp"
-# include "./Team.hpp"
-# include "./Match.hpp"
-# include "./Phase.hpp"
-# include "./Settings.hpp"
-# include "./Tournament.hpp"
-# include "./Participant.hpp"
+/****************************************************************************************************/
+/*	CLASSES																							*/
+/****************************************************************************************************/
 
-//	TYPEDEF
-using				string		=	std::string;
-using				cString		=	const std::string&;
 
-using				cPool		=	const Pool&;
-using				cTeam		=	const Team&;
-using				cMatch		=	const Match&;
-using				cPhase		=	const Phase&;
-using				cSet		=	const Settings&;
-using				cPart		=	const Participant&;
+/****************************************************************************************************/
+/*	ENUM    																						*/
+/****************************************************************************************************/
 
-using				vpPool		=	std::vector<Pool*>;
-using				vpTeam		=	std::vector<Team*>;
-using				vpMatch		=	std::vector<Match*>;
-using				vpPhase		=	std::vector<Phase*>;
-using				vpPart		=	std::vector<Participant*>;
+enum				Gender			{ MALE, FEMALE, MIXED };
 
-using				cvpPool		=	const std::vector<Pool*>&;
-using				cvpTeam		=	const std::vector<Team*>&;
-using				cvpMatch	=	const std::vector<Match*>&;
-using				cvpPhase	=	const std::vector<Phase*>&;
-using				cvpPart		=	const std::vector<Participant*>&;		cString		=	const std::string&;
+/****************************************************************************************************/
+/*	TYPEDEF																							*/
+/****************************************************************************************************/
 
-//	STATIC VARIABLES
+using				String			=	std::string;
+using				cString			=	const std::string&;
+
+using				cBool			=	const bool;
+
+using				cGender			=	const Gender&;
+
+/****************************************************************************************************/
+/*	STATIC VARIABLES																				*/
+/****************************************************************************************************/
+
+/****************************************************************************************************/
+/*	CLASS																							*/
+/****************************************************************************************************/
 
 /**
  * la classe Participant represente un joueur humain.
  */
-class Participant
+class				Participant
 {
 	public:
-
-		enum Gender { MALE, FEMALE, MIXED };
 
 	private:
 
 		static int					_idCounter;
 		size_t						_id;
-		string						_pseudo;
-		string						_lastName;
-		string						_firstName;
+		String						_pseudo;
+		String						_lastName;
+		String						_firstName;
 		Gender						_gender;
 		bool						_isEliminated;
 		bool						_isMultiTeamPlayer;
@@ -67,7 +63,7 @@ class Participant
 
 		//	CANONICAL
 		Participant() = delete;
-		Participant(cString pseudo, cString lastName, cString firstName, Gender gender);
+		Participant(cString pseudo, cString lastName, cString firstName, cGender gender);
 		Participant(const Participant& p) = delete;
 		Participant&				operator=(const Participant& p) = delete;
 		~Participant() = default;
@@ -76,13 +72,13 @@ class Participant
 		[[nodiscard]]
 		size_t						getId() const;
 		[[nodiscard]]
-		cString					getPseudo() const;
+		cString						getPseudo() const;
 		[[nodiscard]]
-		cString					getFirstName() const;
+		cString						getFirstName() const;
 		[[nodiscard]]
-		cString					getLastName() const;
+		cString						getLastName() const;
 		[[nodiscard]]
-		string						getGenderStr() const;
+		String						getGenderStr() const;
 		[[nodiscard]]
 		Gender						getGenderInt() const;
 		[[nodiscard]]
@@ -94,9 +90,9 @@ class Participant
 		void						setPseudo(cString value);
 		void						setFirstName(cString value);
 		void						setLastName(cString value);
-		void						setGender(Gender value);
-		void						setIsEliminated(bool value);
-		void						setIsMultiTeamPlayer(bool value);
+		void						setGender(cGender value);
+		void						setIsEliminated(cBool value);
+		void						setIsMultiTeamPlayer(cBool value);
 
 		//	METHOD
 

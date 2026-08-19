@@ -2,54 +2,50 @@
 // Created by Nicolas Fordoxcel on 13/06/2026.
 //
 
-//	STDLIB
+/****************************************************************************************************/
+/*	INCLUDES																						*/
+/****************************************************************************************************/
+
+#include <tuple>
 #include <string>
 #include <vector>
 
-//	INCLUDES
-#include "../includes/class/Pool.hpp"
-#include "../includes/class/Team.hpp"
 #include "../includes/class/Match.hpp"
-#include "../includes/class/Phase.hpp"
-#include "../includes/class/Settings.hpp"
-#include "../includes/class/Tournament.hpp"
-#include "../includes/class/Participant.hpp"
+#include "../includes/class/Team.hpp"
 
-//	TYPEDEF
-using				string		=	std::string;
-using				cString		=	const std::string&;
+/****************************************************************************************************/
+/*	TYPEDEF																							*/
+/****************************************************************************************************/
 
-using				cPool		=	const Pool&;
-using				cTeam		=	const Team&;
-using				cMatch		=	const Match&;
-using				cPhase		=	const Phase&;
-using				cSet		=	const Settings&;
-using				cPart		=	const Participant&;
+using				String			=	std::string;
+using				cString			=	const std::string&;
+using				vString			=	std::vector<std::string>;
+using				vtupleMsg		=	std::vector<std::tuple<std::string, bool>>;
 
-using				vpPool		=	std::vector<Pool*>;
-using				vpTeam		=	std::vector<Team*>;
-using				vpMatch		=	std::vector<Match*>;
-using				vpPhase		=	std::vector<Phase*>;
-using				vpPart		=	std::vector<Participant*>;
+using				cInt			=	const int;
+using				vInt			=	std::vector<int>;
+using				cvInt			=	const std::vector<int>;
+template<std::size_t N>
+using				aInt			=	std::array<int, N>;
 
-using				cvpPool		=	const std::vector<Pool*>&;
-using				cvpTeam		=	const std::vector<Team*>&;
-using				cvpMatch	=	const std::vector<Match*>&;
-using				cvpPhase	=	const std::vector<Phase*>&;
-using				cvpPart		=	const std::vector<Participant*>&;
+using				cBool			=	const bool;
 
-//	STATIC VARIABLES
+using				pMatch			=	Match*;
+using				cMatch			=	const Match&;
+using				cpMatch			=	const Match*;
+using				vpMatch			=	std::vector<Match*>;
+using				cvpMatch		=	const std::vector<Match*>&;
 
-/************************************************************************************************/
-/*	CONSTRUCTOR / DESTRUCTOR																	*/
-/************************************************************************************************/
+/****************************************************************************************************/
+/*	CONSTRUCTOR / DESTRUCTOR																		*/
+/****************************************************************************************************/
 
-Match::Match(Team* a, Team* b): _teamA(a), _teamB(b), _scoreA(0), _scoreB(0), _isFinished(false)
+Match::Match(pTeam a, pTeam b): _teamA(a), _teamB(b), _scoreA(0), _scoreB(0), _isFinished(false)
 {}
 
-/************************************************************************************************/
-/*	GETTER																						*/
-/************************************************************************************************/
+/****************************************************************************************************/
+/*	GETTER																							*/
+/****************************************************************************************************/
 
 Team*				Match::getTeamA() const		{	return (this->_teamA);		}
 Team*				Match::getTeamB() const		{	return (this->_teamB);		}
@@ -57,14 +53,14 @@ int					Match::getScoreA() const	{	return (this->_scoreA);		}
 int					Match::getScoreB() const	{	return (this->_scoreB);		}
 bool				Match::isFinished() const	{	return (this->_isFinished);	}
 
-/************************************************************************************************/
-/*	SETTER																						*/
-/************************************************************************************************/
+/****************************************************************************************************/
+/*	SETTER																							*/
+/****************************************************************************************************/
 
 /**
  *	Gere l ajout de score aux equipes lors d un match
  */
-void				Match::setScore(const int sA, const int sB)
+void				Match::setScore(cInt sA, cInt sB)
 {
 	this->_scoreA = sA;
 	this->_scoreB = sB;
@@ -88,13 +84,13 @@ void				Match::setScore(const int sA, const int sB)
 	this->_isFinished = true;
 }
 
-/************************************************************************************************/
-/*	PRIVATE METHOD																				*/
-/************************************************************************************************/
+/****************************************************************************************************/
+/*	PRIVATE METHOD																					*/
+/****************************************************************************************************/
 
-/************************************************************************************************/
-/*	PUBLIC METHOD																				*/
-/************************************************************************************************/
+/****************************************************************************************************/
+/*	PUBLIC METHOD																					*/
+/****************************************************************************************************/
 
 /**
  *	Retourne l equipe vainqueur

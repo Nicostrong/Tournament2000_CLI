@@ -5,19 +5,19 @@
 #ifndef PRINT_UTILS_HPP
 # define PRINT_UTILS_HPP
 
-//	STDLIB
-# include <tuple>
-# include <string>
-# include <vector>
+/****************************************************************************************************/
+/*	INCLUDES																						*/
+/****************************************************************************************************/
 
-//	INCLUDES
+#include "../Global.hpp"
 
-//	TYPEDEF
-using				STRING		=	std::string;
-using				C_STRING	=	const std::string&;
-using				VTUPLE_MSG	=	std::vector<std::tuple<std::string, bool>>;
+/****************************************************************************************************/
+/*	STATIC VARIABLES																				*/
+/****************************************************************************************************/
 
-//	GLOBAL VARIABLES
+/****************************************************************************************************/
+/*	CLASS																							*/
+/****************************************************************************************************/
 
 /**
  * Contient les methodes pour efface l ecran ou afficher des titres
@@ -26,7 +26,7 @@ class PrintUtils
 {
 	private:
 
-		static VTUPLE_MSG			_messages;
+		static vtupleMsg			_messages;
 
 	public:
 		static void					clear();
@@ -43,8 +43,8 @@ class PrintUtils
 		static void					thirdPlace();
 		static void					final();
 		static void					exportMenu();
-		static void					addSuccess(C_STRING msg);
-		static void					addError(C_STRING msg);
+		static void					addSuccess(cString msg);
+		static void					addError(cString msg);
 		static void					handleMessages();
 };
 

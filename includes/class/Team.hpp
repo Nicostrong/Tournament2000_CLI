@@ -5,46 +5,47 @@
 #ifndef TEAM_HPP
 # define TEAM_HPP
 
-//	STDLIB
+/****************************************************************************************************/
+/*	INCLUDES																						*/
+/****************************************************************************************************/
+
 # include <string>
 # include <vector>
 
-//	INCLUDES
-# include "./Pool.hpp"
-# include "./Team.hpp"
-# include "./Match.hpp"
-# include "./Phase.hpp"
-# include "./Settings.hpp"
-# include "./Tournament.hpp"
-# include "./Participant.hpp"
+/****************************************************************************************************/
+/*	CLASSES																							*/
+/****************************************************************************************************/
 
-//	TYPEDEF
-using				string		=	std::string;
-using				cString		=	const std::string&;
+class				Participant;
 
-using				cPool		=	const Pool&;
-using				cTeam		=	const Team&;
-using				cMatch		=	const Match&;
-using				cPhase		=	const Phase&;
-using				cSet		=	const Settings&;
-using				cPart		=	const Participant&;
+/****************************************************************************************************/
+/*	TYPEDEF																							*/
+/****************************************************************************************************/
 
-using				vpPool		=	std::vector<Pool*>;
-using				vpTeam		=	std::vector<Team*>;
-using				vpMatch		=	std::vector<Match*>;
-using				vpPhase		=	std::vector<Phase*>;
-using				vpPart		=	std::vector<Participant*>;
+using				String			=	std::string;
+using				cString			=	const std::string&;
 
-using				cvpPool		=	const std::vector<Pool*>&;
-using				cvpTeam		=	const std::vector<Team*>&;
-using				cvpMatch	=	const std::vector<Match*>&;
-using				cvpPhase	=	const std::vector<Phase*>&;
-using				cvpPart		=	const std::vector<Participant*>&;
+using				cInt			=	const int;
+
+using				cBool			=	const bool;
+
+using				cPart			=	const Participant&;
+using				cpPart			=	const Participant*;
+using				vpPart			=	std::vector<Participant*>;
+using				cvpPart			=	const std::vector<Participant*>;
+
+/****************************************************************************************************/
+/*	STATIC VARIABLES																				*/
+/****************************************************************************************************/
+
+/****************************************************************************************************/
+/*	CLASS																							*/
+/****************************************************************************************************/
 
 /**
  * la classe Team represente un enssemble de Participant qui joueront enssemble
  */
-class Team
+class				Team
 {
 	private:
 
@@ -57,15 +58,15 @@ class Team
 		bool						_isMixed;
 		bool						_isEliminated;
 		bool						_hasMultiTeamPlayer;
-		STRING						_name;
-		VP_PART						_members;
+		String						_name;
+		vpPart						_members;
 
 
 	public:
 
 		//	CANONICAL
 		Team();
-		explicit Team(C_STRING ) = delete;
+		explicit Team(cString ) = delete;
 		Team(const Team& ) = delete;
 		Team&						operator=(const Team& ) = delete;
 		~Team() = default;
@@ -90,24 +91,24 @@ class Team
 		[[nodiscard]]
 		int							getScoreDiff() const;
 		[[nodiscard]]
-		C_STRING					getName() const;
+		cString						getName() const;
 		[[nodiscard]]
-		CVP_PART					getMembers() const;
+		cvpPart						getMembers() const;
 
 		//	SETTER
-		void						setIsMixed(bool value);
-		void						setIsEliminated(bool value);
-		void						setHasMultiTeamPlayer(bool value);
-		void						setName(C_STRING value);
+		void						setIsMixed(cBool value);
+		void						setIsEliminated(cBool value);
+		void						setHasMultiTeamPlayer(cBool value);
+		void						setName(cString value);
 
 		//	METHOD
 		[[nodiscard]]
-		bool						isComplete(int requiredSize) const;
-		void						addMember(Participant* member);
+		bool						isComplete(cInt requiredSize) const;
+		void						addMember(cpPart member);
 		void						renameTeam();
-		void						addPoint(int point);
-		void						addScoreMarked(int score);
-		void						addScoreAgainst(int score);
+		void						addPoint(cInt point);
+		void						addScoreMarked(cInt score);
+		void						addScoreAgainst(cInt score);
 };
 
 #endif

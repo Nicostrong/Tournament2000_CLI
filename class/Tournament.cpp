@@ -2,66 +2,52 @@
 // Created by Nicolas Fordoxcel on 13/06/2026.
 //
 
-//	STDLIB
-#include <string>
-#include <vector>
-#include <format>
+/****************************************************************************************************/
+/*	INCLUDES																						*/
+/****************************************************************************************************/
+
 #include <random>
 #include <iostream>
 #include <algorithm>
 
-//	INCLUDES
-#include "../includes/Constantes.hpp"
-
-#include "../includes/class/Pool.hpp"
-#include "../includes/class/Team.hpp"
-#include "../includes/class/Match.hpp"
-#include "../includes/class/Phase.hpp"
-#include "../includes/class/Settings.hpp"
 #include "../includes/class/Tournament.hpp"
-#include "../includes/class/Participant.hpp"
 
-#include "../includes/utils/PrintUtils.hpp"
+/****************************************************************************************************/
+/*	TYPEDEF																							*/
+/****************************************************************************************************/
 
-#include "../includes/class/Participant.hpp"
+using				String			=	std::string;
+using				cString			=	const std::string&;
+using				vString			=	std::vector<std::string>;
+using				vtupleMsg		=	std::vector<std::tuple<std::string, bool>>;
 
-//	TYPEDEF
-using				string		=	std::string;
-using				cString		=	const std::string&;
+using				cInt			=	const int;
+using				vInt			=	std::vector<int>;
+using				cvInt			=	const std::vector<int>;
+template<std::size_t N>
+using				aInt			=	std::array<int, N>;
 
-using				cPool		=	const Pool&;
-using				cTeam		=	const Team&;
-using				cMatch		=	const Match&;
-using				cPhase		=	const Phase&;
-using				cSet		=	const Settings&;
-using				cPart		=	const Participant&;
+using				cBool			=	const bool;
 
-using				vpPool		=	std::vector<Pool*>;
-using				vpTeam		=	std::vector<Team*>;
-using				vpMatch		=	std::vector<Match*>;
-using				vpPhase		=	std::vector<Phase*>;
-using				vpPart		=	std::vector<Participant*>;
+using				cTour			=	const Tournament&;
+using				cpTour			=	const Tournament*;
+using				cvpPart			=	const std::vector<Participant*>&;
 
-using				cvpPool		=	const std::vector<Pool*>&;
-using				cvpTeam		=	const std::vector<Team*>&;
-using				cvpMatch	=	const std::vector<Match*>&;
-using				cvpPhase	=	const std::vector<Phase*>&;
-using				cvpPart		=	const std::vector<Participant*>&;
+/****************************************************************************************************/
+/*	STATIC VARIABLES																				*/
+/****************************************************************************************************/
 
-//	STATIC VARIABLES
+/****************************************************************************************************/
+/*	CONSTRUCTOR / DESTRUCTOR																		*/
+/****************************************************************************************************/
 
-/************************************************************************************************/
-/*	CONSTRUCTOR / DESTRUCTOR																	*/
-/************************************************************************************************/
-
-
-Tournament::Tournament(const Settings& settings):	_settings(settings), _sixteenths(nullptr),
-	_heighths(nullptr), _quarters(nullptr), _semis(nullptr), _final(nullptr), _thirdPlace(nullptr),
-	_isReady(false), _isFinished(false), _hasSixteenth(settings.getNbPools() == 16),
+Tournament::Tournament(cSet settings):	_settings(settings), _sixteenths(nullptr), _heighths(nullptr),
+	_quarters(nullptr), _semis(nullptr), _final(nullptr), _thirdPlace(nullptr), _isReady(false),
+	_isFinished(false), _hasSixteenth(settings.getNbPools() == 16),
 	_hasHeighth(settings.getNbPools() >= 8),_hasThirdMatch(settings.getIsThirdPlaceMatch())
 {}
 
-Tournament::Tournament(const Settings& settings, cvpPart participants): Tournament(settings)
+Tournament::Tournament(cSet settings, cvpPart participants): Tournament(settings)
 {
 	for (Participant* p : participants)
 		this->_participants.push_back(p);
@@ -74,11 +60,11 @@ Tournament::~Tournament()
 	this->clean();
 }
 
-/************************************************************************************************/
-/*	GETTER																						*/
-/************************************************************************************************/
+/****************************************************************************************************/
+/*	GETTER																							*/
+/****************************************************************************************************/
 
-const Settings&		Tournament::getSettings() const			{	return (this->_settings);		}
+cSet				Tournament::getSettings() const			{	return (this->_settings);		}
 cpvPool				Tournament::getPools() const			{	return (this->_pools);			}
 Phase*				Tournament::getSixteenth() const		{	return (this->_sixteenths);		}
 Phase*				Tournament::getHeighth() const			{	return (this->_heighths);		}
@@ -90,27 +76,27 @@ bool				Tournament::getHasSixteenth() const		{	return (this->_hasSixteenth);	}
 bool				Tournament::getHasHeighth() const		{	return (this->_hasHeighth);		}
 bool				Tournament::getHasThirdMatch() const	{	return (this->_hasHeighth);		}
 
-/************************************************************************************************/
-/*	SETTER																						*/
-/************************************************************************************************/
+/****************************************************************************************************/
+/*	SETTER																							*/
+/****************************************************************************************************/
 
-void				Tournament::setIsReady(const bool value)		{	this->_isReady = value;			}
-void				Tournament::setIsFinished(const bool value)		{	this->_isFinished = value;		}
-void				Tournament::setHasSixteenth(const bool value)	{	this->_hasSixteenth = value;	}
-void				Tournament::setHasHeighth(const bool value)		{	this->_hasHeighth = value;		}
-void				Tournament::setHasThirdMatch(bool value)		{	this->_hasThirdMatch = value;	}
+void				Tournament::setIsReady(cBool value)			{	this->_isReady = value;			}
+void				Tournament::setIsFinished(cBool value)		{	this->_isFinished = value;		}
+void				Tournament::setHasSixteenth(cBool value)	{	this->_hasSixteenth = value;	}
+void				Tournament::setHasHeighth(cBool value)		{	this->_hasHeighth = value;		}
+void				Tournament::setHasThirdMatch(cBool value)	{	this->_hasThirdMatch = value;	}
 
-/************************************************************************************************/
-/*	PRIVATE METHOD																				*/
-/************************************************************************************************/
+/****************************************************************************************************/
+/*	PRIVATE METHOD																					*/
+/****************************************************************************************************/
 
 /**
  * Retourne true si deux equipes partagent au moins un Participant*.
  */
-bool				Tournament::teamsShareMember(const Team* a, const Team* b)
+bool				Tournament::teamsShareMember(cpTeam a, cpTeam b)
 {
-	for (const Participant* pa : a->getMembers())
-		for (const Participant* pb : b->getMembers())
+	for (cpPart pa : a->getMembers())
+		for (cpPart pb : b->getMembers())
 			if (pa == pb)
 				return (true);
 
@@ -120,9 +106,9 @@ bool				Tournament::teamsShareMember(const Team* a, const Team* b)
 /**
  * Retourne true si `incoming` partage un membre avec une equipe deja dans `pool`.
  */
-bool				Tournament::poolHasConflict(const Pool* pool, const Team* incoming)
+bool				Tournament::poolHasConflict(cpPool pool, cpTeam incoming)
 {
-	for (const Team* t : pool->getTeams())
+	for (cpTeam t : pool->getTeams())
 		if (teamsShareMember(t, incoming))
 			return (true);
 
@@ -164,10 +150,10 @@ vpPart				Tournament::getMultiTeamsPlayers(vpPart participants) const
 {
 	vpPart result;
 
-	const int actual = static_cast<int>(this->_participants.size());
-	const int required = this->_settings.getNbPlayers();
-	const int missing = std::max(0, required - actual);
-	const int maxRecyclable = std::min(missing, NBPLAYERINMULTITEAMMAX);
+	cInt actual = static_cast<int>(this->_participants.size());
+	cInt required = this->_settings.getNbPlayers();
+	cInt missing = std::max(0, required - actual);
+	cInt maxRecyclable = std::min(missing, NBPLAYERINMULTITEAMMAX);
 
 	if (maxRecyclable <= 0 || participants.empty())
 		return (result);
@@ -194,10 +180,10 @@ void				Tournament::createTeamsUniplayer()
 	int missing = 0;
 
 	if (!checkMissingPlayers(missing))
-		return ;
+		return;
 
-	const int required = this->_settings.getNbPlayers();
-	const int actual = static_cast<int>(this->_participants.size());
+	cInt required = this->_settings.getNbPlayers();
+	cInt actual = static_cast<int>(this->_participants.size());
 
 	std::random_device rd;
 	std::mt19937 g(rd());
@@ -217,10 +203,11 @@ void				Tournament::createTeamsUniplayer()
 		clone->addMember(p);
 		clone->setHasMultiTeamPlayer(true);
 		clone->renameTeam();
+
 		this->_teams.push_back(clone);
 	}
 
-	const int normalLimit = std::min(actual, required - missing);
+	cInt normalLimit = std::min(actual, required - missing);
 
 	for (int i = 0; i < normalLimit; ++i)
 	{
@@ -289,7 +276,7 @@ void				Tournament::createMixedTeams()
 	TeamCreationCtx ctx;
 
 	if (!checkMissingPlayers(ctx.missing))
-		return ;
+		return;
 
 	vpPart males = getAllMales();
 	vpPart females = getAllFemales();
@@ -322,8 +309,8 @@ void				Tournament::createMixedTeams()
  */
 bool				Tournament::checkMissingPlayers(int& missing) const
 {
-	const int actual = static_cast<int>(this->_participants.size());
-	const int required = this->_settings.getNbPlayers();
+	cInt actual = static_cast<int>(this->_participants.size());
+	cInt required = this->_settings.getNbPlayers();
 
 	missing = std::max(0, required - actual);
 
@@ -342,7 +329,7 @@ bool				Tournament::checkMissingPlayers(int& missing) const
 void				Tournament::generateMissingPool(const TeamCreationCtx& ctx)
 {
 	if (ctx.missing <= 0)
-		return ;
+		return;
 
 	if (ctx.minoritary->size() == ctx.majoritary->size())
 		cloneForEqualGenders(ctx);
@@ -478,6 +465,127 @@ void				Tournament::createUnigenreTeams(TeamCreationCtx& ctx)
 }
 
 /**
+ *	Genere les pools vide
+ */
+void				Tournament::createEmptyPools(int nbPools)
+{
+	for (int i = 0; i < nbPools; ++i)
+		this->_pools.push_back(new Pool());
+}
+
+/**
+ *	Distribu les equipes selon le genre
+ */
+void				Tournament::distributeTeamsToPools(int nbPools)
+{
+	vpTeam mixedTeams;
+	vpTeam otherTeams;
+
+	for (Team* t : this->_teams)
+	{
+		cvpPart members = t->getMembers();
+		bool hasMale = false;
+		bool hasFemale = false;
+
+		if (members.size() == 2)
+			for (cpPart p : members)
+			{
+				if (p->getGenderInt() == Participant::MALE)
+					hasMale = true;
+
+				if (p->getGenderInt() == Participant::FEMALE)
+					hasFemale = true;
+			}
+
+		if (hasMale && hasFemale)
+			mixedTeams.push_back(t);
+		else
+			otherTeams.push_back(t);
+	}
+
+	int poolIdx = 0;
+
+	for (Team* t : mixedTeams)
+		this->_pools[poolIdx++ % nbPools]->addTeam(t);
+
+	for (Team* t : otherTeams)
+		this->_pools[poolIdx++ % nbPools]->addTeam(t);
+}
+
+/**
+ *	Verifie les conflis des equipes a joueurs multi-teams et les corrige
+ */
+void				Tournament::resolvePoolConflicts(int nbPools)
+{
+	for (int i = 0; i < nbPools; ++i)
+	{
+		vpTeam& teamsI = const_cast<vpTeam&>(this->_pools[i]->getTeams());
+
+		for (size_t a = 0; a < teamsI.size(); ++a)
+		{
+			for (size_t b = a + 1; b < teamsI.size(); ++b)
+			{
+				if (!teamsShareMember(teamsI[a], teamsI[b]))
+					continue;
+
+				bool swapped = false;
+
+				for (int j = 0; j < nbPools && !swapped; ++j)
+				{
+					if (j == i)
+						continue;
+
+					vpTeam& teamsJ = const_cast<vpTeam&>(this->_pools[j]->getTeams());
+
+					for (size_t c = 0; c < teamsJ.size() && !swapped; ++c)
+					{
+						Team* candidate = teamsJ[c];
+						bool candidateHasConflit = false;
+
+						for (size_t k = 0; k < teamsI.size(); ++k)
+							if (k != b && teamsShareMember(teamsI[k], candidate))
+							{
+								candidateHasConflit = true;
+								break;
+							}
+
+						bool otherCandidateHasConflit = false;
+
+						for (size_t k = 0; k < teamsJ.size(); ++k)
+							if (k != c && teamsShareMember(teamsJ[k], teamsI[b]))
+							{
+								otherCandidateHasConflit = true;
+								break;
+							}
+
+						if (!candidateHasConflit && !otherCandidateHasConflit)
+						{
+							std::swap(teamsI[b], teamsJ[c]);
+							swapped = true;
+						}
+					}
+				}
+
+				if (!swapped)
+					PrintUtils::addError(std::format("generatePools : conflit non resolu dans {}, un multi-team player jouera contre lui-meme.", 
+						this->_pools[i]->getName()));
+			}
+		}
+	}
+}
+
+/**
+ *	Genere les matchs de pool
+ */
+void				Tournament::generatePoolMatches()
+{
+	cInt nbSetPlayed = this->_settings.getNbSetPlayedPools();
+	
+	for (Pool* p : this->_pools)
+		p->generateMatches(nbSetPlayed);
+}
+
+/**
  * Trie l ensemble des equipes dans toutes les poules
  */
 void				Tournament::sortAllPools() const
@@ -503,7 +611,7 @@ void				Tournament::generateSymmetricPoolEncounters(Phase* targetPhase, const si
 /**
  * Recupere les vainqueurs de la phase precedente et les affronte 2 à 2
  */
-bool				Tournament::addEncountersFromPreviousPhase(Phase* currentPhase, const Phase* previousPhase)
+bool				Tournament::addEncountersFromPreviousPhase(Phase* currentPhase, cpPhase previousPhase)
 {
 	if (!previousPhase || !previousPhase->isFinished())
 		return (false);
@@ -516,22 +624,22 @@ bool				Tournament::addEncountersFromPreviousPhase(Phase* currentPhase, const Ph
 	return (true);
 }
 
-/********************/
-/*	PUBLIC METHOD	*/
-/********************/
+/****************************************************************************************************/
+/*	PUBLIC METHOD																					*/
+/****************************************************************************************************/
 
 /**
  *	Libere toute la memoire utilise par l objet Tournament
  */
 void				Tournament::clean()
 {
-	for (const Participant* p : this->_participants)
+	for (cpPart p : this->_participants)
 		delete p;
 
-	for (const Team* t : this->_teams)
+	for (cpTeam t : this->_teams)
 		delete t;
 
-	for (const Pool* p: this->_pools)
+	for (cpPool p: this->_pools)
 		delete p;
 	
 	this->_participants.clear();
@@ -549,7 +657,7 @@ void				Tournament::clean()
 /**
  *	Ajoute un participant dans la liste
  */
-void				Tournament::addParticipant(const Participant& p)
+void				Tournament::addParticipant(cPart p)
 {
 	this->_participants.push_back(new Participant(p.getPseudo(), p.getLastName(), p.getFirstName(), p.getGenderInt()));
 }
@@ -559,8 +667,8 @@ void				Tournament::addParticipant(const Participant& p)
  */
 bool				Tournament::initializeTournament()
 {
-	const int required = this->_settings.getNbPlayers();
-	const int actual = static_cast<int>(this->_participants.size());
+	cInt required = this->_settings.getNbPlayers();
+	cInt actual = static_cast<int>(this->_participants.size());
 
 	if (actual < required && !this->_settings.getAllowMultiTeamPlayers())
 	{
@@ -577,7 +685,7 @@ bool				Tournament::initializeTournament()
 	generateTeams();
 	generatePools();
 
-	const int nbPools = this->_settings.getNbPools();
+	cInt nbPools = this->_settings.getNbPools();
 
 	this->_hasSixteenth = (nbPools == 16);
 	this->_hasHeighth = (nbPools >= 8);
@@ -607,118 +715,15 @@ void				Tournament::generateTeams()
  */
 void				Tournament::generatePools()
 {
-	if (!this->_pools.empty())
-		return ;
+	cInt nbPools = this->_settings.getNbPools();
 
-	const int nbPools = this->_settings.getNbPools();
+	if (!this->_pools.empty() || nbPools <= 0)
+		return;
 
-	if (nbPools <= 0)
-		return ;
-
-	for (int i = 0; i < nbPools; ++i)
-		this->_pools.push_back(new Pool());
-
-	vpTeam mixedTeams;
-	vpTeam otherTeams;
-
-
-	for (Team* t : this->_teams)
-	{
-		cvpPart members = t->getMembers();
-		bool hasMale = false;
-		bool hasFemale = false;
-
-		if (members.size() == 2)
-			for (const Participant* p : members)
-			{
-				if (p->getGenderInt() == Participant::MALE)
-					hasMale = true;
-
-				if (p->getGenderInt() == Participant::FEMALE)
-					hasFemale = true;
-			}
-
-		if (hasMale && hasFemale)
-			mixedTeams.push_back(t);
-		else
-			otherTeams.push_back(t);
-	}
-
-	int poolIdx = 0;
-
-	for (Team* t : mixedTeams)
-		this->_pools[poolIdx++ % nbPools]->addTeam(t);
-
-	for (Team* t : otherTeams)
-		this->_pools[poolIdx++ % nbPools]->addTeam(t);
-
-	for (int i = 0; i < nbPools; ++i)
-	{
-		vpTeam& teamsI = const_cast<vpTeam&>(this->_pools[i]->getTeams());
-
-		for (size_t a = 0; a < teamsI.size(); ++a)
-		{
-			for (size_t b = a + 1; b < teamsI.size(); ++b)
-			{
-				if (!teamsShareMember(teamsI[a], teamsI[b]))
-					continue ;
-
-				bool swapped = false;
-
-				for (int j = 0; j < nbPools && !swapped; ++j)
-				{
-					if (j == i)
-						continue ;
-
-					vpTeam& teamsJ = const_cast<vpTeam&>(this->_pools[j]->getTeams());
-
-					for (size_t c = 0; c < teamsJ.size() && !swapped; ++c)
-					{
-						Team* candidate = teamsJ[c];
-						bool candidateHasConflit = true;
-
-						for (size_t k = 0; k < teamsI.size(); ++k)
-						{
-							if (k == b)
-								continue ;
-
-							if (teamsShareMember(teamsI[k], candidate))
-							{
-								candidateHasConflit = false;
-								break ;
-							}
-						}
-
-						bool otherCandidateHasConflit = true;
-
-						for (size_t k = 0; k < teamsJ.size(); ++k)
-						{
-							if (k == c)
-								continue ;
-
-							if (teamsShareMember(teamsJ[k], teamsI[b]))
-							{
-								otherCandidateHasConflit = false;
-								break ;
-							}
-						}
-
-						if (candidateHasConflit && otherCandidateHasConflit)
-						{
-							std::swap(teamsI[b], teamsJ[c]);
-							swapped = true;
-						}
-					}
-				}
-
-				if (!swapped)
-					PrintUtils::addError(std::format("generatePools : conflit non resolu dans {}, un multi-team player jouera contre lui-meme.", this->_pools[i]->getName()));
-			}
-		}
-	}
-
-	for (Pool* p : this->_pools)
-		p->generateMatches(this->_settings.getNbSetPlayedPools());
+	this->createEmptyPools(nbPools);
+	this->distributeTeamsToPools(nbPools);
+	this->resolvePoolConflicts(nbPools);
+	this->generatePoolMatches();
 }
 
 /**
@@ -726,12 +731,12 @@ void				Tournament::generatePools()
  */
 void				Tournament::generateSixteenths()
 {
-	for (const Pool* p: this->_pools)
+	for (cpPool p: this->_pools)
 		if (!p->allMatchesFinished())
-			return ;
+			return;
 
 	if (this->_sixteenths || !this->_hasSixteenth || this->_pools.size() < 16)
-		return ;
+		return;
 
 	this->_sixteenths = new Phase("1/16 de Finale", this->_settings.getNbSetPlayedSixteenth());
 	
@@ -743,12 +748,12 @@ void				Tournament::generateSixteenths()
  */
 void				Tournament::generateHeighths()
 {
-	for (const Pool* p: this->_pools)
+	for (cpPool p: this->_pools)
 		if (!p->allMatchesFinished())
-			return ;
+			return;
 
 	if (this->_heighths || !this->_hasHeighth)
-		return ;
+		return;
 
 	this->_heighths = new Phase("1/8 de Finale", this->_settings.getNbSetPlayedHeigth());
 
@@ -769,12 +774,12 @@ void				Tournament::generateHeighths()
  */
 void				Tournament::generateQuarters()
 {
-	for (const Pool* p: this->_pools)
+	for (cpPool p: this->_pools)
 		if (!p->allMatchesFinished())
-			return ;
+			return;
 
 	if (this->_quarters)
-		return ;
+		return;
 
 	this->_quarters = new Phase("Quarts de Finale", this->_settings.getNbSetPlayedQuarters());
 
@@ -804,15 +809,15 @@ void				Tournament::generateQuarters()
 void				Tournament::generateSemis()
 {
 	if (this->_semis || !this->_quarters || !this->_quarters->isFinished())
-		return ;
+		return;
 
 	cvpTeam winners = this->_quarters->getWinners();
 
 	if (winners.size() < 4)
-		return ;
+		return;
 
 	this->_semis = new Phase("Demi-Finales", this->_settings.getNbSetPlayedSemis());
-	
+
 	this->_semis->addEncounter(winners[0], winners[2]);
 	this->_semis->addEncounter(winners[1], winners[3]);
 }
@@ -823,12 +828,12 @@ void				Tournament::generateSemis()
 void				Tournament::generateFinal()
 {
 	if (this->_final || !this->_semis || !this->_semis->isFinished())
-		return ;
+		return;
 
 	cvpTeam winners = this->_semis->getWinners();
 
 	if (winners.size() < 2)
-		return ;
+		return;
 
 	this->_final = new Phase("Finale", this->_settings.getNbSetPlayedFinal());
 	
@@ -841,12 +846,12 @@ void				Tournament::generateFinal()
 void				Tournament::generateThirdPlace()
 {
 	if (this->_thirdPlace || !this->_semis || !this->_semis->isFinished() || !this->_settings.getIsThirdPlaceMatch())
-		return ;
+		return;
 
 	cvpTeam losers = this->_semis->getLosers();
 
 	if (losers.size() < 2)
-		return ;
+		return;
 
 	this->_thirdPlace = new Phase("Petite Finale", this->_settings.getNbSetPlayedThirdPlace());
 	this->_thirdPlace->addEncounter(losers[0], losers[1]);

@@ -2,44 +2,36 @@
 // Created by Nicolas Fordoxcel on 18/08/2026.
 //
 
-//	STDLIB
-#include <string>
+/****************************************************************************************************/
+/*	INCLUDES																						*/
+/****************************************************************************************************/
+
 #include <iostream>
 
-//	INCLUDES
-#include "../includes/utils/PrintUtils.hpp"
 #include "../includes/cli/TournamentViewer.hpp"
-#include "../includes/class/Match.hpp"
-#include "../includes/class/Phase.hpp"
-#include "../includes/class/Team.hpp"
 
-//	TYPEDEF
-using				STRING		=	std::string;
-using				CVP_MATCH	=	const std::vector<Match*>&;
-using               CVP_TEAM	=	const std::vector<Team*>&;
+/****************************************************************************************************/
+/*	STATIC VARIABLES																				*/
+/****************************************************************************************************/
 
-//	STATIC VARIABLES
+/****************************************************************************************************/
+/*	EXCEPTION																						*/
+/****************************************************************************************************/
 
-/**************************************************************************************************/
-/*	EXCEPTION																					  */
-/**************************************************************************************************/
-
-/**************************************************************************************************/
-/*	PRIVATE METHOD																				  */
-/**************************************************************************************************/
+/****************************************************************************************************/
+/*	PRIVATE METHOD																					*/
+/****************************************************************************************************/
 
 /**
  * Retourne le nom de l equipe en position teamPos (1=A, 2=B) du match
  * matchIdx dans phase, ou "A determiner" si indisponible.
  */
-STRING				TournamentViewer::getTeamNameOrPlaceholder(const Phase* phase,
-															const size_t matchIdx,
-															const int teamPos)
+String				TournamentViewer::getTeamNameOrPlaceholder(cpPhase phase, const size_t matchIdx, cInt teamPos)
 {
 	if (!phase)
 		return ("A determiner");
 
-	CVP_MATCH matches = phase->getMatches();
+	cvpMatch matches = phase->getMatches();
 
 	if (matchIdx >= matches.size() || !matches[matchIdx])
 		return ("A determiner");
@@ -50,52 +42,56 @@ STRING				TournamentViewer::getTeamNameOrPlaceholder(const Phase* phase,
 	return (t ? t->getName() : "A determiner");
 }
 
-/**************************************************************************************************/
-/*	PUBLIC METHOD																				  */
-/**************************************************************************************************/
+/****************************************************************************************************/
+/*	PUBLIC METHOD																					*/
+/****************************************************************************************************/
 
-void				TournamentViewer::displayFullBracket(const Tournament& tournament)
+void				TournamentViewer::displayFullBracket(cTour tournament)
 {
-	const Phase* Q = tournament.getQuarters();
-	const Phase* S = tournament.getSemis();
-	const Phase* F = tournament.getFinal();
-	const Phase* T = tournament.getThirdPlace();
+	cpPhase Q = tournament.getQuarters();
+	cpPhase S = tournament.getSemis();
+	cpPhase F = tournament.getFinal();
+	cpPhase T = tournament.getThirdPlace();
 
 	PrintUtils::clear();
 
 	std::cout << "\n=================== ARBRE DE LA PHASE FINALE ===================\n\n";
 	std::cout << "\tQUARTS\t\t\tDEMIS\t\t\t\t\t3e PLACE\tFINALE\t\t\tVAINQUEUR\n\n";
 
-	const STRING q[4][2] = {
+	const String q[4][2] =
+	{
 		{ getTeamNameOrPlaceholder(Q, 0, 1), getTeamNameOrPlaceholder(Q, 0, 2) },
 		{ getTeamNameOrPlaceholder(Q, 1, 1), getTeamNameOrPlaceholder(Q, 1, 2) },
 		{ getTeamNameOrPlaceholder(Q, 2, 1), getTeamNameOrPlaceholder(Q, 2, 2) },
 		{ getTeamNameOrPlaceholder(Q, 3, 1), getTeamNameOrPlaceholder(Q, 3, 2) }
 	};
-	const STRING s[2][2] = {
+	const String s[2][2] =
+	{
 		{ getTeamNameOrPlaceholder(S, 0, 1), getTeamNameOrPlaceholder(S, 0, 2) },
 		{ getTeamNameOrPlaceholder(S, 1, 1), getTeamNameOrPlaceholder(S, 1, 2) }
 	};
-	const STRING f[2]    = {
+	const String f[2] =
+	{
 		getTeamNameOrPlaceholder(F, 0, 1),
 		getTeamNameOrPlaceholder(F, 0, 2)
 	};
-	const STRING t3[2]   = {
+	const String t3[2] =
+	{
 		getTeamNameOrPlaceholder(T, 0, 1),
 		getTeamNameOrPlaceholder(T, 0, 2)
 	};
 
-	STRING winner = "A determiner";
+	String winner = "A determiner";
 
 	if (F && F->isFinished() && !F->getMatches().empty())
 	{
-		const Team*	w = F->getMatches()[0]->getWinner();
+		cpTeam	w = F->getMatches()[0]->getWinner();
 
 		if (w)
 			winner = w->getName();
 	}
 
-	const bool hasThird = tournament.getSettings().getIsThirdPlaceMatch();
+	cBool hasThird = tournament.getSettings().getIsThirdPlaceMatch();
 
 	std::cout << "\t" << q[0][0] << " ---\n";
 	std::cout << "\t\t\t\t|---> " << s[0][0] << " ---\n";
@@ -123,10 +119,10 @@ void				TournamentViewer::displayFullBracket(const Tournament& tournament)
 	std::cout << "==============================================================================\n";
 }
 
-void				TournamentViewer::displayPodium(const Tournament& tournament)
+void				TournamentViewer::displayPodium(cTour tournament)
 {
-	const Phase* final = tournament.getFinal();
-	const Phase* thirdPlace = tournament.getThirdPlace();
+	cpPhase final = tournament.getFinal();
+	cpPhase thirdPlace = tournament.getThirdPlace();
 
 	std::cout << "\n╔══════════════════════════════════════╗\n";
 	std::cout << "║            PALMARES FINAL            ║\n";
@@ -135,11 +131,11 @@ void				TournamentViewer::displayPodium(const Tournament& tournament)
 	if (!final || !final->isFinished())
 	{
 		PrintUtils::addError("La finale n'est pas encore terminee.");
-		return ;
+		return;
 	}
 
-	CVP_TEAM winners = final->getWinners();
-	CVP_TEAM losers = final->getLosers();
+	cvpTeam winners = final->getWinners();
+	cvpTeam losers = final->getLosers();
 
 	if (!winners.empty() && winners[0])
 		std::cout << "\t\t\t\t1er:\t" << winners[0]->getName() << std::endl;
@@ -149,8 +145,8 @@ void				TournamentViewer::displayPodium(const Tournament& tournament)
 
 	if (thirdPlace && thirdPlace->isFinished())
 	{
-		CVP_TEAM third = thirdPlace->getWinners();
-		CVP_TEAM fourth = thirdPlace->getLosers();
+		cvpTeam third = thirdPlace->getWinners();
+		cvpTeam fourth = thirdPlace->getLosers();
 
 		if (!third.empty()  && third[0])
 			std::cout << "\t\t3e:\t\t\t" << third[0]->getName()  << std::endl;

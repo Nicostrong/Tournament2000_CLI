@@ -2,86 +2,85 @@
 // Created by Nicolas Fordoxcel on 13/06/2026.
 //
 
-//	STDLIB
-#include <string>
-#include <vector>
+/****************************************************************************************************/
+/*	INCLUDES																						*/
+/****************************************************************************************************/
+
 #include <algorithm>
 
-//	INCLUDES
 #include "../includes/class/Pool.hpp"
-#include "../includes/class/Team.hpp"
 #include "../includes/class/Match.hpp"
-#include "../includes/class/Phase.hpp"
-#include "../includes/class/Settings.hpp"
-#include "../includes/class/Tournament.hpp"
-#include "../includes/class/Participant.hpp"
+#include "../includes/class/Team.hpp"
 
-//	TYPEDEF
-using				string		=	std::string;
-using				cString		=	const std::string&;
+/****************************************************************************************************/
+/*	TYPEDEF																							*/
+/****************************************************************************************************/
 
-using				cPool		=	const Pool&;
-using				cTeam		=	const Team&;
-using				cMatch		=	const Match&;
-using				cPhase		=	const Phase&;
-using				cSet		=	const Settings&;
-using				cPart		=	const Participant&;
+using				String			=	std::string;
+using				cString			=	const std::string&;
+using				vString			=	std::vector<std::string>;
+using				vtupleMsg		=	std::vector<std::tuple<std::string, bool>>;
 
-using				vpPool		=	std::vector<Pool*>;
-using				vpTeam		=	std::vector<Team*>;
-using				vpMatch		=	std::vector<Match*>;
-using				vpPhase		=	std::vector<Phase*>;
-using				vpPart		=	std::vector<Participant*>;
+using				cInt			=	const int;
+using				vInt			=	std::vector<int>;
+using				cvInt			=	const std::vector<int>;
+template<std::size_t N>
+using				aInt			=	std::array<int, N>;
 
-using				cvpPool		=	const std::vector<Pool*>&;
-using				cvpTeam		=	const std::vector<Team*>&;
-using				cvpMatch	=	const std::vector<Match*>&;
-using				cvpPhase	=	const std::vector<Phase*>&;
-using				cvpPart		=	const std::vector<Participant*>&;
+using				cBool			=	const bool;
 
-//	STATIC VARIABLES
+using				pPool			=	Pool*;
+using				cPool			=	const Pool&;
+using				cpPool			=	const Pool*;
+using				vpPool			=	std::vector<Pool*>;
+using				cvpPool			=	const std::vector<Pool*>&;
+
+/****************************************************************************************************/
+/*	STATIC VARIABLES																				*/
+/****************************************************************************************************/
+
 int					Pool::_idCounter = 1;
 
-/************************************************************************************************/
-/*	CONSTRUCTOR / DESTRUCTOR																	*/
-/************************************************************************************************/
+/****************************************************************************************************/
+/*	CONSTRUCTOR / DESTRUCTOR																		*/
+/****************************************************************************************************/
 
 Pool::Pool(): _name("Pool " + std::to_string(_idCounter++))
 {}
 
 Pool::~Pool()
 {
-	for (const Match* m : this->_matches)
+	for (cpMatch m : this->_matches)
 		delete m;
 	
 	this->_matches.clear();
 }
 
-/************************************************************************************************/
-/*	GETTER																						*/
-/************************************************************************************************/
+/****************************************************************************************************/
+/*	GETTER																							*/
+/****************************************************************************************************/
 
 cString				Pool::getName() const		{	return (this->_name);		}
 cvpTeam				Pool::getTeams() const		{	return (this->_teams);		}
 cvpMatch			Pool::getMatches() const	{	return (this->_matches);	}
 
 
-/************************************************************************************************/
-/*	SETTER																						*/
-/************************************************************************************************/
+/****************************************************************************************************/
+/*	SETTER																							*/
+/****************************************************************************************************/
 
-/************************************************************************************************/
-/*	PRIVATE METHODS																				*/
-/************************************************************************************************/
+/****************************************************************************************************/
+/*	PRIVATE METHODS																					*/
+/****************************************************************************************************/
 
-/************************************************************************************************/
-/*	PUBLIC METHODS																				*/
-/************************************************************************************************/
+/****************************************************************************************************/
+/*	PUBLIC METHODS																					*/
+/****************************************************************************************************/
 
 /**
  *	Ajoute une equipe dans une pool
  */
-void				Pool::addTeam(Team* team)
+void				Pool::addTeam(pTeam team)
 {
 	if (team)
 		this->_teams.push_back(team);
@@ -90,15 +89,15 @@ void				Pool::addTeam(Team* team)
 /**
  *	Genere le nombre de match a jouer dasn une phase du tournoi
  */
-void				Pool::generateMatches(const int nbSetsPerEncounter)
+void				Pool::generateMatches(cInt nbSetsPerEncounter)
 {
-	for (const Match* m : this->_matches)
+	for (cpMatch m : this->_matches)
 		delete m;
 	
 	this->_matches.clear();
 
 	if (this->_teams.size() < 2)
-		return ;
+		return;
 
 	for (size_t i = 0; i < this->_teams.size(); ++i)
 		for (size_t j = i + 1; j < this->_teams.size(); ++j)
@@ -125,7 +124,7 @@ void				Pool::sortTeams()
  */
 bool				Pool::allMatchesFinished() const
 {
-	for (const Match* m: this->_matches)
+	for (cpMatch m: this->_matches)
 		if (!m->isFinished())
 			return (false);
 

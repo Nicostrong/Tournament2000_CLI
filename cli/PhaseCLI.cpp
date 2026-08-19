@@ -2,25 +2,28 @@
 // Created by Nicolas Fordoxcel on 22/07/2026.
 //
 
-//	STDLIB
+/****************************************************************************************************/
+/*	INCLUDES																						*/
+/****************************************************************************************************/
+
 #include <iostream>
 #include <fstream>
 #include <iomanip>
 
-//	INCLUDES
 #include "../includes/cli/PhaseCLI.hpp"
 #include "../includes/cli/MatchCLI.hpp"
 
-//	TYPEDEF
-using				STRING		=	std::string;
-using				C_STRING	=	const std::string&;
-using				VP_MATCH	=	std::vector<Match*>;
-using				VP_TEAM		=	std::vector<Team*>;
-using				CVP_MATCH	=	const std::vector<Match*>&;
+/****************************************************************************************************/
+/*	STATIC VARIABLES																				*/
+/****************************************************************************************************/
 
-/********************/
-/*	PRIVATE METHOD	*/
-/********************/
+/****************************************************************************************************/
+/*	EXCEPTION																						*/
+/****************************************************************************************************/
+
+/****************************************************************************************************/
+/*	PRIVATE METHOD																					*/
+/****************************************************************************************************/
 
 /**
  * Ecrit une rencontre (N sets consecutifs) dans le flux out.
@@ -32,47 +35,46 @@ using				CVP_MATCH	=	const std::vector<Match*>&;
  *   Set 3 : 21 - 18  ->  Vainqueur : Team A
  * Vainqueur de la rencontre : Team A
  */
-void				PhaseCLI::writeEncounter(std::ostream& out, CVP_MATCH matches,
-												const size_t startIdx, const int nbSets,
-												const int encounterNum, const bool toFile)
+void				PhaseCLI::writeEncounter(std::ostream& out, cvpMatch matches, const size_t startIdx,
+						cInt nbSets, cInt encounterNum, cBool toFile)
 {
 	if (startIdx >= matches.size())
-		return ;
+		return;
 
-	const Match*	first = matches[startIdx];
-	C_STRING		nameA = first->getTeamA() ? first->getTeamA()->getName() : "?";
-	C_STRING		nameB = first->getTeamB() ? first->getTeamB()->getName() : "?";
+	cpMatch first = matches[startIdx];
+	cString	nameA = first->getTeamA() ? first->getTeamA()->getName() : "?";
+	cString	nameB = first->getTeamB() ? first->getTeamB()->getName() : "?";
 
 	out << "\n";
 	out << "  Rencontre " << encounterNum << " :  "
 		<< nameA << "  vs  " << nameB << "\n";
 	out << "  " << STRING(nameA.size() + nameB.size() + 14, '-') << "\n";
 
-	int		winsA = 0;
-	int		winsB = 0;
+	int winsA = 0;
+	int winsB = 0;
 
 	for (int s = 0; s < nbSets; ++s)
 	{
-		const size_t	idx = startIdx + static_cast<size_t>(s);
+		const size_t idx = startIdx + static_cast<size_t>(s);
 
 		if (idx >= matches.size())
-			break ;
+			break;
 
-		const Match*	m = matches[idx];
+		cpMatch m = matches[idx];
 
 		out << "    Set " << (s + 1) << " : ";
 
 		if (!m || !m->isFinished())
 		{
 			out << "[ à jouer ]\n";
-			continue ;
+			continue;
 		}
 
 		out << std::setw(3) << m->getScoreA()
 			<< " - "
 			<< std::setw(3) << m->getScoreB();
 
-		const Team*	winner = m->getWinner();
+		cpTeam winner = m->getWinner();
 
 		if (winner)
 		{
@@ -123,18 +125,18 @@ void				PhaseCLI::writeEncounter(std::ostream& out, CVP_MATCH matches,
 	out << "\n";
 }
 
-/********************/
-/*	PUBLIC METHOD	*/
-/********************/
+/****************************************************************************************************/
+/*	PUBLIC METHOD																					*/
+/****************************************************************************************************/
 
 /**
  * Affiche la phase complete dans le terminal.
  * Utilise les couleurs ANSI pour les scores et les vainqueurs.
  */
-void				PhaseCLI::displayPhase(const Phase& phase)
+void				PhaseCLI::displayPhase(cPhase phase)
 {
-	CVP_MATCH		matches = phase.getMatches();
-	const int		nbSets = phase.getNbSetToPlay();
+	cvpMatch matches = phase.getMatches();
+	cInt nbSets = phase.getNbSetToPlay();
 
 	std::cout << "\n";
 	std::cout << "╔══════════════════════════════════════════════════╗\n";
@@ -145,10 +147,10 @@ void				PhaseCLI::displayPhase(const Phase& phase)
 	if (matches.empty())
 	{
 		std::cout << "  Aucun match enregistré dans cette phase.\n";
-		return ;
+		return;
 	}
 
-	int				encounterNum = 1;
+	int encounterNum = 1;
 
 	for (size_t i = 0; i < matches.size(); i += static_cast<size_t>(nbSets))
 	{
@@ -163,26 +165,26 @@ void				PhaseCLI::displayPhase(const Phase& phase)
 /**
  * Affiche uniquement le tableau vainqueurs / perdants d une phase terminee.
  */
-void				PhaseCLI::displayResults(const Phase& phase)
+void				PhaseCLI::displayResults(cPhase phase)
 {
 	if (!phase.isFinished())
 	{
 		std::cout << "\033[1;33m  [!] Phase non terminée — résultats indisponibles.\033[0m\n";
-		return ;
+		return;
 	}
 
-	VP_TEAM			winners	= phase.getWinners();
-	VP_TEAM			losers	= phase.getLosers();
+	vpTeam winners	= phase.getWinners();
+	vpTeam losers	= phase.getLosers();
 
 	std::cout << "\n  ── Résultats de " << phase.getName() << " ──\n";
-	std::cout << "  " << STRING(40, '-') << "\n";
+	std::cout << "  " << String(40, '-') << "\n";
 
 	std::cout << "  Qualifiés :\n";
 
 	for (size_t i = 0; i < winners.size(); ++i)
 	{
 		if (!winners[i])
-			continue ;
+			continue;
 
 		std::cout << "\033[1;32m    " << (i + 1) << ". " << winners[i]->getName() << "\033[0m\n";
 	}
@@ -191,34 +193,34 @@ void				PhaseCLI::displayResults(const Phase& phase)
 	{
 		std::cout << "  Éliminés :\n";
 
-		for (const Team* t : losers)
+		for (cpTeam t : losers)
 		{
 			if (!t)
-				continue ;
+				continue;
 
 			std::cout << "\033[1;31m    - " << t->getName() << "\033[0m\n";
 		}
 	}
 
-	std::cout << "  " << STRING(40, '-') << "\n";
+	std::cout << "  " << String(40, '-') << "\n";
 }
 
 /**
  * Exporte l historique complet d une phase dans un fichier texte.
  * Pas de codes ANSI dans le fichier (toFile = true).
  */
-bool				PhaseCLI::exportToTxt(const Phase& phase, C_STRING filename)
+bool				PhaseCLI::exportToTxt(cPhase phase, cString filename)
 {
-	std::ofstream	file(filename);
+	std::ofstream file(filename);
 
 	if (!file.is_open())
 	{
-		std::cerr << "\033[1;31m[!] Impossible de créer le fichier : " << filename << "\033[0m\n";
+		PrintUtils::addError(std::format("Impossible de creer le fichier : {}", filename));
 		return (false);
 	}
 
-	CVP_MATCH		matches = phase.getMatches();
-	const int		nbSets = phase.getNbSetToPlay();
+	cvpMatch matches = phase.getMatches();
+	cInt nbSets = phase.getNbSetToPlay();
 
 	file << "============================================================\n";
 	file << "  PHASE : " << phase.getName() << "\n";
@@ -233,8 +235,7 @@ bool				PhaseCLI::exportToTxt(const Phase& phase, C_STRING filename)
 		return (true);
 	}
 
-	// ── Rencontres ─────────────────────────────────────────────────────────
-	int				encounterNum = 1;
+	int encounterNum = 1;
 
 	for (size_t i = 0; i < matches.size(); i += static_cast<size_t>(nbSets))
 	{
@@ -245,8 +246,8 @@ bool				PhaseCLI::exportToTxt(const Phase& phase, C_STRING filename)
 
 	if (phase.isFinished())
 	{
-		VP_TEAM		winners = phase.getWinners();
-		VP_TEAM		losers = phase.getLosers();
+		vpTeam winners = phase.getWinners();
+		vpTeam losers = phase.getLosers();
 
 		file << "\n============================================================\n";
 		file << "  RÉSULTATS\n";
@@ -257,7 +258,7 @@ bool				PhaseCLI::exportToTxt(const Phase& phase, C_STRING filename)
 		for (size_t i = 0; i < winners.size(); ++i)
 		{
 			if (!winners[i])
-				continue ;
+				continue;
 
 			file << "    " << (i + 1) << ". " << winners[i]->getName() << "\n";
 		}
@@ -266,10 +267,10 @@ bool				PhaseCLI::exportToTxt(const Phase& phase, C_STRING filename)
 		{
 			file << "  Éliminés :\n";
 
-			for (const Team* t : losers)
+			for (cpTeam t : losers)
 			{
 				if (!t)
-					continue ;
+					continue;
 
 				file << "    - " << t->getName() << "\n";
 			}
