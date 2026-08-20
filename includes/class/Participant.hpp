@@ -2,8 +2,7 @@
 // Created by Nicolas Fordoxcel on 13/06/2026.
 //
 
-#ifndef PARTICIPANT_HPP
-# define PARTICIPANT_HPP
+#pragma once
 
 /****************************************************************************************************/
 /*	INCLUDES																						*/
@@ -97,5 +96,3 @@ class				Participant
 		//	METHOD
 
 };
-
-#endif

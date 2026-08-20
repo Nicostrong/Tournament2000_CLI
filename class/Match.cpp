@@ -9,6 +9,7 @@
 #include <tuple>
 #include <string>
 #include <vector>
+#include <array>
 
 #include "../includes/class/Match.hpp"
 #include "../includes/class/Team.hpp"
@@ -57,9 +58,6 @@ bool				Match::isFinished() const	{	return (this->_isFinished);	}
 /*	SETTER																							*/
 /****************************************************************************************************/
 
-/**
- *	Gere l ajout de score aux equipes lors d un match
- */
 void				Match::setScore(cInt sA, cInt sB)
 {
 	this->_scoreA = sA;
@@ -92,9 +90,6 @@ void				Match::setScore(cInt sA, cInt sB)
 /*	PUBLIC METHOD																					*/
 /****************************************************************************************************/
 
-/**
- *	Retourne l equipe vainqueur
- */
 Team*				Match::getWinner() const
 {
 	if (!this->_isFinished || this->_scoreA == this->_scoreB)
@@ -103,9 +98,6 @@ Team*				Match::getWinner() const
 	return ((this->_scoreA > this->_scoreB) ? this->_teamA : this->_teamB);
 }
 
-/**
- *	Retourne l equipe perdante
- */
 Team*				Match::getLoser() const
 {
 	if (!this->_isFinished || this->_scoreA == this->_scoreB)

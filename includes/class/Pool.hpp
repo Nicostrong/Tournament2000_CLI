@@ -2,8 +2,7 @@
 // Created by Nicolas Fordoxcel on 13/06/2026.
 //
 
-#ifndef POOL_HPP
-# define POOL_HPP
+#pragma once
 
 /****************************************************************************************************/
 /*	INCLUDES																						*/
@@ -30,6 +29,7 @@ using				cInt			=	const int;
 
 using				cBool			=	const bool;
 
+using				pMatch			=	Match*;
 using				cMatch			=	const Match&;
 using				cpMatch			=	const Match*;
 using				vpMatch			=	std::vector<Match*>;
@@ -84,5 +84,3 @@ class				Pool
 		[[nodiscard]]
 		vpTeam						getQualifiers() const;
 };
-
-#endif

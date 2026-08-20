@@ -2,12 +2,13 @@
 // Created by Nicolas Fordoxcel on 13/06/2026.
 //
 
-#ifndef MATCH_HPP
-# define MATCH_HPP
+#pragma once
 
 /****************************************************************************************************/
 /*	INCLUDES																						*/
 /****************************************************************************************************/
+
+# include <vector>
 
 /****************************************************************************************************/
 /*	CLASSES																							*/
@@ -18,6 +19,7 @@ class				Team;
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
 /****************************************************************************************************/
+using				cInt			=	const int;
 
 using				pTeam			=	Team*;
 using				cTeam			=	const Team&;
@@ -64,7 +66,7 @@ class				Match
 		bool						isFinished() const;
 
 		//	SETTER
-		void						setScore(int sA, int sB);
+		void						setScore(cInt sA, cInt sB);
 
 		//	METHOD
 		[[nodiscard]]
@@ -72,5 +74,3 @@ class				Match
 		[[nodiscard]]
 		Team*						getLoser() const;
 };
-
-#endif

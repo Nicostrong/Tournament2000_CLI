@@ -2,14 +2,14 @@
 // Created by Nicolas Fordoxcel on 23/06/2026.
 //
 
-#ifndef SETTINGS_HPP
-# define SETTINGS_HPP
+#pragma once
 
 /****************************************************************************************************/
 /*	INCLUDES																						*/
 /****************************************************************************************************/
 
 # include <array>
+# include <tuple>
 # include <string>
 # include <vector>
 # include <algorithm>
@@ -26,8 +26,14 @@
 
 using				String			=	std::string;
 using				cString			=	const std::string&;
+using				vString			=	std::vector<std::string>;
+using				vtupleMsg		=	std::vector<std::tuple<std::string, bool>>;
 
 using				cInt			=	const int;
+using				vInt			=	std::vector<int>;
+using				cvInt			=	const std::vector<int>;
+template<std::size_t N>
+using				aInt			=	std::array<int, N>;
 
 using				cBool			=	const bool;
 
@@ -255,5 +261,3 @@ class				Settings
 		bool						canAccommodate(cInt actualParticipants) const;
 
 };
-
-#endif

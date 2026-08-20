@@ -6,6 +6,7 @@
 /*	INCLUDES																						*/
 /****************************************************************************************************/
 
+#include <format>
 #include <limits>
 #include <fstream>
 #include <sstream>
@@ -13,17 +14,27 @@
 #include <algorithm>
 #include <exception>
 
-#include "../includes/Constantes.hpp"
+#include "../includes/class/Settings.hpp"
+#include "../includes/class/Participant.hpp"
 
 #include "../includes/utils/CheckerCSV.hpp"
+#include "../includes/utils/PrintUtils.hpp"
+#include "../includes/utils/FormatUtils.hpp"
 
 #include "../includes/cli/ParticipantCLI.hpp"
+
+#include "../includes/Color.hpp"
+#include "../includes/Constantes.hpp"
+
+/****************************************************************************************************/
+/*	TYPEDEF																							*/
+/****************************************************************************************************/
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
 /****************************************************************************************************/
 
-VP_PART				ParticipantCLI::partList;
+vpPart				ParticipantCLI::partList;
 
 /****************************************************************************************************/
 /*	EXCEPTION																						*/
@@ -242,10 +253,10 @@ Participant*		ParticipantCLI::create(cvpPart participants, cSet settings)
 			continue;
 		}
 
-		if (!settings.getIsMixed() && static_cast<gender>(gender) != settings.getTournamentGender())
+		if (!settings.getIsMixed() && static_cast<Gender>(gender) != settings.getTournamentGender())
 		{
 			std::cout << Color::RED << "[!] ERREUR : Ce tournoi est exclusivement reserve aux participants de genre "
-					  << (settings.getTournamentGender() == Participant::MALE ? "HOMME" : "FEMME") << ".\n" << Color::RESET;
+					  << (settings.getTournamentGender() == Gender::MALE ? "HOMME" : "FEMME") << ".\n" << Color::RESET;
 			gender = -1;
 		}
 	}
@@ -254,7 +265,7 @@ Participant*		ParticipantCLI::create(cvpPart participants, cSet settings)
 
 	PrintUtils::addSuccess(std::format("Nouveau participant avec le pseudo {} ajoute avec succes.", pseudo));
 
-	return (new Participant(pseudo, lastName, firstName, static_cast<gender>(gender)));
+	return (new Participant(pseudo, lastName, firstName, static_cast<Gender>(gender)));
 }
 
 void				ParticipantCLI::destroy(const size_t id, vpPart& participants)
@@ -361,14 +372,14 @@ void				ParticipantCLI::modify(const size_t id, cvpPart participants, cSet setti
 				std::cout << Color::YELLOW << "[!] Entrez 0 (HOMME) ou 1 (FEMME).\n" << Color::RESET;
 				genderInput = -1;
 			}
-			else if (!settings.getIsMixed() && static_cast<gender>(genderInput) != settings.getTournamentGender())
+			else if (!settings.getIsMixed() && static_cast<Gender>(genderInput) != settings.getTournamentGender())
 			{
 				std::cout << Color::RED << "[!] ERREUR : Ce tournoi est exclusivement "
-						  << (settings.getTournamentGender() == Participant::MALE ? "HOMME" : "FEMME") << ".\n" << Color::RESET;
+						  << (settings.getTournamentGender() == Gender::MALE ? "HOMME" : "FEMME") << ".\n" << Color::RESET;
 				genderInput = -1;
 			}
 			else
-				pToModify->setGender(static_cast<gender>(genderInput));
+				pToModify->setGender(static_cast<Gender>(genderInput));
 		}
 		catch (const UserInterruptedException&)
 		{
@@ -512,7 +523,7 @@ bool				ParticipantCLI::exportToCSV(cvpPart participants, cString filename)
 		file	<< p->getPseudo() << ","
 				<< p->getLastName() << ","
 				<< p->getFirstName() << ","
-				<< (p->getGenderInt() == Participant::MALE ? "0" : "1")
+				<< (p->getGenderInt() == Gender::MALE ? "0" : "1")
 				<< "\n";
 
 	file.close();
@@ -815,10 +826,10 @@ Participant*		ParticipantCLI::extractParticipantFromLine(cString line, cBool isF
 	if (isFirstLine && pseudo == "pseudo")
 		return (nullptr);
 
-	Gender gender = Participant::MALE;
+	Gender gender = Gender::MALE;
 
 	if (genderStr == "1")
-		gender = Participant::FEMALE;
+		gender = Gender::FEMALE;
 
 	return (new Participant(pseudo, lastName, firstName, gender));
 }

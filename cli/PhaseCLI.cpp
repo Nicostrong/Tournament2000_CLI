@@ -6,12 +6,23 @@
 /*	INCLUDES																						*/
 /****************************************************************************************************/
 
-#include <iostream>
+#include <format>
 #include <fstream>
 #include <iomanip>
+#include <iostream>
+
+#include "../includes/class/Team.hpp"
+#include "../includes/class/Match.hpp"
+#include "../includes/class/Phase.hpp"
 
 #include "../includes/cli/PhaseCLI.hpp"
 #include "../includes/cli/MatchCLI.hpp"
+
+#include "../includes/utils/PrintUtils.hpp"
+
+/****************************************************************************************************/
+/*	TYPEDEF																							*/
+/****************************************************************************************************/
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
@@ -48,7 +59,7 @@ void				PhaseCLI::writeEncounter(std::ostream& out, cvpMatch matches, const size
 	out << "\n";
 	out << "  Rencontre " << encounterNum << " :  "
 		<< nameA << "  vs  " << nameB << "\n";
-	out << "  " << STRING(nameA.size() + nameB.size() + 14, '-') << "\n";
+	out << "  " << String(nameA.size() + nameB.size() + 14, '-') << "\n";
 
 	int winsA = 0;
 	int winsB = 0;
@@ -240,7 +251,7 @@ bool				PhaseCLI::exportToTxt(cPhase phase, cString filename)
 	for (size_t i = 0; i < matches.size(); i += static_cast<size_t>(nbSets))
 	{
 		writeEncounter(file, matches, i, nbSets, encounterNum, true);
-		file << "  " << STRING(50, '-') << "\n";
+		file << "  " << String(50, '-') << "\n";
 		++encounterNum;
 	}
 

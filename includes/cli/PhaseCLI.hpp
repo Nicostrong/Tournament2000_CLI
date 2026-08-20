@@ -2,16 +2,35 @@
 // Created by Nicolas Fordoxcel on 22/07/2026.
 //
 
-#ifndef PHASECLI_HPP
-# define PHASECLI_HPP
+#pragma once
 
 /****************************************************************************************************/
 /*	INCLUDES																						*/
 /****************************************************************************************************/
 
+# include <string>
+# include <vector>
 # include <fstream>
 
-#include "../Global.hpp"
+/****************************************************************************************************/
+/*	CLASSES																							*/
+/****************************************************************************************************/
+
+class				Phase;
+
+/****************************************************************************************************/
+/*	TYPEDEF																							*/
+/****************************************************************************************************/
+
+using				String			=	std::string;
+using				cString			=	const std::string&;
+
+
+using				pPhase			=	Phase*;
+using				cPhase			=	const Phase&;
+using				cpPhase			=	const Phase*;
+using				vpPhase			=	std::vector<Phase*>;
+using				cvpPhase		=	const std::vector<Phase*>&;
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
@@ -24,7 +43,7 @@
 /**
 * Gere l affichage terminal et l export fichier d un objet Phase.
 */
-class PhaseCLI
+class				PhaseCLI
 {
 
 	private:
@@ -39,5 +58,3 @@ class PhaseCLI
 		static bool					exportToTxt(cPhase phase, cString filename);
 
 };
-
-#endif

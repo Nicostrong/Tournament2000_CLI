@@ -8,7 +8,15 @@
 
 #include <iostream>
 
+#include "../includes/class/Team.hpp"
+#include "../includes/class/Match.hpp"
+#include "../includes/class/Phase.hpp"
+#include "../includes/class/Settings.hpp"
+#include "../includes/class/Tournament.hpp"
+
 #include "../includes/cli/TournamentViewer.hpp"
+
+#include "../includes/utils/PrintUtils.hpp"
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
@@ -91,7 +99,7 @@ void				TournamentViewer::displayFullBracket(cTour tournament)
 			winner = w->getName();
 	}
 
-	cBool hasThird = tournament.getSettings().getIsThirdPlaceMatch();
+	cBool hasThird = tournament.getSettings()->getIsThirdPlaceMatch();
 
 	std::cout << "\t" << q[0][0] << " ---\n";
 	std::cout << "\t\t\t\t|---> " << s[0][0] << " ---\n";

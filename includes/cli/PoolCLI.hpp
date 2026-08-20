@@ -2,14 +2,33 @@
 // Created by Nicolas Fordoxcel on 15/06/2026.
 //
 
-#ifndef POOLCLI_HPP
-# define POOLCLI_HPP
+#pragma once
 
 /****************************************************************************************************/
 /*	INCLUDES																						*/
 /****************************************************************************************************/
 
-#include "../Global.hpp"
+# include <string>
+# include <fstream>
+
+/****************************************************************************************************/
+/*	CLASSES																							*/
+/****************************************************************************************************/
+
+class				Pool;
+
+/****************************************************************************************************/
+/*	TYPEDEF																							*/
+/****************************************************************************************************/
+
+using				String			=	std::string;
+using				cString			=	const std::string&;
+
+using				pPool			=	Pool*;
+using				cPool			=	const Pool&;
+using				cpPool			=	const Pool*;
+using				vpPool			=	std::vector<Pool*>;
+using				cvpPool			=	const std::vector<Pool*>&;
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
@@ -19,7 +38,7 @@
 /*	CLASS																							*/
 /****************************************************************************************************/
 
-class PoolCLI
+class				PoolCLI
 {
 	private:
 		
@@ -33,5 +52,3 @@ class PoolCLI
 		static void					displayMatches(cPool pool);
 		static void					displayPoolDetails(cPool pool);
 };
-
-#endif

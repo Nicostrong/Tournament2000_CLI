@@ -6,13 +6,20 @@
 /*	INCLUDES																						*/
 /****************************************************************************************************/
 
+#include <format>
 #include <fstream>
 #include <sstream>
 #include <algorithm>
 
 #include "../includes/utils/CheckerCSV.hpp"
+#include "../includes/utils/PrintUtils.hpp"
+#include "../includes/utils/FormatUtils.hpp"
 
 #include "../includes/cli/ParticipantCLI.hpp"
+
+/****************************************************************************************************/
+/*	TYPEDEF																							*/
+/****************************************************************************************************/
 
 /****************************************************************************************************/
 /*	CONSTRUCTOR / DESTRUCTOR																		*/

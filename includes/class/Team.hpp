@@ -2,8 +2,7 @@
 // Created by Nicolas Fordoxcel on 13/06/2026.
 //
 
-#ifndef TEAM_HPP
-# define TEAM_HPP
+#pragma once
 
 /****************************************************************************************************/
 /*	INCLUDES																						*/
@@ -29,10 +28,11 @@ using				cInt			=	const int;
 
 using				cBool			=	const bool;
 
+using				pPart			=	Participant*;
 using				cPart			=	const Participant&;
 using				cpPart			=	const Participant*;
 using				vpPart			=	std::vector<Participant*>;
-using				cvpPart			=	const std::vector<Participant*>;
+using				cvpPart			=	const std::vector<Participant*>&;
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
@@ -104,11 +104,9 @@ class				Team
 		//	METHOD
 		[[nodiscard]]
 		bool						isComplete(cInt requiredSize) const;
-		void						addMember(cpPart member);
+		void						addMember(Participant* member);
 		void						renameTeam();
 		void						addPoint(cInt point);
 		void						addScoreMarked(cInt score);
 		void						addScoreAgainst(cInt score);
 };
-
-#endif

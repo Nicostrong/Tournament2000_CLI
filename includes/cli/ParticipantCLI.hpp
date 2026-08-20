@@ -2,18 +2,45 @@
 // Created by Nicolas Fordoxcel on 14/06/2026.
 //
 
-#ifndef PARTICIPANTSCLI_HPP
-# define PARTICIPANTSCLI_HPP
+#pragma once
 
 /****************************************************************************************************/
 /*	INCLUDES																						*/
 /****************************************************************************************************/
 
-#include "../Global.hpp"
+# include <string>
+# include <vector>
+# include <csignal>
+
+/****************************************************************************************************/
+/*	CLASSES																							*/
+/****************************************************************************************************/
+
+class				Settings;
+class				Participant;
+
+/****************************************************************************************************/
+/*	TYPEDEF																							*/
+/****************************************************************************************************/
+
+using				String			=	std::string;
+using				cString			=	const std::string&;
+
+using				pSet			=	Settings*;
+using				cSet			=	const Settings&;
+using				cpSet			=	const Settings*;
+
+using				pPart			=	Participant*;
+using				cPart			=	const Participant&;
+using				cpPart			=	const Participant*;
+using				vpPart			=	std::vector<Participant*>;
+using				cvpPart			=	const std::vector<Participant*>&;
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
 /****************************************************************************************************/
+
+extern volatile std::sig_atomic_t	g_running;
 
 /****************************************************************************************************/
 /*	CLASS																							*/
@@ -23,7 +50,7 @@
  * Gere la representation de l objet Participants en CLI
  * Gere les menus pour la gestion des participants
  */
-class ParticipantCLI
+class				ParticipantCLI
 {
 	private:
 
@@ -65,5 +92,3 @@ class ParticipantCLI
 };
 
 std::ostream&		operator<<(std::ostream& os, cPart p);
-
-#endif

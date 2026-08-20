@@ -7,12 +7,21 @@
 /****************************************************************************************************/
 
 #include <iomanip>
-#include <fstream>
 #include <iostream>
+
+#include "../includes/class/Pool.hpp"
+#include "../includes/class/Team.hpp"
+#include "../includes/class/Match.hpp"
 
 #include "../includes/cli/PoolCLI.hpp"
 #include "../includes/cli/MatchCLI.hpp"
 #include "../includes/cli/TeamCLI.hpp"
+
+#include "../includes/utils/PrintUtils.hpp"
+
+/****************************************************************************************************/
+/*	TYPEDEF																							*/
+/****************************************************************************************************/
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/

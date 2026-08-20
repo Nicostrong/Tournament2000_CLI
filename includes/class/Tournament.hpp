@@ -2,8 +2,7 @@
 // Created by Nicolas Fordoxcel on 13/06/2026.
 //
 
-#ifndef TOURNAMANT_HPP
-# define TOURNAMANT_HPP
+#pragma once
 
 /****************************************************************************************************/
 /*	INCLUDES																						*/
@@ -59,7 +58,7 @@ using				pPart			=	Participant*;
 using				cPart			=	const Participant&;
 using				cpPart			=	const Participant*;
 using				vpPart			=	std::vector<Participant*>;
-using				cvpPart			=	const std::vector<Participant*>;
+using				cvpPart			=	const std::vector<Participant*>&;
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
@@ -151,8 +150,8 @@ class				Tournament
 	public:
 
 		//	CANONICAL
-		explicit Tournament(cSet settings);
-		Tournament(cSet settings, cvpPart participants);
+		explicit Tournament(pSet settings);
+		Tournament(pSet settings, vpPart participants);
 		Tournament() = delete;
 		Tournament(const Tournament& ) = delete;
 		~Tournament();
@@ -161,7 +160,7 @@ class				Tournament
 
 		//	GETTER
 		[[nodiscard]]
-		cSet						getSettings() const;
+		cpSet						getSettings() const;
 		[[nodiscard]]
 		cvpPool						getPools() const;
 		[[nodiscard]]
@@ -201,5 +200,3 @@ class				Tournament
 		bool						initializeTournament();
 
 };
-
-#endif

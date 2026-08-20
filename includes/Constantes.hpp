@@ -2,8 +2,7 @@
 // Created by Nicolas Fordoxcel on 02/07/2026.
 //
 
-#ifndef CONSTANTES_HPP
-# define CONSTANTES_HPP
+#pragma once
 
 //	Valeurs acceptables
 //
@@ -72,5 +71,3 @@
 # define NBSETTHIRDMAX				3
 # define NBSETFINALMIN				1
 # define NBSETFINALMAX				5
-
-#endif

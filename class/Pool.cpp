@@ -77,18 +77,12 @@ cvpMatch			Pool::getMatches() const	{	return (this->_matches);	}
 /*	PUBLIC METHODS																					*/
 /****************************************************************************************************/
 
-/**
- *	Ajoute une equipe dans une pool
- */
 void				Pool::addTeam(pTeam team)
 {
 	if (team)
 		this->_teams.push_back(team);
 }
 
-/**
- *	Genere le nombre de match a jouer dasn une phase du tournoi
- */
 void				Pool::generateMatches(cInt nbSetsPerEncounter)
 {
 	for (cpMatch m : this->_matches)
@@ -105,9 +99,6 @@ void				Pool::generateMatches(cInt nbSetsPerEncounter)
 				this->_matches.push_back(new Match(this->_teams[i], this->_teams[j]));
 }
 
-/**
- *	Trie les equipes pour le classement
- */
 void				Pool::sortTeams()
 {
 	std::sort(this->_teams.begin(), this->_teams.end(), [](const Team* a, const Team* b)
@@ -119,9 +110,6 @@ void				Pool::sortTeams()
 	});
 }
 
-/**
- *	Verifie si tous les matchs sont finis
- */
 bool				Pool::allMatchesFinished() const
 {
 	for (cpMatch m: this->_matches)
@@ -131,9 +119,6 @@ bool				Pool::allMatchesFinished() const
 	return (true);
 }
 
-/**
- *	Recupere les eauipes qualifiees
- */
 vpTeam				Pool::getQualifiers() const
 {
 	vpTeam qualifiers;

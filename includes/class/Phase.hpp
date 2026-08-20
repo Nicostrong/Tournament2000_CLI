@@ -2,8 +2,7 @@
 // Created by Nicolas Fordoxcel on 24/06/2026.
 //
 
-#ifndef PHASE_HPP
-# define PHASE_HPP
+#pragma once
 
 /****************************************************************************************************/
 /*	INCLUDES																						*/
@@ -90,5 +89,3 @@ class				Phase
 		[[nodiscard]]
 		bool						isFinished() const;
 };
-
-#endif

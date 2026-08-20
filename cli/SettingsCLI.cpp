@@ -9,10 +9,20 @@
 #include <sstream>
 #include <iostream>
 #include <exception>
+#include <algorithm>
+
+#include "../includes/class/Settings.hpp"
 
 #include "../includes/cli/SettingsCLI.hpp"
 
+#include "../includes/utils/PrintUtils.hpp"
+
+#include "../includes/Color.hpp"
 #include "../includes/Constantes.hpp"
+
+/****************************************************************************************************/
+/*	TYPEDEF																							*/
+/****************************************************************************************************/
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
@@ -171,57 +181,57 @@ int					SettingsCLI::inputIntList(cString prompt, cvInt allowedValues, int defau
 /**
  *	Setting de la structure des joueurs
  */
-void				SettingsCLI::setupPlayers(Settings& s)
+void				SettingsCLI::setupPlayers(pSet s)
 {
 	std::cout << Color::BLUE << "\n> Structure des joueurs" << std::endl << Color::RESET;
 
-	s.setIsDouble(inputBool("Est-ce un tournoi en DOUBLE ?", s.getIsDouble()));
-	s.setIsMixed(inputBool("Est-ce un tournoi MIXTE ?", s.getIsMixed()));
+	s->setIsDouble(inputBool("Est-ce un tournoi en DOUBLE ?", s->getIsDouble()));
+	s->setIsMixed(inputBool("Est-ce un tournoi MIXTE ?", s->getIsMixed()));
 
-	if (!s.getIsMixed())
+	if (!s->getIsMixed())
 	{
-		cInt defaultG = (s.getTournamentGender() == Participant::FEMALE) ? 1 : 0;
+		cInt defaultG = (s->getTournamentGender() == Gender::FEMALE) ? 1 : 0;
 		cInt g = inputInt("Genre du tournoi (0 = HOMME, 1 = FEMME)", 0, 1, defaultG);
 
-		s.setTournamentGender(g == 0 ? Participant::MALE : Participant::FEMALE);
+		s->setTournamentGender(g == 0 ? Gender::MALE : Gender::FEMALE);
 	}
 	else
-		s.setTournamentGender(Participant::MIXED);
+		s->setTournamentGender(Gender::MIXED);
 
 	vInt allowedPlayers;
 
-	if (s.getIsDouble())
+	if (s->getIsDouble())
 		allowedPlayers.assign(allowedNbPlayersDouble.begin(), allowedNbPlayersDouble.end());
 	else
 		allowedPlayers.assign(allowedNbPlayersSimple.begin(), allowedNbPlayersSimple.end());
 
-	int defaultVal = s.getNbPlayers();
+	int defaultVal = s->getNbPlayers();
 
 	if (std::ranges::find(allowedPlayers, defaultVal) == allowedPlayers.end())
 		defaultVal = allowedPlayers[0];
 
-	s.setNbPlayers(inputIntList("Nombre total de participants", allowedPlayers, defaultVal));
-	s.setAllowMultiTeamPlayers(inputBool("Autoriser un joueur a completer une deuxieme equipe ?", s.getAllowMultiTeamPlayers()));
+	s->setNbPlayers(inputIntList("Nombre total de participants", allowedPlayers, defaultVal));
+	s->setAllowMultiTeamPlayers(inputBool("Autoriser un joueur a completer une deuxieme equipe ?", s->getAllowMultiTeamPlayers()));
 }
 
 /**
  *	Setting de la structure des pools
  */
-void				SettingsCLI::setupPools(Settings& s)
+void				SettingsCLI::setupPools(pSet s)
 {
 	std::cout << Color::BLUE << "\n> Structure des pools" << std::endl << Color::RESET;
 
 	while (true)
 	{
-		s.setNbPools(inputIntList("Nombre de poules", {4, 8, 16}, s.getNbPools()));
-		s.setNbPlayerByPool(inputInt("Nombre de joueurs/equipes par poule", NBPLAYERPERPOOLMIN, NBPLAYERPERPOOLMAX, s.getNbPlayerByPool()));
+		s->setNbPools(inputIntList("Nombre de poules", {4, 8, 16}, s->getNbPools()));
+		s->setNbPlayerByPool(inputInt("Nombre de joueurs/equipes par poule", NBPLAYERPERPOOLMIN, NBPLAYERPERPOOLMAX, s->getNbPlayerByPool()));
 
-		cInt requiredPlayers = s.getNbPools() * s.getNbPlayerByPool();
+		cInt requiredPlayers = s->getNbPools() * s->getNbPlayerByPool();
 
-		if (s.getNbPlayers() < requiredPlayers && !s.getAllowMultiTeamPlayers())
+		if (s->getNbPlayers() < requiredPlayers && !s->getAllowMultiTeamPlayers())
 		{
-			std::cout << Color::RED << "\n[!] ERREUR LOGIQUE : Vous avez declare " << s.getNbPlayers() << " joueurs.\n";
-			std::cout << "Mais " << s.getNbPools() << " poules de " << s.getNbPlayerByPool()
+			std::cout << Color::RED << "\n[!] ERREUR LOGIQUE : Vous avez declare " << s->getNbPlayers() << " joueurs.\n";
+			std::cout << "Mais " << s->getNbPools() << " poules de " << s->getNbPlayerByPool()
 					<< " necessitent au moins " << requiredPlayers << " joueurs.\n";
 			std::cout << "Veuillez reajuster vos poules.\n\n" << Color::RESET;
 		}
@@ -233,22 +243,22 @@ void				SettingsCLI::setupPools(Settings& s)
 /**
  *	Setting des parametres des matchs
  */
-void				SettingsCLI::setupMatchRules(Settings& s)
+void				SettingsCLI::setupMatchRules(pSet s)
 {
 	std::cout << Color::BLUE << "\n> Parametres de match (Badminton)" << std::endl << Color::RESET;
 
-	s.setNbBadmintonCourt(inputInt("Nombre de terrains disponibles", NBTERRAINMIN, NBTERRAINMAX, s.getNbBadmintonCourt()));
+	s->setNbBadmintonCourt(inputInt("Nombre de terrains disponibles", NBTERRAINMIN, NBTERRAINMAX, s->getNbBadmintonCourt()));
 
 	while (true)
 	{
-		s.setScoreMin(inputInt("Score pour gagner un set", SCOREMINTOWIN, SCOREMAXTOWIN, s.getScoreMin()));
-		s.setScoreMax(inputInt("Score maximum en cas de prolongation", SCOREMINTOWIN, SCOREMAXTOWIN, s.getScoreMax()));
-		s.setDiffPointsToWin(inputInt("Ecart de points necessaire", ECARTMIN, ECARTMAX, s.getDiffPointsToWin()));
+		s->setScoreMin(inputInt("Score pour gagner un set", SCOREMINTOWIN, SCOREMAXTOWIN, s->getScoreMin()));
+		s->setScoreMax(inputInt("Score maximum en cas de prolongation", SCOREMINTOWIN, SCOREMAXTOWIN, s->getScoreMax()));
+		s->setDiffPointsToWin(inputInt("Ecart de points necessaire", ECARTMIN, ECARTMAX, s->getDiffPointsToWin()));
 
-		if (s.getScoreMin() > s.getScoreMax())
+		if (s->getScoreMin() > s->getScoreMax())
 		{
-			std::cout << Color::RED << "\n[!] ERREUR LOGIQUE : Le score minimum (" << s.getScoreMin()
-					<< ") ne peut pas etre superieur au score maximum (" << s.getScoreMax() << ").\n\n" << Color::RESET;
+			std::cout << Color::RED << "\n[!] ERREUR LOGIQUE : Le score minimum (" << s->getScoreMin()
+					<< ") ne peut pas etre superieur au score maximum (" << s->getScoreMax() << ").\n\n" << Color::RESET;
 		}
 		else
 			break;
@@ -258,23 +268,23 @@ void				SettingsCLI::setupMatchRules(Settings& s)
 /**
  *	Setting du nombre de set des differentes phases
  */
-void				SettingsCLI::setupPhaseSets(Settings& s)
+void				SettingsCLI::setupPhaseSets(pSet s)
 {
 	std::cout << Color::BLUE << "\n> Nombre de sets par phase" << std::endl << Color::RESET;
 
-	s.setNbSetPlayedPools(inputInt("Sets en poules", NBSETPOOLMIN, NBSETPOOLMAX, s.getNbSetPlayedPools()));
-	s.setNbSetPlayedSixteenth(inputInt("Sets en 1/16", NBSETSIXTEENTHMIN, NBSETSIXTEENTHMAX, s.getNbSetPlayedSixteenth()));
-	s.setNbSetPlayedHeigth(inputInt("Sets en 1/8", NBSETHEIGTHMIN, NBSETHEIGTHMAX, s.getNbSetPlayedHeigth()));
-	s.setNbSetPlayedQuarters(inputInt("Sets en Quarts", NBSETQUARTERMIN, NBSETQUARTERMAX, s.getNbSetPlayedQuarters()));
-	s.setNbSetPlayedSemis(inputInt("Sets en Demis", NBSETSEMIMIN, NBSETSEMIMAX, s.getNbSetPlayedSemis()));
-	s.setNbSetPlayedFinal(inputInt("Sets en Finale", NBSETFINALMIN, NBSETFINALMAX, s.getNbSetPlayedFinal()));
+	s->setNbSetPlayedPools(inputInt("Sets en poules", NBSETPOOLMIN, NBSETPOOLMAX, s->getNbSetPlayedPools()));
+	s->setNbSetPlayedSixteenth(inputInt("Sets en 1/16", NBSETSIXTEENTHMIN, NBSETSIXTEENTHMAX, s->getNbSetPlayedSixteenth()));
+	s->setNbSetPlayedHeigth(inputInt("Sets en 1/8", NBSETHEIGTHMIN, NBSETHEIGTHMAX, s->getNbSetPlayedHeigth()));
+	s->setNbSetPlayedQuarters(inputInt("Sets en Quarts", NBSETQUARTERMIN, NBSETQUARTERMAX, s->getNbSetPlayedQuarters()));
+	s->setNbSetPlayedSemis(inputInt("Sets en Demis", NBSETSEMIMIN, NBSETSEMIMAX, s->getNbSetPlayedSemis()));
+	s->setNbSetPlayedFinal(inputInt("Sets en Finale", NBSETFINALMIN, NBSETFINALMAX, s->getNbSetPlayedFinal()));
 
-	s.setIsThirdPlaceMatch(inputBool("Jouer la petite finale (3eme place) ?", s.getIsThirdPlaceMatch()));
+	s->setIsThirdPlaceMatch(inputBool("Jouer la petite finale (3eme place) ?", s->getIsThirdPlaceMatch()));
 
-	if (s.getIsThirdPlaceMatch())
-		s.setNbSetPlayedThirdPlace(inputInt("Sets pour la 3e place", NBSETTHIRDMIN, NBSETTHIRDMAX, s.getNbSetPlayedThirdPlace()));
+	if (s->getIsThirdPlaceMatch())
+		s->setNbSetPlayedThirdPlace(inputInt("Sets pour la 3e place", NBSETTHIRDMIN, NBSETTHIRDMAX, s->getNbSetPlayedThirdPlace()));
 	else
-		s.setNbSetPlayedThirdPlace(0);
+		s->setNbSetPlayedThirdPlace(0);
 }
 
 /****************************************************************************************************/
@@ -312,10 +322,10 @@ void				SettingsCLI::setupWizard(Settings& s)
 
 			s.setName(inputString("Nom du tournoi", s.getName()));
 
-			setupPlayers(s);
-			setupPools(s);
-			setupMatchRules(s);
-			setupPhaseSets(s);
+			setupPlayers(&s);
+			setupPools(&s);
+			setupMatchRules(&s);
+			setupPhaseSets(&s);
 
 			std::cout << s << std::endl;
 
@@ -346,7 +356,7 @@ std::ostream&		operator<<(std::ostream& os, cSet s)
 	os << Color::BLUE << "[ TOURNOI ]\n" << Color::RESET;
     os << "\tNom\t\t\t:\t" << s.getName() << "\n";
     os << "\tFormat\t\t\t:\t" << (s.getIsDouble() ? "Double" : "Simple")
-       << (s.getIsMixed() ? " (Mixte)" : (s.getTournamentGender() == Participant::MALE ? " (Homme)" : " (Femme)")) << "\n";
+       << (s.getIsMixed() ? " (Mixte)" : (s.getTournamentGender() == Gender::MALE ? " (Homme)" : " (Femme)")) << "\n";
     os << "\tJoueur multi-equipes\t:\t" << (s.getAllowMultiTeamPlayers() ? "Autorise" : "Interdit") << "\n\n";
 
 	os << Color::BLUE << "[ PARTICIPANTS & TERRAINS ]\n" << Color::RESET;

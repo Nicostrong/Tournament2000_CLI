@@ -29,9 +29,11 @@ using				aInt			=	std::array<int, N>;
 
 using				cBool			=	const bool;
 
+using				pPart			=	Participant*;
 using				cPart			=	const Participant&;
 using				cpPart			=	const Participant*;
 using				vpPart			=	std::vector<Participant*>;
+using				cvpPart			=	const std::vector<Participant*>&;
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/

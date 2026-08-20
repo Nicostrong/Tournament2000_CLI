@@ -2,14 +2,46 @@
 // Created by Nicolas Fordoxcel on 15/07/2026.
 //
 
-#ifndef TOURNAMENTVIEWER_HPP
-# define TOURNAMENTVIEWER_HPP
+#pragma once
 
 /****************************************************************************************************/
 /*	INCLUDES																						*/
 /****************************************************************************************************/
 
-#include "../Global.hpp"
+# include <string>
+# include <vector>
+
+/****************************************************************************************************/
+/*	CLASSES																							*/
+/****************************************************************************************************/
+
+class				Phase;
+class				Tournament;
+
+/****************************************************************************************************/
+/*	TYPEDEF																							*/
+/****************************************************************************************************/
+
+using				String			=	std::string;
+using				cString			=	const std::string&;
+using				vString			=	std::vector<std::string>;
+
+using				cInt			=	const int;
+using				vInt			=	std::vector<int>;
+using				cvInt			=	const std::vector<int>;
+
+using				cBool			=	const bool;
+
+using				pPhase			=	Phase*;
+using				cPhase			=	const Phase&;
+using				cpPhase			=	const Phase*;
+using				vpPhase			=	std::vector<Phase*>;
+using				cvpPhase		=	const std::vector<Phase*>&;
+
+using				pTour			=	Tournament*;
+using				cTour			=	const Tournament&;
+using				cpTour			=	const Tournament*;
+
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
@@ -22,7 +54,7 @@
 /**
  *	La classe Exporter gere toutes les exportations du programme
  */
-class TournamentViewer
+class				TournamentViewer
 {
 	private:
 
@@ -34,5 +66,3 @@ class TournamentViewer
 		static void					displayPodium(cTour tournament);
 
 };
-
-#endif

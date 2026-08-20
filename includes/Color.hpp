@@ -2,10 +2,9 @@
 // Created by Nicolas Fordoxcel on 15/07/2026.
 //
 
-#ifndef COLOR_HPP
-# define COLOR_HPP
+#pragma once
 
-namespace	Color
+namespace			Color
 {
 	// ==================================================
 	// REINITIALISATION
@@ -60,5 +59,3 @@ namespace	Color
 	constexpr const char* BG_CYAN		=	"\033[46m";
 	constexpr const char* BG_WHITE		=	"\033[47m";
 }
-
-#endif

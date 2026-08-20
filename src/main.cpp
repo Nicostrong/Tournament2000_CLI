@@ -9,13 +9,37 @@
 
 #include <limits>
 #include <cstring>
+#include <csignal>
 #include <iostream>
+
+#include "../includes/class/Settings.hpp"
+#include "../includes/class/Tournament.hpp"
+#include "../includes/class/Participant.hpp"
 
 #include "../includes/cli/SettingsCLI.hpp"
 #include "../includes/cli/TournamentCLI.hpp"
 #include "../includes/cli/ParticipantCLI.hpp"
 
-#include "../includes/Global.hpp"
+#include "../includes/Color.hpp"
+
+/****************************************************************************************************/
+/*	TYPEDEF																							*/
+/****************************************************************************************************/
+
+using				String			=	std::string;
+using				cString			=	const std::string&;
+
+using				pPart			=	Participant*;
+using				cPart			=	const Participant&;
+using				cpPart			=	const Participant*;
+using				vpPart			=	std::vector<Participant*>;
+using				cvpPart			=	const std::vector<Participant*>&;
+
+/****************************************************************************************************/
+/*	STATIC VARIABLES																				*/
+/****************************************************************************************************/
+
+inline volatile std::sig_atomic_t	g_running = -1;
 
 /****************************************************************************************************/
 /*	EXCEPTION																						*/
@@ -154,7 +178,7 @@ int					main()
 				if (!g_running)
 					break;
 
-				myTournament = new Tournament(mySettings, pendingParticipants);
+				myTournament = new Tournament(&mySettings, pendingParticipants);
 
 				if (!myTournament->initializeTournament())
 				{

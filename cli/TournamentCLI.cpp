@@ -6,20 +6,33 @@
 /*	INCLUDES																						*/
 /****************************************************************************************************/
 
+#include <format>
 #include <limits>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <exception>
 
+#include "../includes/class/Pool.hpp"
+#include "../includes/class/Team.hpp"
+#include "../includes/class/Match.hpp"
+#include "../includes/class/Phase.hpp"
+#include "../includes/class/Settings.hpp"
+#include "../includes/class/Tournament.hpp"
+
 #include "../includes/cli/PoolCLI.hpp"
 #include "../includes/cli/MatchCLI.hpp"
-#include "../includes/cli/PhaseCLI.hpp"
-#include "../includes/cli/SettingsCLI.hpp"
 #include "../includes/cli/TournamentCLI.hpp"
 #include "../includes/cli/TournamentViewer.hpp"
 
 #include "../includes/utils/Exporter.hpp"
+#include "../includes/utils/PrintUtils.hpp"
+
+#include "../includes/Color.hpp"
+
+/****************************************************************************************************/
+/*	STATIC VARIABLES																				*/
+/****************************************************************************************************/
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
@@ -72,9 +85,9 @@ void				TournamentCLI::handleTitle()
 /**
  *	Affiche les menus sous conditions du tournoi
  */
-void				TournamentCLI::menuTournament(cTour& tournament)
+void				TournamentCLI::menuTournament(cTour tournament)
 {
-	std::cout << "\n========== TOURNOI : " << tournament.getSettings().getName() << " ==========" << std::endl;
+	std::cout << "\n========== TOURNOI : " << tournament.getSettings()->getName() << " ==========" << std::endl;
 	std::cout <<  Color::YELLOW << "\t1.\t" << Color::RESET << "Pools" << std::endl;
 	std::cout <<  Color::YELLOW << "\t2.\t" << Color::RESET << "Teams" << std::endl;
 
@@ -157,7 +170,7 @@ int					TournamentCLI::parseChoice(cString input)
 /**
  *	Appel la bonne methode d apres le choix de l utilisateur
  */
-void				TournamentCLI::executeChoice(int choice, Tournament& tournament)
+void				TournamentCLI::executeChoice(cInt choice, Tournament& tournament)
 {
 	switch (choice)
 	{
@@ -287,7 +300,7 @@ void				TournamentCLI::handlePoolSelection(Tournament& tournament)
  *   - si phase == nullptr → appelle generateFn(), affiche succes ou erreur
  *   - sinon → affiche les matchs via handlePhase()
  */
-void				TournamentCLI::handleEliminationPhase(Phase* phase,	const std::function<void()>& generateFn,
+void				TournamentCLI::handleEliminationPhase(pPhase phase,	const std::function<void()>& generateFn,
 						cString phaseName, cString successMsg, cString errorMsg)
 {
 	if (!phase)

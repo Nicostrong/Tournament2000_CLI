@@ -7,6 +7,7 @@
 /****************************************************************************************************/
 
 #include "../includes/class/Team.hpp"
+#include "../includes/class/Participant.hpp"
 
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
@@ -25,6 +26,7 @@ using				aInt			=	std::array<int, N>;
 
 using				cBool			=	const bool;
 
+using				pTeam			=	Team*;
 using				cTeam			=	const Team&;
 using				cpTeam			=	const Team*;
 using				vpTeam			=	std::vector<Team*>;

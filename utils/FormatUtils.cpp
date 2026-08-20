@@ -12,6 +12,10 @@
 #include "../includes/utils/FormatUtils.hpp"
 
 /****************************************************************************************************/
+/*	TYPEDEF																							*/
+/****************************************************************************************************/
+
+/****************************************************************************************************/
 /*	CONSTRUCTOR / DESTRUCTOR																		*/
 /****************************************************************************************************/
 
@@ -35,11 +39,11 @@
  * trim retire touts les espaces en debut et fin de string.
  * @param s string a modifier
  */
-void	    		FormatUtils::trim(string& s)
+void	    		FormatUtils::trim(String& s)
 {
     const size_t start = s.find_first_not_of(" \t\n\r\f\v");
 
-    if (start == string::npos)
+    if (start == String::npos)
     {
         s.clear();
         return;
@@ -56,7 +60,7 @@ void	    		FormatUtils::trim(string& s)
  * touts les autres caracteres en minuscule.
  * @param s string a modifier
  */
-void				FormatUtils::capitalize(string& s)
+void				FormatUtils::capitalize(String& s)
 {
     if (s.empty())
         return;
@@ -71,7 +75,7 @@ void				FormatUtils::capitalize(string& s)
  * avant la modification, la string est trimee.
  * @param s string a modifier
  */
-void				FormatUtils::toUpper(string& s)
+void				FormatUtils::toUpper(String& s)
 {
     std::transform(s.begin(), s.end(), s.begin(), ::toupper);
 }
@@ -80,7 +84,7 @@ void				FormatUtils::toUpper(string& s)
  * toLower transforme la string en mettant touts les caracteres en minuscule.
  * @param s string a modifier
  */
-void				FormatUtils::toLower(string& s)
+void				FormatUtils::toLower(String& s)
 {
     std::transform(s.begin(), s.end(), s.begin(), ::tolower);
 }
@@ -90,7 +94,7 @@ void				FormatUtils::toLower(string& s)
  * toutes les autres en minuscule.
  * @param s string a modifier
  */
-void				FormatUtils::trimAndCapitalize(string& s)
+void				FormatUtils::trimAndCapitalize(String& s)
 {
     trim(s);
 
@@ -104,7 +108,7 @@ void				FormatUtils::trimAndCapitalize(string& s)
  * trimAndPutToUpper trim une string puis transforme touts les caracteres en majuscule.
  * @param s string a modifier
  */
-void				FormatUtils::trimAndPutToUpper(string& s)
+void				FormatUtils::trimAndPutToUpper(String& s)
 {
     trim(s);
 
@@ -118,7 +122,7 @@ void				FormatUtils::trimAndPutToUpper(string& s)
  * trimAndPutToLower trim une string puis transforme touts les caracteres en minuscule
  * @param s string a modifier
  */
-void				FormatUtils::trimAndPutToLower(string& s)
+void				FormatUtils::trimAndPutToLower(String& s)
 {
     trim(s);
 

@@ -2,8 +2,7 @@
 // Created by Nicolas Fordoxcel on 15/07/2026.
 //
 
-#ifndef FORMAT_UTILS_HPP
-# define FORMAT_UTILS_HPP
+#pragma once
 
 /****************************************************************************************************/
 /*	INCLUDES																						*/
@@ -48,6 +47,5 @@ class				FormatUtils
 		static void					trimAndCapitalize(String& s);
 		static void					trimAndPutToUpper(String& s);
 		static void					trimAndPutToLower(String& s);
+		
 };
-
-#endif

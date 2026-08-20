@@ -2,14 +2,40 @@
 // Created by Nicolas Fordoxcel on 14/06/2026.
 //
 
-#ifndef TEAMCLI_HPP
-# define TEAMCLI_HPP
+#pragma once
 
 /****************************************************************************************************/
 /*	INCLUDES																						*/
 /****************************************************************************************************/
 
-#include "../Global.hpp"
+# include <string>
+# include <vector>
+
+/****************************************************************************************************/
+/*	CLASSES																							*/
+/****************************************************************************************************/
+
+class				Team;
+
+/****************************************************************************************************/
+/*	TYPEDEF																							*/
+/****************************************************************************************************/
+
+using				String			=	std::string;
+using				cString			=	const std::string&;
+using				vString			=	std::vector<std::string>;
+
+using				cInt			=	const int;
+using				vInt			=	std::vector<int>;
+using				cvInt			=	const std::vector<int>;
+
+using				cBool			=	const bool;
+
+using				pTeam			=	Team*;
+using				cTeam			=	const Team&;
+using				cpTeam			=	const Team*;
+using				vpTeam			=	std::vector<Team*>;
+using				cvpTeam			=	const std::vector<Team*>&;
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
@@ -19,11 +45,10 @@
 /*	CLASS																							*/
 /****************************************************************************************************/
 
-class TeamCLI
+class				TeamCLI
 {
 	public:
 
 		static void					print(cTeam team);
 };
 
-#endif

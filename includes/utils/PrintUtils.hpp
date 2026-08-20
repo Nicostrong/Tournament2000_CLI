@@ -2,14 +2,29 @@
 // Created by Nicolas Fordoxcel on 15/07/2026.
 //
 
-#ifndef PRINT_UTILS_HPP
-# define PRINT_UTILS_HPP
+#pragma once
 
 /****************************************************************************************************/
 /*	INCLUDES																						*/
 /****************************************************************************************************/
 
-#include "../Global.hpp"
+# include <tuple>
+# include <string>
+# include <vector>
+
+/****************************************************************************************************/
+/*	CLASSES																							*/
+/****************************************************************************************************/
+
+/****************************************************************************************************/
+/*	TYPEDEF																							*/
+/****************************************************************************************************/
+
+using				String			=	std::string;
+using				cString			=	const std::string&;
+using				vString			=	std::vector<std::string>;
+
+using				vtupleMsg		=	std::vector<std::tuple<std::string, bool>>;
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
@@ -22,13 +37,14 @@
 /**
  * Contient les methodes pour efface l ecran ou afficher des titres
  */
-class PrintUtils
+class				PrintUtils
 {
 	private:
 
 		static vtupleMsg			_messages;
 
 	public:
+	
 		static void					clear();
 		static void					banner();
 		static void					setting();
@@ -46,6 +62,5 @@ class PrintUtils
 		static void					addSuccess(cString msg);
 		static void					addError(cString msg);
 		static void					handleMessages();
-};
 
-#endif
+};

@@ -6,27 +6,20 @@
 /*	INCLUDES																						*/
 /****************************************************************************************************/
 
+#include <format>
+
 #include "../includes/class/Settings.hpp"
 
 #include "../includes/Errors.hpp"
+#include "../includes/Constantes.hpp"
 
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
 /****************************************************************************************************/
 
-using				String			=	std::string;
-using				cString			=	const std::string&;
-using				vString			=	std::vector<std::string>;
-using				vtupleMsg		=	std::vector<std::tuple<std::string, bool>>;
-
-using				cInt			=	const int;
-using				vInt			=	std::vector<int>;
-using				cvInt			=	const std::vector<int>;
-template<std::size_t N>
-using				aInt			=	std::array<int, N>;
-
 using				cBool			=	const bool;
 
+using				pSet			=	Settings*;
 using				cSet			=	const Settings&;
 using				cpSet			=	const Settings*;
 
@@ -77,27 +70,27 @@ Gender				Settings::getTournamentGender() const		{	return (this->_gender);					}
 /*	SETTER																							*/
 /****************************************************************************************************/
 
-void				Settings::setName(cString value)					{	this->_name = value;					}
-void				Settings::setNbPlayers(cInt value)					{	this->_nbPlayers = value;				}
-void				Settings::setNbPlayerByPool(cInt value)				{	this->_nbPlayerByPool = value;			}
-void				Settings::setNbPools(cInt value)					{	this->_nbPools = value;					}
-void				Settings::setNbBadmintonCourt(cInt value)			{	this->_nbBadmintonCourt = value;		}
-void				Settings::setScoreMin(cInt value)					{	this->_scoreMin = value;				}
-void				Settings::setScoreMax(cInt value)					{	this->_scoreMax = value;				}
-void				Settings::setDiffPointsToWin(cInt value)			{	this->_diffPointsToWin = value;			}
-void				Settings::setNbSetPlayedPools(cInt value)			{	this->_nbSetPlayedPools = value;		}
-void				Settings::setNbSetPlayedSixteenth(cInt value)		{	this->_nbSetPlayedSixteenth = value;	}
-void				Settings::setNbSetPlayedHeigth(cInt value)			{	this->_nbSetPlayedHeigth = value;		}
-void				Settings::setNbSetPlayedQuarters(cInt value)		{	this->_nbSetPlayedQuarters = value;		}
-void				Settings::setNbSetPlayedSemis(cInt value)			{	this->_nbSetPlayedSemis = value;		}
-void				Settings::setNbSetPlayedFinal(cInt value)			{	this->_nbSetPlayedFinal = value;		}
-void				Settings::setNbSetPlayedThirdPlace(cInt value)		{	this->_nbSetPlayedThirdPlace = value;	}
-void				Settings::setIsMixed(cBool value)					{	this->_isMixed = value;					}
-void				Settings::setIsDouble(cBool value)					{	this->_isDouble = value;				}
-void				Settings::setAllowMultiTeamPlayers(cBool value)		{	this->_allowMultiTeamPlayers = value;	}
-void				Settings::setIsThirdPlaceMatch(cBool value)			{	this->_isThirdPlaceMatch = value;		}
-void				Settings::setIsValid(cBool value)					{	this->_isValid = value;					}
-void				Settings::setTournamentGender(const Gender value)	{	this->_gender = value;					}
+void				Settings::setName(cString value)				{	this->_name = value;					}
+void				Settings::setNbPlayers(cInt value)				{	this->_nbPlayers = value;				}
+void				Settings::setNbPlayerByPool(cInt value)			{	this->_nbPlayerByPool = value;			}
+void				Settings::setNbPools(cInt value)				{	this->_nbPools = value;					}
+void				Settings::setNbBadmintonCourt(cInt value)		{	this->_nbBadmintonCourt = value;		}
+void				Settings::setScoreMin(cInt value)				{	this->_scoreMin = value;				}
+void				Settings::setScoreMax(cInt value)				{	this->_scoreMax = value;				}
+void				Settings::setDiffPointsToWin(cInt value)		{	this->_diffPointsToWin = value;			}
+void				Settings::setNbSetPlayedPools(cInt value)		{	this->_nbSetPlayedPools = value;		}
+void				Settings::setNbSetPlayedSixteenth(cInt value)	{	this->_nbSetPlayedSixteenth = value;	}
+void				Settings::setNbSetPlayedHeigth(cInt value)		{	this->_nbSetPlayedHeigth = value;		}
+void				Settings::setNbSetPlayedQuarters(cInt value)	{	this->_nbSetPlayedQuarters = value;		}
+void				Settings::setNbSetPlayedSemis(cInt value)		{	this->_nbSetPlayedSemis = value;		}
+void				Settings::setNbSetPlayedFinal(cInt value)		{	this->_nbSetPlayedFinal = value;		}
+void				Settings::setNbSetPlayedThirdPlace(cInt value)	{	this->_nbSetPlayedThirdPlace = value;	}
+void				Settings::setIsMixed(cBool value)				{	this->_isMixed = value;					}
+void				Settings::setIsDouble(cBool value)				{	this->_isDouble = value;				}
+void				Settings::setAllowMultiTeamPlayers(cBool value)	{	this->_allowMultiTeamPlayers = value;	}
+void				Settings::setIsThirdPlaceMatch(cBool value)		{	this->_isThirdPlaceMatch = value;		}
+void				Settings::setIsValid(cBool value)				{	this->_isValid = value;					}
+void				Settings::setTournamentGender(cGender value)	{	this->_gender = value;					}
 
 /****************************************************************************************************/
 /*	PRIVATE METHODS																					*/
