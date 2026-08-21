@@ -41,7 +41,16 @@
 
 void				ParticipantViewer::displayOne(cPart p)
 {
-	std::cout << p;
+	std::cout << "------------------------------------------------\n";
+	std::cout << "|  Participant\t" << p.getId() << "\n";
+	std::cout << "------------------------------------------------\n";
+	std::cout << "|  Pseudo       : " << p.getPseudo() << std::endl;
+	std::cout << "|  Nom          : " << p.getLastName() << std::endl;
+	std::cout << "|  Prenom       : " << p.getFirstName() << std::endl;
+	std::cout << "|  Genre        : " << p.getGenderStr() << std::endl;
+	std::cout << "|  Elimine      : " << (p.getIsEliminated() ? "Oui" : "Non") << std::endl;
+	std::cout << "|  Multi-equipe : " << (p.getIsMultiTeamPlayer() ? "Oui" : "Non") << std::endl;
+	std::cout << "------------------------------------------------\n";
 }
 
 void				ParticipantViewer::displayAll(cvpPart participants)

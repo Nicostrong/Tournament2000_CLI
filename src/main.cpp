@@ -18,12 +18,15 @@
 #include "../includes/cli/TournamentCLI.hpp"
 #include "../includes/cli/ParticipantCLI.hpp"
 
+#include "../includes/utils/SettingsChecker.hpp"
+
 #include "../includes/Color.hpp"
 
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
 /****************************************************************************************************/
 
+using				cpPart			=	const Participant*;
 using				vpPart			=	std::vector<Participant*>;
 
 /****************************************************************************************************/
@@ -88,7 +91,7 @@ static AppState		runSettingsPhase(Settings& settings)
 		if (!g_running)
 			return (AppState::EXIT);
 		
-		if (settings.isValid(errors))
+		if (SettingsChecker::isValid(settings, errors))
 			return (AppState::PLAYER);
 			
 		std::cout << "Configuration invalide. Veuillez corriger.\n";
@@ -218,7 +221,7 @@ int					main()
 	if (myTournament)
 		delete myTournament;
 	else if (!pendingParticipants.empty())
-		for (Participant* p : pendingParticipants)
+		for (cpPart p : pendingParticipants)
 			delete p;
 
 	std::cout << Color::BBLUE << "\nAu revoir !\n" << Color::RESET;

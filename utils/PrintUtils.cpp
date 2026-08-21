@@ -8,9 +8,11 @@
 
 #include <iostream>
 
-# include "../includes/utils/PrintUtils.hpp"
+#include "../includes/utils/PrintUtils.hpp"
 
-# include "../includes/Color.hpp"
+#include "../includes/viewer/TitleViewer.hpp"
+
+#include "../includes/Color.hpp"
 
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
@@ -55,9 +57,9 @@ void				PrintUtils::handleMessages()
 {
 	if (!_messages.empty())
 	{
-		std::cout << Color::BBLUE << "============================================================\n" << Color::RESET;
+		TitleViewer::printSeparator(Color::BBLUE, '=');
 		std::cout << Color::BBLUE << "  MESSAGES | MESSAGES | MESSAGES | MESSAGES | MESSAGES\n" << Color::RESET;
-		std::cout << Color::BBLUE << "============================================================\n" << Color::RESET;
+		TitleViewer::printSeparator(Color::BBLUE, '=');
 
 		for (const auto& msgTuple : _messages)
 		{
@@ -72,7 +74,7 @@ void				PrintUtils::handleMessages()
 			std::cout << Color::RESET << std::endl;
 		}
         
-		std::cout << Color::BBLUE << "============================================================" << Color::RESET;
+		TitleViewer::printSeparator(Color::BBLUE, '=');
         
 		_messages.clear();
 	}

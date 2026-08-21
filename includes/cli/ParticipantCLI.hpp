@@ -54,7 +54,10 @@ class				ParticipantCLI
 {
 	private:
 
-		static vpPart				partList;
+		static vpPart				_partList;
+		static bool					_canAdd;
+		static bool					_hasParticipants;
+		static bool					_enoughPlayers;
 
 		//	MENU
 		static void					menuParticipant(cvpPart participants, cSet settings, bool showMenu);
@@ -83,11 +86,14 @@ class				ParticipantCLI
 		//	HELPER
 		static bool					checkPseudo(cString pseudo, cvpPart participants);
 		static Participant*			extractParticipantFromLine(cString line, bool isFirstLine);
+		static void					updateState(cvpPart participants, cSet settings);
+		static String				askLastName(cString current = "");
+		static String				askFirstName(cString current = "");
+		static String				askPseudo(cvpPart participants, cString current = "");
+		static Gender				askGender(cSet settings, int currentGenderInt = -1);
 
 	public:
 
 		static void					handleMenuParticipant(vpPart& participants, cSet settings);
 
 };
-
-std::ostream&		operator<<(std::ostream& os, cPart p);

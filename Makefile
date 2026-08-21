@@ -62,12 +62,14 @@ UTILS			=	./utils/CheckerCSV.cpp \
 					./utils/Exporter.cpp \
 					./utils/FormatUtils.cpp \
 					./utils/PrintUtils.cpp \
+					./utils/SettingsChecker.cpp \
 					./utils/TournamentHistory.cpp
 
 VIEWER			=	./viewer/MatchViewer.cpp \
                     ./viewer/ParticipantViewer.cpp \
                     ./viewer/PhaseViewer.cpp \
                     ./viewer/PoolViewer.cpp \
+                    ./viewer/SettingsViewer.cpp \
                     ./viewer/TeamViewer.cpp \
                     ./viewer/TitleViewer.cpp \
                     ./viewer/TournamentViewer.cpp
@@ -83,7 +85,7 @@ OBJ				=	$(SRC:.cpp=.o)
 
 DEP				=	$(SRC:.cpp=.d)
 
-NAME			=Tournament2000
+NAME			=	Tournament2000
 
 ################################################################################
 #	Tester part
@@ -219,10 +221,12 @@ clean:
 	$(call delete_progress, ./class/*.o)
 	$(call delete_progress, ./cli/*.o)
 	$(call delete_progress, ./utils/*.o)
+	$(call delete_progress, ./viewer/*.o)
 	$(call delete_progress, ./src/*.d)
 	$(call delete_progress, ./class/*.d)
 	$(call delete_progress, ./cli/*.d)
 	$(call delete_progress, ./utils/*.d)
+	$(call delete_progress, ./viewer/*.d)
 
 fclean: 	clean
 	$(call delete_file, $(NAME))

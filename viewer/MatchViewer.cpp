@@ -10,7 +10,7 @@
 
 #include "../includes/viewer/MatchViewer.hpp"
 
-# include "../includes/class/Match.hpp"
+#include "../includes/class/Match.hpp"
 #include "../includes/class/Team.hpp"
 
 /****************************************************************************************************/

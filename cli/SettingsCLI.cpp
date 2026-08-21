@@ -15,9 +15,11 @@
 
 #include "../includes/cli/SettingsCLI.hpp"
 
+#include "../includes/viewer/SettingsViewer.hpp"
 #include "../includes/viewer/TitleViewer.hpp"
 
 #include "../includes/utils/PrintUtils.hpp"
+#include "../includes/utils/SettingsChecker.hpp"
 
 #include "../includes/Color.hpp"
 #include "../includes/Constantes.hpp"
@@ -48,6 +50,10 @@ namespace
 /****************************************************************************************************/
 /*	PRIVATE METHOD																					*/
 /****************************************************************************************************/
+
+/********************/
+/*	Handler input	*/
+/********************/
 
 /**
  *	Lit l input de l utilisateur et en valide la valeur numerique
@@ -180,6 +186,10 @@ int					SettingsCLI::inputIntList(cString prompt, cvInt allowedValues, int defau
 	}
 }
 
+/********************/
+/*	Handler setup	*/
+/********************/
+
 /**
  *	Setting de la structure des joueurs
  */
@@ -228,13 +238,9 @@ void				SettingsCLI::setupPools(pSet s)
 		s->setNbPools(inputIntList("Nombre de poules", {4, 8, 16}, s->getNbPools()));
 		s->setNbPlayerByPool(inputInt("Nombre de joueurs/equipes par poule", NBPLAYERPERPOOLMIN, NBPLAYERPERPOOLMAX, s->getNbPlayerByPool()));
 
-		cInt requiredPlayers = s->getNbPools() * s->getNbPlayerByPool();
-
-		if (s->getNbPlayers() < requiredPlayers && !s->getAllowMultiTeamPlayers())
+		if (!SettingsChecker::isPoolMathConsistent(s->getNbPlayers(), s->getIsDouble(), s->getNbPools(), s->getNbPlayerByPool()) && !s->getAllowMultiTeamPlayers())
 		{
-			std::cout << Color::RED << "\n[!] ERREUR LOGIQUE : Vous avez declare " << s->getNbPlayers() << " joueurs.\n";
-			std::cout << "Mais " << s->getNbPools() << " poules de " << s->getNbPlayerByPool()
-					<< " necessitent au moins " << requiredPlayers << " joueurs.\n";
+			std::cout << Color::RED << "\n[!] ERREUR LOGIQUE : La repartition choisie ne correspond pas au total de joueurs declares.\n";
 			std::cout << "Veuillez reajuster vos poules.\n\n" << Color::RESET;
 		}
 		else
@@ -303,8 +309,6 @@ void				SettingsCLI::setupWizard(Settings& s)
 		vString errors;
 		bool confirmed = false;
 
-		std::cout << Color::BLINK << Color::YELLOW << "(Appuyez sur 'Entree' pour conserver la valeur entre crochets [])\n" << Color::RESET;
-
 		while (!confirmed)
 		{
 			PrintUtils::clear();
@@ -322,16 +326,18 @@ void				SettingsCLI::setupWizard(Settings& s)
 				std::cout << "\n=== CORRECTION DES DONNEES ===\n" << Color::RESET;
 			}
 
+			std::cout << std::endl << Color::BLINK << Color::YELLOW << "(Appuyez sur 'Entree' pour conserver la valeur entre crochets [])\n" << Color::RESET;
 			s.setName(inputString("Nom du tournoi", s.getName()));
+
 
 			setupPlayers(&s);
 			setupPools(&s);
 			setupMatchRules(&s);
 			setupPhaseSets(&s);
 
-			std::cout << s << std::endl;
+			SettingsViewer::print(s);
 
-			if (!s.isValid(errors))
+			if (!SettingsChecker::isValid(s, errors))
 				continue;
 
 			if (inputBool("Validez-vous ces parametres pour passer a l'etape suivante ?", true))
@@ -342,47 +348,4 @@ void				SettingsCLI::setupWizard(Settings& s)
 	{
 		return;
 	}
-}
-
-/********************/
-/*	PRINT METHOD	*/
-/********************/
-
-std::ostream&		operator<<(std::ostream& os, cSet s)
-{
-	os << Color::YELLOW;
-	os << "\n============================================================\n";
-    os << "=                  SYNTHESE DES PARAMETRES                 =\n";
-    os << "============================================================\n";
-
-	os << Color::BLUE << "[ TOURNOI ]\n" << Color::RESET;
-    os << "\tNom\t\t\t:\t" << s.getName() << "\n";
-    os << "\tFormat\t\t\t:\t" << (s.getIsDouble() ? "Double" : "Simple")
-       << (s.getIsMixed() ? " (Mixte)" : (s.getTournamentGender() == Gender::MALE ? " (Homme)" : " (Femme)")) << "\n";
-    os << "\tJoueur multi-equipes\t:\t" << (s.getAllowMultiTeamPlayers() ? "Autorise" : "Interdit") << "\n\n";
-
-	os << Color::BLUE << "[ PARTICIPANTS & TERRAINS ]\n" << Color::RESET;
-    os << "\tNombre de participants\t:\t" << s.getNbPlayers() << "\n";
-    os << "\tPoules\t\t\t:\t" << s.getNbPools() << " poules de " << s.getNbPlayerByPool() << " joueurs/equipes\n";
-    os << "\tTerrains disponibles\t:\t" << s.getNbBadmintonCourt() << "\n\n";
-
-	os << Color::BLUE << "[ REGLES DU MATCH ]\n" << Color::RESET;
-    os << "\tScore de gain du set\t:\t" << s.getScoreMin() << " pts (Maximum : " << s.getScoreMax() << " pts)\n";
-    os << "\tEcart requis\t\t:\t" << s.getDiffPointsToWin() << " pt(s)\n\n";
-
-	os << Color::BLUE << "[ SETS PAR PHASE ]\n" << Color::RESET;
-    os << "\tPoules\t\t\t:\t" << s.getNbSetPlayedPools() << " set(s)\n";
-    os << "\t1/16e de Finale\t\t:\t" << s.getNbSetPlayedSixteenth() << " set(s)\n";
-	os << "\t1/8e de Finale\t\t:\t" << s.getNbSetPlayedHeigth() << " set(s)\n";
-	os << "\t1/4 de Finale\t\t:\t" << s.getNbSetPlayedQuarters() << " set(s)\n";
-	os << "\t1/2 Finale\t\t:\t" << s.getNbSetPlayedSemis() << " set(s)\n";
-	os << "\tFinale\t\t\t:\t" << s.getNbSetPlayedFinal() << " set(s)\n";
-	if (s.getIsThirdPlaceMatch())
-		os << "\tPetite Finale (3e place):\t" << s.getNbSetPlayedThirdPlace() << " set(s)\n";
-	else
-		os << "\tPetite Finale (3e place):\tNon jouee\n";
-
-    os << "====================================================";
-
-	return (os);
 }

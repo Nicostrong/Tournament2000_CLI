@@ -36,7 +36,10 @@
 /*	STATIC VARIABLES																				*/
 /****************************************************************************************************/
 
-vpPart				ParticipantCLI::partList;
+vpPart				ParticipantCLI::_partList;
+bool				ParticipantCLI::_canAdd = false;
+bool				ParticipantCLI::_hasParticipants = false;
+bool				ParticipantCLI::_enoughPlayers = false;
 
 /****************************************************************************************************/
 /*	EXCEPTION																						*/
@@ -57,89 +60,6 @@ namespace
 /*	PRIVATE METHOD																					*/
 /****************************************************************************************************/
 
-/****************************************************************************************************/
-/*	PUBLIC METHOD																					*/
-/****************************************************************************************************/
-
-void				ParticipantCLI::handleMenuParticipant(vpPart& participants, cSet settings)
-{
-	try
-	{
-		int choice = -1;
-		bool showMenu = false;
-
-		while (choice != 0)
-		{
-			showMenu = !participants.empty();
-
-			handleTitle();
-			PrintUtils::handleMessages();
-			handleList();
-			menuParticipant(participants, settings, showMenu);
-			checkInterruption();
-
-			if (!(std::cin >> choice))
-			{
-				checkInterruption();
-
-				std::cin.clear();
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-				PrintUtils::addError("Saisie invalide.");
-				continue;
-			}
-
-			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-			switch (choice)
-			{
-				case 1:
-					handleAddParticipant(participants, settings);
-					break;
-
-				case 2:
-					if (!showMenu)
-						break;
-					handleModifyParticipant(participants, settings);
-					break;
-
-				case 3:
-					if (!showMenu)
-						break;
-					handleDeleteParticipant(participants);
-					break;
-
-				case 4:
-					handleImport(participants, settings);
-					break;
-
-				case 5:
-					if (!showMenu)
-						break;
-					handleExport(participants);
-					break;
-
-				case 6:
-					if (!showMenu)
-						break;
-					handledisplay(participants);
-					break;
-
-				case 7:
-					return;
-
-				default:
-					PrintUtils::addError("Option invalide.");
-					continue;
-			}
-		}
-	}
-	catch (const UserInterruptedException&)
-	{
-		return ;
-	}
-}
-
 /************/
 /*	MENU	*/
 /************/
@@ -147,20 +67,19 @@ void				ParticipantCLI::handleMenuParticipant(vpPart& participants, cSet setting
 /**
  *	Affiche le menu Player avec sous-menu sous conditions
  */
-void				ParticipantCLI::menuParticipant(cvpPart participants, cSet settings,  cBool showMenu)
+void				ParticipantCLI::menuParticipant(cvpPart participants, cSet settings, cBool showMenu)
 {
 	cInt nbPlayersRequired = settings.getAllowMultiTeamPlayers()	? (settings.getNbPlayers() - NBPLAYERINMULTITEAMMAX)
 																	: settings.getNbPlayers();
-	cBool enougtPlayers = participants.size() >= static_cast<size_t>(nbPlayersRequired);
+	const char* color = !_enoughPlayers ? Color::BBLUE : Color::BGREEN;
 
-	if (!enougtPlayers)
-		std::cout << Color::BBLUE;
-	else
-		std::cout << Color::BGREEN;
+	TitleViewer::printSeparator(color);
+	std::cout << color << "\n  Nb de joueurs enregistre pour le tournoi :\t\t" << participants.size() << " / " << settings.getNbPlayers() << "\n";
+	std::cout << color << "  Nb de joueurs minimum requis pour le tournoi :\t" << nbPlayersRequired << "\n\n";
+	TitleViewer::printSeparator(color);
 
-	std::cout << "\n  Nb de joueurs enregistre pour le tournoi :\t\t" << participants.size() << " / " << settings.getNbPlayers() << "\n";
-	std::cout << "  Nb de joueurs minimum requis pour le tournoi :\t" << nbPlayersRequired << "\n\n" << Color::RESET;
-	std::cout << Color::YELLOW << "\t1.\t" << Color::RESET << "Ajouter un nouveau participant\n";
+	if (_canAdd)
+		std::cout << Color::YELLOW << "\t1.\t" << Color::RESET << "Ajouter un nouveau participant\n";
 
 	if (showMenu)
 	{
@@ -176,7 +95,7 @@ void				ParticipantCLI::menuParticipant(cvpPart participants, cSet settings,  cB
 		std::cout << Color::YELLOW << "\t6.\t" << Color::RESET << "Afficher un/des participant(s)\n";
 	}
 
-	if (enougtPlayers)
+	if (_enoughPlayers)
 		std::cout << Color::YELLOW << "\t7.\t" << Color::RESET << "Lancer le tournoi\n\n";
 
 	std::cout << "\tChoix : ";
@@ -188,86 +107,14 @@ void				ParticipantCLI::menuParticipant(cvpPart participants, cSet settings,  cB
 
 Participant*		ParticipantCLI::create(cvpPart participants, cSet settings)
 {
-	String pseudo;
-	String lastName;
-	String firstName;
-	int gender = -1;
-
-	while (lastName.empty())
-	{
-		checkInterruption();
-		std::cout << "Nom : ";
-
-		if (!std::getline(std::cin, lastName))
-			checkInterruption();
-
-		FormatUtils::trim(lastName);
-	}
-
-	while (firstName.empty())
-	{
-		checkInterruption();
-		std::cout << "Prenom : ";
-
-		if (!std::getline(std::cin, firstName))
-			checkInterruption();
-
-		FormatUtils::trim(firstName);
-	}
-
-	while (pseudo.empty())
-	{
-		checkInterruption();
-		std::cout << "Pseudo : ";
-
-		if (!std::getline(std::cin, pseudo))
-			checkInterruption();
-
-		FormatUtils::trim(pseudo);
-		FormatUtils::capitalize(pseudo);
-
-		if (!checkPseudo(pseudo, participants))
-		{
-			std::cout << Color::RED << "[!] Ce pseudo est deja utilise. Choisissez-en un autre.\n" << Color::RESET;
-			pseudo.clear();
-		}
-	}
-
-	while (gender != 0 && gender != 1)
-	{
-		checkInterruption();
-		std::cout << "Sexe (0 = HOMME, 1 = FEMME) : ";
-
-		if (!(std::cin >> gender))
-		{
-			checkInterruption();
-			std::cin.clear();
-			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-			std::cout << Color::RED << "[!] Saisie invalide. Entrez 0 pour HOMME ou 1 pour FEMME.\n" << Color::RESET;
-			gender = -1;
-			continue;
-		}
-
-		if (gender != 0 && gender != 1)
-		{
-			std::cout << Color::RED << "[!] Saisie invalide. Entrez 0 pour HOMME ou 1 pour FEMME.\033[0m\n" << Color::RESET;
-			gender = -1;
-			continue;
-		}
-
-		if (!settings.getIsMixed() && static_cast<Gender>(gender) != settings.getTournamentGender())
-		{
-			std::cout << Color::RED << "[!] ERREUR : Ce tournoi est exclusivement reserve aux participants de genre "
-					  << (settings.getTournamentGender() == Gender::MALE ? "HOMME" : "FEMME") << ".\n" << Color::RESET;
-			gender = -1;
-		}
-	}
-
-	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+	String lastName = askLastName();
+	String firstName = askFirstName();
+	String pseudo = askPseudo(participants);
+	Gender gender = askGender(settings);
 
 	PrintUtils::addSuccess(std::format("Nouveau participant avec le pseudo {} ajoute avec succes.", pseudo));
 
-	return (new Participant(pseudo, lastName, firstName, static_cast<Gender>(gender)));
+	return (new Participant(pseudo, lastName, firstName, gender));
 }
 
 void				ParticipantCLI::destroy(const size_t id, vpPart& participants)
@@ -300,98 +147,10 @@ void				ParticipantCLI::modify(const size_t id, cvpPart participants, cSet setti
 		return;
 	}
 
-	String newPseudo;
-	String newLastName;
-	String newFirstName;
-	int genderInput = -1;
-
-	checkInterruption();
-	std::cout << "Nom [" << pToModify->getLastName() << "] (Entree = conserver) : ";
-
-	if (!std::getline(std::cin, newLastName))
-		checkInterruption();
-
-	FormatUtils::trim(newLastName);
-
-	if (!newLastName.empty())
-		pToModify->setLastName(newLastName);
-
-	checkInterruption();
-	std::cout << "Prenom [" << pToModify->getFirstName() << "] (Entree = conserver) : ";
-
-	if (!std::getline(std::cin, newFirstName))
-		checkInterruption();
-
-	FormatUtils::trim(newFirstName);
-
-	if (!newFirstName.empty())
-		pToModify->setFirstName(newFirstName);
-
-	while (true)
-	{
-		checkInterruption();
-		std::cout << "Pseudo [" << pToModify->getPseudo() << "] (Entree = conserver) : ";
-
-		if (!std::getline(std::cin, newPseudo))
-			checkInterruption();
-
-		FormatUtils::trim(newPseudo);
-
-		if (newPseudo.empty() || newPseudo == pToModify->getPseudo())
-			break;
-
-		if (!checkPseudo(newPseudo, participants))
-		{
-			std::cout << Color::RED << "Ce pseudo est deja utilise. Choisissez-en un autre.\n" << Color::RESET;
-			continue;
-		}
-
-		pToModify->setPseudo(newPseudo);
-		break;
-	}
-
-	while (genderInput != 0 && genderInput != 1)
-	{
-		checkInterruption();
-		std::cout << "Sexe (0 = HOMME, 1 = FEMME) [" << pToModify->getGenderStr() << "] (Entree = conserver) : ";
-
-		String gInput;
-
-		if (!std::getline(std::cin, gInput))
-			checkInterruption();
-
-		FormatUtils::trim(gInput);
-
-		if (gInput.empty())
-			break;
-
-		try
-		{
-			genderInput = std::stoi(gInput);
-
-			if (genderInput != 0 && genderInput != 1)
-			{
-				std::cout << Color::YELLOW << "[!] Entrez 0 (HOMME) ou 1 (FEMME).\n" << Color::RESET;
-				genderInput = -1;
-			}
-			else if (!settings.getIsMixed() && static_cast<Gender>(genderInput) != settings.getTournamentGender())
-			{
-				std::cout << Color::RED << "[!] ERREUR : Ce tournoi est exclusivement "
-						  << (settings.getTournamentGender() == Gender::MALE ? "HOMME" : "FEMME") << ".\n" << Color::RESET;
-				genderInput = -1;
-			}
-			else
-				pToModify->setGender(static_cast<Gender>(genderInput));
-		}
-		catch (const UserInterruptedException&)
-		{
-			throw;
-		}
-		catch (...)
-		{
-			PrintUtils::addError("Saisie invalide.");
-		}
-	}
+	pToModify->setLastName(askLastName(pToModify->getLastName()));
+	pToModify->setFirstName(askFirstName(pToModify->getFirstName()));
+	pToModify->setPseudo(askPseudo(participants, pToModify->getPseudo()));
+	pToModify->setGender(askGender(settings, pToModify->getGenderInt()));
 
 	PrintUtils::addSuccess(std::format("Le participant avec le pseudo {} a ete modifie avec succes.", pToModify->getPseudo()));
 }
@@ -645,8 +404,8 @@ void				ParticipantCLI::handledisplay(cvpPart participants)
 		return;
 	}
 
-	std::cout << "\n1. Afficher tous les participants\n";
-	std::cout << "2. Afficher un participant par ID\n";
+	std::cout << Color::YELLOW << "\n\t1.\t" << Color::RESET << "Afficher tous les participants\n";
+	std::cout << Color::YELLOW << "\t2.\t" << Color::RESET << "Afficher un participant par ID\n";
 	std::cout << "Choix : ";
 
 	int choice;
@@ -662,10 +421,10 @@ void				ParticipantCLI::handledisplay(cvpPart participants)
 	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 	if (choice == 1)
-		partList = participants;
+		_partList = participants;
 	else if (choice == 2)
 	{
-		std::cout << "Entrez l'ID du participant : ";
+		std::cout << Color::YELLOW << "Entrez l'ID du participant : " << Color::RESET;
 
 		size_t id;
 
@@ -685,7 +444,7 @@ void				ParticipantCLI::handledisplay(cvpPart participants)
 		{
 			if (p->getId() == id)
 			{
-				partList.push_back(p);
+				_partList.push_back(p);
 				found = true;
 				break;
 			}
@@ -700,11 +459,11 @@ void				ParticipantCLI::handledisplay(cvpPart participants)
 
 void				ParticipantCLI::handleList()
 {
-	if (partList.empty())
+	if (_partList.empty())
 		return;
 
-	ParticipantViewer::displayAll(partList);
-	partList.clear();
+	ParticipantViewer::displayAll(_partList);
+	_partList.clear();
 }
 
 void				ParticipantCLI::handleTitle()
@@ -763,22 +522,242 @@ Participant*		ParticipantCLI::extractParticipantFromLine(cString line, cBool isF
 	return (new Participant(pseudo, lastName, firstName, gender));
 }
 
-/********************/
-/*	PRINT METHOD	*/
-/********************/
-
-std::ostream&		operator<<(std::ostream& os, cPart p)
+void				ParticipantCLI::updateState(cvpPart participants, cSet settings)
 {
-	os << "------------------------------------------------\n";
-	os << "|  Participant\t" << p.getId() << "\n";
-	os << "------------------------------------------------\n";
-	os << "|  Pseudo       : " << p.getPseudo() << std::endl;
-	os << "|  Nom          : " << p.getLastName() << std::endl;
-	os << "|  Prenom       : " << p.getFirstName() << std::endl;
-	os << "|  Genre        : " << p.getGenderStr() << std::endl;
-	os << "|  Elimine      : " << (p.getIsEliminated() ? "Oui" : "Non") << std::endl;
-	os << "|  Multi-equipe : " << (p.getIsMultiTeamPlayer() ? "Oui" : "Non") << std::endl;
-	os << "------------------------------------------------\n";
+	_hasParticipants = !participants.empty();
+	_canAdd = participants.size() < static_cast<size_t>(settings.getNbPlayers());
 
-	return (os);
+	cInt nbPlayersRequired = settings.getAllowMultiTeamPlayers()
+		? (settings.getNbPlayers() - NBPLAYERINMULTITEAMMAX)
+		: settings.getNbPlayers();
+
+	_enoughPlayers = participants.size() >= static_cast<size_t>(nbPlayersRequired);
+}
+
+String				ParticipantCLI::askLastName(cString current)
+{
+    String lastName;
+
+    while (lastName.empty())
+    {
+        checkInterruption();
+
+        current.empty() ? std::cout << "Nom : " : std::cout << "Nom [" << current << "] (Entree = conserver) : ";
+
+        if (!std::getline(std::cin, lastName))
+            checkInterruption();
+
+        FormatUtils::trim(lastName);
+
+        if (lastName.empty() && !current.empty())
+            return (current);
+    }
+    return (lastName);
+}
+
+String				ParticipantCLI::askFirstName(cString current)
+{
+    String firstName;
+
+    while (firstName.empty())
+    {
+        checkInterruption();
+
+        current.empty() ? std::cout << "Prenom : " : std::cout << "Prenom [" << current << "] (Entree = conserver) : ";
+
+        if (!std::getline(std::cin, firstName))
+            checkInterruption();
+
+        FormatUtils::trim(firstName);
+
+        if (firstName.empty() && !current.empty())
+            return (current);
+    }
+    return (firstName);
+}
+
+String				ParticipantCLI::askPseudo(cvpPart participants, cString current)
+{
+    String pseudo;
+
+    while (true)
+    {
+        checkInterruption();
+
+        current.empty() ? std::cout << "Pseudo : " : std::cout << "Pseudo [" << current << "] (Entree = conserver) : ";
+
+        if (!std::getline(std::cin, pseudo))
+            checkInterruption();
+
+        FormatUtils::trim(pseudo);
+
+        if (!current.empty() && (pseudo.empty() || pseudo == current))
+            return (current);
+
+        if (pseudo.empty())
+            continue;
+
+        FormatUtils::capitalize(pseudo);
+
+        if (!checkPseudo(pseudo, participants))
+        {
+            std::cout << Color::RED << "[!] Ce pseudo est deja utilise. Choisissez-en un autre.\n" << Color::RESET;
+            pseudo.clear();
+        }
+        else
+            return (pseudo);
+    }
+}
+
+Gender				ParticipantCLI::askGender(cSet settings, int currentGenderInt)
+{
+    while (true)
+    {
+        checkInterruption();
+
+        (currentGenderInt < 0) ? std::cout << "Sexe (0 = HOMME, 1 = FEMME) : " : std::cout << "Sexe (0 = HOMME, 1 = FEMME) [" << (currentGenderInt == 0 ? "HOMME" : "FEMME") << "] (Entree = conserver) : ";
+
+        String input;
+
+        if (!std::getline(std::cin, input))
+            checkInterruption();
+
+        FormatUtils::trim(input);
+
+        if (input.empty() && currentGenderInt >= 0)
+            return (static_cast<Gender>(currentGenderInt));
+
+        try
+        {
+            int g = std::stoi(input);
+
+            if (g != 0 && g != 1)
+            {
+                std::cout << Color::RED << "[!] Saisie invalide. Entrez 0 pour HOMME ou 1 pour FEMME.\n" << Color::RESET;
+                continue;
+            }
+
+            if (!settings.getIsMixed() && static_cast<Gender>(g) != settings.getTournamentGender())
+            {
+                std::cout << Color::RED << "[!] ERREUR : Ce tournoi est exclusivement reserve aux participants de genre "
+                          << (settings.getTournamentGender() == Gender::MALE ? "HOMME" : "FEMME") << ".\n" << Color::RESET;
+                continue;
+            }
+
+            return (static_cast<Gender>(g));
+        }
+        catch (const UserInterruptedException&)
+        {
+            throw;
+        }
+        catch (...)
+        {
+            std::cout << Color::RED << "[!] Saisie invalide. Entrez 0 pour HOMME ou 1 pour FEMME.\n" << Color::RESET;
+        }
+    }
+}
+
+/****************************************************************************************************/
+/*	PUBLIC METHOD																					*/
+/****************************************************************************************************/
+
+void				ParticipantCLI::handleMenuParticipant(vpPart& participants, cSet settings)
+{
+	try
+	{
+		String input;
+
+		while (true)
+		{
+			updateState(participants, settings);
+			handleTitle();
+			PrintUtils::handleMessages();
+			handleList();
+			menuParticipant(participants, settings, _hasParticipants);
+			checkInterruption();
+
+			if (!(std::cin >> input))
+			{
+				checkInterruption();
+
+				std::cin.clear();
+				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+				PrintUtils::addError("Saisie invalide.");
+				continue;
+			}
+
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+			try
+			{
+				int choice = std::stoi(input);
+
+				switch (choice)
+				{
+					case 1:
+						if (!_canAdd)
+							PrintUtils::addError("Option invalide.");
+						else
+							handleAddParticipant(participants, settings);
+						break;
+
+					case 2:
+						if (!_hasParticipants)
+							PrintUtils::addError("Option invalide.");
+						else
+							handleModifyParticipant(participants, settings);
+						break;
+
+					case 3:
+						if (!_hasParticipants)
+							PrintUtils::addError("Option invalide.");
+						else
+							handleDeleteParticipant(participants);
+						break;
+
+					case 4:
+						handleImport(participants, settings);
+						break;
+
+					case 5:
+						if (!_hasParticipants)
+							PrintUtils::addError("Option invalide.");
+						else
+							handleExport(participants);
+						break;
+
+					case 6:
+						if (!_hasParticipants)
+							PrintUtils::addError("Option invalide.");
+						else
+							handledisplay(participants);
+						break;
+
+					case 7:
+						if (!_enoughPlayers)
+							PrintUtils::addError("Option invalide.");
+						else
+							return;
+						break;
+
+					default:
+						PrintUtils::addError("Option invalide.");
+						break;
+				}
+			}
+			catch (const std::invalid_argument&)
+			{
+				PrintUtils::addError("Saisie invalide, veuillez entrer un nombre.");
+			}
+			catch (const std::out_of_range&)
+			{
+				PrintUtils::addError("Nombre trop grand.");
+			}
+		}
+	}
+	catch (const UserInterruptedException&)
+	{
+		return ;
+	}
 }
