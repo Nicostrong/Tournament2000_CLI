@@ -2,45 +2,64 @@
 // Created by Nicolas Fordoxcel on 13/06/2026.
 //
 
-#ifndef PARTICIPANT_HPP
-# define PARTICIPANT_HPP
+#pragma once
 
-//	STDLIB
+/****************************************************************************************************/
+/*	INCLUDES																						*/
+/****************************************************************************************************/
+
 # include <string>
 
-//	INCLUDES
+/****************************************************************************************************/
+/*	CLASSES																							*/
+/****************************************************************************************************/
 
-//	TYPEDEF
-using				STRING		=	std::string;
-using				C_STRING	=	const std::string&;
 
-//	STATIC VARIABLES
+/****************************************************************************************************/
+/*	ENUM    																						*/
+/****************************************************************************************************/
+
+enum				Gender			{ MALE, FEMALE, MIXED };
+
+/****************************************************************************************************/
+/*	TYPEDEF																							*/
+/****************************************************************************************************/
+
+using				String			=	std::string;
+using				cString			=	const std::string&;
+
+using				cBool			=	const bool;
+
+using				cGender			=	const Gender&;
+
+/****************************************************************************************************/
+/*	STATIC VARIABLES																				*/
+/****************************************************************************************************/
+
+/****************************************************************************************************/
+/*	CLASS																							*/
+/****************************************************************************************************/
 
 /**
  * la classe Participant represente un joueur humain.
  */
-class Participant
+class				Participant
 {
-	public:
-
-		enum Gender { MALE, FEMALE, MIXED };
-
 	private:
 
 		static int					_idCounter;
 		size_t						_id;
-		STRING						_pseudo;
-		STRING						_lastName;
-		STRING						_firstName;
+		String						_pseudo;
+		String						_lastName;
+		String						_firstName;
 		Gender						_gender;
 		bool						_isEliminated;
 		bool						_isMultiTeamPlayer;
 
 	public:
 
-		//	CANONICAL
 		Participant() = delete;
-		Participant(C_STRING pseudo, C_STRING lastName, C_STRING firstName, Gender gender);
+		Participant(cString pseudo, cString lastName, cString firstName, cGender gender);
 		Participant(const Participant& p) = delete;
 		Participant&				operator=(const Participant& p) = delete;
 		~Participant() = default;
@@ -49,13 +68,13 @@ class Participant
 		[[nodiscard]]
 		size_t						getId() const;
 		[[nodiscard]]
-		C_STRING					getPseudo() const;
+		cString						getPseudo() const;
 		[[nodiscard]]
-		C_STRING					getFirstName() const;
+		cString						getFirstName() const;
 		[[nodiscard]]
-		C_STRING					getLastName() const;
+		cString						getLastName() const;
 		[[nodiscard]]
-		STRING						getGenderStr() const;
+		String						getGenderStr() const;
 		[[nodiscard]]
 		Gender						getGenderInt() const;
 		[[nodiscard]]
@@ -64,15 +83,11 @@ class Participant
 		bool						getIsMultiTeamPlayer() const;
 
 		//	SETTER
-		void						setPseudo(C_STRING value);
-		void						setFirstName(C_STRING value);
-		void						setLastName(C_STRING value);
-		void						setGender(Gender value);
-		void						setIsEliminated(bool value);
-		void						setIsMultiTeamPlayer(bool value);
-
-		//	METHOD
+		void						setPseudo(cString value);
+		void						setFirstName(cString value);
+		void						setLastName(cString value);
+		void						setGender(cGender value);
+		void						setIsEliminated(cBool value);
+		void						setIsMultiTeamPlayer(cBool value);
 
 };
-
-#endif

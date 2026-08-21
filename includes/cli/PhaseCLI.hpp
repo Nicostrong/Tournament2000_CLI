@@ -2,37 +2,48 @@
 // Created by Nicolas Fordoxcel on 22/07/2026.
 //
 
-#ifndef PHASECLI_HPP
-# define PHASECLI_HPP
+#pragma once
 
-//	STDLIB
+/****************************************************************************************************/
+/*	INCLUDES																						*/
+/****************************************************************************************************/
+
 # include <string>
-# include <fstream>
+# include <vector>
 
-//	INCLUDES
-# include "../class/Phase.hpp"
+/****************************************************************************************************/
+/*	CLASSES																							*/
+/****************************************************************************************************/
 
-//	TYPEDEF
-using				STRING		=	std::string;
-using				C_STRING	=	const std::string&;
-using				CVP_MATCH	=	const std::vector<Match*>&;
+class				Phase;
 
-/**
-* Gere l affichage terminal et l export fichier d un objet Phase.
-*/
-class PhaseCLI
+/****************************************************************************************************/
+/*	TYPEDEF																							*/
+/****************************************************************************************************/
+
+using				String			=	std::string;
+using				cString			=	const std::string&;
+
+
+using				pPhase			=	Phase*;
+using				cPhase			=	const Phase&;
+using				cpPhase			=	const Phase*;
+using				vpPhase			=	std::vector<Phase*>;
+using				cvpPhase		=	const std::vector<Phase*>&;
+
+/****************************************************************************************************/
+/*	STATIC VARIABLES																				*/
+/****************************************************************************************************/
+
+/****************************************************************************************************/
+/*	CLASS																							*/
+/****************************************************************************************************/
+
+class				PhaseCLI
 {
-
-	private:
-
-		static void					writeEncounter(std::ostream& out, CVP_MATCH matches,
-									size_t startIdx, int nbSets, int encounterNum, bool toFile);
 
 	public:
 
-		static void					displayPhase(const Phase& phase);
-		static void					displayResults(const Phase& phase);
-		static bool					exportToTxt(const Phase& phase, C_STRING filename);
+		static bool					exportToTxt(cPhase phase, cString filename);
 
 };
-#endif //PHASECLI_HPP

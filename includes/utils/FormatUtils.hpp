@@ -2,32 +2,50 @@
 // Created by Nicolas Fordoxcel on 15/07/2026.
 //
 
-#ifndef FORMAT_UTILS_HPP
-# define FORMAT_UTILS_HPP
+#pragma once
 
-//	STDLIB
+/****************************************************************************************************/
+/*	INCLUDES																						*/
+/****************************************************************************************************/
+
 # include <string>
 
-//	INCLUDES
+/****************************************************************************************************/
+/*	CLASSES																							*/
+/****************************************************************************************************/
 
-//	TYPEDEF
-using				STRING		=	std::string;
+/****************************************************************************************************/
+/*	TYPEDEF																							*/
+/****************************************************************************************************/
 
-//	GLOBAL VARIABLES
+using				String			=	std::string;
+using				cString			=	const std::string&;
+
+using				cInt			=	const int;
+
+using				cBool			=	const bool;
+
+/****************************************************************************************************/
+/*	STATIC VARIABLES																				*/
+/****************************************************************************************************/
+
+/****************************************************************************************************/
+/*	CLASS																							*/
+/****************************************************************************************************/
 
 /**
  * Contient plusieurs methodes de modification de strings.
  */
-class FormatUtils
+class				FormatUtils
 {
 	public:
-		static void					trim(STRING& s);
-		static void					capitalize(STRING& s);
-		static void					toUpper(STRING& s);
-		static void					toLower(STRING& s);
-		static void					trimAndCapitalize(STRING& s);
-		static void					trimAndPutToUpper(STRING& s);
-		static void					trimAndPutToLower(STRING& s);
-};
 
-#endif
+		static void					trim(String& s);
+		static void					capitalize(String& s);
+		static void					toUpper(String& s);
+		static void					toLower(String& s);
+		static void					trimAndCapitalize(String& s);
+		static void					trimAndPutToUpper(String& s);
+		static void					trimAndPutToLower(String& s);
+		
+};

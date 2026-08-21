@@ -2,48 +2,44 @@
 // Created by Nicolas Fordoxcel on 09/07/2026.
 //
 
-//	STDLIB
-#include <string>
-#include <vector>
+/****************************************************************************************************/
+/*	INCLUDES																						*/
+/****************************************************************************************************/
+
 #include <format>
 #include <fstream>
 #include <sstream>
 #include <algorithm>
 
-//	INCLUDES
 #include "../includes/utils/CheckerCSV.hpp"
-#include "../includes/utils/FormatUtils.hpp"
 #include "../includes/utils/PrintUtils.hpp"
-#include "../includes/cli/ParticipantCLI.hpp"
+#include "../includes/utils/FormatUtils.hpp"
 
-//	TYPEDEF
-using				STRING		=	std::string;
-using				C_STRING	=	const std::string&;
-using				V_STRING	=	std::vector<std::string>;
+/****************************************************************************************************/
+/*	TYPEDEF																							*/
+/****************************************************************************************************/
 
-//	STATIC VARIABLES
+/****************************************************************************************************/
+/*	CONSTRUCTOR / DESTRUCTOR																		*/
+/****************************************************************************************************/
 
-/****************/
-/*	CANONICAL	*/
-/****************/
+/****************************************************************************************************/
+/*	GETTER																							*/
+/****************************************************************************************************/
 
-/************/
-/*	GETTER	*/
-/************/
+/****************************************************************************************************/
+/*	SETTER																							*/
+/****************************************************************************************************/
 
-/************/
-/*	SETTER	*/
-/************/
+/****************************************************************************************************/
+/*	PRIVATE METHOD																					*/
+/****************************************************************************************************/
 
-/********************/
-/*	PRIVATE METHOD	*/
-/********************/
+/****************************************************************************************************/
+/*	PUBLIC METHOD																					*/
+/****************************************************************************************************/
 
-/********************/
-/*	PUBLIC METHOD	*/
-/********************/
-
-bool								CheckerCSV::validateParticipantCSV(C_STRING filename)
+bool				CheckerCSV::validateParticipantCSV(cString filename)
 {
 	std::ifstream file(filename);
 
@@ -53,7 +49,7 @@ bool								CheckerCSV::validateParticipantCSV(C_STRING filename)
 		return (false);
 	}
 
-	STRING line;
+	String line;
 	int lineNumber = 0;
 	bool isValid = true;
 
@@ -64,17 +60,12 @@ bool								CheckerCSV::validateParticipantCSV(C_STRING filename)
 		FormatUtils::trim(line);
 		
 		if (line.empty())
-			continue ;
+			continue;
 
-		size_t commaCount = std::count(line.begin(), line.end(), ',');
+		size_t commaCount = std::ranges::count(line.begin(), line.end(), ',');
 
 		if (commaCount != 3)
 		{
-			std::stringstream ss;
-
-			//ss << "Ligne " << lineNumber << " : Structure incorrecte. Attendu : 4 colonnes, Trouve : " 
-			//<< (commaCount + 1) << " colonnes.";
-			
 			PrintUtils::addError(std::format("Ligne {} : Structure incorrecte. Attendu : 4 colonnes, Trouve : {} colonnes.", lineNumber, (commaCount + 1)));
 			isValid = false;
 
@@ -82,7 +73,7 @@ bool								CheckerCSV::validateParticipantCSV(C_STRING filename)
 		}
 
 		std::stringstream ssLine(line);
-		STRING cell;
+		String cell;
 		bool hasEmptyField = false;
 
 		while (std::getline(ssLine, cell, ','))
@@ -98,10 +89,6 @@ bool								CheckerCSV::validateParticipantCSV(C_STRING filename)
 
 		if (hasEmptyField)
 		{
-			std::stringstream ss;
-
-			//ss << "Ligne " << lineNumber << " : Un des champs obligatoires est vide.";
-			
 			PrintUtils::addError(std::format("Ligne {}: Un des champs obligatoires est vide", lineNumber ));
 			isValid = false;
 		}

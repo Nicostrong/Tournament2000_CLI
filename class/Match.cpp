@@ -2,57 +2,41 @@
 // Created by Nicolas Fordoxcel on 13/06/2026.
 //
 
-//	STDLIB
+/****************************************************************************************************/
+/*	INCLUDES																						*/
+/****************************************************************************************************/
 
-//	INCLUDES
 #include "../includes/class/Match.hpp"
+#include "../includes/class/Team.hpp"
 
-//	TYPEDEF
+/****************************************************************************************************/
+/*	TYPEDEF																							*/
+/****************************************************************************************************/
 
-//	STATIC VARIABLES
+using				cInt			=	const int;
 
-/****************/
-/*	CANONICAL	*/
-/****************/
+/****************************************************************************************************/
+/*	CONSTRUCTOR / DESTRUCTOR																		*/
+/****************************************************************************************************/
 
-Match::Match(Team* a, Team* b)
-	: _teamA(a), _teamB(b), _scoreA(0), _scoreB(0), _isFinished(false)
+Match::Match(pTeam a, pTeam b): _teamA(a), _teamB(b), _scoreA(0), _scoreB(0), _isFinished(false)
 {}
 
-/************/
-/*	GETTER	*/
-/************/
+/****************************************************************************************************/
+/*	GETTER																							*/
+/****************************************************************************************************/
 
-Team*				Match::getTeamA() const
-{
-	return (this->_teamA);
-}
+Team*				Match::getTeamA() const		{	return (this->_teamA);		}
+Team*				Match::getTeamB() const		{	return (this->_teamB);		}
+int					Match::getScoreA() const	{	return (this->_scoreA);		}
+int					Match::getScoreB() const	{	return (this->_scoreB);		}
+bool				Match::isFinished() const	{	return (this->_isFinished);	}
 
-Team*				Match::getTeamB() const
-{
-	return (this->_teamB);
-}
+/****************************************************************************************************/
+/*	SETTER																							*/
+/****************************************************************************************************/
 
-int					Match::getScoreA() const
-{
-	return (this->_scoreA);
-}
-
-int					Match::getScoreB() const
-{
-	return (this->_scoreB);
-}
-
-bool				Match::isFinished() const
-{
-	return (this->_isFinished);
-}
-
-/************/
-/*	SETTER	*/
-/************/
-
-void				Match::setScore(const int sA, const int sB)
+void				Match::setScore(cInt sA, cInt sB)
 {
 	this->_scoreA = sA;
 	this->_scoreB = sB;
@@ -76,13 +60,13 @@ void				Match::setScore(const int sA, const int sB)
 	this->_isFinished = true;
 }
 
-/********************/
-/*	PRIVATE METHOD	*/
-/********************/
+/****************************************************************************************************/
+/*	PRIVATE METHOD																					*/
+/****************************************************************************************************/
 
-/********************/
-/*	PUBLIC METHOD	*/
-/********************/
+/****************************************************************************************************/
+/*	PUBLIC METHOD																					*/
+/****************************************************************************************************/
 
 Team*				Match::getWinner() const
 {

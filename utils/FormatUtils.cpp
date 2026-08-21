@@ -2,50 +2,50 @@
 // Created by Nicolas Fordoxcel on 09/07/2026.
 //
 
-//	STDLIB
-#include <algorithm>
-#include <cctype>
+/****************************************************************************************************/
+/*	INCLUDES																						*/
+/****************************************************************************************************/
 
-//	INCLUDES
+#include <algorithm>
+
 #include "../includes/utils/FormatUtils.hpp"
 
-//	TYPEDEF
-using				STRING		=	std::string;
+/****************************************************************************************************/
+/*	TYPEDEF																							*/
+/****************************************************************************************************/
 
-//	STATIC VARIABLES
+/****************************************************************************************************/
+/*	CONSTRUCTOR / DESTRUCTOR																		*/
+/****************************************************************************************************/
 
-/****************/
-/*	CANONICAL	*/
-/****************/
+/****************************************************************************************************/
+/*	GETTER																							*/
+/****************************************************************************************************/
 
-/************/
-/*	GETTER	*/
-/************/
+/****************************************************************************************************/
+/*	SETTER																							*/
+/****************************************************************************************************/
 
-/************/
-/*	SETTER	*/
-/************/
+/****************************************************************************************************/
+/*	PRIVATE METHOD																					*/
+/****************************************************************************************************/
 
-/********************/
-/*	PRIVATE METHOD	*/
-/********************/
-
-/********************/
-/*	PUBLIC METHOD	*/
-/********************/
+/****************************************************************************************************/
+/*	PUBLIC METHOD																					*/
+/****************************************************************************************************/
 
 /**
  * trim retire touts les espaces en debut et fin de string.
  * @param s string a modifier
  */
-void	    		FormatUtils::trim(STRING& s)
+void	    		FormatUtils::trim(String& s)
 {
     const size_t start = s.find_first_not_of(" \t\n\r\f\v");
 
-    if (start == std::string::npos)
+    if (start == String::npos)
     {
         s.clear();
-        return ;
+        return;
     }
 
     const size_t end = s.find_last_not_of(" \t\n\r\f\v");
@@ -59,12 +59,12 @@ void	    		FormatUtils::trim(STRING& s)
  * touts les autres caracteres en minuscule.
  * @param s string a modifier
  */
-void				FormatUtils::capitalize(STRING& s)
+void				FormatUtils::capitalize(String& s)
 {
     if (s.empty())
-        return ;
+        return;
     
-    std::transform(s.begin(), s.end(), s.begin(), ::tolower);
+    std::ranges::transform(s.begin(), s.end(), s.begin(), ::tolower);
 
     s[0] = std::toupper(s[0]);
 }
@@ -74,18 +74,18 @@ void				FormatUtils::capitalize(STRING& s)
  * avant la modification, la string est trimee.
  * @param s string a modifier
  */
-void				FormatUtils::toUpper(STRING& s)
+void				FormatUtils::toUpper(String& s)
 {
-    std::transform(s.begin(), s.end(), s.begin(), ::toupper);
+    std::ranges::transform(s.begin(), s.end(), s.begin(), ::toupper);
 }
 
 /**
  * toLower transforme la string en mettant touts les caracteres en minuscule.
  * @param s string a modifier
  */
-void				FormatUtils::toLower(STRING& s)
+void				FormatUtils::toLower(String& s)
 {
-    std::transform(s.begin(), s.end(), s.begin(), ::tolower);
+    std::ranges::transform(s.begin(), s.end(), s.begin(), ::tolower);
 }
 
 /**
@@ -93,12 +93,12 @@ void				FormatUtils::toLower(STRING& s)
  * toutes les autres en minuscule.
  * @param s string a modifier
  */
-void				FormatUtils::trimAndCapitalize(STRING& s)
+void				FormatUtils::trimAndCapitalize(String& s)
 {
     trim(s);
 
     if (s.empty())
-        return ;
+        return;
 
     capitalize(s);
 }
@@ -107,12 +107,12 @@ void				FormatUtils::trimAndCapitalize(STRING& s)
  * trimAndPutToUpper trim une string puis transforme touts les caracteres en majuscule.
  * @param s string a modifier
  */
-void				FormatUtils::trimAndPutToUpper(STRING& s)
+void				FormatUtils::trimAndPutToUpper(String& s)
 {
     trim(s);
 
     if (s.empty())
-        return ;
+        return;
 
     toUpper(s);
 }
@@ -121,12 +121,12 @@ void				FormatUtils::trimAndPutToUpper(STRING& s)
  * trimAndPutToLower trim une string puis transforme touts les caracteres en minuscule
  * @param s string a modifier
  */
-void				FormatUtils::trimAndPutToLower(STRING& s)
+void				FormatUtils::trimAndPutToLower(String& s)
 {
     trim(s);
 
     if (s.empty())
-        return ;
+        return;
 
     toLower(s);
 }

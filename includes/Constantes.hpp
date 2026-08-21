@@ -2,10 +2,7 @@
 // Created by Nicolas Fordoxcel on 02/07/2026.
 //
 
-#ifndef CONSTANTES_HPP
-# define CONSTANTES_HPP
-
-# include "./class/Participant.hpp"
+#pragma once
 
 //	Valeurs acceptables
 //
@@ -38,7 +35,7 @@
 # define PLAYTHIRDPLACE				false
 # define ISVALIDE					false
 
-# define GENDER						Participant::Gender::MIXED
+# define GENDER						Gender::MIXED
 
 //	Game settings
 # define NBTERRAINMIN				1
@@ -74,5 +71,3 @@
 # define NBSETTHIRDMAX				3
 # define NBSETFINALMIN				1
 # define NBSETFINALMAX				5
-
-#endif

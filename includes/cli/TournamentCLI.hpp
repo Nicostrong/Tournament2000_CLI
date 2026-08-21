@@ -2,27 +2,66 @@
 // Created by Nicolas Fordoxcel on 15/06/2026.
 //
 
-#ifndef TOURNAMENTCLI_HPP
-# define TOURNAMENTCLI_HPP
+#pragma once
 
-//	STDLIB
+/****************************************************************************************************/
+/*	INCLUDES																						*/
+/****************************************************************************************************/
+
 # include <string>
 # include <vector>
+# include <csignal>
 # include <functional>
 
-//	INCLUDES
-# include "../class/Tournament.hpp"
-# include "../class/Match.hpp"
-# include "../class/Phase.hpp"
+/****************************************************************************************************/
+/*	CLASSES																							*/
+/****************************************************************************************************/
 
-//	TYPEDEF
-using				STRING		=	std::string;
-using				C_STRING	=	const std::string&;
-using				VP_MATCH	=	std::vector<Match*>;
-using				CVP_MATCH	=	const std::vector<Match*>&;
-using				CVP_POOL	=	const std::vector<Pool*>;
+class				Match;
+class				Phase;
+class				Tournament;
 
-class TournamentCLI
+/****************************************************************************************************/
+/*	TYPEDEF																							*/
+/****************************************************************************************************/
+
+using				String			=	std::string;
+using				cString			=	const std::string&;
+using				vString			=	std::vector<std::string>;
+
+using				cInt			=	const int;
+using				vInt			=	std::vector<int>;
+using				cvInt			=	const std::vector<int>;
+
+using				cBool			=	const bool;
+
+using				pMatch			=	Match*;
+using				cMatch			=	const Match&;
+using				cpMatch			=	const Match*;
+using				vpMatch			=	std::vector<Match*>;
+using				cvpMatch		=	const std::vector<Match*>&;
+
+using				pPhase			=	Phase*;
+using				cPhase			=	const Phase&;
+using				cpPhase			=	const Phase*;
+using				vpPhase			=	std::vector<Phase*>;
+using				cvpPhase		=	const std::vector<Phase*>&;
+
+using				pTour			=	Tournament*;
+using				cTour			=	const Tournament&;
+using				cpTour			=	const Tournament*;
+
+/****************************************************************************************************/
+/*	STATIC VARIABLES																				*/
+/****************************************************************************************************/
+
+extern volatile std::sig_atomic_t	g_running;
+
+/****************************************************************************************************/
+/*	CLASS																							*/
+/****************************************************************************************************/
+
+class				TournamentCLI
 {
 	public:
 
@@ -32,38 +71,33 @@ class TournamentCLI
 	private:
 
 		//	Affichage du menu
-		static void					displayMenuUI(const Tournament& tournament);
+		static void					displayMenuUI(cTour tournament);
 		static void					handleTitle();
-		static void					menuTournament(const Tournament& tournament);
+		static void					menuTournament(cTour tournament);
 
 		//	Handlers de saisie
 		static void					clearInput();
-		static STRING				fetchInput();
-		static int					parseChoice(C_STRING input);
-		static void					executeChoice(int choice, Tournament& tournament);
-		static STRING				promptFilename(C_STRING prompt);
+		static String				fetchInput();
+		static int					parseChoice(cString input);
+		static void					executeChoice(cInt choice, Tournament& tournament);
+		static String				promptFilename(cString prompt);
 		static void					handlePoolSelection(Tournament& tournament);
-		static void					handleEliminationPhase(Phase* phase,
-														   const std::function<void()>& generateFn,
-														   C_STRING phaseName,
-														   C_STRING successMsg,
-														   C_STRING errorMsg);
+		static void					handleEliminationPhase(pPhase phase, const std::function<void()>& generateFn,
+										cString phaseName, cString successMsg, cString errorMsg);
 		static void					handleExport(Tournament& tournament);
-		static const Phase*			getPhaseByMenuChoice(const Tournament& tournament, int choice);
+		static cpPhase				getPhaseByMenuChoice(cTour tournament, cInt choice);
 
 		//	Verification de phase
-		static bool					isPoolsFinished(const Tournament& tournament);
-		static bool					isSixteenthUnlocked(const Tournament& tournament);
-		static bool					isHeighthUnlocked(const Tournament& tournament);
-		static bool					isQuartersUnlocked(const Tournament& tournament);
-		static bool					isSemisUnlocked(const Tournament& tournament);
-		static bool					isFinalUnlocked(const Tournament& tournament);
-		static bool					isThirdUnlocked(const Tournament& tournament);
+		static bool					isPoolsFinished(cTour tournament);
+		static bool					isSixteenthUnlocked(cTour tournament);
+		static bool					isHeighthUnlocked(cTour tournament);
+		static bool					isQuartersUnlocked(cTour tournament);
+		static bool					isSemisUnlocked(cTour tournament);
+		static bool					isFinalUnlocked(cTour tournament);
+		static bool					isThirdUnlocked(cTour tournament);
 		
 		//	Helpers d affichage
-		static void					handleMatchList(CVP_MATCH matches, C_STRING title);
-		static void					handlePhase(Phase* phase, C_STRING phaseName);
+		static void					handleMatchList(cvpMatch matches, cString title);
+		static void					handlePhase(pPhase phase, cString phaseName);
 		
 };
-
-#endif
