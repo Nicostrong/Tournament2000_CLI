@@ -2,29 +2,59 @@
 // Created by Nicolas Fordoxcel on 09/07/2026.
 //
 
-#ifndef TOURNAMANTHISTORY_HPP
-# define TOURNAMANTHISTORY_HPP
+#pragma once
 
-//	STDLIB
-#include <string>
-#include <vector>
-#include <map>
+/****************************************************************************************************/
+/*	INCLUDES																						*/
+/****************************************************************************************************/
 
-//	INCLUDES
-#include "../class/Match.hpp"
-#include "../class/Participant.hpp"
+# include <map>
+# include <string>
+# include <vector>
 
-//	TYPEDEF
-using				C_STRING			=	const std::string&;
-using				V_STRING			=	std::vector<std::string>;
-using				M_CP_PART_VP_MATCH	=	std::map<const Participant*, std::vector<Match*>>;
+/****************************************************************************************************/
+/*	CLASSES																							*/
+/****************************************************************************************************/
 
-class TournamentHistory
+class				Match;
+class				Participant;
+
+/****************************************************************************************************/
+/*	TYPEDEF																							*/
+/****************************************************************************************************/
+
+using				String			=	std::string;
+using				cString			=	const std::string&;
+using				vString			=	std::vector<std::string>;
+
+using				pMatch			=	Match*;
+using				cMatch			=	const Match&;
+using				cpMatch			=	const Match*;
+using				vpMatch			=	std::vector<Match*>;
+using				cvpMatch		=	const std::vector<Match*>&;
+
+using				pPart			=	Participant*;
+using				cPart			=	const Participant&;
+using				cpPart			=	const Participant*;
+using				vpPart			=	std::vector<Participant*>;
+using				cvpPart			=	const std::vector<Participant*>&;
+
+using				mcpPartvpMatch	=	std::map<const Participant*, std::vector<Match*>>;
+
+/****************************************************************************************************/
+/*	STATIC VARIABLES																				*/
+/****************************************************************************************************/
+
+/****************************************************************************************************/
+/*	CLASS																							*/
+/****************************************************************************************************/
+
+class				TournamentHistory
 {
 	private:
 
-		M_CP_PART_VP_MATCH			_participantMatches;
-		V_STRING					_globalEvents;
+		mcpPartvpMatch				_participantMatches;
+		vString						_globalEvents;
 
 	public:
 
@@ -35,11 +65,8 @@ class TournamentHistory
         ~TournamentHistory() = default;
 
 		//	METHODS
-        void						logEvent(C_STRING event);
-        void						recordMatch(Match* match);
-        void						exportParticipantSummary(const Participant* p, C_STRING filename) const;
-        //void						exportFullHistory(C_STRING filename) const;
+        void						logEvent(cString event);
+        void						recordMatch(pMatch match);
+        void						exportParticipantSummary(cpPart p, cString filename) const;
 
 };
-
-#endif

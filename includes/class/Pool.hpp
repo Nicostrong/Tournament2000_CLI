@@ -2,60 +2,85 @@
 // Created by Nicolas Fordoxcel on 13/06/2026.
 //
 
-#ifndef POOL_HPP
-# define POOL_HPP
+#pragma once
 
-//	STDLIB
+/****************************************************************************************************/
+/*	INCLUDES																						*/
+/****************************************************************************************************/
+
 # include <string>
 # include <vector>
 
-//	INCLUDES
-# include "./Match.hpp"
-# include "./Team.hpp"
-# include "./Phase.hpp"
+/****************************************************************************************************/
+/*	CLASSES																							*/
+/****************************************************************************************************/
 
-//	TYPEDEF
-using				STRING		=	std::string;
-using				C_STRING	=	const std::string&;
-using				VP_MATCH	=	std::vector<Match*>;
-using				VP_TEAM		=	std::vector<Team*>;
-using				CVP_MATCH	=	const std::vector<Match*>&;
-using               CVP_TEAM	=	const std::vector<Team*>&;
+class				Match;
+class				Team;
 
-class Pool
+/****************************************************************************************************/
+/*	TYPEDEF																							*/
+/****************************************************************************************************/
+
+using				String			=	std::string;
+using				cString			=	const std::string&;
+
+using				cInt			=	const int;
+
+using				cBool			=	const bool;
+
+using				pMatch			=	Match*;
+using				cMatch			=	const Match&;
+using				cpMatch			=	const Match*;
+using				vpMatch			=	std::vector<Match*>;
+using				cvpMatch		=	const std::vector<Match*>&;
+
+using				pTeam			=	Team*;
+using				cTeam			=	const Team&;
+using				cpTeam			=	const Team*;
+using				vpTeam			=	std::vector<Team*>;
+using				cvpTeam			=	const std::vector<Team*>&;
+
+/****************************************************************************************************/
+/*	STATIC VARIABLES																				*/
+/****************************************************************************************************/
+
+/****************************************************************************************************/
+/*	CLASS																							*/
+/****************************************************************************************************/
+
+class				Pool
 {
 	private:
 
 		static int					_idCounter;
-		STRING						_name;
-		VP_TEAM						_teams;
-		VP_MATCH					_matches;
+		String						_name;
+		vpTeam						_teams;
+		vpMatch						_matches;
 
 	public:
 
-		//	CANONICAL
 		Pool();
-		explicit Pool(C_STRING ) = delete;
+		explicit Pool(cString ) = delete;
 		Pool(const Pool& ) = delete;
 		Pool&						operator=(const Pool& ) = delete;
 		~Pool();
 
 		//	GETTER
 		[[nodiscard]]
-		C_STRING					getName() const;
+		cString						getName() const;
 		[[nodiscard]]
-		CVP_TEAM					getTeams() const;
+		cvpTeam						getTeams() const;
 		[[nodiscard]]
-		CVP_MATCH					getMatches() const;
+		cvpMatch					getMatches() const;
 
 		//	METHOD
-		void						addTeam(Team* team);
-		void						generateMatches(int nbSetsPerEncounter);
+		void						addTeam(pTeam team);
+		void						generateMatches(cInt nbSetsPerEncounter);
 		void						sortTeams();
 		bool						allMatchesFinished() const;
 
 		[[nodiscard]]
-		VP_TEAM						getQualifiers() const;
-};
+		vpTeam						getQualifiers() const;
 
-#endif
+};

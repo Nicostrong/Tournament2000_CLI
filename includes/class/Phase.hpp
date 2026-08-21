@@ -2,64 +2,90 @@
 // Created by Nicolas Fordoxcel on 24/06/2026.
 //
 
-#ifndef PHASE_HPP
-# define PHASE_HPP
+#pragma once
 
-//	STDLIB
+/****************************************************************************************************/
+/*	INCLUDES																						*/
+/****************************************************************************************************/
+
 # include <string>
 # include <vector>
 
-//	INCLUDES
-# include "./Match.hpp"
-# include "./Team.hpp"
+/****************************************************************************************************/
+/*	CLASSES																							*/
+/****************************************************************************************************/
 
-//	TYPEDEF
-using				STRING		=	std::string;
-using				C_STRING	=	const std::string&;
-using				VP_MATCH	=	std::vector<Match*>;
-using				VP_TEAM		=	std::vector<Team*>;
+class				Match;
+class				Team;
 
-//	STATIC VARIABLES
+/****************************************************************************************************/
+/*	TYPEDEF																							*/
+/****************************************************************************************************/
 
-class Phase
+using				String			=	std::string;
+using				cString			=	const std::string&;
+
+using				cInt			=	const int;
+
+using				cBool			=	const bool;
+
+using				pMatch			=	Match*;
+using				cMatch			=	const Match&;
+using				cpMatch			=	const Match*;
+using				vpMatch			=	std::vector<Match*>;
+using				cvpMatch		=	const std::vector<Match*>&;
+
+using				pTeam			=	Team*;
+using				cTeam			=	const Team&;
+using				cpTeam			=	const Team*;
+using				vpTeam			=	std::vector<Team*>;
+using				cvpTeam			=	const std::vector<Team*>&;
+
+/****************************************************************************************************/
+/*	STATIC VARIABLES																				*/
+/****************************************************************************************************/
+
+/****************************************************************************************************/
+/*	CLASSE																							*/
+/****************************************************************************************************/
+
+class				Phase
 {
 	private:
 	
-		STRING						_name;
+		String						_name;
 		int							_nbSetsToPlay;
 		bool						_isFinished;
-		VP_MATCH					_matches;
+		vpMatch						_matches;
 
 	public:
 
-		//	CANONICAL
 		Phase() = delete;
-		Phase(STRING name, int nbSets);
+		Phase(String name, int nbSets);
 		Phase(const Phase& ) = delete;
 		Phase&						operator=(const Phase& ) = delete;
 		~Phase();
 
 		// GETTER
 		[[nodiscard]]
-		const STRING&				getName() const;
+		cString						getName() const;
 		[[nodiscard]]
 		int							getNbSetToPlay() const;
 		[[nodiscard]]
 		bool						getIsFinished() const;
 		[[nodiscard]]
-		const VP_MATCH&				getMatches() const;
+		cvpMatch					getMatches() const;
 		[[nodiscard]]
-		VP_TEAM						getWinners() const;
+		vpTeam						getWinners() const;
 		[[nodiscard]]
-		VP_TEAM						getLosers() const;
+		vpTeam						getLosers() const;
 
 		//	SETTER
-		void						setIsFinished(bool isFinished);
+		void						setIsFinished(cBool isFinished);
 
 		//	METHOD
-		void						addEncounter(Team* a, Team* b);
+		void						addEncounter(pTeam a, pTeam b);
 		[[nodiscard]]
 		bool						isFinished() const;
-};
 
-#endif
+};

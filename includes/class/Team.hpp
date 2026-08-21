@@ -2,26 +2,50 @@
 // Created by Nicolas Fordoxcel on 13/06/2026.
 //
 
-#ifndef TEAM_HPP
-# define TEAM_HPP
+#pragma once
 
-//	STDLIB
+/****************************************************************************************************/
+/*	INCLUDES																						*/
+/****************************************************************************************************/
+
 # include <string>
 # include <vector>
 
-//	INCLUDES
-# include "./Participant.hpp"
+/****************************************************************************************************/
+/*	CLASSES																							*/
+/****************************************************************************************************/
 
-//	TYPEDEF
-using				STRING		=	std::string;
-using				C_STRING	=	const std::string&;
-using				VP_PART		=	std::vector<Participant*>;
-using				CVP_PART	=	const std::vector<Participant*>&;
+class				Participant;
+
+/****************************************************************************************************/
+/*	TYPEDEF																							*/
+/****************************************************************************************************/
+
+using				String			=	std::string;
+using				cString			=	const std::string&;
+
+using				cInt			=	const int;
+
+using				cBool			=	const bool;
+
+using				pPart			=	Participant*;
+using				cPart			=	const Participant&;
+using				cpPart			=	const Participant*;
+using				vpPart			=	std::vector<Participant*>;
+using				cvpPart			=	const std::vector<Participant*>&;
+
+/****************************************************************************************************/
+/*	STATIC VARIABLES																				*/
+/****************************************************************************************************/
+
+/****************************************************************************************************/
+/*	CLASS																							*/
+/****************************************************************************************************/
 
 /**
  * la classe Team represente un enssemble de Participant qui joueront enssemble
  */
-class Team
+class				Team
 {
 	private:
 
@@ -34,15 +58,14 @@ class Team
 		bool						_isMixed;
 		bool						_isEliminated;
 		bool						_hasMultiTeamPlayer;
-		STRING						_name;
-		VP_PART						_members;
+		String						_name;
+		vpPart						_members;
 
 
 	public:
 
-		//	CANONICAL
 		Team();
-		explicit Team(C_STRING ) = delete;
+		explicit Team(cString ) = delete;
 		Team(const Team& ) = delete;
 		Team&						operator=(const Team& ) = delete;
 		~Team() = default;
@@ -67,24 +90,23 @@ class Team
 		[[nodiscard]]
 		int							getScoreDiff() const;
 		[[nodiscard]]
-		C_STRING					getName() const;
+		cString						getName() const;
 		[[nodiscard]]
-		CVP_PART					getMembers() const;
+		cvpPart						getMembers() const;
 
 		//	SETTER
-		void						setIsMixed(bool value);
-		void						setIsEliminated(bool value);
-		void						setHasMultiTeamPlayer(bool value);
-		void						setName(C_STRING value);
+		void						setIsMixed(cBool value);
+		void						setIsEliminated(cBool value);
+		void						setHasMultiTeamPlayer(cBool value);
+		void						setName(cString value);
 
 		//	METHOD
 		[[nodiscard]]
-		bool						isComplete(int requiredSize) const;
+		bool						isComplete(cInt requiredSize) const;
 		void						addMember(Participant* member);
 		void						renameTeam();
-		void						addPoint(int point);
-		void						addScoreMarked(int score);
-		void						addScoreAgainst(int score);
-};
+		void						addPoint(cInt point);
+		void						addScoreMarked(cInt score);
+		void						addScoreAgainst(cInt score);
 
-#endif
+};

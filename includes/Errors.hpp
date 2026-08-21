@@ -2,8 +2,7 @@
 // Created by Nicolas Fordoxcel on 10/07/2026.
 //
 
-#ifndef ERRORS_HPP
-# define ERRORS_HPP
+#pragma once
 
 # define E_NAME						"Le nom ne peut pas être vide."
 # define E_NBPLAYER					"Valeur de nbPlayers invalide."
@@ -20,5 +19,3 @@
 # define E_NBSETSEMI				"Nombre de sets en demi-finales invalide."
 # define E_NBSETFINAL				"Nombre de sets en finale invalide."
 # define E_NBSETTHIRD				"Nombre de sets pour la 3e place invalide."
-
-#endif

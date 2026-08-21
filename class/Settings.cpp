@@ -2,39 +2,45 @@
 // Created by Nicolas Fordoxcel on 23/06/2026.
 //
 
-//	STDLIB
-#include <string>
+/****************************************************************************************************/
+/*	INCLUDES																						*/
+/****************************************************************************************************/
 
-//	INCLUDES
+#include <format>
+
 #include "../includes/class/Settings.hpp"
-#include "../includes/Constantes.hpp"
+
 #include "../includes/Errors.hpp"
+#include "../includes/Constantes.hpp"
 
-//	TYPEDEF
-using				C_STRING	=	const std::string&;
-using				V_STRING	=	std::vector<std::string>;
+/****************************************************************************************************/
+/*	TYPEDEF																							*/
+/****************************************************************************************************/
 
-//	STATIC VARIABLES
+using				cBool			=	const bool;
 
-/****************/
-/*	CANONICAL	*/
-/****************/
+/****************************************************************************************************/
+/*	STATIC VARIABLES																				*/
+/****************************************************************************************************/
 
-Settings::Settings()
-    :	_name(TOURNAMENTNAME), _nbPlayers(NBPLAYER), _nbPlayerByPool(NBPLAYERPERPOOL),
-		_nbPools(NBPOOL), _nbBadmintonCourt(NBTERRAIN), _scoreMin(SCOREMIN), _scoreMax(SCOREMAX),
-		_diffPointsToWin(ECART), _nbSetPlayedPools(NBPLAYERPERPOOL), _nbSetPlayedSixteenth(NBSETSIXTEENTH),
-		_nbSetPlayedHeigth(NBSETHEIGTH), _nbSetPlayedQuarters(NBSETQUARTER), _nbSetPlayedSemis(NBSETSEMI),
-    	_nbSetPlayedFinal(NBSETFINAL), _nbSetPlayedThirdPlace(NBSETTHIRD), _isMixed(ISMIXED),
-    	_isDouble(ISDOUBLE), _allowMultiTeamPlayers(PLAYERMULTITEAM), _isThirdPlaceMatch(PLAYTHIRDPLACE),
-		_isValid(ISVALIDE), _gender(GENDER)
+/****************************************************************************************************/
+/*	CONSTRUCTOR / DESTRUCTOR																		*/
+/****************************************************************************************************/
+
+Settings::Settings(): _name(TOURNAMENTNAME), _nbPlayers(NBPLAYER), _nbPlayerByPool(NBPLAYERPERPOOL),
+	_nbPools(NBPOOL), _nbBadmintonCourt(NBTERRAIN), _scoreMin(SCOREMIN), _scoreMax(SCOREMAX),
+	_diffPointsToWin(ECART), _nbSetPlayedPools(NBPLAYERPERPOOL), _nbSetPlayedSixteenth(NBSETSIXTEENTH),
+	_nbSetPlayedHeigth(NBSETHEIGTH), _nbSetPlayedQuarters(NBSETQUARTER), _nbSetPlayedSemis(NBSETSEMI),
+    _nbSetPlayedFinal(NBSETFINAL), _nbSetPlayedThirdPlace(NBSETTHIRD), _isMixed(ISMIXED),
+    _isDouble(ISDOUBLE), _allowMultiTeamPlayers(PLAYERMULTITEAM), _isThirdPlaceMatch(PLAYTHIRDPLACE),
+	_isValid(ISVALIDE), _gender(GENDER)
 {}
 
-/************/
-/*	GETTER	*/
-/************/
+/****************************************************************************************************/
+/*	GETTER																							*/
+/****************************************************************************************************/
 
-C_STRING			Settings::getName() const					{	return (this->_name);					}
+cString				Settings::getName() const					{	return (this->_name);					}
 int					Settings::getNbPlayers() const				{	return (this->_nbPlayers);				}
 int					Settings::getNbPlayerByPool() const			{	return (this->_nbPlayerByPool);			}
 int					Settings::getNbPools() const				{	return (this->_nbPools);				}
@@ -54,39 +60,42 @@ bool				Settings::getIsDouble() const				{	return (this->_isDouble);				}
 bool				Settings::getAllowMultiTeamPlayers() const	{	return (this->_allowMultiTeamPlayers);	}
 bool				Settings::getIsThirdPlaceMatch() const		{	return (this->_isThirdPlaceMatch);		}
 bool				Settings::getIsValid() const				{	return (this->_isValid);				}
-Participant::Gender Settings::getTournamentGender() const		{	return (this->_gender);					}
+Gender				Settings::getTournamentGender() const		{	return (this->_gender);					}
 
-/************/
-/*	SETTER	*/
-/************/
+/****************************************************************************************************/
+/*	SETTER																							*/
+/****************************************************************************************************/
 
-void				Settings::setName(C_STRING value)								{	this->_name = value;					}
-void				Settings::setNbPlayers(const int value)							{	this->_nbPlayers = value;				}
-void				Settings::setNbPlayerByPool(const int value)					{	this->_nbPlayerByPool = value;			}
-void				Settings::setNbPools(const int value)							{	this->_nbPools = value;					}
-void				Settings::setNbBadmintonCourt(const int value)					{	this->_nbBadmintonCourt = value;		}
-void				Settings::setScoreMin(const int value)							{	this->_scoreMin = value;				}
-void				Settings::setScoreMax(const int value)							{	this->_scoreMax = value;				}
-void				Settings::setDiffPointsToWin(const int value)					{	this->_diffPointsToWin = value;			}
-void				Settings::setNbSetPlayedPools(const int value)					{	this->_nbSetPlayedPools = value;		}
-void				Settings::setNbSetPlayedSixteenth(const int value)				{	this->_nbSetPlayedSixteenth = value;	}
-void				Settings::setNbSetPlayedHeigth(const int value)					{	this->_nbSetPlayedHeigth = value;		}
-void				Settings::setNbSetPlayedQuarters(const int value)				{	this->_nbSetPlayedQuarters = value;		}
-void				Settings::setNbSetPlayedSemis(const int value)					{	this->_nbSetPlayedSemis = value;		}
-void				Settings::setNbSetPlayedFinal(const int value)					{	this->_nbSetPlayedFinal = value;		}
-void				Settings::setNbSetPlayedThirdPlace(const int value)				{	this->_nbSetPlayedThirdPlace = value;	}
-void				Settings::setIsMixed(const bool value)							{	this->_isMixed = value;					}
-void				Settings::setIsDouble(const bool value)							{	this->_isDouble = value;				}
-void				Settings::setAllowMultiTeamPlayers(const bool value)			{	this->_allowMultiTeamPlayers = value;	}
-void				Settings::setIsThirdPlaceMatch(const bool value)				{	this->_isThirdPlaceMatch = value;		}
-void				Settings::setIsValid(const bool value)							{	this->_isValid = value;					}
-void				Settings::setTournamentGender(const Participant::Gender value)	{	this->_gender = value;					}
+void				Settings::setName(cString value)				{	this->_name = value;					}
+void				Settings::setNbPlayers(cInt value)				{	this->_nbPlayers = value;				}
+void				Settings::setNbPlayerByPool(cInt value)			{	this->_nbPlayerByPool = value;			}
+void				Settings::setNbPools(cInt value)				{	this->_nbPools = value;					}
+void				Settings::setNbBadmintonCourt(cInt value)		{	this->_nbBadmintonCourt = value;		}
+void				Settings::setScoreMin(cInt value)				{	this->_scoreMin = value;				}
+void				Settings::setScoreMax(cInt value)				{	this->_scoreMax = value;				}
+void				Settings::setDiffPointsToWin(cInt value)		{	this->_diffPointsToWin = value;			}
+void				Settings::setNbSetPlayedPools(cInt value)		{	this->_nbSetPlayedPools = value;		}
+void				Settings::setNbSetPlayedSixteenth(cInt value)	{	this->_nbSetPlayedSixteenth = value;	}
+void				Settings::setNbSetPlayedHeigth(cInt value)		{	this->_nbSetPlayedHeigth = value;		}
+void				Settings::setNbSetPlayedQuarters(cInt value)	{	this->_nbSetPlayedQuarters = value;		}
+void				Settings::setNbSetPlayedSemis(cInt value)		{	this->_nbSetPlayedSemis = value;		}
+void				Settings::setNbSetPlayedFinal(cInt value)		{	this->_nbSetPlayedFinal = value;		}
+void				Settings::setNbSetPlayedThirdPlace(cInt value)	{	this->_nbSetPlayedThirdPlace = value;	}
+void				Settings::setIsMixed(cBool value)				{	this->_isMixed = value;					}
+void				Settings::setIsDouble(cBool value)				{	this->_isDouble = value;				}
+void				Settings::setAllowMultiTeamPlayers(cBool value)	{	this->_allowMultiTeamPlayers = value;	}
+void				Settings::setIsThirdPlaceMatch(cBool value)		{	this->_isThirdPlaceMatch = value;		}
+void				Settings::setIsValid(cBool value)				{	this->_isValid = value;					}
+void				Settings::setTournamentGender(cGender value)	{	this->_gender = value;					}
 
-/********************/
-/*	PRIVATE METHOD	*/
-/********************/
+/****************************************************************************************************/
+/*	PRIVATE METHODS																					*/
+/****************************************************************************************************/
 
-bool				Settings::addErrorIf(const bool condition, C_STRING message, V_STRING& errors)
+/**
+ *	Ajoute une erreur sous condition
+ */
+bool				Settings::addErrorIf(cBool condition, cString message, vString errors)
 {
 	if (condition)
 	{
@@ -98,51 +107,46 @@ bool				Settings::addErrorIf(const bool condition, C_STRING message, V_STRING& e
 	return (false);
 }
 
-void				Settings::checkLogicalTournament(V_STRING& errors) const
+/**
+ *	Verifie la logique des settings
+ */
+void				Settings::checkLogicalTournament(vString errors) const
 {
-	const int totalTeamsRequired = this->_nbPools * this->_nbPlayerByPool;
-	const int playersPerTeam = this->_isDouble ? 2 : 1;
-	const int totalPlayersRequired = totalTeamsRequired * playersPerTeam;
+	cInt totalTeamsRequired = this->_nbPools * this->_nbPlayerByPool;
+	cInt playersPerTeam = this->_isDouble ? 2 : 1;
+	cInt totalPlayersRequired = totalTeamsRequired * playersPerTeam;
 
 	if (this->_nbPlayers > totalPlayersRequired)
-		addErrorIf(true,
-			"Nombre de joueurs trop eleve (" + std::to_string(this->_nbPlayers) +
-			") pour la structure actuelle (" + std::to_string(this->_nbPools) +
-			" poules de " + std::to_string(this->_nbPlayerByPool) +
-			" " + (this->_isDouble ? "equipes" : "joueurs") +
-			" = " + std::to_string(totalPlayersRequired) + " joueurs max).",
-			errors);
+		addErrorIf(true, std::format("Nombre de joueurs trop eleve ({}) pour la structure actuelle ({} poules de {} {} = {} joueurs max).",
+				this->_nbPlayers, this->_nbPools, this->_nbPlayerByPool, (this->_isDouble ? "equipes" : "joueurs"),
+				totalPlayersRequired), errors);
 	else if (this->_nbPlayers < totalPlayersRequired && !this->_allowMultiTeamPlayers)
-		addErrorIf(true,
-			"Pas assez de joueurs (" + std::to_string(this->_nbPlayers) +
-			"). La structure necessite exactement " + std::to_string(totalPlayersRequired) +
-			" joueurs (ou activez le mode multi-equipes).",
-			errors);
+		addErrorIf(true, std::format("Pas assez de joueurs ({}). La structure necessite exactement {} joueurs (ou activez le mode multi-equipes).",
+				this->_nbPlayers, totalPlayersRequired), errors);
 	else if (this->_nbPlayers < totalPlayersRequired && this->_allowMultiTeamPlayers)
 	{
-		const int missingPlayers = totalPlayersRequired - this->_nbPlayers;
+		cInt missingPlayers = totalPlayersRequired - this->_nbPlayers;
 
 		if (missingPlayers > NBPLAYERINMULTITEAMMAX)
-		{
-			addErrorIf(true,
-				"Ecart de joueurs trop important (" + std::to_string(missingPlayers) +
-				" manquants). Le mode multi-equipes tolere au maximum " +
-				std::to_string(NBPLAYERINMULTITEAMMAX) + " joueurs manquants.",
-				errors);
-		}
+			addErrorIf(true, std::format("Ecart de joueurs trop important ({} manquants). Le mode multi-equipes tolere au maximum {} joueurs manquants.",
+					missingPlayers, NBPLAYERINMULTITEAMMAX), errors);
 	}
 }
-/********************/
-/*	PUBLIC METHOD	*/
-/********************/
 
-bool				Settings::isValid(V_STRING& errors)
+/****************************************************************************************************/
+/*	PUBLIC METHODS																					*/
+/****************************************************************************************************/
+
+/**
+ *	Verifie si les settings sont valids
+ */
+bool				Settings::isValid(vString errors)
 {
 	errors.clear();
 
-	const std::vector<int> allowedPlayers = this->_isDouble
-		? std::vector<int>(allowedNbPlayersDouble.begin(), allowedNbPlayersDouble.end())
-		: std::vector<int>(allowedNbPlayersSimple.begin(), allowedNbPlayersSimple.end());
+	cvInt allowedPlayers = this->_isDouble
+		? vInt(allowedNbPlayersDouble.begin(), allowedNbPlayersDouble.end())
+		: vInt(allowedNbPlayersSimple.begin(), allowedNbPlayersSimple.end());
 
 	addErrorIf(this->_name.empty(), E_NAME, errors);
 	addErrorIf(!isInList(this->_nbPlayers, allowedPlayers), E_NBPLAYER, errors);
@@ -170,7 +174,10 @@ bool				Settings::isValid(V_STRING& errors)
 	return (errors.empty());
 }
 
-bool				Settings::canAccommodate(const int actualParticipants) const
+/**
+ *	Verifie le nombre de participants qui pourront jouer dasn plusieurs equipes
+ */
+bool				Settings::canAccommodate(cInt actualParticipants) const
 {
 	if ((this->getNbPlayers() - actualParticipants) > NBPLAYERINMULTITEAMMAX)
 		return (false);

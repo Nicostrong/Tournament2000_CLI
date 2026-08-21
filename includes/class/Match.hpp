@@ -2,22 +2,40 @@
 // Created by Nicolas Fordoxcel on 13/06/2026.
 //
 
-#ifndef MATCH_HPP
-# define MATCH_HPP
+#pragma once
 
-//	STDLIB
+/****************************************************************************************************/
+/*	INCLUDES																						*/
+/****************************************************************************************************/
 
-//	INCLUDES
-# include "./Team.hpp"
+# include <vector>
 
-//	TYPEDEF
+/****************************************************************************************************/
+/*	CLASSES																							*/
+/****************************************************************************************************/
 
-//	STATIC VARIABLES
+class				Team;
+
+/****************************************************************************************************/
+/*	TYPEDEF																							*/
+/****************************************************************************************************/
+
+using				cInt			=	const int;
+
+using				pTeam			=	Team*;
+using				cTeam			=	const Team&;
+using				cpTeam			=	const Team*;
+using				vpTeam			=	std::vector<Team*>;
+using				cvpTeam			=	const std::vector<Team*>&;
+
+/****************************************************************************************************/
+/*	CLASSE																							*/
+/****************************************************************************************************/
 
 /**
  * la classe Match represente un set entre deux Teams
  */
-class Match
+class				Match
 {
 	private:
 
@@ -29,7 +47,6 @@ class Match
 
 	public:
 
-		//	CANONICAL
 		Match() = delete;
 		Match(Team* a, Team* b);
 		Match(const Match& match) = delete;
@@ -49,13 +66,12 @@ class Match
 		bool						isFinished() const;
 
 		//	SETTER
-		void						setScore(int sA, int sB);
+		void						setScore(cInt sA, cInt sB);
 
 		//	METHOD
 		[[nodiscard]]
 		Team*						getWinner() const;
 		[[nodiscard]]
 		Team*						getLoser() const;
-};
 
-#endif
+};

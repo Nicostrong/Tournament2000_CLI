@@ -2,37 +2,42 @@
 // Created by Nicolas Fordoxcel on 13/06/2026.
 //
 
-//	STDLIB
-#include <iostream>
-#include <vector>
-#include <string>
-#include <limits>
-#include <cstring>
+/****************************************************************************************************/
+/*	INCLUDES																						*/
+/****************************************************************************************************/
 
-//	LOGICAL
-#include "../includes/class/Participant.hpp"
+#include <cstring>
+#include <csignal>
+#include <iostream>
+
 #include "../includes/class/Settings.hpp"
 #include "../includes/class/Tournament.hpp"
+#include "../includes/class/Participant.hpp"
 
-//	CLI
 #include "../includes/cli/SettingsCLI.hpp"
 #include "../includes/cli/TournamentCLI.hpp"
 #include "../includes/cli/ParticipantCLI.hpp"
-#include "../includes/utils/FormatUtils.hpp"
-#include "../includes/utils/PrintUtils.hpp"
 
-#include "../includes/Global.hpp"
 #include "../includes/Color.hpp"
 
-//	TYPEDEF
-using				STRING		=	std::string;
-using				V_STRING	=	std::vector<std::string>;
-using				VP_PART		=	std::vector<Participant*>;
-using				CVP_PART	=	const std::vector<Participant*>&;
+/****************************************************************************************************/
+/*	TYPEDEF																							*/
+/****************************************************************************************************/
+
+using				vpPart			=	std::vector<Participant*>;
+
+/****************************************************************************************************/
+/*	STATIC VARIABLES																				*/
+/****************************************************************************************************/
+
+inline volatile std::sig_atomic_t	g_running = -1;
+
+/****************************************************************************************************/
+/*	EXCEPTION																						*/
+/****************************************************************************************************/
 
 namespace
 {
-	//	ENUM
 	enum class		AppState
 	{
 					SETTING,
@@ -49,14 +54,14 @@ namespace
 	};
 }
 
-/************/
-/*	SIGNALS	*/
-/************/
+/****************************************************************************************************/
+/*	SIGNAL																							*/
+/****************************************************************************************************/
 
 /**
  * Fonction appelee automatiquement lors de la reception d un SIGINT (Ctrl+C).
  */
-static void			handleSigint(const int signum)
+static void			handleSigint(cInt signum)
 {
 	(void)signum;
 
@@ -65,32 +70,16 @@ static void			handleSigint(const int signum)
 	g_running = false;
 }
 
-/************/
-/*	HELPERS	*/
-/************/
-
-/**
- *	Vide le buffer de l input
- */
-/*static void		clearInput()
-{
-	if (!g_running)
-		return ;
-	
-	std::cin.clear();
-	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-}*/
-
-/************/
-/*	RUNNING	*/
-/************/
+/****************************************************************************************************/
+/*	RUNNING																							*/
+/****************************************************************************************************/
 
 /**
  *	Lance la phase de parametrage des settings
  */
 static AppState		runSettingsPhase(Settings& settings)
 {
-	V_STRING errors;
+	vString errors;
 	
 	while (g_running)
 	{
@@ -111,7 +100,7 @@ static AppState		runSettingsPhase(Settings& settings)
 /**
  *	Lance la phase de gestion des joueurs
  */
-static AppState		runPlayersPhase(const Settings& settings, VP_PART& participants)
+static AppState		runPlayersPhase(cSet settings, vpPart& participants)
 {
 	while (g_running)
 	{
@@ -128,7 +117,7 @@ static AppState		runPlayersPhase(const Settings& settings, VP_PART& participants
 /**
  *	Lance la phase de pool du tournoi
  */
- static AppState	runPoolsPhase(Tournament& myTournament)
+static AppState		runPoolsPhase(Tournament& myTournament)
 {
 	while (g_running)
 	{
@@ -142,27 +131,25 @@ static AppState		runPlayersPhase(const Settings& settings, VP_PART& participants
 	return (AppState::EXIT);
 }
 
-/************/
-/*	MAIN	*/
-/************/
+/****************************************************************************************************/
+/*	MAIN																							*/
+/****************************************************************************************************/
 
 int					main()
 {
 	Settings mySettings;
-	VP_PART pendingParticipants;
+	vpPart	pendingParticipants;
 	Tournament* myTournament = nullptr;
 
 	AppState currentState = AppState::SETTING;
 
-	struct sigaction sa;
-
-	std::memset(&sa, 0, sizeof(sa));
+	struct sigaction sa = {};
 
 	sa.sa_handler = handleSigint;
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = 0;
 
-	sigaction(SIGINT, &sa, NULL);
+	sigaction(SIGINT, &sa, nullptr);
 
 	while (g_running && currentState != AppState::EXIT)
 	{
@@ -170,17 +157,17 @@ int					main()
 		{
 			case AppState::SETTING:
 				currentState = runSettingsPhase(mySettings);
-				break ;
+				break;
 				
 			case AppState::PLAYER:
 				currentState = runPlayersPhase(mySettings, pendingParticipants);
-				break ;
+				break;
 
 			case AppState::INIT_TOURNAMENT:
 				if (!g_running)
-					break ;
+					break;
 
-				myTournament = new Tournament(mySettings, pendingParticipants);
+				myTournament = new Tournament(&mySettings, pendingParticipants);
 
 				if (!myTournament->initializeTournament())
 				{
@@ -189,42 +176,42 @@ int					main()
 				}
 				else
 					currentState = AppState::POOL_PHASE;
-				break ;
+				break;
 				
 			case AppState::POOL_PHASE:
 				currentState = runPoolsPhase(*myTournament);
-				break ;
+				break;
 			/*
 			case AppState::SIXTEENTH_PHASE:
 				currentState = runKnockoutPhase(*myTournament, currentState);
-				break ;
+				break;
 			
 			case AppState::EIGHTH_PHASE:
 				currentState = runEighthsPhase(*myTournament, currentState);
-				break ;
+				break;
 
 			case AppState::QUARTER_PHASE:
 				currentState = runQuarterPhase(*myTournament, currentState);
-				break ;
+				break;
 
 			case AppState::SEMI_PHASE:
 				currentState = runSemisPhase(*myTournament, currentState);
-				break ;
+				break;
 
 			case AppState::FINAL_PHASE:
 				currentState = runFinalPhase(*myTournament, currentState);
-				break ;
+				break;
 
 			case AppState::THIRD_PHASE:
 				currentState = runThirdPhase(*myTournament, currentState);
-				break ;*/
+				break;*/
 
 			case AppState::EXIT:
-				break ;
+				break;
 			
 			default:
 				currentState = AppState::EXIT;
-				break ;
+				break;
 		}
 	}
 

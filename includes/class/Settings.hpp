@@ -2,27 +2,45 @@
 // Created by Nicolas Fordoxcel on 23/06/2026.
 //
 
-#ifndef SETTINGS_HPP
-# define SETTINGS_HPP
+#pragma once
 
-//	STDLIB
-# include <algorithm>
+/****************************************************************************************************/
+/*	INCLUDES																						*/
+/****************************************************************************************************/
+
+# include <array>
+# include <tuple>
 # include <string>
 # include <vector>
-# include <array>
+# include <algorithm>
 
-//	INCLUDES
 # include "./Participant.hpp"
 
-//	TYPEDEF
-using				STRING		=	std::string;
-using				C_STRING	=	const std::string&;
-using				V_STRING	=	std::vector<std::string>;
+/****************************************************************************************************/
+/*	CLASSES																							*/
+/****************************************************************************************************/
 
+/****************************************************************************************************/
+/*	TYPEDEF																							*/
+/****************************************************************************************************/
+
+using				String			=	std::string;
+using				cString			=	const std::string&;
+using				vString			=	std::vector<std::string>;
+using				vtupleMsg		=	std::vector<std::tuple<std::string, bool>>;
+
+using				cInt			=	const int;
+using				vInt			=	std::vector<int>;
+using				cvInt			=	const std::vector<int>;
 template<std::size_t N>
-using				A_INT		=	std::array<int, N>;
+using				aInt			=	std::array<int, N>;
 
-//	ENUM
+using				cBool			=	const bool;
+
+/****************************************************************************************************/
+/*	ENUM																							*/
+/****************************************************************************************************/
+
 enum class nbPlayer : int
 {
 	douze = 12,
@@ -39,7 +57,7 @@ enum class nbPlayer : int
 	centSoixante = 160
 };
 
-constexpr A_INT<9> allowedNbPlayersSimple =
+constexpr aInt<9> allowedNbPlayersSimple =
 {
 	static_cast<int>(nbPlayer::douze),
 	static_cast<int>(nbPlayer::seize),
@@ -52,7 +70,7 @@ constexpr A_INT<9> allowedNbPlayersSimple =
 	static_cast<int>(nbPlayer::quatreVingt)
 };
 
-constexpr A_INT<9> allowedNbPlayersDouble =
+constexpr aInt<9> allowedNbPlayersDouble =
 {
 	static_cast<int>(nbPlayer::vingtQuatre),
 	static_cast<int>(nbPlayer::trenteDeux),
@@ -72,7 +90,7 @@ enum class nbPool : int
 	seize = 16
 };
 
-constexpr A_INT<3>					allowedNbPools =
+constexpr aInt<3>					allowedNbPools =
 {
 	static_cast<int>(nbPool::quatre),
 	static_cast<int>(nbPool::huit),
@@ -86,7 +104,7 @@ enum class nbPlayersOrTeamPerPool : int
 	cinq = 5
 };
 
-constexpr A_INT<3>					allowedNbPlayersOrTeamsPerPools =
+constexpr aInt<3>					allowedNbPlayersOrTeamsPerPools =
 {
 	static_cast<int>(nbPlayersOrTeamPerPool::trois),
 	static_cast<int>(nbPlayersOrTeamPerPool::quatre),
@@ -102,7 +120,7 @@ enum class nbSetToPlay : int
 	cinq = 5
 };
 
-constexpr A_INT<5>					allowedNbSetToPlay =
+constexpr aInt<5>					allowedNbSetToPlay =
 {
 	static_cast<int>(nbSetToPlay::un),
 	static_cast<int>(nbSetToPlay::deux),
@@ -111,11 +129,19 @@ constexpr A_INT<5>					allowedNbSetToPlay =
 	static_cast<int>(nbSetToPlay::cinq)
 };
 
-class Settings
+/****************************************************************************************************/
+/*	STATIC VARIABLES																				*/
+/****************************************************************************************************/
+
+/****************************************************************************************************/
+/*	CLASS																							*/
+/****************************************************************************************************/
+
+class				Settings
 {
 	private:
 
-		STRING						_name;
+		String						_name;
 
 		int							_nbPlayers;
 		int							_nbPlayerByPool;
@@ -139,20 +165,19 @@ class Settings
 		bool						_isThirdPlaceMatch;
 		bool						_isValid;
 
-		Participant::Gender			_gender;
+		Gender						_gender;
 
-		static bool					addErrorIf(bool condition, C_STRING message, V_STRING& errors);
-		void						checkLogicalTournament(V_STRING& errors) const;
+		static bool					addErrorIf(cBool condition, cString message, vString errors);
+		void						checkLogicalTournament(vString errors) const;
 
 		template<typename Container>
-		bool						isInList(int value, const Container& list) const
+		bool						isInList(cInt value, const Container& list) const
 		{
 			return (std::find(list.begin(), list.end(), value) != list.end());
 		}
 
 	public:
 
-		//	CANONICAL
 		Settings();
 		Settings(const Settings& ) = default;
 		Settings&					operator=(const Settings& ) = default;
@@ -160,7 +185,7 @@ class Settings
 
 		/*  GETTERS */
 		[[nodiscard]]
-		C_STRING					getName() const;
+		cString						getName() const;
 		[[nodiscard]]
 		int							getNbPlayers() const;
 		[[nodiscard]]
@@ -202,38 +227,36 @@ class Settings
 		bool						getIsValid() const;
 
 		[[nodiscard]]
-		Participant::Gender			getTournamentGender() const;
+		Gender						getTournamentGender() const;
 
 		/*  SETTERS */
-		void						setName(C_STRING value);
-		void						setNbPlayers(int value);
-		void						setNbPlayerByPool(int value);
-		void						setNbPools(int value);
-		void						setNbBadmintonCourt(int value);
-		void						setScoreMin(int value);
-		void						setScoreMax(int value);
-		void						setDiffPointsToWin(int value);
+		void						setName(cString value);
+		void						setNbPlayers(cInt value);
+		void						setNbPlayerByPool(cInt value);
+		void						setNbPools(cInt value);
+		void						setNbBadmintonCourt(cInt value);
+		void						setScoreMin(cInt value);
+		void						setScoreMax(cInt value);
+		void						setDiffPointsToWin(cInt value);
 
-		void						setNbSetPlayedPools(int value);
-		void						setNbSetPlayedSixteenth(int value);
-		void						setNbSetPlayedHeigth(int value);
-		void						setNbSetPlayedQuarters(int value);
-		void						setNbSetPlayedSemis(int value);
-		void						setNbSetPlayedFinal(int value);
-		void						setNbSetPlayedThirdPlace(int value);
+		void						setNbSetPlayedPools(cInt value);
+		void						setNbSetPlayedSixteenth(cInt value);
+		void						setNbSetPlayedHeigth(cInt value);
+		void						setNbSetPlayedQuarters(cInt value);
+		void						setNbSetPlayedSemis(cInt value);
+		void						setNbSetPlayedFinal(cInt value);
+		void						setNbSetPlayedThirdPlace(cInt value);
 
-		void						setIsMixed(bool value);
-		void						setIsDouble(bool value);
-		void						setAllowMultiTeamPlayers(bool value);
-		void						setIsThirdPlaceMatch(bool value);
-		void						setIsValid(bool value);
-		void						setTournamentGender(Participant::Gender value);
+		void						setIsMixed(cBool value);
+		void						setIsDouble(cBool value);
+		void						setAllowMultiTeamPlayers(cBool value);
+		void						setIsThirdPlaceMatch(cBool value);
+		void						setIsValid(cBool value);
+		void						setTournamentGender(cGender value);
 
 		/*	METHOD	*/
-		bool						isValid(V_STRING& errors);
+		bool						isValid(vString errors);
 		[[nodiscard]]
-		bool						canAccommodate(int actualParticipants) const;
+		bool						canAccommodate(cInt actualParticipants) const;
 
 };
-
-#endif

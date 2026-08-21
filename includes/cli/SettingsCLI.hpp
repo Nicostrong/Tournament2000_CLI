@@ -2,43 +2,68 @@
 // Created by Nicolas Fordoxcel on 23/06/2026.
 //
 
-#ifndef SETTINGSCLI_H
-# define SETTINGSCLI_H
+#pragma once
 
-//	STDLIB
+/****************************************************************************************************/
+/*	INCLUDES																						*/
+/****************************************************************************************************/
+
 # include <string>
+# include <vector>
+# include <csignal>
 
-//	INCLUDES
-# include "../class/Settings.hpp"
+/****************************************************************************************************/
+/*	CLASSES																							*/
+/****************************************************************************************************/
 
-//	TYPEDEF
-using				STRING		=	std::string;
-using				C_STRING	=	const std::string&;
-using				CV_INT		=	const std::vector<int>&;
+class				Settings;
 
-class SettingsCLI
+/****************************************************************************************************/
+/*	TYPEDEF																							*/
+/****************************************************************************************************/
+
+using				String			=	std::string;
+using				cString			=	const std::string&;
+using				vString			=	std::vector<std::string>;
+
+using				cInt			=	const int;
+using				vInt			=	std::vector<int>;
+using				cvInt			=	const std::vector<int>;
+
+using				cBool			=	const bool;
+
+using				pSet			=	Settings*;
+using				cSet			=	const Settings&;
+using				cpSet			=	const Settings*;
+
+/****************************************************************************************************/
+/*	STATIC VARIABLES																				*/
+/****************************************************************************************************/
+
+extern volatile std::sig_atomic_t	g_running;
+
+/****************************************************************************************************/
+/*	CLASS																							*/
+/****************************************************************************************************/
+
+class				SettingsCLI
 {
 
 	public:
 
 		static void					setupWizard(Settings& s);
-		//static void					display(const Settings& s);
-		//static void					editMenu(Settings& s);
-		//STRING						printToJSON(const Settings& s);
 
 	private:
 
-		static int					inputInt(C_STRING prompt, int min, int max, int defaultVal);
-		static int					inputIntList(C_STRING prompt, CV_INT allowedValues, int defaultVal);
-		static bool					inputBool(C_STRING prompt, bool defaultVal);
-		static std::string			inputString(C_STRING prompt, C_STRING defaultVal);
-		static void					setupPlayers(Settings& s);
-		static void					setupPools(Settings& s);
-		static void					setupMatchRules(Settings& s);
-		static void					setupPhaseSets(Settings& s);
+		static int					inputInt(cString prompt, cInt min, cInt max, cInt defaultVal);
+		static int					inputIntList(cString prompt, cvInt allowedValues, cInt defaultVal);
+		static bool					inputBool(cString prompt, cBool defaultVal);
+		static String				inputString(cString prompt, cString defaultVal);
+		static void					setupPlayers(pSet s);
+		static void					setupPools(pSet s);
+		static void					setupMatchRules(pSet s);
+		static void					setupPhaseSets(pSet s);
 
 };
 
-std::ostream&		operator<<(std::ostream& os, const Settings& s);
-
-#endif
+std::ostream&		operator<<(std::ostream& os, cSet s);
