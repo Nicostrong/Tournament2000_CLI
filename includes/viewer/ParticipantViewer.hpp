@@ -1,5 +1,5 @@
 //
-// Created by Nicolas Fordoxcel on 15/06/2026.
+// Created by Nicolas Fordoxcel on 21/08/2026.
 //
 
 #pragma once
@@ -8,15 +8,27 @@
 /*	INCLUDES																						*/
 /****************************************************************************************************/
 
+# include <string>
+# include <vector>
 
 /****************************************************************************************************/
 /*	CLASSES																							*/
 /****************************************************************************************************/
 
+class				Participant;
 
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
 /****************************************************************************************************/
+
+using				String			=	std::string;
+using				cString			=	const std::string&;
+
+using				pPart			=	Participant*;
+using				cPart			=	const Participant&;
+using				cpPart			=	const Participant*;
+using				vpPart			=	std::vector<Participant*>;
+using				cvpPart			=	const std::vector<Participant*>&;
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
@@ -26,10 +38,14 @@
 /*	CLASS																							*/
 /****************************************************************************************************/
 
-class				PoolCLI
+class				ParticipantViewer
 {
-	private:
-
 	public:
 
+		static void					displayOne(cPart p);
+		static void					displayAll(cvpPart participants);
+
 };
+
+std::ostream&		operator<<(std::ostream& os, cPart p);
+

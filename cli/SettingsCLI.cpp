@@ -15,6 +15,8 @@
 
 #include "../includes/cli/SettingsCLI.hpp"
 
+#include "../includes/viewer/TitleViewer.hpp"
+
 #include "../includes/utils/PrintUtils.hpp"
 
 #include "../includes/Color.hpp"
@@ -306,8 +308,8 @@ void				SettingsCLI::setupWizard(Settings& s)
 		while (!confirmed)
 		{
 			PrintUtils::clear();
-			PrintUtils::banner();
-			PrintUtils::setting();
+			TitleViewer::banner();
+			TitleViewer::setting();
 
 			if (!errors.empty())
 			{

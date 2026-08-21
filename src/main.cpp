@@ -6,8 +6,6 @@
 /*	INCLUDES																						*/
 /****************************************************************************************************/
 
-
-#include <limits>
 #include <cstring>
 #include <csignal>
 #include <iostream>
@@ -26,14 +24,7 @@
 /*	TYPEDEF																							*/
 /****************************************************************************************************/
 
-using				String			=	std::string;
-using				cString			=	const std::string&;
-
-using				pPart			=	Participant*;
-using				cPart			=	const Participant&;
-using				cpPart			=	const Participant*;
 using				vpPart			=	std::vector<Participant*>;
-using				cvpPart			=	const std::vector<Participant*>&;
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
@@ -152,15 +143,13 @@ int					main()
 
 	AppState currentState = AppState::SETTING;
 
-	struct sigaction sa;
-
-	std::memset(&sa, 0, sizeof(sa));
+	struct sigaction sa = {};
 
 	sa.sa_handler = handleSigint;
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = 0;
 
-	sigaction(SIGINT, &sa, NULL);
+	sigaction(SIGINT, &sa, nullptr);
 
 	while (g_running && currentState != AppState::EXIT)
 	{

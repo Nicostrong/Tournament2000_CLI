@@ -1,5 +1,5 @@
 //
-// Created by Nicolas Fordoxcel on 15/06/2026.
+// Created by Nicolas Fordoxcel on 21/08/2026.
 //
 
 #pragma once
@@ -8,11 +8,9 @@
 /*	INCLUDES																						*/
 /****************************************************************************************************/
 
-
 /****************************************************************************************************/
 /*	CLASSES																							*/
 /****************************************************************************************************/
-
 
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
@@ -26,10 +24,23 @@
 /*	CLASS																							*/
 /****************************************************************************************************/
 
-class				PoolCLI
+class				TitleViewer
 {
-	private:
 
 	public:
+
+		static void					banner();
+		static void					setting();
+		static void					players();
+		static void					tournament();
+		static void					teams();
+		static void					pools();
+		static void					sixteenths();
+		static void					heighths();
+		static void					quarters();
+		static void					semis();
+		static void					thirdPlace();
+		static void					final();
+		static void					exportMenu();
 
 };

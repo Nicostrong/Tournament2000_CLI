@@ -8,13 +8,13 @@
 /****************************************************************************************************/
 
 #include <format>
-#include <iostream>
 #include <fstream>
 
 #include "../includes/class/Team.hpp"
 #include "../includes/class/Match.hpp"
 #include "../includes/class/Participant.hpp"
 
+#include "../includes/utils/PrintUtils.hpp"
 #include "../includes/utils/TournamentHistory.hpp"
 
 /****************************************************************************************************/

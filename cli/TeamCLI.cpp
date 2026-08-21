@@ -6,13 +6,6 @@
 /*	INCLUDES																						*/
 /****************************************************************************************************/
 
-#include <iostream>
-
-#include "../includes/class/Team.hpp"
-#include "../includes/class/Participant.hpp"
-
-#include "../includes/cli/TeamCLI.hpp"
-
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
 /****************************************************************************************************/
@@ -28,29 +21,3 @@
 /****************************************************************************************************/
 /*	PUBLIC METHOD																					*/
 /****************************************************************************************************/
-
-
-void				TeamCLI::print(cTeam team)
-{
-	std::cout << "__________ TEAM DESCRIPTION __________" << std::endl;
-	std::cout << "Team ID: " << team.getId() << std::endl;
-	std::cout << "Nom: " << team.getName() << std::endl;
-
-	if (team.getHasMultiTeamPlayer())
-		std::cout << " [Contient un Multi-Joueur]" << std::endl;
-
-	std::cout << "Membres :\n\t";
-
-	for (size_t i = 0; i < team.getMembers().size(); ++i)
-	{
-		std::cout << team.getMembers()[i]->getPseudo();
-
-		if (team.getMembers()[i]->getIsMultiTeamPlayer())
-			std::cout << " (Multi)";
-
-		if (i < team.getMembers().size() - 1)
-			std::cout << "\t&\t";
-	}
-
-	std::cout << "\n______________________________________" << std::endl;
-}

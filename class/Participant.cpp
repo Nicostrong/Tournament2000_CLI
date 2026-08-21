@@ -18,22 +18,8 @@
 
 using				String			=	std::string;
 using				cString			=	const std::string&;
-using				vString			=	std::vector<std::string>;
-using				vtupleMsg		=	std::vector<std::tuple<std::string, bool>>;
-
-using				cInt			=	const int;
-using				vInt			=	std::vector<int>;
-using				cvInt			=	const std::vector<int>;
-template<std::size_t N>
-using				aInt			=	std::array<int, N>;
 
 using				cBool			=	const bool;
-
-using				pPart			=	Participant*;
-using				cPart			=	const Participant&;
-using				cpPart			=	const Participant*;
-using				vpPart			=	std::vector<Participant*>;
-using				cvpPart			=	const std::vector<Participant*>&;
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/

@@ -20,10 +20,13 @@
 #include "../includes/class/Settings.hpp"
 #include "../includes/class/Tournament.hpp"
 
-#include "../includes/cli/PoolCLI.hpp"
 #include "../includes/cli/MatchCLI.hpp"
 #include "../includes/cli/TournamentCLI.hpp"
-#include "../includes/cli/TournamentViewer.hpp"
+
+#include "../includes/viewer/TitleViewer.hpp"
+#include "../includes/viewer/MatchViewer.hpp"
+#include "../includes/viewer/PoolViewer.hpp"
+#include "../includes/viewer/TournamentViewer.hpp"
 
 #include "../includes/utils/Exporter.hpp"
 #include "../includes/utils/PrintUtils.hpp"
@@ -78,8 +81,8 @@ void				TournamentCLI::displayMenuUI(cTour tournament)
 void				TournamentCLI::handleTitle()
 {
 	PrintUtils::clear();
-	PrintUtils::banner();
-	PrintUtils::tournament();
+	TitleViewer::banner();
+	TitleViewer::tournament();
 }
 
 /**
@@ -180,7 +183,7 @@ void				TournamentCLI::executeChoice(cInt choice, Tournament& tournament)
 
 		case 2:
 			for (const Pool* pool : tournament.getPools())
-				PoolCLI::displayPoolDetails(*pool);
+				PoolViewer::displayPoolDetails(*pool);
 			break;
 
 		case 3:
@@ -325,7 +328,7 @@ void				TournamentCLI::handleExport(Tournament& tournament)
 	while (true)
 	{
 		handleTitle();
-		PrintUtils::exportMenu();
+		TitleViewer::exportMenu();
 		std::cout << Color::YELLOW << "\t1.\t" << Color::RESET << "Players\n";
 		std::cout << Color::YELLOW << "\t2.\t" << Color::RESET << "Teams\n";
 		std::cout << Color::YELLOW << "\t3.\t" << Color::RESET << "Pools\n";
@@ -629,7 +632,7 @@ void				TournamentCLI::handleMatchList(cvpMatch matches, cString title)
 			std::cout << (i + 1) << ". ";
 
 			if (matches[i])
-				MatchCLI::display(*matches[i]);
+				MatchViewer::display(*matches[i]);
 			else
 				std::cout << "Match non defini\n";
 		}

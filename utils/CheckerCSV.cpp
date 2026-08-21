@@ -15,8 +15,6 @@
 #include "../includes/utils/PrintUtils.hpp"
 #include "../includes/utils/FormatUtils.hpp"
 
-#include "../includes/cli/ParticipantCLI.hpp"
-
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
 /****************************************************************************************************/
@@ -64,7 +62,7 @@ bool				CheckerCSV::validateParticipantCSV(cString filename)
 		if (line.empty())
 			continue;
 
-		size_t commaCount = std::count(line.begin(), line.end(), ',');
+		size_t commaCount = std::ranges::count(line.begin(), line.end(), ',');
 
 		if (commaCount != 3)
 		{

@@ -56,8 +56,7 @@ CLI				=	./cli/MatchCLI.cpp \
 					./cli/PoolCLI.cpp \
 					./cli/SettingsCLI.cpp \
 					./cli/TeamCLI.cpp \
-					./cli/TournamentCLI.cpp \
-					./cli/TournamentViewer.cpp
+					./cli/TournamentCLI.cpp
 
 UTILS			=	./utils/CheckerCSV.cpp \
 					./utils/Exporter.cpp \
@@ -65,10 +64,20 @@ UTILS			=	./utils/CheckerCSV.cpp \
 					./utils/PrintUtils.cpp \
 					./utils/TournamentHistory.cpp
 
+VIEWER			=	./viewer/MatchViewer.cpp \
+                    ./viewer/ParticipantViewer.cpp \
+                    ./viewer/PhaseViewer.cpp \
+                    ./viewer/PoolViewer.cpp \
+                    ./viewer/TeamViewer.cpp \
+                    ./viewer/TitleViewer.cpp \
+                    ./viewer/TournamentViewer.cpp
+
+
 SRC				=	./src/main.cpp \
 					$(CLASS) \
 					$(CLI) \
-					$(UTILS)
+					$(UTILS) \
+					$(VIEWER)
 
 OBJ				=	$(SRC:.cpp=.o)
 

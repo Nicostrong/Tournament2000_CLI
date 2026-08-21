@@ -139,17 +139,13 @@ class				Tournament
 		vpPart						getAllFemales() const;
 		[[nodiscard]]
 		vpPart						getMultiTeamsPlayers(vpPart participants) const;
-		[[nodiscard]]
-		bool						getIsReady() const;
-		[[nodiscard]]
-		bool						getIsFinished() const;
 		
 		//	SETTER
 		void						setIsReady(cBool value);
 		void						setIsFinished(cBool value);
+
 	public:
 
-		//	CANONICAL
 		explicit Tournament(pSet settings);
 		Tournament(pSet settings, vpPart participants);
 		Tournament() = delete;
@@ -181,6 +177,10 @@ class				Tournament
 		bool						getHasHeighth() const;
 		[[nodiscard]]
 		bool						getHasThirdMatch() const;
+		[[nodiscard]]
+		bool						getIsReady() const;
+		[[nodiscard]]
+		bool						getIsFinished() const;
 
 		//	SETTER
 		void						setHasSixteenth(cBool value);

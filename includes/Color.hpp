@@ -58,4 +58,5 @@ namespace			Color
 	constexpr const char* BG_MAGENTA	=	"\033[45m";
 	constexpr const char* BG_CYAN		=	"\033[46m";
 	constexpr const char* BG_WHITE		=	"\033[47m";
+
 }

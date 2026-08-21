@@ -39,6 +39,6 @@ class				MatchCLI
 {
 	public:
 
-		static void					display(cMatch match);
 		static void					inputScore(Match& match);
+
 };

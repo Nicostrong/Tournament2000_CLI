@@ -45,8 +45,6 @@ using				cGender			=	const Gender&;
  */
 class				Participant
 {
-	public:
-
 	private:
 
 		static int					_idCounter;
@@ -60,7 +58,6 @@ class				Participant
 
 	public:
 
-		//	CANONICAL
 		Participant() = delete;
 		Participant(cString pseudo, cString lastName, cString firstName, cGender gender);
 		Participant(const Participant& p) = delete;
@@ -92,7 +89,5 @@ class				Participant
 		void						setGender(cGender value);
 		void						setIsEliminated(cBool value);
 		void						setIsMultiTeamPlayer(cBool value);
-
-		//	METHOD
 
 };

@@ -64,7 +64,6 @@ class				Team
 
 	public:
 
-		//	CANONICAL
 		Team();
 		explicit Team(cString ) = delete;
 		Team(const Team& ) = delete;
@@ -109,4 +108,5 @@ class				Team
 		void						addPoint(cInt point);
 		void						addScoreMarked(cInt score);
 		void						addScoreAgainst(cInt score);
+
 };

@@ -7,7 +7,6 @@
 /****************************************************************************************************/
 
 #include <algorithm>
-#include <cctype>
 
 #include "../includes/utils/FormatUtils.hpp"
 
@@ -65,7 +64,7 @@ void				FormatUtils::capitalize(String& s)
     if (s.empty())
         return;
     
-    std::transform(s.begin(), s.end(), s.begin(), ::tolower);
+    std::ranges::transform(s.begin(), s.end(), s.begin(), ::tolower);
 
     s[0] = std::toupper(s[0]);
 }
@@ -77,7 +76,7 @@ void				FormatUtils::capitalize(String& s)
  */
 void				FormatUtils::toUpper(String& s)
 {
-    std::transform(s.begin(), s.end(), s.begin(), ::toupper);
+    std::ranges::transform(s.begin(), s.end(), s.begin(), ::toupper);
 }
 
 /**
@@ -86,7 +85,7 @@ void				FormatUtils::toUpper(String& s)
  */
 void				FormatUtils::toLower(String& s)
 {
-    std::transform(s.begin(), s.end(), s.begin(), ::tolower);
+    std::ranges::transform(s.begin(), s.end(), s.begin(), ::tolower);
 }
 
 /**

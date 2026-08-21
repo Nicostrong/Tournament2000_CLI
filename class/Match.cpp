@@ -6,11 +6,6 @@
 /*	INCLUDES																						*/
 /****************************************************************************************************/
 
-#include <tuple>
-#include <string>
-#include <vector>
-#include <array>
-
 #include "../includes/class/Match.hpp"
 #include "../includes/class/Team.hpp"
 
@@ -18,24 +13,7 @@
 /*	TYPEDEF																							*/
 /****************************************************************************************************/
 
-using				String			=	std::string;
-using				cString			=	const std::string&;
-using				vString			=	std::vector<std::string>;
-using				vtupleMsg		=	std::vector<std::tuple<std::string, bool>>;
-
 using				cInt			=	const int;
-using				vInt			=	std::vector<int>;
-using				cvInt			=	const std::vector<int>;
-template<std::size_t N>
-using				aInt			=	std::array<int, N>;
-
-using				cBool			=	const bool;
-
-using				pMatch			=	Match*;
-using				cMatch			=	const Match&;
-using				cpMatch			=	const Match*;
-using				vpMatch			=	std::vector<Match*>;
-using				cvpMatch		=	const std::vector<Match*>&;
 
 /****************************************************************************************************/
 /*	CONSTRUCTOR / DESTRUCTOR																		*/

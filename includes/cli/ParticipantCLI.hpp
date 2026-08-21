@@ -63,8 +63,6 @@ class				ParticipantCLI
 		static Participant*			create(cvpPart participants, cSet settings);
 		static void					destroy(size_t id, vpPart& participants);
 		static void					modify(size_t id, cvpPart participants, cSet settings);
-		static void					displayOne(cPart p);
-		static void					displayAll(cvpPart participants);
 
 		//	IMPORT
 		static vpPart				importFromCSV(cString filename);
@@ -89,6 +87,7 @@ class				ParticipantCLI
 	public:
 
 		static void					handleMenuParticipant(vpPart& participants, cSet settings);
+
 };
 
 std::ostream&		operator<<(std::ostream& os, cPart p);

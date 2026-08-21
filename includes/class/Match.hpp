@@ -19,6 +19,7 @@ class				Team;
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
 /****************************************************************************************************/
+
 using				cInt			=	const int;
 
 using				pTeam			=	Team*;
@@ -46,7 +47,6 @@ class				Match
 
 	public:
 
-		//	CANONICAL
 		Match() = delete;
 		Match(Team* a, Team* b);
 		Match(const Match& match) = delete;
@@ -73,4 +73,5 @@ class				Match
 		Team*						getWinner() const;
 		[[nodiscard]]
 		Team*						getLoser() const;
+
 };

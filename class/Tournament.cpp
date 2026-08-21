@@ -26,21 +26,9 @@
 /*	TYPEDEF																							*/
 /****************************************************************************************************/
 
-using				String			=	std::string;
-using				cString			=	const std::string&;
-using				vString			=	std::vector<std::string>;
-using				vtupleMsg		=	std::vector<std::tuple<std::string, bool>>;
-
 using				cInt			=	const int;
-using				vInt			=	std::vector<int>;
-using				cvInt			=	const std::vector<int>;
-template<std::size_t N>
-using				aInt			=	std::array<int, N>;
 
 using				cBool			=	const bool;
-
-using				cTour			=	const Tournament&;
-using				cpTour			=	const Tournament*;
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
@@ -84,6 +72,8 @@ Phase*				Tournament::getThirdPlace() const		{	return (this->_thirdPlace);		}
 bool				Tournament::getHasSixteenth() const		{	return (this->_hasSixteenth);	}
 bool				Tournament::getHasHeighth() const		{	return (this->_hasHeighth);		}
 bool				Tournament::getHasThirdMatch() const	{	return (this->_hasHeighth);		}
+bool				Tournament::getIsReady() const			{	return (this->_isReady);		}
+bool				Tournament::getIsFinished() const		{	return (this->_isFinished);		}
 
 /****************************************************************************************************/
 /*	SETTER																							*/
@@ -170,7 +160,7 @@ vpPart				Tournament::getMultiTeamsPlayers(vpPart participants) const
 	std::random_device rd;
 	std::mt19937 g(rd());
 
-	std::shuffle(participants.begin(), participants.end(), g);
+	std::ranges::shuffle(participants.begin(), participants.end(), g);
 
 	for (int i = 0; i < maxRecyclable && i < static_cast<int>(participants.size()); ++i)
 	{
@@ -199,7 +189,7 @@ void				Tournament::createTeamsUniplayer()
 
 	vpPart shuffled = this->_participants;
 
-	std::shuffle(shuffled.begin(), shuffled.end(), g);
+	std::ranges::shuffle(shuffled.begin(), shuffled.end(), g);
 
 	for (int i = 0; i < missing; ++i)
 	{
@@ -243,7 +233,7 @@ void				Tournament::createDoubleTeams()
 	std::random_device rd;
 	std::mt19937 g(rd());
 
-	std::shuffle(pool.begin(), pool.end(), g);
+	std::ranges::shuffle(pool.begin(), pool.end(), g);
 	
 	size_t pIdx = 0;
 	size_t mIdx = 0;
@@ -304,9 +294,9 @@ void				Tournament::createMixedTeams()
 	std::random_device rd;
 	std::mt19937 g(rd());
 
-	std::shuffle(majoritaryPool.begin(), majoritaryPool.end(), g);
-	std::shuffle(minoritaryPool.begin(), minoritaryPool.end(), g);
-	std::shuffle(missingPool.begin(), missingPool.end(), g);
+	std::ranges::shuffle(majoritaryPool.begin(), majoritaryPool.end(), g);
+	std::ranges::shuffle(minoritaryPool.begin(), minoritaryPool.end(), g);
+	std::ranges::shuffle(missingPool.begin(), missingPool.end(), g);
 
 	createStandardMixedTeams(ctx);
 	createMissingMixedTeams(ctx);
@@ -357,8 +347,8 @@ void				Tournament::cloneForEqualGenders(const TeamCreationCtx& ctx)
 	vpPart sampleA = *(ctx.males);
 	vpPart sampleB = *(ctx.females);
 
-	std::shuffle(sampleA.begin(), sampleA.end(), g);
-	std::shuffle(sampleB.begin(), sampleB.end(), g);
+	std::ranges::shuffle(sampleA.begin(), sampleA.end(), g);
+	std::ranges::shuffle(sampleB.begin(), sampleB.end(), g);
 
 	for (int i = 0; i < ctx.missing; ++i)
 	{
@@ -389,7 +379,7 @@ void				Tournament::cloneForUnequalGenders(const TeamCreationCtx& ctx)
 
 	vpPart candidates = *(ctx.minoritary);
 
-	std::shuffle(candidates.begin(), candidates.end(), g);
+	std::ranges::shuffle(candidates.begin(), candidates.end(), g);
 
 	for (int i = 0; i < ctx.missing; ++i)
 	{

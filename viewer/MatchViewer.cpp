@@ -1,15 +1,14 @@
 //
-// Created by Nicolas Fordoxcel on 14/06/2026.
+// Created by Nicolas Fordoxcel on 21/08/2026.
 //
 
 /****************************************************************************************************/
 /*	INCLUDES																						*/
 /****************************************************************************************************/
 
-#include <limits>
 #include <iostream>
 
-#include "../includes/cli/MatchCLI.hpp"
+#include "../includes/viewer/MatchViewer.hpp"
 
 # include "../includes/class/Match.hpp"
 #include "../includes/class/Team.hpp"
@@ -34,37 +33,19 @@
 /*	PUBLIC METHOD																					*/
 /****************************************************************************************************/
 
-void				MatchCLI::inputScore(Match& match)
+void				MatchViewer::display(cMatch match)
 {
-	int sA = -1;
-	int sB = -1;
+	std::cout << match.getTeamA()->getName() << " vs " << match.getTeamB()->getName();
 
-	std::cout << "\n--- Saisie du score ---" << std::endl;
-
-	while (sA < 0)
+	if (match.isFinished())
 	{
-		std::cout << "Score de " << match.getTeamA()->getName() << " : ";
+		std::cout << " [ SCORE : " << match.getScoreA() << " - " << match.getScoreB() << " ]";
 
-		if (!(std::cin >> sA))
-		{
-			std::cin.clear();
-			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-			sA = -1;
-		}
+		if (match.getWinner())
+			std::cout << " -> Vainqueur : " << match.getWinner()->getName();
 	}
+	else
+		std::cout << " [ MATCH A VENIR ]";
 
-	while (sB < 0)
-	{
-		std::cout << "Score de " << match.getTeamB()->getName() << " : ";
-
-		if (!(std::cin >> sB))
-		{
-			std::cin.clear();
-			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-			sB = -1;
-		}
-	}
-
-	match.setScore(sA, sB);
-	std::cout << "Score enregistre !" << std::endl;
+	std::cout << std::endl;
 }

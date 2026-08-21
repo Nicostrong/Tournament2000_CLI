@@ -9,7 +9,6 @@
 /****************************************************************************************************/
 
 # include <string>
-# include <fstream>
 
 /****************************************************************************************************/
 /*	CLASSES																							*/
@@ -81,7 +80,7 @@ class				Exporter
 		static bool					exportParticipantsToCSV(cvpPart participants, cString filename);
 
 		// Exports JSON
-		static bool					exportTournamentToJson(cTour tournament, cString filename);
+		//static bool					exportTournamentToJson(cTour tournament, cString filename);
 
 	private:
 

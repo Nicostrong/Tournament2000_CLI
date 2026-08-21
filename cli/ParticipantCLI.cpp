@@ -11,7 +11,6 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-#include <algorithm>
 #include <exception>
 
 #include "../includes/class/Settings.hpp"
@@ -20,6 +19,9 @@
 #include "../includes/utils/CheckerCSV.hpp"
 #include "../includes/utils/PrintUtils.hpp"
 #include "../includes/utils/FormatUtils.hpp"
+
+#include "../includes/viewer/TitleViewer.hpp"
+#include "../includes/viewer/ParticipantViewer.hpp"
 
 #include "../includes/cli/ParticipantCLI.hpp"
 
@@ -394,79 +396,6 @@ void				ParticipantCLI::modify(const size_t id, cvpPart participants, cSet setti
 	PrintUtils::addSuccess(std::format("Le participant avec le pseudo {} a ete modifie avec succes.", pToModify->getPseudo()));
 }
 
-void				ParticipantCLI::displayOne(cPart p)
-{
-	std::cout << p;
-}
-
-void				ParticipantCLI::displayAll(cvpPart participants)
-{
-	if (participants.empty())
-	{
-		PrintUtils::addError("Aucun participant enregistre.");
-		return;
-	}
-
-	std::cout << "\n=============== LISTE DES PARTICIPANTS  (" << participants.size() << ") ===============\n";
-
-	size_t wId = 2;
-	size_t wPseudo = 6;
-	size_t wNom = 3;
-	size_t wPrenom = 6;
-	size_t wGenre = 5;
-	size_t wElim = 7;
-	size_t wMulti = 5;
-
-	for (cpPart p : participants)
-	{
-		wId = std::max(wId, std::to_string(p->getId()).length());
-		wPseudo = std::max(wPseudo, p->getPseudo().length());
-		wNom = std::max(wNom, p->getLastName().length());
-		wPrenom = std::max(wPrenom, p->getFirstName().length());
-		wGenre = std::max(wGenre, p->getGenderStr().length());
-	}
-
-	wId += 2; wPseudo += 2; wNom += 2; wPrenom += 2; wGenre += 2; wElim += 2; wMulti += 2;
-
-	auto printSeparator = [&]() {
-		std::cout << '+' << String(wId, '-')
-		          << '+' << String(wPseudo, '-')
-		          << '+' << String(wNom, '-')
-		          << '+' << String(wPrenom, '-')
-		          << '+' << String(wGenre, '-')
-		          << '+' << String(wElim, '-')
-		          << '+' << String(wMulti, '-') << "+\n";
-	};
-
-	printSeparator();
-	std::cout << std::format("|{:<{}}|{:<{}}|{:<{}}|{:<{}}|{:<{}}|{:<{}}|{:<{}}|\n",
-		" ID", wId,
-		" Pseudo", wPseudo,
-		" Nom", wNom,
-		" Prenom", wPrenom,
-		" Genre", wGenre,
-		" Elimine", wElim,
-		" Multi", wMulti);
-	printSeparator();
-
-	for (cpPart p : participants)
-	{
-		String strElim = p->getIsEliminated() ? "Oui" : "Non";
-		String strMulti = p->getIsMultiTeamPlayer() ? "Oui" : "Non";
-
-		std::cout << std::format("| {:<{}}| {:<{}}| {:<{}}| {:<{}}| {:<{}}| {:<{}}| {:<{}}|\n",
-			p->getId(), wId - 1,
-			p->getPseudo(), wPseudo - 1,
-			p->getLastName(), wNom - 1,
-			p->getFirstName(), wPrenom - 1,
-			p->getGenderStr(), wGenre - 1,
-			strElim, wElim - 1,
-			strMulti, wMulti - 1);
-	}
-	printSeparator();
-	std::cout << std::endl;
-}
-
 /************/
 /*	IMPORT	*/
 /************/
@@ -559,7 +488,7 @@ void				ParticipantCLI::handleModifyParticipant(cvpPart participants, cSet setti
 		return;
 	}
 
-	displayAll(participants);
+	ParticipantViewer::displayAll(participants);
 
 	std::cout << "\nEntrez l'ID du participant a modifier : ";
 
@@ -586,7 +515,7 @@ void				ParticipantCLI::handleDeleteParticipant(vpPart& participants)
 		return;
 	}
 
-	displayAll(participants);
+	ParticipantViewer::displayAll(participants);
 
 	std::cout << "\nEntrez l'ID du participant a supprimer : ";
 
@@ -774,15 +703,15 @@ void				ParticipantCLI::handleList()
 	if (partList.empty())
 		return;
 
-	displayAll(partList);
+	ParticipantViewer::displayAll(partList);
 	partList.clear();
 }
 
 void				ParticipantCLI::handleTitle()
 {
 	PrintUtils::clear();
-	PrintUtils::banner();
-	PrintUtils::players();
+	TitleViewer::banner();
+	TitleViewer::players();
 }
 
 /************/

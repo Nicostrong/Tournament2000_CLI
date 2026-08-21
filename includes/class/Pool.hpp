@@ -60,7 +60,6 @@ class				Pool
 
 	public:
 
-		//	CANONICAL
 		Pool();
 		explicit Pool(cString ) = delete;
 		Pool(const Pool& ) = delete;
@@ -83,4 +82,5 @@ class				Pool
 
 		[[nodiscard]]
 		vpTeam						getQualifiers() const;
+
 };

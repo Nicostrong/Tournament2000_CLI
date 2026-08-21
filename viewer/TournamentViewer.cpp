@@ -14,7 +14,7 @@
 #include "../includes/class/Settings.hpp"
 #include "../includes/class/Tournament.hpp"
 
-#include "../includes/cli/TournamentViewer.hpp"
+#include "../includes/viewer/TournamentViewer.hpp"
 
 #include "../includes/utils/PrintUtils.hpp"
 

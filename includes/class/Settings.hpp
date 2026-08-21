@@ -178,7 +178,6 @@ class				Settings
 
 	public:
 
-		//	CANONICAL
 		Settings();
 		Settings(const Settings& ) = default;
 		Settings&					operator=(const Settings& ) = default;

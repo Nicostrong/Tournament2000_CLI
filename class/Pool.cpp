@@ -16,24 +16,9 @@
 /*	TYPEDEF																							*/
 /****************************************************************************************************/
 
-using				String			=	std::string;
 using				cString			=	const std::string&;
-using				vString			=	std::vector<std::string>;
-using				vtupleMsg		=	std::vector<std::tuple<std::string, bool>>;
 
 using				cInt			=	const int;
-using				vInt			=	std::vector<int>;
-using				cvInt			=	const std::vector<int>;
-template<std::size_t N>
-using				aInt			=	std::array<int, N>;
-
-using				cBool			=	const bool;
-
-using				pPool			=	Pool*;
-using				cPool			=	const Pool&;
-using				cpPool			=	const Pool*;
-using				vpPool			=	std::vector<Pool*>;
-using				cvpPool			=	const std::vector<Pool*>&;
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
@@ -101,7 +86,7 @@ void				Pool::generateMatches(cInt nbSetsPerEncounter)
 
 void				Pool::sortTeams()
 {
-	std::sort(this->_teams.begin(), this->_teams.end(), [](const Team* a, const Team* b)
+	std::ranges::sort(this->_teams.begin(), this->_teams.end(), [](const Team* a, const Team* b)
 	{
 		if (a->getPoint() != b->getPoint())
 			return (a->getPoint() > b->getPoint());

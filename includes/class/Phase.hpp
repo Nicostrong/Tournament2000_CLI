@@ -60,7 +60,6 @@ class				Phase
 
 	public:
 
-		//	CANONICAL
 		Phase() = delete;
 		Phase(String name, int nbSets);
 		Phase(const Phase& ) = delete;
@@ -88,4 +87,5 @@ class				Phase
 		void						addEncounter(pTeam a, pTeam b);
 		[[nodiscard]]
 		bool						isFinished() const;
+
 };

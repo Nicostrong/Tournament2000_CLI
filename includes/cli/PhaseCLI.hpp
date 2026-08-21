@@ -10,7 +10,6 @@
 
 # include <string>
 # include <vector>
-# include <fstream>
 
 /****************************************************************************************************/
 /*	CLASSES																							*/
@@ -40,21 +39,11 @@ using				cvpPhase		=	const std::vector<Phase*>&;
 /*	CLASS																							*/
 /****************************************************************************************************/
 
-/**
-* Gere l affichage terminal et l export fichier d un objet Phase.
-*/
 class				PhaseCLI
 {
 
-	private:
-
-		static void					writeEncounter(std::ostream& out, cvpMatch matches,
-									size_t startIdx, int nbSets, int encounterNum, bool toFile);
-
 	public:
 
-		static void					displayPhase(cPhase phase);
-		static void					displayResults(cPhase phase);
 		static bool					exportToTxt(cPhase phase, cString filename);
 
 };
