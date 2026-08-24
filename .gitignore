@@ -78,6 +78,8 @@ Tournament2000
 *.xlsx
 Using
 LINUX
+docker-compose.yaml
+Dockerfile
 
 # IDE directory
 .idea/
