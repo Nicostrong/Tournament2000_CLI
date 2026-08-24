@@ -156,6 +156,10 @@ class				Tournament
 
 		//	GETTER
 		[[nodiscard]]
+		vpTeam						getTeams() const;
+		[[nodiscard]]
+		pTeam						getTeamById(int id) const;
+		[[nodiscard]]
 		cpSet						getSettings() const;
 		[[nodiscard]]
 		cvpPool						getPools() const;

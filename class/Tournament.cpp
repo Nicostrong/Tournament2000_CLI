@@ -62,6 +62,7 @@ Tournament::~Tournament()
 /****************************************************************************************************/
 
 cpSet				Tournament::getSettings() const			{	return (this->_settings);		}
+vpTeam				Tournament::getTeams() const			{	return (this->_teams);			}
 cvpPool				Tournament::getPools() const			{	return (this->_pools);			}
 Phase*				Tournament::getSixteenth() const		{	return (this->_sixteenths);		}
 Phase*				Tournament::getHeighth() const			{	return (this->_heighths);		}
@@ -691,6 +692,14 @@ bool				Tournament::initializeTournament()
 	this->_isReady = true;
 	
 	return (true);
+}
+
+pTeam				Tournament::getTeamById(int id) const
+{
+	if (this->_teams.size() < (static_cast<size_t>(id) - 1))
+		return (nullptr);
+	
+	return (this->_teams[id - 1]);
 }
 
 /**

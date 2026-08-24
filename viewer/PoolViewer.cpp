@@ -186,5 +186,5 @@ void				PoolViewer::displayPoolDetails(cPool pool)
 	std::cout << "============================================" << std::endl;
 
 	for (cpTeam t : pool.getTeams())
-		TeamViewer::print(*t);
+		TeamViewer::showTeamDescription(*t);
 }

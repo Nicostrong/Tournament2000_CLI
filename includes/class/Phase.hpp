@@ -58,6 +58,8 @@ class				Phase
 		bool						_isFinished;
 		vpMatch						_matches;
 
+		Team*						getEncounterWinner(size_t index) const;
+
 	public:
 
 		Phase() = delete;

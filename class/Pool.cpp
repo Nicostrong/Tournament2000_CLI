@@ -107,12 +107,10 @@ bool				Pool::allMatchesFinished() const
 vpTeam				Pool::getQualifiers() const
 {
 	vpTeam qualifiers;
-
-	if (!this->_teams.empty())
-		qualifiers.push_back(this->_teams[0]);
-
-	if (this->_teams.size() >= 2)
-		qualifiers.push_back(this->_teams[1]);
+	size_t nbQualifiers = std::min(this->_teams.size(), static_cast<size_t>(2));
+	
+	for (size_t i = 0; i < nbQualifiers; ++i)
+		qualifiers.push_back(this->_teams[i]);
 
 	return (qualifiers);
 }

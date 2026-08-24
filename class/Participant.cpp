@@ -44,14 +44,30 @@ Participant::Participant(cString pseudo, cString lastName, cString firstName, cG
 /*	GETTER																							*/
 /****************************************************************************************************/
 
-size_t				Participant::getId() const					{	return (this->_id);																			}
-cString				Participant::getPseudo() const				{	return (this->_pseudo);																		}
-cString				Participant::getLastName() const			{	return (this->_lastName);																	}
-cString				Participant::getFirstName() const			{	return (this->_firstName);																	}
-Gender				Participant::getGenderInt() const			{	return (this->_gender);																		}
-String				Participant::getGenderStr() const			{	return (this->_gender == MALE ? "Homme" : this->_gender == FEMALE ? "Femme" : "Mixte");		}
-bool				Participant::getIsEliminated() const		{	return (this->_isEliminated);																}
-bool				Participant::getIsMultiTeamPlayer() const	{	return (this->_isMultiTeamPlayer);															}
+size_t				Participant::getId() const					{	return (this->_id);									}
+cString				Participant::getPseudo() const				{	return (this->_pseudo);								}
+cString				Participant::getLastName() const			{	return (this->_lastName);							}
+cString				Participant::getFirstName() const			{	return (this->_firstName);							}
+String				Participant::getFullName() const			{	return (this->_firstName + " " + this->_lastName);	}
+Gender				Participant::getGenderInt() const			{	return (this->_gender);								}
+bool				Participant::getIsEliminated() const		{	return (this->_isEliminated);						}
+bool				Participant::getIsMultiTeamPlayer() const	{	return (this->_isMultiTeamPlayer);					}
+
+
+String				Participant::getGenderStr() const
+{
+	switch (this->_gender)
+	{
+		case MALE:
+			return ("Homme");
+
+		case FEMALE:
+			return ("Femme");
+
+		default:
+			return ("Mixte");
+	}
+}
 
 /****************************************************************************************************/
 /*	SETTER																							*/
@@ -71,3 +87,8 @@ void				Participant::setIsMultiTeamPlayer(cBool value)	{	this->_isMultiTeamPlaye
 /****************************************************************************************************/
 /*	PUBLIC METHODS																					*/
 /****************************************************************************************************/
+
+bool				Participant::operator==(const Participant& other) const
+{
+	return (this->_id == other._id);
+}

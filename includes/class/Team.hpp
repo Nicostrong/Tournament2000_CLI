@@ -54,13 +54,13 @@ class				Team
 		int							_id;
 		int							_point;
 		int							_scoreMarked;
-        int							_scoreAgainst;
+		int							_scoreAgainst;
 		bool						_isMixed;
 		bool						_isEliminated;
+		bool						_isDisqualified;
 		bool						_hasMultiTeamPlayer;
 		String						_name;
 		vpPart						_members;
-
 
 	public:
 
@@ -77,6 +77,8 @@ class				Team
 		bool						getIsMixed() const;
 		[[nodiscard]]
 		bool						getIsEliminated() const;
+		[[nodiscard]]
+		bool						getIsDisqualified() const;
 		[[nodiscard]]
 		bool						getHasMultiTeamPlayer() const;
 		[[nodiscard]]
@@ -97,6 +99,7 @@ class				Team
 		//	SETTER
 		void						setIsMixed(cBool value);
 		void						setIsEliminated(cBool value);
+		void						setIsDisqualified(cBool value);
 		void						setHasMultiTeamPlayer(cBool value);
 		void						setName(cString value);
 
@@ -108,5 +111,9 @@ class				Team
 		void						addPoint(cInt point);
 		void						addScoreMarked(cInt score);
 		void						addScoreAgainst(cInt score);
+		bool						hasMember(cpPart p) const;
+		bool						sharesMemberWith(const Team* other) const;
+		bool						replaceMember(size_t index, Participant* newMember);
+		void						disqualifyTeam();
 
 };

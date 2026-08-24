@@ -20,8 +20,6 @@ class				Team;
 /*	TYPEDEF																							*/
 /****************************************************************************************************/
 
-using				cInt			=	const int;
-
 using				pTeam			=	Team*;
 using				cTeam			=	const Team&;
 using				cpTeam			=	const Team*;
@@ -45,6 +43,9 @@ class				Match
 		int							_scoreB;
 		bool						_isFinished;
 
+		bool						isDraw() const;
+		void						applyStats(int sA, int sB, int multiplier);
+
 	public:
 
 		Match() = delete;
@@ -66,12 +67,16 @@ class				Match
 		bool						isFinished() const;
 
 		//	SETTER
-		void						setScore(cInt sA, cInt sB);
+		void						setScoreA(int value);
+		void						setScoreB(int value);
+		void						setIsFinished(bool value);
+		void						setScore(int sA, int sB);
 
 		//	METHOD
 		[[nodiscard]]
 		Team*						getWinner() const;
 		[[nodiscard]]
 		Team*						getLoser() const;
+		void						modifyScore(int sA, int sB);
 
 };

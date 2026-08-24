@@ -49,7 +49,8 @@ class				TeamViewer
 {
 	public:
 
-		static void					print(cTeam team);
+		static void					showTeamDescription(cTeam team);
+		static void					showAllTeams(vpTeam teams);
 
 };
 

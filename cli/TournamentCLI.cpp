@@ -20,6 +20,7 @@
 #include "../includes/class/Settings.hpp"
 #include "../includes/class/Tournament.hpp"
 
+#include "../includes/cli/TeamCLI.hpp"
 #include "../includes/cli/MatchCLI.hpp"
 #include "../includes/cli/TournamentCLI.hpp"
 
@@ -70,9 +71,9 @@ namespace
 void				TournamentCLI::displayMenuUI(cTour tournament)
 {
 	handleTitle();
-    PrintUtils::handleMessages();
-    menuTournament(tournament);
-    checkInterruption();
+	PrintUtils::handleMessages();
+	menuTournament(tournament);
+	checkInterruption();
 }
 
 /**
@@ -91,8 +92,8 @@ void				TournamentCLI::handleTitle()
 void				TournamentCLI::menuTournament(cTour tournament)
 {
 	std::cout << "\n========== TOURNOI : " << tournament.getSettings()->getName() << " ==========" << std::endl;
-	std::cout <<  Color::YELLOW << "\t1.\t" << Color::RESET << "Pools" << std::endl;
-	std::cout <<  Color::YELLOW << "\t2.\t" << Color::RESET << "Teams" << std::endl;
+	std::cout <<  Color::YELLOW << "\t1.\t" << Color::RESET << "Teams" << std::endl;
+	std::cout <<  Color::YELLOW << "\t2.\t" << Color::RESET << "Pool" << std::endl;
 
 	if (tournament.getHasSixteenth() && isSixteenthUnlocked(tournament))
 		std::cout <<  Color::YELLOW << "\t3.\t" << Color::RESET << "1/16" << std::endl;
@@ -106,16 +107,19 @@ void				TournamentCLI::menuTournament(cTour tournament)
 	if (isSemisUnlocked(tournament))
 		std::cout <<  Color::YELLOW << "\t6.\t" << Color::RESET << "1/2" << std::endl;
 
-	//if (isThirdUnlocked(tournament))
-	std::cout <<  Color::YELLOW << "\t7.\t" << Color::RESET << "3eme place" << std::endl;
+	if (isThirdUnlocked(tournament))
+	{
+		std::cout <<  Color::YELLOW << "\t7.\t" << Color::RESET << "Petite finale" << std::endl;
+		std::cout <<  Color::YELLOW << "\t8.\t" << Color::RESET << "Finale" << std::endl;
+	}
 
 	if (isFinalUnlocked(tournament))
-		std::cout <<  Color::YELLOW << "\t7.\t" << Color::RESET << "Final" << std::endl;
+		std::cout <<  Color::YELLOW << "\t7.\t" << Color::RESET << "Finale" << std::endl;
 
 	std::cout << "────────────────────────────────────────────────────────────" << std::endl;
-	std::cout <<  Color::YELLOW << "\t8.\t" << Color::RESET << "Export" << std::endl;
+	std::cout <<  Color::YELLOW << "\tE.\t" << Color::RESET << "Export" << std::endl;
 	std::cout << "────────────────────────────────────────────────────────────" << std::endl;
-	std::cout <<  Color::YELLOW << "\t9.\t" << Color::RESET << "Show" << std::endl;
+	std::cout <<  Color::YELLOW << "\tS.\t" << Color::RESET << "Show" << std::endl;
 	std::cout << "────────────────────────────────────────────────────────────" << std::endl;
 	std::cout <<  Color::YELLOW << "\tQ.\t" << Color::RESET << "Quit" << std::endl;
 	std::cout << "============================================================" << std::endl;
@@ -177,16 +181,15 @@ void				TournamentCLI::executeChoice(cInt choice, Tournament& tournament)
 {
 	switch (choice)
 	{
-		case 1:
+		case 1:		//	TEAM
+			TeamCLI::handleMenuTeam(tournament);
+			break;
+
+		case 2:		//	POOL
 			handlePoolSelection(tournament);
 			break;
 
-		case 2:
-			for (const Pool* pool : tournament.getPools())
-				PoolViewer::displayPoolDetails(*pool);
-			break;
-
-		case 3:
+		case 3:		//	1/16
 			if (tournament.getHasSixteenth() && isSixteenthUnlocked(tournament))
 				handleEliminationPhase(tournament.getSixteenth(), [&]() { tournament.generateSixteenths(); },
 					"1/16 DE FINALE", "1/16 generes avec succes !", "Impossible : verifiez que les poules soient terminees.");
@@ -194,7 +197,7 @@ void				TournamentCLI::executeChoice(cInt choice, Tournament& tournament)
 				PrintUtils::addError("Menu non disponible pour le moment.");
 			break;
 
-		case 4:
+		case 4:		//	1/8
 			if (tournament.getHasHeighth() && isHeighthUnlocked(tournament))
 				handleEliminationPhase(tournament.getHeighth(), [&]() { tournament.generateHeighths(); },
 					"1/8 DE FINALE", "1/8 generes avec succes !", "Impossible : verifiez que la phase precedente soit terminee.");
@@ -202,7 +205,7 @@ void				TournamentCLI::executeChoice(cInt choice, Tournament& tournament)
 				PrintUtils::addError("Menu non disponible pour le moment.");
 			break;
 
-		case 5:
+		case 5:		//	1/4
 			if (isQuartersUnlocked(tournament))
 				handleEliminationPhase(tournament.getQuarters(), [&]() { tournament.generateQuarters(); },
 					"QUARTS DE FINALE", "Quarts de finale generes avec succes !", "Impossible : verifiez que les poules/phases precedentes soient terminees.");
@@ -210,15 +213,26 @@ void				TournamentCLI::executeChoice(cInt choice, Tournament& tournament)
 				PrintUtils::addError("Menu non disponible pour le moment.");
 			break;
 
-		case 6:
+		case 6:		//	1/2
 			if (isSemisUnlocked(tournament))
 				handleEliminationPhase(tournament.getSemis(), [&]() { tournament.generateSemis(); },
-					"DEMI-FINALES", "Demi-finales generees avec succes !", "Impossible : verifiez que les quarts soient termines.");
+					"DEMI-FINALE", "Demi-finale generees avec succes !", "Impossible : verifiez que les quarts soient termines.");
 			else
 				PrintUtils::addError("Menu non disponible pour le moment.");
 			break;
 
-		case 7:
+		case 7:		//	petite finale ou finale
+			if (isThirdUnlocked(tournament))
+				handleEliminationPhase(tournament.getThirdPlace(), [&]() { tournament.generateThirdPlace(); },
+					"PETITE FINALE", "Matche de la petite finale generee avec succes !", "Impossible : verifiez que les demi-finales soient terminees.");
+			else if (isFinalUnlocked(tournament))
+				handleEliminationPhase(tournament.getFinal(), [&]() { tournament.generateFinal(); },
+					"FINALE", "Finale generee avec succes !", "Impossible : verifiez que les demi-finales soient terminees.");
+			else
+				PrintUtils::addError("Menu non disponible pour le moment.");
+			break;
+		
+		case 8:		//	finale
 			if (isFinalUnlocked(tournament))
 				handleEliminationPhase(tournament.getFinal(), [&]() { tournament.generateFinal(); },
 					"FINALE", "Finale generee avec succes !", "Impossible : verifiez que les demi-finales soient terminees.");
@@ -226,6 +240,7 @@ void				TournamentCLI::executeChoice(cInt choice, Tournament& tournament)
 				PrintUtils::addError("Menu non disponible pour le moment.");
 			break;
 
+		/*
 		case 8:
 			if (tournament.getQuarters() != nullptr)
 				TournamentViewer::displayFullBracket(tournament);
@@ -239,6 +254,7 @@ void				TournamentCLI::executeChoice(cInt choice, Tournament& tournament)
 			else
 				PrintUtils::addError("Le podium n'est pas encore disponible.");
 			break;
+		*/
 
 		default:
 			PrintUtils::addError("Choix non disponible.");
@@ -263,9 +279,9 @@ String				TournamentCLI::promptFilename(cString prompt)
 	return (filename);
 }
 
+
 /**
- * Gere la selection d une poule et l affichage de ses matchs.
- * Liste les poules, lit un choix, dispatch vers handleMatchList.
+ *	Gestion des pools
  */
 void				TournamentCLI::handlePoolSelection(Tournament& tournament)
 {
@@ -699,6 +715,12 @@ void				TournamentCLI::handleMenuTournament(Tournament& tournament)
 			if (input == "e" || input == "E")
 			{
 				handleExport(tournament);
+				continue;
+			}
+
+			if (input == "s" || input == "S")
+			{
+				//handleShow(tournament);
 				continue;
 			}
 

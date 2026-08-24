@@ -6,12 +6,16 @@
 /*	INCLUDES																						*/
 /****************************************************************************************************/
 
+#include <format>
 #include <iostream>
 
 #include "../includes/class/Team.hpp"
 #include "../includes/class/Participant.hpp"
 
 #include "../includes/viewer/TeamViewer.hpp"
+#include "../includes/viewer/TitleViewer.hpp"
+
+#include "../includes/Color.hpp"
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
@@ -29,9 +33,9 @@
 /*	PUBLIC METHOD																					*/
 /****************************************************************************************************/
 
-
-void				TeamViewer::print(cTeam team)
+void				TeamViewer::showTeamDescription(cTeam team)
 {
+	TitleViewer::printSeparator(Color::BG_MAGENTA, '*');
 	std::cout << "__________ TEAM DESCRIPTION __________" << std::endl;
 	std::cout << "Team ID: " << team.getId() << std::endl;
 	std::cout << "Nom: " << team.getName() << std::endl;
@@ -52,5 +56,85 @@ void				TeamViewer::print(cTeam team)
 			std::cout << "\t&\t";
 	}
 
-	std::cout << "\n______________________________________" << std::endl;
+	TitleViewer::printSeparator(Color::BG_MAGENTA, '*');
+}
+
+void				TeamViewer::showAllTeams(vpTeam teams)
+{
+	if (teams.empty())
+	{
+		std::cout << "Aucune equipe.\n";
+		return;
+	}
+
+	int wName = 4;
+
+	for (const Team* team : teams)
+	{
+		if (team)
+			wName = std::max(
+				wName,
+				static_cast<int>(team->getName().size())
+			);
+	}
+
+	constexpr int W_ID      = 4;
+	constexpr int W_PTS     = 4;
+	constexpr int W_MARKED  = 6;
+	constexpr int W_AGAINST = 6;
+	constexpr int W_DIFF    = 6;
+	constexpr int W_MIXED   = 5;
+	constexpr int W_ELIM    = 6;
+	constexpr int W_DISQ    = 6;
+	constexpr int W_MULTI   = 8;
+
+	const int separatorSize =
+		W_ID + 3 +
+		wName + 3 +
+		W_PTS + 3 +
+		W_MARKED + 3 +
+		W_AGAINST + 3 +
+		W_DIFF + 3 +
+		W_MIXED + 3 +
+		W_ELIM + 3 +
+		W_DISQ + 3 +
+		W_MULTI;
+
+	std::cout << std::string(separatorSize, '-') << '\n';
+	std::cout << std::format(
+		"{:>{}} | {:<{}} | {:>{}} | {:>{}} | {:>{}} | {:>{}} | {:<{}} | {:<{}} | {:<{}} | {:<{}}\n",
+		"ID",       W_ID,
+		"Equipe",   wName,
+		"Pts",   W_PTS,
+		"Pts +",  W_MARKED,
+		"Pts -",   W_AGAINST,
+		"Diff",     W_DIFF,
+		"Mixte",    W_MIXED,
+		"Eli.", W_ELIM,
+		"Dis.", W_DISQ,
+		"Multi",    W_MULTI
+	);
+	std::cout << std::string(separatorSize, '-') << '\n';
+
+	for (const Team* team : teams)
+	{
+		if (!team)
+			continue;
+
+		std::cout << std::format(
+			"{:>{}} | {:<{}} | {:>{}} | {:>{}} | {:>{}} | {:>{}} | {:<{}} | {:<{}} | {:<{}} | {:<{}}\n",
+			team->getId(),                    W_ID,
+			team->getName(),                  wName,
+			team->getPoint(),                 W_PTS,
+			team->getScoreMarked(),           W_MARKED,
+			team->getScoreAgainst(),          W_AGAINST,
+			team->getScoreDiff(),             W_DIFF,
+			team->getIsMixed() ? "Oui" : "Non", W_MIXED,
+			team->getIsEliminated() ? "Oui" : "Non", W_ELIM,
+			team->getIsDisqualified() ? "Oui" : "Non", W_DISQ,
+			team->getHasMultiTeamPlayer() ? "Oui" : "Non", W_MULTI
+		);
+	}
+
+	std::cout << std::string(separatorSize, '-') << '\n';
 }

@@ -78,7 +78,7 @@ Tournament2000
 *.xlsx
 Using
 LINUX
-docker-compose.yaml
+*.yaml
 Dockerfile
 
 # IDE directory

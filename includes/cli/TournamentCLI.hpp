@@ -81,6 +81,7 @@ class				TournamentCLI
 		static int					parseChoice(cString input);
 		static void					executeChoice(cInt choice, Tournament& tournament);
 		static String				promptFilename(cString prompt);
+
 		static void					handlePoolSelection(Tournament& tournament);
 		static void					handleEliminationPhase(pPhase phase, const std::function<void()>& generateFn,
 										cString phaseName, cString successMsg, cString errorMsg);

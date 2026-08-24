@@ -56,25 +56,10 @@ cvpMatch			Phase::getMatches() const		{	return (this->_matches);		}
 
 vpTeam				Phase::getWinners() const
 {
-	vpTeam winners;	
-
+	vpTeam winners;
+	
 	for (size_t i = 0; i < this->_matches.size(); i += this->_nbSetsToPlay)
-	{
-		int winsA = 0;
-		int winsB = 0;
-		pTeam a = this->_matches[i]->getTeamA();
-		pTeam b = this->_matches[i]->getTeamB();
-
-		for (int j = 0; j < this->_nbSetsToPlay; ++j)
-		{
-			if (this->_matches[i + j]->getWinner() == a)
-				winsA++;
-			else if (this->_matches[i + j]->getWinner() == b)
-				winsB++;
-		}
-		
-		winners.push_back(winsA >= winsB ? a : b);
-	}
+		winners.push_back(this->getEncounterWinner(i));
 
 	return (winners);
 }
@@ -109,6 +94,24 @@ void				Phase::setIsFinished(cBool isFinished)	{	this->_isFinished = isFinished;
 /****************************************************************************************************/
 /*	PRIVATE METHODS																					*/
 /****************************************************************************************************/
+
+Team*				Phase::getEncounterWinner(size_t index) const
+{
+	int winsA = 0;
+	int winsB = 0;
+	pTeam a = this->_matches[index]->getTeamA();
+	pTeam b = this->_matches[index]->getTeamB();
+
+	for (int j = 0; j < this->_nbSetsToPlay; ++j)
+	{
+		if (this->_matches[index + j]->getWinner() == a)
+			winsA++;
+		else if (this->_matches[index + j]->getWinner() == b)
+			winsB++;
+	}
+
+	return (winsA >= winsB ? a : b);
+}
 
 /****************************************************************************************************/
 /*	PUBLIC METHODS																					*/

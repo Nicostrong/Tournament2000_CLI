@@ -6,6 +6,8 @@
 /*	INCLUDES																						*/
 /****************************************************************************************************/
 
+#include <algorithm>
+
 #include "../includes/class/Team.hpp"
 #include "../includes/class/Participant.hpp"
 
@@ -20,6 +22,12 @@ using				cInt			=	const int;
 
 using				cBool			=	const bool;
 
+using				pTeam			=	Team*;
+using				cTeam			=	const Team&;
+using				cpTeam			=	const Team*;
+using				vpTeam			=	std::vector<Team*>;
+using				cvpTeam			=	const std::vector<Team*>&;
+
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
 /****************************************************************************************************/
@@ -31,7 +39,8 @@ int					Team::_idCounter = 0;
 /****************************************************************************************************/
 
 Team::Team():	_id(++_idCounter), _point(0), _scoreMarked(0), _scoreAgainst(0), _isMixed(false),
-	_isEliminated(false), _hasMultiTeamPlayer(false), _name("Team " + std::to_string(_idCounter))
+	_isEliminated(false), _isDisqualified(false), _hasMultiTeamPlayer(false),
+	_name("Team " + std::to_string(_idCounter))
 {}
 
 /****************************************************************************************************/
@@ -41,6 +50,7 @@ Team::Team():	_id(++_idCounter), _point(0), _scoreMarked(0), _scoreAgainst(0), _
 size_t				Team::getSize() const				{	return (this->_members.size());						}
 bool				Team::getIsMixed() const			{	return (this->_isMixed);							}
 bool				Team::getIsEliminated() const		{	return (this->_isEliminated);						}
+bool				Team::getIsDisqualified() const		{	return (this->_isDisqualified);						}
 bool				Team::getHasMultiTeamPlayer() const	{	return (this->_hasMultiTeamPlayer);					}
 int					Team::getId() const					{	return (this->_id);									}
 int					Team::getPoint() const				{	return (this->_point);								}
@@ -56,6 +66,7 @@ cvpPart				Team::getMembers() const			{	return (this->_members);							}
 
 void				Team::setIsMixed(cBool value)				{	this->_isMixed = value;				}
 void				Team::setIsEliminated(cBool value)			{	this->_isEliminated = value;		}
+void				Team::setIsDisqualified(cBool value)		{	this->_isDisqualified = value;		}
 void				Team::setHasMultiTeamPlayer(cBool value)	{	this->_hasMultiTeamPlayer = value;	}
 void				Team::setName(cString value)				{	this->_name = value;				}
 
@@ -131,4 +142,43 @@ void				Team::addScoreMarked(cInt score)
 void				Team::addScoreAgainst(cInt score)
 {
 	this->_scoreAgainst += score;
+}
+
+bool				Team::hasMember(cpPart p) const
+{
+	return (std::ranges::find(this->_members, p) != this->_members.end());
+}
+
+bool				Team::sharesMemberWith(cpTeam other) const
+{
+	if (!other)
+		return (false);
+
+	return (std::ranges::any_of(this->_members, [other](const auto* m)
+		{
+			return (other->hasMember(m));
+		}));
+}
+
+bool				Team::replaceMember(size_t index, Participant* newMember)
+{
+	if (index < this->_members.size() && newMember != nullptr && newMember->getIsEliminated())
+	{
+		this->_members[index]->setIsEliminated(true);
+		newMember->setIsEliminated(false);
+		this->_members[index] = newMember;
+		
+		return (true);
+	}
+	return (false);
+}
+
+void				Team::disqualifyTeam()
+{
+	size_t nbMembers = this->_members.size();
+
+	for (size_t i = 0; i < nbMembers; ++i)
+		this->_members[i]->setIsEliminated(true);
+	
+	setIsDisqualified(true);
 }

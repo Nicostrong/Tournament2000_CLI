@@ -76,6 +76,8 @@ class				Participant
 		[[nodiscard]]
 		String						getGenderStr() const;
 		[[nodiscard]]
+		String						getFullName() const;
+		[[nodiscard]]
 		Gender						getGenderInt() const;
 		[[nodiscard]]
 		bool						getIsEliminated() const;
@@ -89,5 +91,9 @@ class				Participant
 		void						setGender(cGender value);
 		void						setIsEliminated(cBool value);
 		void						setIsMultiTeamPlayer(cBool value);
+
+		//	METHODE
+
+		bool						operator==(const Participant& other) const;
 
 };
