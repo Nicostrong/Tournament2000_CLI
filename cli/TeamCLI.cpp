@@ -13,6 +13,9 @@
 #include <iostream>
 #include <exception>
 
+#include "../includes/class/Pool.hpp"
+#include "../includes/class/Team.hpp"
+#include "../includes/class/Participant.hpp"
 #include "../includes/class/Tournament.hpp"
 
 #include "../includes/cli/TeamCLI.hpp"
@@ -68,24 +71,29 @@ void				TeamCLI::handleTitle()
 	TitleViewer::teams();
 }
 
-void				TeamCLI::menuTeam()
+void				TeamCLI::menuTeam(pTeam team)
 {
-	std::cout << "\n=========================== TEAM ===========================" << std::endl;
+	std::cout << std::format("\n========== TEAM\t{} ==========", team->getName()) << std::endl;
 	std::cout <<  Color::YELLOW << "\t1.\t" << Color::RESET << "Modifier le nom" << std::endl;
 	std::cout <<  Color::YELLOW << "\t2.\t" << Color::RESET << "Modifier un membre" << std::endl;
-	std::cout <<  Color::YELLOW << "\t3.\t" << Color::RESET << "Disqualifier l'equipe" << std::endl;
+	
+	if (team->getIsDisqualified())
+		std::cout <<  Color::YELLOW << "\t3.\t" << Color::RESET << "Retirer la disqualification" << std::endl;
+	else
+		std::cout <<  Color::YELLOW << "\t3.\t" << Color::RESET << "Disqualifier l'equipe" << std::endl;
+		
 	std::cout <<  Color::YELLOW << "\tR.\t" << Color::RESET << "Retour au menu precedent" << std::endl;
 	std::cout << "============================================================" << std::endl;
 	std::cout << "Votre choix : ";
 }
 
-void				TeamCLI::submenuTeam(pTeam team)
+void				TeamCLI::submenuTeam(pTeam team, Tournament& tournament)
 {
 	try
 	{
 		while (true)
 		{
-			menuTeam();
+			menuTeam(team);
 
 			String input = fetchInput();
 			
@@ -98,7 +106,10 @@ void				TeamCLI::submenuTeam(pTeam team)
 			int choice = parseChoice(input);
 			
 			if (choice != -1)
-				executeChoice(choice, team);
+			{
+				executeChoice(choice, team, tournament);
+				return;
+			}
 		}
 	}
 	catch (const UserInterruptedException&)
@@ -145,7 +156,7 @@ int					TeamCLI::parseChoice(cString input)
 	}
 }
 
-void				TeamCLI::executeChoice(cInt choice, pTeam team)
+void				TeamCLI::executeChoice(cInt choice, pTeam team, Tournament& tournament)
 {
 	switch (choice)
 	{
@@ -154,7 +165,7 @@ void				TeamCLI::executeChoice(cInt choice, pTeam team)
 			break;
 
 		case 2:
-			handleModifyTeamMember(team);
+			handleModifyTeamMember(team, tournament);
 			break;
 
 		case 3:
@@ -167,152 +178,184 @@ void				TeamCLI::executeChoice(cInt choice, pTeam team)
 	}
 }
 
-void				TeamCLI::handleShowOneTeams(pTeam team)
-{
-	(void)team;
-}
+/********************/
+/*  HANDLER ACTION	*/
+/********************/
 
 void				TeamCLI::handleModifyTeamName(pTeam team)
 {
-	(void)team;
+	String actualName = team->getName();
+
+	std::cout << "Nom actuel de la team: " << actualName << std::endl;
+	std::cout << "Entrez le nouveau nom de la team: ";
+	
+	String newName;
+
+	std::cin >> std::ws;
+	std::getline(std::cin, newName);
+
+	if (!newName.empty())
+	{
+		team->setName(newName);
+		PrintUtils::addSuccess(std::format("Le nom de la team {} a ete modifie avec succes.", actualName));
+	}
 }
 
-void				TeamCLI::handleModifyTeamMember(pTeam team)
+void				TeamCLI::handleModifyTeamMember(pTeam team, Tournament& tournament)
 {
-	(void)team;
+	int memberIdx = selectMemberIndex(team);
+
+	if (memberIdx == -1)
+		return;
+
+	vpPart candidates = getEligibleSubstitutes(team, tournament);
+	pPart newMember = selectSubstitutePlayer(candidates);
+
+	if (!newMember)
+		return;
+
+	if (team->replaceMember(memberIdx, newMember))
+	{
+		team->renameTeam();
+		PrintUtils::addSuccess("Membre remplace avec succes !");
+	}
+	else
+		PrintUtils::addError("Erreur lors du remplacement du membre.");
 }
 
 void				TeamCLI::handleDisqualifiedTeam(pTeam team)
 {
-	(void)team;
-}
-
-/*
-void				TeamCLI::handleTeamManagement(Tournament& tournament)
-{
-	while (true)
+	if (team->getIsDisqualified())
 	{
-		PrintUtils::clear();
-		TitleViewer::banner();
-		TitleViewer::teams();
-		std::cout << "\n--- GESTION DES EQUIPES ---\n";
-
-		std::vector<Team*> allTeams;
-
-		for (cpPool pool : tournament.getPools())
+		std::cout << "Voulez-vous retirer la disqualification de l'equipe " << team->getName() << "? (o/n)\n";
+		
+		String result = fetchInput();
+		
+		if (result[0] == 'o' || result[0] == 'O')
 		{
-			if (pool)
-			{
-				for (Team* team : pool->getTeams())
-				{
-					if (team)
-					{
-						allTeams.push_back(team);
-						std::cout << allTeams.size() << ". " << team->getName() << "\n";
-					}
-				}
-			}
+			team->setIsDisqualified(false);
+			PrintUtils::addSuccess(std::format("La disqualification de la team {} a ete retiree.", team->getName()));
 		}
-
-		std::cout << (allTeams.size() + 1) << ". Retour\n";
-		std::cout << "Choisissez une equipe a modifier : ";
-
-		String input = fetchInput();
-		int choice = parseChoice(input);
-
-		if (choice < 1 || choice > static_cast<int>(allTeams.size() + 1))
+	}
+	else
+	{
+		std::cout << "Voulez-vous vraiment disqualifier l'equipe " << team->getName() << "? (o/n)\n";
+		
+		String result = fetchInput();
+		
+		if (result[0] == 'o' || result[0] == 'O')
 		{
-			PrintUtils::addError("Choix invalide.");
-			continue;
+			team->disqualifyTeam();
+			PrintUtils::addSuccess(std::format("La team {} a ete disqualifiee.", team->getName()));
 		}
-
-		if (choice == static_cast<int>(allTeams.size() + 1))
-			break;
-
-		Team* selectedTeam = allTeams[choice - 1];
-		handleSingleTeamEdit(selectedTeam, tournament);
 	}
 }
 
-void				TeamCLI::handleSingleTeamEdit(Team* team, Tournament& tournament)
-{
-	while (true)
-	{
-		std::cout << "\n--- EQUIPE : " << team->getName() << " ---\n";
-		std::cout << "1. Modifier le nom de l'equipe\n";
-		std::cout << "2. Remplacer un membre\n";
-		std::cout << "3. Retour\n";
-		std::cout << "Votre choix : ";
-
-		int choice = parseChoice(fetchInput());
-
-		if (choice == 1)
-		{
-			String newName;
-
-			std::cout << "Nouveau nom : ";
-			std::cin.ignore();
-			std::getline(std::cin, newName);
-			
-			if (!newName.empty())
-			{
-				team->setName(newName);
-				PrintUtils::addSuccess("Nom de la team modifie avec succes !");
-			}
-		}
-		else if (choice == 2)
-		{
-			const auto& members = team->getMembers();
-
-			std::cout << "\nMembres actuels :\n";
-
-			for (size_t i = 0; i < members.size(); ++i)
-				if (members[i])
-					std::cout << (i + 1) << ". " << members[i]->getFullName() << "\n";
-			
-			std::cout << "Membre a remplacer (index) : ";
-
-			int memberIdx = parseChoice(fetchInput());
-			
-			if (memberIdx >= 1 && memberIdx <= static_cast<int>(members.size()))
-			{
-				(void)tournament;
-			}
-			else
-			{
-				PrintUtils::addError("Index invalide.");
-			}
-		}
-		else if (choice == 3)
-		{
-			break;
-		}
-		else
-		{
-			PrintUtils::addError("Choix non disponible.");
-		}
-	}
-}
-*/
+/********************/
+/*  HELPER			*/
+/********************/
 
 bool				TeamCLI::checkTeamId(int id, Tournament& tournament)
 {
-	if ( id == 0)
+	return (id >= 1 && id <= static_cast<int>(tournament.getTeams().size()));
+}
+
+cpPool				TeamCLI::findTeamPool(cpTeam team, Tournament& tournament)
+{
+	for (cpPool pool : tournament.getPools())
+	{
+		if (!pool)
+			continue;
+
+		for (cpTeam t : pool->getTeams())
+			if (t == team)
+				return (pool);
+	}
+
+	return (nullptr);
+}
+
+bool				TeamCLI::isPlayerInPool(cpPart player, cpPool pool)
+{
+	if (!pool || !player)
 		return (false);
+
+	for (cpTeam t : pool->getTeams())
+		if (t && t->hasMember(player))
+			return (true);
 	
-	return (tournament.getTeams().size() < static_cast<size_t>(id) ? false : true);
+	return (false);
+}
+
+vpPart				TeamCLI::getEligibleSubstitutes(pTeam team, Tournament& tournament)
+{
+	vpPart eligible;
+	cpPool targetPool = findTeamPool(team, tournament);
+
+	for (auto* p : tournament.getParticipants())
+	{
+		if (!p || !p->getIsEliminated() || team->hasMember(p))
+			continue;
+
+		if (!isPlayerInPool(p, targetPool))
+			eligible.push_back(p);
+	}
+
+	return (eligible);
+}
+
+int					TeamCLI::selectMemberIndex(pTeam team)
+{
+	const auto& members = team->getMembers();
+
+	std::cout << "\nMembres actuels :\n";
+
+	for (size_t i = 0; i < members.size(); ++i)
+		if (members[i])
+			std::cout << (i + 1) << ". " << members[i]->getPseudo() << "\n";
+
+	std::cout << "Index du membre a remplacer : ";
+	int memberIdx = parseChoice(fetchInput());
+
+	if (memberIdx < 1 || memberIdx > static_cast<int>(members.size()))
+	{
+		PrintUtils::addError("Index invalide.");
+		return -1;
+	}
+
+	return (memberIdx - 1);
+}
+
+pPart				TeamCLI::selectSubstitutePlayer(vpPart candidates)
+{
+	if (candidates.empty())
+	{
+		PrintUtils::addError("Aucun joueur elimine disponible hors de cette poule.");
+		return (nullptr);
+	}
+
+	std::cout << "\nJoueurs elimines disponibles :\n";
+
+	for (size_t i = 0; i < candidates.size(); ++i)
+		if (candidates[i])
+			std::cout << (i + 1) << ". " << candidates[i]->getPseudo() << "\n";
+
+	std::cout << "Index du nouveau joueur : ";
+	int choice = parseChoice(fetchInput());
+
+	if (choice < 1 || choice > static_cast<int>(candidates.size()))
+	{
+		PrintUtils::addError("Index invalide.");
+		return (nullptr);
+	}
+
+	return (candidates[choice - 1]);
 }
 
 /****************************************************************************************************/
 /*	PUBLIC METHOD																					*/
 /****************************************************************************************************/
 
-/**
- *	On affiche un tableau avec toutes les teams
- *	On demande a l utilisateur de choisir une team via son id
- *	Si l id est correcte, on affiche le sous menu de gestion de la team
- *	sinon on affiche une erreur
- */
 void				TeamCLI::handleMenuTeam(Tournament& tournament)
 {
 	try
@@ -340,7 +383,7 @@ void				TeamCLI::handleMenuTeam(Tournament& tournament)
 			pTeam team = tournament.getTeamById(choice);
 			
 			if (team)
-				submenuTeam(team);
+				submenuTeam(team, tournament);
 		}
 	}
 	catch (const UserInterruptedException&)

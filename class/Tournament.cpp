@@ -62,6 +62,7 @@ Tournament::~Tournament()
 /****************************************************************************************************/
 
 cpSet				Tournament::getSettings() const			{	return (this->_settings);		}
+vpPart				Tournament::getParticipants() const		{	return (this->_participants);	}
 vpTeam				Tournament::getTeams() const			{	return (this->_teams);			}
 cvpPool				Tournament::getPools() const			{	return (this->_pools);			}
 Phase*				Tournament::getSixteenth() const		{	return (this->_sixteenths);		}

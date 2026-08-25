@@ -156,6 +156,8 @@ class				Tournament
 
 		//	GETTER
 		[[nodiscard]]
+		vpPart						getParticipants() const;
+		[[nodiscard]]
 		vpTeam						getTeams() const;
 		[[nodiscard]]
 		pTeam						getTeamById(int id) const;

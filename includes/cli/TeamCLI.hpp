@@ -15,6 +15,7 @@
 /*	CLASSES																							*/
 /****************************************************************************************************/
 
+class				Team;
 class				Tournament;
 
 /****************************************************************************************************/
@@ -52,21 +53,26 @@ class				TeamCLI
 
 		static void					displayMenuUI(cTour tournament);
 		static void					handleTitle();
-		static void					menuTeam();
-		static void					submenuTeam(pTeam team);
+		static void					menuTeam(pTeam team);
+		static void					submenuTeam(pTeam team, Tournament& tournament);
 
 		static void					clearInput();
 		static String				fetchInput();
 		static int					parseChoice(cString input);
-		static void					executeChoice(cInt choice, pTeam team);
+		static void					executeChoice(cInt choice, pTeam team, Tournament& tournament);
 
 		//static void					handleShowAllTeams(vpTeam allTeams);
 		static void					handleShowOneTeams(pTeam team);
 		static void					handleModifyTeamName(pTeam team);
-		static void					handleModifyTeamMember(pTeam team);
+		static void					handleModifyTeamMember(pTeam team, Tournament& tournament);
 		static void					handleDisqualifiedTeam(pTeam team);
 
 		static bool					checkTeamId(int id, Tournament& tournament);
+		static cpPool				findTeamPool(cpTeam team, Tournament& tournament);
+		static bool					isPlayerInPool(cpPart player, cpPool pool);
+		static vpPart				getEligibleSubstitutes(pTeam team, Tournament& tournament);
+		static int					selectMemberIndex(pTeam team);
+		static pPart				selectSubstitutePlayer(vpPart candidates);
 
 		//static void					handleTeamManagement(Tournament& tournament);
 		//static void					handleSingleTeamEdit(Team* team, Tournament& tournament);

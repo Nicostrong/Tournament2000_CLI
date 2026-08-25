@@ -78,15 +78,15 @@ void				TeamViewer::showAllTeams(vpTeam teams)
 			);
 	}
 
-	constexpr int W_ID      = 4;
-	constexpr int W_PTS     = 4;
-	constexpr int W_MARKED  = 6;
-	constexpr int W_AGAINST = 6;
-	constexpr int W_DIFF    = 6;
+	constexpr int W_ID      = 2;
+	constexpr int W_PTS     = 3;
+	constexpr int W_MARKED  = 5;
+	constexpr int W_AGAINST = 5;
+	constexpr int W_DIFF    = 4;
 	constexpr int W_MIXED   = 5;
-	constexpr int W_ELIM    = 6;
-	constexpr int W_DISQ    = 6;
-	constexpr int W_MULTI   = 8;
+	constexpr int W_ELIM    = 4;
+	constexpr int W_DISQ    = 4;
+	constexpr int W_MULTI   = 5;
 
 	const int separatorSize =
 		W_ID + 3 +
@@ -103,16 +103,16 @@ void				TeamViewer::showAllTeams(vpTeam teams)
 	std::cout << std::string(separatorSize, '-') << '\n';
 	std::cout << std::format(
 		"{:>{}} | {:<{}} | {:>{}} | {:>{}} | {:>{}} | {:>{}} | {:<{}} | {:<{}} | {:<{}} | {:<{}}\n",
-		"ID",       W_ID,
-		"Equipe",   wName,
-		"Pts",   W_PTS,
-		"Pts +",  W_MARKED,
-		"Pts -",   W_AGAINST,
-		"Diff",     W_DIFF,
-		"Mixte",    W_MIXED,
+		"ID", W_ID,
+		"Equipe", wName,
+		"Pts", W_PTS,
+		"Pts +", W_MARKED,
+		"Pts -", W_AGAINST,
+		"Diff", W_DIFF,
+		"Mixte", W_MIXED,
 		"Eli.", W_ELIM,
 		"Dis.", W_DISQ,
-		"Multi",    W_MULTI
+		"Multi", W_MULTI
 	);
 	std::cout << std::string(separatorSize, '-') << '\n';
 
@@ -123,12 +123,12 @@ void				TeamViewer::showAllTeams(vpTeam teams)
 
 		std::cout << std::format(
 			"{:>{}} | {:<{}} | {:>{}} | {:>{}} | {:>{}} | {:>{}} | {:<{}} | {:<{}} | {:<{}} | {:<{}}\n",
-			team->getId(),                    W_ID,
-			team->getName(),                  wName,
-			team->getPoint(),                 W_PTS,
-			team->getScoreMarked(),           W_MARKED,
-			team->getScoreAgainst(),          W_AGAINST,
-			team->getScoreDiff(),             W_DIFF,
+			team->getId(), W_ID,
+			team->getName(), wName,
+			team->getPoint(), W_PTS,
+			team->getScoreMarked(), W_MARKED,
+			team->getScoreAgainst(), W_AGAINST,
+			team->getScoreDiff(), W_DIFF,
 			team->getIsMixed() ? "Oui" : "Non", W_MIXED,
 			team->getIsEliminated() ? "Oui" : "Non", W_ELIM,
 			team->getIsDisqualified() ? "Oui" : "Non", W_DISQ,
