@@ -30,7 +30,7 @@ int					Pool::_idCounter = 1;
 /*	CONSTRUCTOR / DESTRUCTOR																		*/
 /****************************************************************************************************/
 
-Pool::Pool(): _name("Pool " + std::to_string(_idCounter++))
+Pool::Pool(): _name("Pool " + std::to_string(_idCounter++)), _isFinished(false)
 {}
 
 Pool::~Pool()
@@ -48,6 +48,7 @@ Pool::~Pool()
 cString				Pool::getName() const		{	return (this->_name);		}
 cvpTeam				Pool::getTeams() const		{	return (this->_teams);		}
 cvpMatch			Pool::getMatches() const	{	return (this->_matches);	}
+cBool				Pool::getIsFinished() const	{	return (this->_isFinished);	}
 
 
 /****************************************************************************************************/
@@ -93,6 +94,12 @@ void				Pool::sortTeams()
 
 		return (a->getScoreDiff() > b->getScoreDiff());
 	});
+}
+
+void				Pool::checkPoolIsFinished()
+{
+	if (allMatchesFinished())
+		this->_isFinished = true;
 }
 
 bool				Pool::allMatchesFinished() const

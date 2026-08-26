@@ -28,7 +28,7 @@ using				vString			=	std::vector<std::string>;
 
 using				cInt			=	const int;
 using				vInt			=	std::vector<int>;
-using				cvInt			=	const std::vector<int>;
+using				cvInt			=	const std::vector<int>&;
 
 using				cBool			=	const bool;
 

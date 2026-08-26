@@ -6,13 +6,12 @@
 /*	INCLUDES																						*/
 /****************************************************************************************************/
 
-#include <sstream>
 #include <iostream>
-#include <exception>
 #include <algorithm>
 
 #include "../includes/class/Settings.hpp"
 
+#include "../includes/cli/CLIUtils.hpp"
 #include "../includes/cli/SettingsCLI.hpp"
 
 #include "../includes/viewer/SettingsViewer.hpp"
@@ -36,159 +35,9 @@
 /*	EXCEPTION																						*/
 /****************************************************************************************************/
 
-namespace
-{
-	struct	UserInterruptedException : public std::exception {};
-
-	void checkInterruption()
-	{
-		if (!g_running || std::cin.eof())
-			throw UserInterruptedException();
-	}
-}
-
 /****************************************************************************************************/
 /*	PRIVATE METHOD																					*/
 /****************************************************************************************************/
-
-/********************/
-/*	Handler input	*/
-/********************/
-
-/**
- *	Lit l input de l utilisateur et en valide la valeur numerique
- */
-int					SettingsCLI::inputInt(cString prompt, cInt min, cInt max, cInt defaultVal)
-{
-	String input;
-	int val;
-
-	while (true)
-	{
-		checkInterruption();
-		std::cout << prompt << " [" << Color::YELLOW << defaultVal << Color::RESET << "] (" << min << "-" << max << ") : ";
-
-		if (!std::getline(std::cin, input))
-		{
-			checkInterruption();
-			return (defaultVal);
-		}
-
-		if (input.find_first_not_of(" \t\n\v\f\r") == std::string::npos)
-			return (defaultVal);
-
-		std::stringstream ss(input);
-
-		if (ss >> val && val >= min && val <= max)
-			return (val);
-
-		std::cout << Color::RED << "Saisie invalide. Entrez un nombre entre " << min << " et " << max << ".\n" << Color::RESET;
-	}
-}
-
-/**
- *	Lit l input de l utilisateur pour une question boolean et en valide la valeur
- */
-bool				SettingsCLI::inputBool(cString prompt, cBool defaultVal)
-{
-	String input;
-	cString defStr = defaultVal ? "o" : "n";
-
-	while (true)
-	{
-		checkInterruption();
-		std::cout << prompt << " [" << Color::YELLOW << defStr << Color::RESET << "] (o/n) : ";
-
-		if (!std::getline(std::cin, input))
-		{
-			checkInterruption();
-			return (defaultVal);
-		}
-
-		if (input.find_first_not_of(" \t\n\v\f\r") == std::string::npos)
-			return (defaultVal);
-
-		const unsigned char c = std::tolower(input[0]);
-
-		if (c == 'o')
-			return (true);
-
-		if (c == 'n')
-			return (false);
-
-		std::cout << Color::RED << "Veuillez repondre par 'o' ou 'n'.\n" << Color::RESET;
-	}
-}
-
-/**
- *	Lit l input de l utilisateur
- */
-String				SettingsCLI::inputString(cString prompt, cString defaultVal)
-{
-	String input;
-
-	while (true)
-	{
-		checkInterruption();
-		std::cout << prompt << " [" << Color::YELLOW << defaultVal << Color::RESET << "] : ";
-
-		if (!std::getline(std::cin, input))
-		{
-			checkInterruption();
-			return (defaultVal);
-		}
-
-		if (input.find_first_not_of(" \t\n\v\f\r") == std::string::npos)
-			return (defaultVal);
-
-		return (input);
-	}
-}
-
-/**
- *	Lit l input de l utilisateur et en valide la valeur d apres une liste predefinie
- */
-int					SettingsCLI::inputIntList(cString prompt, cvInt allowedValues, int defaultVal)
-{
-	String input;
-	int val;
-
-	while (true)
-	{
-		checkInterruption();
-		std::cout << prompt << " [" << Color::YELLOW << defaultVal << Color::RESET << "] (";
-
-		for (size_t i = 0; i < allowedValues.size(); ++i)
-			std::cout << allowedValues[i] << (i < allowedValues.size() - 1 ? "/" : "");
-
-		std::cout << ") : ";
-
-		if (!std::getline(std::cin, input))
-		{
-			checkInterruption();
-			return (defaultVal);
-		}
-
-		if (input.find_first_not_of(" \t\n\v\f\r") == std::string::npos)
-			return (defaultVal);
-
-		std::stringstream ss(input);
-
-		if (ss >> val)
-			for (const int allowed : allowedValues)
-				if (val == allowed)
-					return (val);
-
-		std::cout << Color::RED << "[!] Saisie invalide. Valeurs autorisees : " << Color::RESET;
-
-		for (size_t i = 0; i < allowedValues.size(); ++i)
-			std::cout << Color::GREEN << allowedValues[i] << (i < allowedValues.size() - 1 ? ", " : "\n") << Color::RESET;
-	}
-}
-
-/********************/
-/*	Handler setup	*/
-/********************/
 
 /**
  *	Setting de la structure des joueurs
@@ -197,13 +46,13 @@ void				SettingsCLI::setupPlayers(pSet s)
 {
 	std::cout << Color::BLUE << "\n> Structure des joueurs" << std::endl << Color::RESET;
 
-	s->setIsDouble(inputBool("Est-ce un tournoi en DOUBLE ?", s->getIsDouble()));
-	s->setIsMixed(inputBool("Est-ce un tournoi MIXTE ?", s->getIsMixed()));
+	s->setIsDouble(CLIUtils::askBool("Est-ce un tournoi en DOUBLE ?", s->getIsDouble()));
+	s->setIsMixed(CLIUtils::askBool("Est-ce un tournoi MIXTE ?", s->getIsMixed()));
 
 	if (!s->getIsMixed())
 	{
 		cInt defaultG = (s->getTournamentGender() == Gender::FEMALE) ? 1 : 0;
-		cInt g = inputInt("Genre du tournoi (0 = HOMME, 1 = FEMME)", 0, 1, defaultG);
+		cInt g = CLIUtils::askInt("Genre du tournoi (0 = HOMME, 1 = FEMME)", 0, 1, defaultG);
 
 		s->setTournamentGender(g == 0 ? Gender::MALE : Gender::FEMALE);
 	}
@@ -222,8 +71,8 @@ void				SettingsCLI::setupPlayers(pSet s)
 	if (std::ranges::find(allowedPlayers, defaultVal) == allowedPlayers.end())
 		defaultVal = allowedPlayers[0];
 
-	s->setNbPlayers(inputIntList("Nombre total de participants", allowedPlayers, defaultVal));
-	s->setAllowMultiTeamPlayers(inputBool("Autoriser un joueur a completer une deuxieme equipe ?", s->getAllowMultiTeamPlayers()));
+	s->setNbPlayers(CLIUtils::askIntList("Nombre total de participants", allowedPlayers, defaultVal));
+	s->setAllowMultiTeamPlayers(CLIUtils::askBool("Autoriser un joueur a completer une deuxieme equipe ?", s->getAllowMultiTeamPlayers()));
 }
 
 /**
@@ -235,8 +84,8 @@ void				SettingsCLI::setupPools(pSet s)
 
 	while (true)
 	{
-		s->setNbPools(inputIntList("Nombre de poules", {4, 8, 16}, s->getNbPools()));
-		s->setNbPlayerByPool(inputInt("Nombre de joueurs/equipes par poule", NBPLAYERPERPOOLMIN, NBPLAYERPERPOOLMAX, s->getNbPlayerByPool()));
+		s->setNbPools(CLIUtils::askIntList("Nombre de poules", {4, 8, 16}, s->getNbPools()));
+		s->setNbPlayerByPool(CLIUtils::askInt("Nombre de joueurs/equipes par poule", NBPLAYERPERPOOLMIN, NBPLAYERPERPOOLMAX, s->getNbPlayerByPool()));
 
 		if (!SettingsChecker::isPoolMathConsistent(s->getNbPlayers(), s->getIsDouble(), s->getNbPools(), s->getNbPlayerByPool()) && !s->getAllowMultiTeamPlayers())
 		{
@@ -255,13 +104,13 @@ void				SettingsCLI::setupMatchRules(pSet s)
 {
 	std::cout << Color::BLUE << "\n> Parametres de match (Badminton)" << std::endl << Color::RESET;
 
-	s->setNbBadmintonCourt(inputInt("Nombre de terrains disponibles", NBTERRAINMIN, NBTERRAINMAX, s->getNbBadmintonCourt()));
+	s->setNbBadmintonCourt(CLIUtils::askInt("Nombre de terrains disponibles", NBTERRAINMIN, NBTERRAINMAX, s->getNbBadmintonCourt()));
 
 	while (true)
 	{
-		s->setScoreMin(inputInt("Score pour gagner un set", SCOREMINTOWIN, SCOREMAXTOWIN, s->getScoreMin()));
-		s->setScoreMax(inputInt("Score maximum en cas de prolongation", SCOREMINTOWIN, SCOREMAXTOWIN, s->getScoreMax()));
-		s->setDiffPointsToWin(inputInt("Ecart de points necessaire", ECARTMIN, ECARTMAX, s->getDiffPointsToWin()));
+		s->setScoreMin(CLIUtils::askInt("Score pour gagner un set", SCOREMINTOWIN, SCOREMAXTOWIN, s->getScoreMin()));
+		s->setScoreMax(CLIUtils::askInt("Score maximum en cas de prolongation", SCOREMINTOWIN, SCOREMAXTOWIN, s->getScoreMax()));
+		s->setDiffPointsToWin(CLIUtils::askInt("Ecart de points necessaire", ECARTMIN, ECARTMAX, s->getDiffPointsToWin()));
 
 		if (s->getScoreMin() > s->getScoreMax())
 		{
@@ -280,17 +129,17 @@ void				SettingsCLI::setupPhaseSets(pSet s)
 {
 	std::cout << Color::BLUE << "\n> Nombre de sets par phase" << std::endl << Color::RESET;
 
-	s->setNbSetPlayedPools(inputInt("Sets en poules", NBSETPOOLMIN, NBSETPOOLMAX, s->getNbSetPlayedPools()));
-	s->setNbSetPlayedSixteenth(inputInt("Sets en 1/16", NBSETSIXTEENTHMIN, NBSETSIXTEENTHMAX, s->getNbSetPlayedSixteenth()));
-	s->setNbSetPlayedHeigth(inputInt("Sets en 1/8", NBSETHEIGTHMIN, NBSETHEIGTHMAX, s->getNbSetPlayedHeigth()));
-	s->setNbSetPlayedQuarters(inputInt("Sets en Quarts", NBSETQUARTERMIN, NBSETQUARTERMAX, s->getNbSetPlayedQuarters()));
-	s->setNbSetPlayedSemis(inputInt("Sets en Demis", NBSETSEMIMIN, NBSETSEMIMAX, s->getNbSetPlayedSemis()));
-	s->setNbSetPlayedFinal(inputInt("Sets en Finale", NBSETFINALMIN, NBSETFINALMAX, s->getNbSetPlayedFinal()));
+	s->setNbSetPlayedPools(CLIUtils::askInt("Sets en poules", NBSETPOOLMIN, NBSETPOOLMAX, s->getNbSetPlayedPools()));
+	s->setNbSetPlayedSixteenth(CLIUtils::askInt("Sets en 1/16", NBSETSIXTEENTHMIN, NBSETSIXTEENTHMAX, s->getNbSetPlayedSixteenth()));
+	s->setNbSetPlayedHeigth(CLIUtils::askInt("Sets en 1/8", NBSETHEIGTHMIN, NBSETHEIGTHMAX, s->getNbSetPlayedHeigth()));
+	s->setNbSetPlayedQuarters(CLIUtils::askInt("Sets en Quarts", NBSETQUARTERMIN, NBSETQUARTERMAX, s->getNbSetPlayedQuarters()));
+	s->setNbSetPlayedSemis(CLIUtils::askInt("Sets en Demis", NBSETSEMIMIN, NBSETSEMIMAX, s->getNbSetPlayedSemis()));
+	s->setNbSetPlayedFinal(CLIUtils::askInt("Sets en Finale", NBSETFINALMIN, NBSETFINALMAX, s->getNbSetPlayedFinal()));
 
-	s->setIsThirdPlaceMatch(inputBool("Jouer la petite finale (3eme place) ?", s->getIsThirdPlaceMatch()));
+	s->setIsThirdPlaceMatch(CLIUtils::askBool("Jouer la petite finale (3eme place) ?", s->getIsThirdPlaceMatch()));
 
 	if (s->getIsThirdPlaceMatch())
-		s->setNbSetPlayedThirdPlace(inputInt("Sets pour la 3e place", NBSETTHIRDMIN, NBSETTHIRDMAX, s->getNbSetPlayedThirdPlace()));
+		s->setNbSetPlayedThirdPlace(CLIUtils::askInt("Sets pour la 3e place", NBSETTHIRDMIN, NBSETTHIRDMAX, s->getNbSetPlayedThirdPlace()));
 	else
 		s->setNbSetPlayedThirdPlace(0);
 }
@@ -327,7 +176,7 @@ void				SettingsCLI::setupWizard(Settings& s)
 			}
 
 			std::cout << std::endl << Color::BLINK << Color::YELLOW << "(Appuyez sur 'Entree' pour conserver la valeur entre crochets [])\n" << Color::RESET;
-			s.setName(inputString("Nom du tournoi", s.getName()));
+			s.setName(CLIUtils::askString("Nom du tournoi", s.getName()));
 
 
 			setupPlayers(&s);
@@ -340,11 +189,11 @@ void				SettingsCLI::setupWizard(Settings& s)
 			if (!SettingsChecker::isValid(s, errors))
 				continue;
 
-			if (inputBool("Validez-vous ces parametres pour passer a l'etape suivante ?", true))
+			if (CLIUtils::askBool("Validez-vous ces parametres pour passer a l'etape suivante ?", true))
 				confirmed = true;
 		}
 	}
-	catch (const UserInterruptedException&)
+	catch (const CLIInterrupted&)
 	{
 		return;
 	}

@@ -9,7 +9,7 @@
 /****************************************************************************************************/
 
 # include <string>
-# include <csignal>
+# include <vector>
 
 /****************************************************************************************************/
 /*	CLASSES																							*/
@@ -41,8 +41,6 @@ using				cpTour			=	const Tournament*;
 /*	STATIC VARIABLES																				*/
 /****************************************************************************************************/
 
-extern volatile std::sig_atomic_t	g_running;
-
 /****************************************************************************************************/
 /*	CLASS																							*/
 /****************************************************************************************************/
@@ -61,8 +59,6 @@ class				TeamCLI
 		static int					parseChoice(cString input);
 		static void					executeChoice(cInt choice, pTeam team, Tournament& tournament);
 
-		//static void					handleShowAllTeams(vpTeam allTeams);
-		static void					handleShowOneTeams(pTeam team);
 		static void					handleModifyTeamName(pTeam team);
 		static void					handleModifyTeamMember(pTeam team, Tournament& tournament);
 		static void					handleDisqualifiedTeam(pTeam team);
@@ -73,10 +69,6 @@ class				TeamCLI
 		static vpPart				getEligibleSubstitutes(pTeam team, Tournament& tournament);
 		static int					selectMemberIndex(pTeam team);
 		static pPart				selectSubstitutePlayer(vpPart candidates);
-
-		//static void					handleTeamManagement(Tournament& tournament);
-		//static void					handleSingleTeamEdit(Team* team, Tournament& tournament);
-		
 
 	public:
 

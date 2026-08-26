@@ -56,6 +56,7 @@ class				TitleViewer
 		static void					tournament();
 		static void					teams();
 		static void					pools();
+		static void					matches();
 		static void					sixteenths();
 		static void					heighths();
 		static void					quarters();

@@ -24,7 +24,6 @@ class				Phase;
 using				String			=	std::string;
 using				cString			=	const std::string&;
 
-
 using				pPhase			=	Phase*;
 using				cPhase			=	const Phase&;
 using				cpPhase			=	const Phase*;

@@ -50,7 +50,8 @@ CLASS			=	./class/Match.cpp \
 					./class/Team.cpp \
 					./class/Tournament.cpp
 
-CLI				=	./cli/MatchCLI.cpp \
+CLI				=	./cli/CLIUtils.cpp \
+					./cli/MatchCLI.cpp \
 					./cli/ParticipantCLI.cpp \
 					./cli/PhaseCLI.cpp \
 					./cli/PoolCLI.cpp \

@@ -10,7 +10,6 @@
 
 # include <string>
 # include <vector>
-# include <csignal>
 # include <functional>
 
 /****************************************************************************************************/
@@ -31,7 +30,7 @@ using				vString			=	std::vector<std::string>;
 
 using				cInt			=	const int;
 using				vInt			=	std::vector<int>;
-using				cvInt			=	const std::vector<int>;
+using				cvInt			=	const std::vector<int>&;
 
 using				cBool			=	const bool;
 
@@ -55,8 +54,6 @@ using				cpTour			=	const Tournament*;
 /*	STATIC VARIABLES																				*/
 /****************************************************************************************************/
 
-extern volatile std::sig_atomic_t	g_running;
-
 /****************************************************************************************************/
 /*	CLASS																							*/
 /****************************************************************************************************/
@@ -76,13 +73,8 @@ class				TournamentCLI
 		static void					menuTournament(cTour tournament);
 
 		//	Handlers de saisie
-		static void					clearInput();
-		static String				fetchInput();
-		static int					parseChoice(cString input);
 		static void					executeChoice(cInt choice, Tournament& tournament);
-		static String				promptFilename(cString prompt);
 
-		static void					handlePoolSelection(Tournament& tournament);
 		static void					handleEliminationPhase(pPhase phase, const std::function<void()>& generateFn,
 										cString phaseName, cString successMsg, cString errorMsg);
 		static void					handleExport(Tournament& tournament);
@@ -98,7 +90,7 @@ class				TournamentCLI
 		static bool					isThirdUnlocked(cTour tournament);
 		
 		//	Helpers d affichage
-		static void					handleMatchList(cvpMatch matches, cString title);
+		//static void					handleMatchList(cvpMatch matches, cString title);
 		static void					handlePhase(pPhase phase, cString phaseName);
 		
 };

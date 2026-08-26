@@ -6,12 +6,15 @@
 /*	INCLUDES																						*/
 /****************************************************************************************************/
 
+#include <format>
 #include <iomanip>
 #include <iostream>
 
 #include "../includes/class/Pool.hpp"
 #include "../includes/class/Team.hpp"
 #include "../includes/class/Match.hpp"
+#include "../includes/class/Settings.hpp"
+#include "../includes/class/Tournament.hpp"
 
 #include "../includes/viewer/PoolViewer.hpp"
 #include "../includes/viewer/TeamViewer.hpp"
@@ -187,4 +190,69 @@ void				PoolViewer::displayPoolDetails(cPool pool)
 
 	for (cpTeam t : pool.getTeams())
 		TeamViewer::showTeamDescription(*t);
+}
+
+void				PoolViewer::displayPoolsList(cTour tournament)
+{
+	std::cout << std::string(44, '-') << '\n';
+	std::cout << std::format("| {:<4} | {:<20} | {:<10} |\n", "ID", "Nom", "Terminée");
+	std::cout << std::string(44, '-') << '\n';
+
+	int i = 1;
+
+	for (cpPool pool : tournament.getPools())
+		std::cout << std::format("| {:<4} | {:<20} | {:<10} |\n",
+			i++,
+			pool->getName(),
+			pool->getIsFinished() ? "Oui" : "Non");
+	
+	std::cout << std::string(44, '-') << "\n\n";
+}
+
+void				PoolViewer::displayTeamsInPool(cPool pool)
+{
+	std::cout << std::format("\n=== EQUIPES DE LA POOL : {} ===\n", pool.getName());
+
+	for (const auto& team : pool.getTeams())
+		std::cout << std::format("- {}\n", team->getName());
+}
+
+void				PoolViewer::displayMatchesInPool(cPool pool)
+{
+	std::cout << std::format("\n=== MATCHS DE LA POOL : {} ===\n", pool.getName());
+	std::cout << std::format("| {:<35} | {:<10} | {:<10} |\n", "Rencontre", "Résultat", "Terminé");
+	std::cout << std::string(65, '-') << '\n';
+
+	for (const auto& match : pool.getMatches())
+	{
+		std::string encounter = std::format("{} vs {}", match->getTeamA()->getName(), match->getTeamB()->getName());
+		std::string score = match->isFinished() ? std::format("{} - {}", match->getScoreA(), match->getScoreB()) : "- : -";
+		std::string status = match->isFinished() ? "Oui" : "Non";
+		
+		std::cout << std::format("| {:<35} | {:<10} | {:<10} |\n", encounter, score, status);
+	}
+}
+
+void				PoolViewer::displayPoolStandings(cPool pool)
+{
+	std::cout << std::format("\n=== CLASSEMENT DE LA POOL : {} ===\n", pool.getName());
+	std::cout << std::format("| {:<3} | {:<20} | {:<3} | {:<3} | {:<3} | {:<5} | {:<10} |\n",
+	"Pos", "Equipe", "Pts", "BP", "BC", "Diff", "Qualifié");
+	std::cout << std::string(72, '-') << '\n';
+
+	/*int position = 1;
+
+	for (const auto& stat : poolgetStandings())
+	{
+		std::string qualified = stat.isQualified() ? "Oui" : "Non";
+		
+		std::cout << std::format("| {:<3} | {:<20} | {:<3} | {:<3} | {:<3} | {:<5} | {:<10} |\n", 
+								position++, 
+								stat.getTeam().getName(), 
+								stat.getPoints(), 
+								stat.getGoalsScored(), 
+								stat.getGoalsConceded(), 
+								stat.getGoalDifference(), 
+								qualified);
+	}*/
 }

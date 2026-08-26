@@ -10,7 +10,6 @@
 
 # include <string>
 # include <vector>
-# include <csignal>
 
 /****************************************************************************************************/
 /*	CLASSES																							*/
@@ -28,7 +27,7 @@ using				vString			=	std::vector<std::string>;
 
 using				cInt			=	const int;
 using				vInt			=	std::vector<int>;
-using				cvInt			=	const std::vector<int>;
+using				cvInt			=	const std::vector<int>&;
 
 using				cBool			=	const bool;
 
@@ -39,8 +38,6 @@ using				cpSet			=	const Settings*;
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
 /****************************************************************************************************/
-
-extern volatile std::sig_atomic_t	g_running;
 
 /****************************************************************************************************/
 /*	CLASS																							*/
@@ -55,10 +52,10 @@ class				SettingsCLI
 
 	private:
 
-		static int					inputInt(cString prompt, cInt min, cInt max, cInt defaultVal);
-		static int					inputIntList(cString prompt, cvInt allowedValues, cInt defaultVal);
-		static bool					inputBool(cString prompt, cBool defaultVal);
-		static String				inputString(cString prompt, cString defaultVal);
+		//static int					inputInt(cString prompt, cInt min, cInt max, cInt defaultVal);
+		//static int					inputIntList(cString prompt, cvInt allowedValues, cInt defaultVal);
+		//static bool					inputBool(cString prompt, cBool defaultVal);
+		//static String				inputString(cString prompt, cString defaultVal);
 		static void					setupPlayers(pSet s);
 		static void					setupPools(pSet s);
 		static void					setupMatchRules(pSet s);

@@ -43,6 +43,7 @@ class				MatchViewer
 	public:
 
 		static void					display(cMatch match);
+		static void					displayAllMatches(cvpMatch matches);
 
 };
 

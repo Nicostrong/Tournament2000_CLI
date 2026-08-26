@@ -188,6 +188,26 @@ void				TitleViewer::pools()
 }
 
 /**
+ *	Titre du menu Matches
+ */
+void				TitleViewer::matches()
+{
+	const char* color = getRandomColor();
+
+	printSeparator(color);
+	std::cout << color << R"(
+           __    __        _        _
+          |  \  /  |      | |__    | |
+          | | \/ | |  __ _|  __|___| |___  ____  ____
+          | |\__/| | / _` | | /  _/|  __ \/ __ \/  __|
+          | |    | |/ (_| | |_| (__| |  \ \  __/\___ \
+          |_|    |_|\___,_|__/\___/|_|  |_|\___/|____/
+
+)" << Color::RESET << std::endl;
+	printSeparator(color);
+}
+
+/**
  *	Titre du menu 1/16
  */
 void				TitleViewer::sixteenths()

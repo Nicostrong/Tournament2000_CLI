@@ -57,6 +57,7 @@ class				Pool
 		String						_name;
 		vpTeam						_teams;
 		vpMatch						_matches;
+		bool						_isFinished;
 
 	public:
 
@@ -73,11 +74,14 @@ class				Pool
 		cvpTeam						getTeams() const;
 		[[nodiscard]]
 		cvpMatch					getMatches() const;
+		[[nodiscard]]
+		cBool						getIsFinished() const;
 
 		//	METHOD
 		void						addTeam(pTeam team);
 		void						generateMatches(cInt nbSetsPerEncounter);
 		void						sortTeams();
+		void						checkPoolIsFinished();
 		bool						allMatchesFinished() const;
 
 		[[nodiscard]]

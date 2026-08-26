@@ -10,7 +10,6 @@
 
 # include <string>
 # include <vector>
-# include <csignal>
 
 /****************************************************************************************************/
 /*	CLASSES																							*/
@@ -39,8 +38,6 @@ using				cvpPart			=	const std::vector<Participant*>&;
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
 /****************************************************************************************************/
-
-extern volatile std::sig_atomic_t	g_running;
 
 /****************************************************************************************************/
 /*	CLASS																							*/
@@ -87,9 +84,6 @@ class				ParticipantCLI
 		static bool					checkPseudo(cString pseudo, cvpPart participants);
 		static Participant*			extractParticipantFromLine(cString line, bool isFirstLine);
 		static void					updateState(cvpPart participants, cSet settings);
-		static String				askLastName(cString current = "");
-		static String				askFirstName(cString current = "");
-		static String				askPseudo(cvpPart participants, cString current = "");
 		static Gender				askGender(cSet settings, int currentGenderInt = -1);
 
 	public:

@@ -6,6 +6,7 @@
 /*	INCLUDES																						*/
 /****************************************************************************************************/
 
+#include <vector>
 #include <format>
 #include <limits>
 #include <fstream>
@@ -19,6 +20,7 @@
 #include "../includes/class/Tournament.hpp"
 
 #include "../includes/cli/TeamCLI.hpp"
+#include "../includes/cli/CLIUtils.hpp"
 
 #include "../includes/viewer/TitleViewer.hpp"
 #include "../includes/viewer/TeamViewer.hpp"
@@ -36,17 +38,6 @@
 /*	EXCEPTION																						*/
 /****************************************************************************************************/
 
-namespace
-{
-	struct	UserInterruptedException : public std::exception {};
-
-	void checkInterruption()
-	{
-		if (!g_running || std::cin.eof())
-			throw UserInterruptedException();
-	}
-}
-
 /****************************************************************************************************/
 /*	PRIVATE METHOD																					*/
 /****************************************************************************************************/
@@ -61,7 +52,7 @@ void				TeamCLI::displayMenuUI(cTour tournament)
 	PrintUtils::handleMessages();
 	TeamViewer::showAllTeams(tournament.getTeams());
 	std::cout << "Selectionnez une team en entrant son ID (tapez 'r' pour revenir au menu precedent): ";
-	checkInterruption();
+	CLIUtils::checkInterruption();
 }
 
 void				TeamCLI::handleTitle()
@@ -73,18 +64,20 @@ void				TeamCLI::handleTitle()
 
 void				TeamCLI::menuTeam(pTeam team)
 {
-	std::cout << std::format("\n========== TEAM\t{} ==========", team->getName()) << std::endl;
-	std::cout <<  Color::YELLOW << "\t1.\t" << Color::RESET << "Modifier le nom" << std::endl;
-	std::cout <<  Color::YELLOW << "\t2.\t" << Color::RESET << "Modifier un membre" << std::endl;
-	
+	std::vector<MenuItem> items =
+	{
+		{'1', "Modifier le nom"},
+		{'2', "Modifier un membre"}
+	};
+
 	if (team->getIsDisqualified())
-		std::cout <<  Color::YELLOW << "\t3.\t" << Color::RESET << "Retirer la disqualification" << std::endl;
+		items.push_back({'3', "Retirer la disqualification"});
 	else
-		std::cout <<  Color::YELLOW << "\t3.\t" << Color::RESET << "Disqualifier l'equipe" << std::endl;
-		
-	std::cout <<  Color::YELLOW << "\tR.\t" << Color::RESET << "Retour au menu precedent" << std::endl;
-	std::cout << "============================================================" << std::endl;
-	std::cout << "Votre choix : ";
+		items.push_back({'3', "Disqualifier l'equipe"});
+
+	items.push_back({'R', "Retour au menu precedent"});
+
+	CLIUtils::displayMenu(std::format("TEAM\t{}", team->getName()), items);
 }
 
 void				TeamCLI::submenuTeam(pTeam team, Tournament& tournament)
@@ -112,7 +105,7 @@ void				TeamCLI::submenuTeam(pTeam team, Tournament& tournament)
 			}
 		}
 	}
-	catch (const UserInterruptedException&)
+	catch (const CLIInterrupted&)
 	{
 		return;
 	}
@@ -134,7 +127,7 @@ String				TeamCLI::fetchInput()
 	
 	if (!(std::cin >> input))
 	{
-		checkInterruption();
+		CLIUtils::checkInterruption();
 		clearInput();
 		PrintUtils::addError("Saisie invalide.");
 		return ("");
@@ -386,7 +379,7 @@ void				TeamCLI::handleMenuTeam(Tournament& tournament)
 				submenuTeam(team, tournament);
 		}
 	}
-	catch (const UserInterruptedException&)
+	catch (const CLIInterrupted&)
 	{
 		return;
 	}

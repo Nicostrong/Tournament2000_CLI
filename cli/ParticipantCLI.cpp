@@ -6,6 +6,7 @@
 /*	INCLUDES																						*/
 /****************************************************************************************************/
 
+#include <vector>
 #include <format>
 #include <limits>
 #include <fstream>
@@ -23,6 +24,7 @@
 #include "../includes/viewer/TitleViewer.hpp"
 #include "../includes/viewer/ParticipantViewer.hpp"
 
+#include "../includes/cli/CLIUtils.hpp"
 #include "../includes/cli/ParticipantCLI.hpp"
 
 #include "../includes/Color.hpp"
@@ -45,17 +47,6 @@ bool				ParticipantCLI::_enoughPlayers = false;
 /*	EXCEPTION																						*/
 /****************************************************************************************************/
 
-namespace
-{
-	struct	UserInterruptedException : public std::exception {};
-
-	void checkInterruption()
-	{
-		if (!g_running || std::cin.eof())
-			throw UserInterruptedException();
-	}
-}
-
 /****************************************************************************************************/
 /*	PRIVATE METHOD																					*/
 /****************************************************************************************************/
@@ -66,7 +57,7 @@ namespace
 
 /**
  *	Affiche le menu Player avec sous-menu sous conditions
- */
+*/
 void				ParticipantCLI::menuParticipant(cvpPart participants, cSet settings, cBool showMenu)
 {
 	cInt nbPlayersRequired = settings.getAllowMultiTeamPlayers()	? (settings.getNbPlayers() - NBPLAYERINMULTITEAMMAX)
@@ -78,27 +69,29 @@ void				ParticipantCLI::menuParticipant(cvpPart participants, cSet settings, cBo
 	std::cout << color << "  Nb de joueurs minimum requis pour le tournoi :\t" << nbPlayersRequired << "\n\n";
 	TitleViewer::printSeparator(color);
 
+	std::vector<MenuItem> items = {};
+	
 	if (_canAdd)
-		std::cout << Color::YELLOW << "\t1.\t" << Color::RESET << "Ajouter un nouveau participant\n";
+		items.push_back({'1', "Ajouter un nouveau participant"});
 
 	if (showMenu)
 	{
-		std::cout << Color::YELLOW << "\t2.\t" << Color::RESET << "Modifier un participant\n";
-		std::cout << Color::YELLOW << "\t3.\t" << Color::RESET << "Supprimer un participant\n";
+		items.push_back({'2', "Modifier un participant"});
+		items.push_back({'3', "Supprimer un participant"});
 	}
 
-	std::cout << Color::YELLOW << "\t4.\t" << Color::RESET << "Importer des participants (CSV)\n";
+	items.push_back({'4', "Importer des participants (CSV)"});
 
 	if (showMenu)
 	{
-		std::cout << Color::YELLOW << "\t5.\t" << Color::RESET << "Exporter les participants (CSV)\n";
-		std::cout << Color::YELLOW << "\t6.\t" << Color::RESET << "Afficher un/des participant(s)\n";
+		items.push_back({'5', "Exporter des participants (CSV)"});
+		items.push_back({'6', "Afficher un/des participant(s)"});
 	}
 
 	if (_enoughPlayers)
-		std::cout << Color::YELLOW << "\t7.\t" << Color::RESET << "Lancer le tournoi\n\n";
+		items.push_back({'7', "Lancer le tournoi"});
 
-	std::cout << "\tChoix : ";
+	CLIUtils::displayMenu("PLAYERS", items);
 }
 
 /****************/
@@ -107,9 +100,11 @@ void				ParticipantCLI::menuParticipant(cvpPart participants, cSet settings, cBo
 
 Participant*		ParticipantCLI::create(cvpPart participants, cSet settings)
 {
-	String lastName = askLastName();
-	String firstName = askFirstName();
-	String pseudo = askPseudo(participants);
+	(void)participants;
+	
+	String lastName = CLIUtils::askString("Nom", "");
+	String firstName = CLIUtils::askString("Prenom", "");
+	String pseudo = CLIUtils::askString("Pseudo", "");
 	Gender gender = askGender(settings);
 
 	PrintUtils::addSuccess(std::format("Nouveau participant avec le pseudo {} ajoute avec succes.", pseudo));
@@ -147,9 +142,9 @@ void				ParticipantCLI::modify(const size_t id, cvpPart participants, cSet setti
 		return;
 	}
 
-	pToModify->setLastName(askLastName(pToModify->getLastName()));
-	pToModify->setFirstName(askFirstName(pToModify->getFirstName()));
-	pToModify->setPseudo(askPseudo(participants, pToModify->getPseudo()));
+	pToModify->setLastName(CLIUtils::askString("Nom", pToModify->getLastName()));
+	pToModify->setFirstName(CLIUtils::askString("Prenom", pToModify->getFirstName()));
+	pToModify->setPseudo(CLIUtils::askString("Pseudo", pToModify->getPseudo()));
 	pToModify->setGender(askGender(settings, pToModify->getGenderInt()));
 
 	PrintUtils::addSuccess(std::format("Le participant avec le pseudo {} a ete modifie avec succes.", pToModify->getPseudo()));
@@ -308,13 +303,13 @@ void				ParticipantCLI::handleDeleteParticipant(vpPart& participants)
 
 void				ParticipantCLI::handleImport(vpPart& participants, cSet settings)
 {
-	checkInterruption();
+	CLIUtils::checkInterruption();
 	std::cout << "\nEntrez le chemin du fichier CSV a importer (ex: joueurs.csv) : ";
 
 	String path;
 
 	if (!std::getline(std::cin, path))
-		checkInterruption();
+		CLIUtils::checkInterruption();
 
 	FormatUtils::trim(path);
 
@@ -534,127 +529,21 @@ void				ParticipantCLI::updateState(cvpPart participants, cSet settings)
 	_enoughPlayers = participants.size() >= static_cast<size_t>(nbPlayersRequired);
 }
 
-String				ParticipantCLI::askLastName(cString current)
-{
-    String lastName;
-
-    while (lastName.empty())
-    {
-        checkInterruption();
-
-        current.empty() ? std::cout << "Nom : " : std::cout << "Nom [" << current << "] (Entree = conserver) : ";
-
-        if (!std::getline(std::cin, lastName))
-            checkInterruption();
-
-        FormatUtils::trim(lastName);
-
-        if (lastName.empty() && !current.empty())
-            return (current);
-    }
-    return (lastName);
-}
-
-String				ParticipantCLI::askFirstName(cString current)
-{
-    String firstName;
-
-    while (firstName.empty())
-    {
-        checkInterruption();
-
-        current.empty() ? std::cout << "Prenom : " : std::cout << "Prenom [" << current << "] (Entree = conserver) : ";
-
-        if (!std::getline(std::cin, firstName))
-            checkInterruption();
-
-        FormatUtils::trim(firstName);
-
-        if (firstName.empty() && !current.empty())
-            return (current);
-    }
-    return (firstName);
-}
-
-String				ParticipantCLI::askPseudo(cvpPart participants, cString current)
-{
-    String pseudo;
-
-    while (true)
-    {
-        checkInterruption();
-
-        current.empty() ? std::cout << "Pseudo : " : std::cout << "Pseudo [" << current << "] (Entree = conserver) : ";
-
-        if (!std::getline(std::cin, pseudo))
-            checkInterruption();
-
-        FormatUtils::trim(pseudo);
-
-        if (!current.empty() && (pseudo.empty() || pseudo == current))
-            return (current);
-
-        if (pseudo.empty())
-            continue;
-
-        FormatUtils::capitalize(pseudo);
-
-        if (!checkPseudo(pseudo, participants))
-        {
-            std::cout << Color::RED << "[!] Ce pseudo est deja utilise. Choisissez-en un autre.\n" << Color::RESET;
-            pseudo.clear();
-        }
-        else
-            return (pseudo);
-    }
-}
-
 Gender				ParticipantCLI::askGender(cSet settings, int currentGenderInt)
 {
-    while (true)
-    {
-        checkInterruption();
+	while (true)
+	{
+		int g = CLIUtils::askInt("Sexe (0 = HOMME, 1 = FEMME)", 0, 1, currentGenderInt);
+		
+		if (!settings.getIsMixed() && static_cast<Gender>(g) != settings.getTournamentGender())
+		{
+			std::cout << Color::RED << "[!] ERREUR : Ce tournoi est exclusivement reserve aux participants de genre "
+					<< (settings.getTournamentGender() == Gender::MALE ? "HOMME" : "FEMME") << ".\n" << Color::RESET;
+			continue;
+		}
 
-        (currentGenderInt < 0) ? std::cout << "Sexe (0 = HOMME, 1 = FEMME) : " : std::cout << "Sexe (0 = HOMME, 1 = FEMME) [" << (currentGenderInt == 0 ? "HOMME" : "FEMME") << "] (Entree = conserver) : ";
-
-        String input;
-
-        if (!std::getline(std::cin, input))
-            checkInterruption();
-
-        FormatUtils::trim(input);
-
-        if (input.empty() && currentGenderInt >= 0)
-            return (static_cast<Gender>(currentGenderInt));
-
-        try
-        {
-            int g = std::stoi(input);
-
-            if (g != 0 && g != 1)
-            {
-                std::cout << Color::RED << "[!] Saisie invalide. Entrez 0 pour HOMME ou 1 pour FEMME.\n" << Color::RESET;
-                continue;
-            }
-
-            if (!settings.getIsMixed() && static_cast<Gender>(g) != settings.getTournamentGender())
-            {
-                std::cout << Color::RED << "[!] ERREUR : Ce tournoi est exclusivement reserve aux participants de genre "
-                          << (settings.getTournamentGender() == Gender::MALE ? "HOMME" : "FEMME") << ".\n" << Color::RESET;
-                continue;
-            }
-
-            return (static_cast<Gender>(g));
-        }
-        catch (const UserInterruptedException&)
-        {
-            throw;
-        }
-        catch (...)
-        {
-            std::cout << Color::RED << "[!] Saisie invalide. Entrez 0 pour HOMME ou 1 pour FEMME.\n" << Color::RESET;
-        }
-    }
+		return (static_cast<Gender>(g));
+	}
 }
 
 /****************************************************************************************************/
@@ -674,11 +563,11 @@ void				ParticipantCLI::handleMenuParticipant(vpPart& participants, cSet setting
 			PrintUtils::handleMessages();
 			handleList();
 			menuParticipant(participants, settings, _hasParticipants);
-			checkInterruption();
+			CLIUtils::checkInterruption();
 
 			if (!(std::cin >> input))
 			{
-				checkInterruption();
+				CLIUtils::checkInterruption();
 
 				std::cin.clear();
 				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -756,7 +645,7 @@ void				ParticipantCLI::handleMenuParticipant(vpPart& participants, cSet setting
 			}
 		}
 	}
-	catch (const UserInterruptedException&)
+	catch (const CLIInterrupted&)
 	{
 		return ;
 	}
