@@ -69,7 +69,6 @@ class				TournamentCLI
 
 		//	Affichage du menu
 		static void					displayMenuUI(cTour tournament);
-		static void					handleTitle();
 		static void					menuTournament(cTour tournament);
 
 		//	Handlers de saisie
@@ -79,15 +78,6 @@ class				TournamentCLI
 										cString phaseName, cString successMsg, cString errorMsg);
 		static void					handleExport(Tournament& tournament);
 		static cpPhase				getPhaseByMenuChoice(cTour tournament, cInt choice);
-
-		//	Verification de phase
-		static bool					isPoolsFinished(cTour tournament);
-		static bool					isSixteenthUnlocked(cTour tournament);
-		static bool					isHeighthUnlocked(cTour tournament);
-		static bool					isQuartersUnlocked(cTour tournament);
-		static bool					isSemisUnlocked(cTour tournament);
-		static bool					isFinalUnlocked(cTour tournament);
-		static bool					isThirdUnlocked(cTour tournament);
 		
 		//	Helpers d affichage
 		//static void					handleMatchList(cvpMatch matches, cString title);

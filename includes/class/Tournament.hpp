@@ -8,6 +8,7 @@
 /*	INCLUDES																						*/
 /****************************************************************************************************/
 
+# include <map>
 # include <string>
 # include <vector>
 
@@ -15,11 +16,12 @@
 /*	CLASSES																							*/
 /****************************************************************************************************/
 
-class				Settings;
-class				Participant;
 class				Team;
 class				Pool;
 class				Phase;
+class				Match;
+class				Settings;
+class				Participant;
 
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
@@ -43,6 +45,13 @@ using				cTeam			=	const Team&;
 using				cpTeam			=	const Team*;
 using				vpTeam			=	std::vector<Team*>;
 using				cvpTeam			=	const std::vector<Team*>&;
+using				mpTeam			=	std::map<Team*, Team*>;
+
+using				pMatch			=	Match*;
+using				cMatch			=	const Match&;
+using				cpMatch			=	const Match*;
+using				vpMatch			=	std::vector<Match*>;
+using				cvpMatch		=	const std::vector<Match*>&;
 
 using				pPhase			=	Phase*;
 using				cPhase			=	const Phase&;
@@ -79,16 +88,18 @@ class				Tournament
 		vpPool						_pools;
 
 		Phase*						_sixteenths;
-		Phase*						_heighths;
+		Phase*						_eighth;
 		Phase*						_quarters;
 		Phase*						_semis;
 		Phase*						_final;
 		Phase*						_thirdPlace;
 
+		mpTeam						_repechageHistory;
+
 		bool						_isReady;
 		bool						_isFinished;
 		bool						_hasSixteenth;
-		bool						_hasHeighth;
+		bool						_hasEighth;
 		bool						_hasThirdMatch;
 
 		void						generateTeams();
@@ -130,7 +141,12 @@ class				Tournament
 		void						generatePoolMatches();
 		void						sortAllPools() const;
 		void						generateSymmetricPoolEncounters(pPhase targetPhase, size_t nbPools) const;
-		static bool					addEncountersFromPreviousPhase(pPhase currentPhase, cpPhase previousPhase);
+		bool						addEncountersFromPreviousPhase(pPhase currentPhase, cpPhase previousPhase);
+		void						applyPoolDisqualification(pTeam team);
+		void						applyBracketDisqualification(pTeam team);
+		pMatch						findCurrentActiveMatch(pTeam team) const;
+		pMatch						findPreviousMatch(pTeam team) const;
+		pTeam						getNextBestTeamFromPool(pTeam disqualifiedTeam) const;
 
 		//	GETTER
 		[[nodiscard]]
@@ -168,7 +184,7 @@ class				Tournament
 		[[nodiscard]]
 		Phase*						getSixteenth() const;
 		[[nodiscard]]
-		Phase*						getHeighth() const;
+		Phase*						getEighth() const;
 		[[nodiscard]]
 		Phase*						getQuarters() const;
 		[[nodiscard]]
@@ -180,7 +196,7 @@ class				Tournament
 		[[nodiscard]]
 		bool						getHasSixteenth() const;
 		[[nodiscard]]
-		bool						getHasHeighth() const;
+		bool						getHasEighth() const;
 		[[nodiscard]]
 		bool						getHasThirdMatch() const;
 		[[nodiscard]]
@@ -190,19 +206,31 @@ class				Tournament
 
 		//	SETTER
 		void						setHasSixteenth(cBool value);
-		void						setHasHeighth(cBool value);
+		void						setHasEighth(cBool value);
 		void						setHasThirdMatch(cBool value);
 
 		//	METHOD
 		void						clean();
 		void						addParticipant(cPart p);
 		void						generateSixteenths();
-		void						generateHeighths();
+		void						generateEighths();
 		void						generateQuarters();
 		void						generateSemis();
 		void						generateFinal();
 		void						generateThirdPlace();
 
+		void						disqualifyTeam(pTeam team);
+		void						unDisqualifyTeam(pTeam team);
+
 		bool						initializeTournament();
+
+		//	CHECKER
+		bool						isPoolsFinished() const;
+		bool						isSixteenthUnlocked() const;
+		bool						isEighthUnlocked() const;
+		bool						isQuartersUnlocked() const;
+		bool						isSemisUnlocked() const;
+		bool						isFinalUnlocked() const;
+		bool						isThirdUnlocked() const;
 
 };

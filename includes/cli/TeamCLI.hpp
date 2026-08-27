@@ -50,18 +50,14 @@ class				TeamCLI
 	private:
 
 		static void					displayMenuUI(cTour tournament);
-		static void					handleTitle();
 		static void					menuTeam(pTeam team);
 		static void					submenuTeam(pTeam team, Tournament& tournament);
 
-		static void					clearInput();
-		static String				fetchInput();
-		static int					parseChoice(cString input);
 		static void					executeChoice(cInt choice, pTeam team, Tournament& tournament);
 
 		static void					handleModifyTeamName(pTeam team);
 		static void					handleModifyTeamMember(pTeam team, Tournament& tournament);
-		static void					handleDisqualifiedTeam(pTeam team);
+		static void					handleDisqualifiedTeam(pTeam team, Tournament& tournament);
 
 		static bool					checkTeamId(int id, Tournament& tournament);
 		static cpPool				findTeamPool(cpTeam team, Tournament& tournament);

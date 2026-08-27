@@ -433,7 +433,7 @@ bool				Exporter::exportTournamentToTxt(cTour tournament, cString filename)
 	writeHeader(out, tournament);
 	writePools(out, tournament);
 	writePhaseBlock(out, tournament.getSixteenth());
-	writePhaseBlock(out, tournament.getHeighth());
+	writePhaseBlock(out, tournament.getEighth());
 	writePhaseBlock(out, tournament.getQuarters());
 	writePhaseBlock(out, tournament.getSemis());
 	writePhaseBlock(out, tournament.getThirdPlace());

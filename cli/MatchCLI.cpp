@@ -49,18 +49,11 @@
 
 void				MatchCLI::displayMenuUI(cvpMatch matches)
 {
-	handleTitle();
+	CLIUtils::handleTitle(TitleViewer::matches);
 	PrintUtils::handleMessages();
 	MatchViewer::displayAllMatches(matches);
 	std::cout << "Selectionnez un matche en entrant son id (tapez 'r' pour revenir au menu precedent): ";
 	CLIUtils::checkInterruption();
-}
-
-void				MatchCLI::handleTitle()
-{
-	PrintUtils::clear();
-	TitleViewer::banner();
-	TitleViewer::matches();
 }
 
 void				MatchCLI::menuMatch(pMatch match)
@@ -104,26 +97,22 @@ void				MatchCLI::submenuMatch(pMatch match)
 	}
 }
 
-/********************/
-/*  HANDLER SAISIE	*/
-/********************/
+/****************/
+/*  EXECUTION	*/
+/****************/
 
 void				MatchCLI::executeChoice(cInt choice, pMatch match)
 {
-	(void)match;
-
 	switch (choice)
 	{
 		case 1:
-			//handleSaveScore(match);
+			//	enregistrer un score
+			handleSaveScore(match);
 			break;
 
 		case 2:
-			//handleModifyScore(match);
-			break;
-
-		case 3:
-			//MatchViewer::displayAllMatches(match);
+			//	modifier un score
+			handleModifyScore(match);
 			break;
 		
 		default:
@@ -136,18 +125,34 @@ void				MatchCLI::executeChoice(cInt choice, pMatch match)
 /*  HANDLER ACTION	*/
 /********************/
 
-void				MatchCLI::handelSaveScore(pMatch match)
+void				MatchCLI::handleSaveScore(pMatch match)
 {
 	int sA = CLIUtils::askInt(std::format("Score de {}", match->getTeamA()->getName()), 0, SCOREMAXTOWIN, 0);
 	int sB = CLIUtils::askInt(std::format("Score de {}", match->getTeamB()->getName()), 0, SCOREMAXTOWIN, 0);
 
+	if (match->setScore(sA, sB))
+		PrintUtils::addSuccess("Score enregistre !");
+	else
+		PrintUtils::addError(std::format("Les scores ne sont pas valide TeamA: {} - TeamB: {}.", sA, sB));
+}
+
+void				MatchCLI::handleModifyScore(pMatch match)
+{
+	int sA = CLIUtils::askInt(std::format("Score actuel de {} => {}", match->getTeamA()->getName(), match->getScoreA()), 0, SCOREMAXTOWIN, match->getScoreA());
+	int sB = CLIUtils::askInt(std::format("Score actuel de {} => {}", match->getTeamB()->getName(), match->getScoreB()), 0, SCOREMAXTOWIN, match->getScoreB());
+
 	match->setScore(sA, sB);
-	std::cout << "Score enregistre !" << std::endl;
+	PrintUtils::addSuccess("Score modifie !");
 }
 
 /********************/
 /*  HELPER			*/
 /********************/
+
+bool				MatchCLI::checkMatchId(int id, size_t size)
+{
+	return (id < static_cast<int>(size));
+}
 
 /****************************************************************************************************/
 /*	PUBLIC METHOD																					*/
@@ -173,8 +178,14 @@ void				MatchCLI::handleMenuMatch(cvpMatch matches)
 
 			auto choice = CLIUtils::parseInt(input);
 
-			if (!matches.empty())
-				submenuMatch(matches[choice.value()]);
+			if (choice.has_value() && !checkMatchId(choice.value(), matches.size()))
+			{
+				PrintUtils::addError(std::format("l'id {} n'existe pas.", choice.value()));
+				continue;
+			}
+
+			if (!matches.empty() && choice.has_value())
+				submenuMatch(matches[choice.value() - 1]);
 		}
 	}
 	catch (const CLIInterrupted&)

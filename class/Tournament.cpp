@@ -11,12 +11,13 @@
 #include <iostream>
 #include <algorithm>
 
-#include "../includes/class/Tournament.hpp"
-#include "../includes/class/Settings.hpp"
-#include "../includes/class/Participant.hpp"
 #include "../includes/class/Team.hpp"
 #include "../includes/class/Pool.hpp"
+#include "../includes/class/Match.hpp"
 #include "../includes/class/Phase.hpp"
+#include "../includes/class/Settings.hpp"
+#include "../includes/class/Tournament.hpp"
+#include "../includes/class/Participant.hpp"
 
 #include "../includes/utils/PrintUtils.hpp"
 
@@ -38,10 +39,10 @@ using				cBool			=	const bool;
 /*	CONSTRUCTOR / DESTRUCTOR																		*/
 /****************************************************************************************************/
 
-Tournament::Tournament(pSet settings):	_settings(settings), _sixteenths(nullptr), _heighths(nullptr),
+Tournament::Tournament(pSet settings):	_settings(settings), _sixteenths(nullptr), _eighth(nullptr),
 	_quarters(nullptr), _semis(nullptr), _final(nullptr), _thirdPlace(nullptr), _isReady(false),
 	_isFinished(false), _hasSixteenth(settings->getNbPools() == 16),
-	_hasHeighth(settings->getNbPools() >= 8),_hasThirdMatch(settings->getIsThirdPlaceMatch())
+	_hasEighth(settings->getNbPools() >= 8),_hasThirdMatch(settings->getIsThirdPlaceMatch())
 {}
 
 Tournament::Tournament(pSet settings, vpPart participants): Tournament(settings)
@@ -66,14 +67,14 @@ vpPart				Tournament::getParticipants() const		{	return (this->_participants);	}
 vpTeam				Tournament::getTeams() const			{	return (this->_teams);			}
 cvpPool				Tournament::getPools() const			{	return (this->_pools);			}
 Phase*				Tournament::getSixteenth() const		{	return (this->_sixteenths);		}
-Phase*				Tournament::getHeighth() const			{	return (this->_heighths);		}
+Phase*				Tournament::getEighth() const			{	return (this->_eighth);			}
 Phase*				Tournament::getQuarters() const			{	return (this->_quarters);		}
 Phase*				Tournament::getSemis() const			{	return (this->_semis);			}
 Phase*				Tournament::getFinal() const			{	return (this->_final);			}
 Phase*				Tournament::getThirdPlace() const		{	return (this->_thirdPlace);		}
 bool				Tournament::getHasSixteenth() const		{	return (this->_hasSixteenth);	}
-bool				Tournament::getHasHeighth() const		{	return (this->_hasHeighth);		}
-bool				Tournament::getHasThirdMatch() const	{	return (this->_hasHeighth);		}
+bool				Tournament::getHasEighth() const		{	return (this->_hasEighth);		}
+bool				Tournament::getHasThirdMatch() const	{	return (this->_hasThirdMatch);	}
 bool				Tournament::getIsReady() const			{	return (this->_isReady);		}
 bool				Tournament::getIsFinished() const		{	return (this->_isFinished);		}
 
@@ -84,7 +85,7 @@ bool				Tournament::getIsFinished() const		{	return (this->_isFinished);		}
 void				Tournament::setIsReady(cBool value)			{	this->_isReady = value;			}
 void				Tournament::setIsFinished(cBool value)		{	this->_isFinished = value;		}
 void				Tournament::setHasSixteenth(cBool value)	{	this->_hasSixteenth = value;	}
-void				Tournament::setHasHeighth(cBool value)		{	this->_hasHeighth = value;		}
+void				Tournament::setHasEighth(cBool value)		{	this->_hasEighth = value;		}
 void				Tournament::setHasThirdMatch(cBool value)	{	this->_hasThirdMatch = value;	}
 
 /****************************************************************************************************/
@@ -583,7 +584,7 @@ void				Tournament::generatePoolMatches()
 	cInt nbSetPlayed = this->_settings->getNbSetPlayedPools();
 	
 	for (Pool* p : this->_pools)
-		p->generateMatches(nbSetPlayed);
+		p->generateMatches(nbSetPlayed, this->_settings);
 }
 
 /**
@@ -604,8 +605,8 @@ void				Tournament::generateSymmetricPoolEncounters(Phase* targetPhase, const si
 
 	for (size_t i = 0; i < nbPools / 2; ++i)
 	{
-		targetPhase->addEncounter(this->_pools[i]->getQualifiers()[0], this->_pools[nbPools - 1 - i]->getQualifiers()[1]);
-		targetPhase->addEncounter(this->_pools[nbPools - 1 - i]->getQualifiers()[0], this->_pools[i]->getQualifiers()[1]);
+		targetPhase->addEncounter(this->_pools[i]->getQualifiers()[0], this->_pools[nbPools - 1 - i]->getQualifiers()[1], this->_settings);
+		targetPhase->addEncounter(this->_pools[nbPools - 1 - i]->getQualifiers()[0], this->_pools[i]->getQualifiers()[1], this->_settings);
 	}
 }
 
@@ -620,9 +621,143 @@ bool				Tournament::addEncountersFromPreviousPhase(Phase* currentPhase, cpPhase 
 	cvpTeam winners = previousPhase->getWinners();
 
 	for (size_t i = 0; i + 1 < winners.size(); i += 2)
-		currentPhase->addEncounter(winners[i], winners[i + 1]);
+		currentPhase->addEncounter(winners[i], winners[i + 1], this->_settings);
 
 	return (true);
+}
+
+/**
+ *	Disqualifie une equipe dans les matchs de poules
+ */
+void				Tournament::applyPoolDisqualification(pTeam team)
+{
+	for (cpPool pool : this->_pools)
+	{
+		if (!pool)
+			continue;
+
+		for (pMatch match : pool->getMatches())
+		{
+			if (match && (match->getTeamA() == team || match->getTeamB() == team))
+			{
+				if (match->getTeamA() == team && match->isFinished())
+					match->modifyScore(0, SCOREMAXTOWIN);
+				else if(match->getTeamB() == team && match->isFinished())
+					match->modifyScore(SCOREMAXTOWIN, 0);
+				else if(match->getTeamA() == team)
+					match->setScore(0, SCOREMAXTOWIN);
+				else
+					match->setScore(SCOREMAXTOWIN, 0);
+				team->disqualifyTeam(true);
+				match->setIsFinished(true);
+			}
+		}
+		break;
+	}
+}
+
+/**
+ *	Disqualifie une equipe dans une phase intermediaire du tournoi
+ */
+void				Tournament::applyBracketDisqualification(pTeam team)
+{
+	pMatch currentMatch = this->findCurrentActiveMatch(team); 
+	
+	if (!currentMatch)
+		return;
+
+	pTeam replacementTeam = nullptr;
+	pMatch previousMatch = this->findPreviousMatch(team); 
+
+	if (previousMatch)
+		replacementTeam = (previousMatch->getTeamA() == team) ? previousMatch->getTeamB() : previousMatch->getTeamA();
+	else
+		replacementTeam = this->getNextBestTeamFromPool(team); 
+
+	this->_repechageHistory[team] = replacementTeam;
+
+	if (currentMatch->getTeamA() == team)
+		currentMatch->setTeamA(replacementTeam);
+	else
+		currentMatch->setTeamB(replacementTeam);
+	
+	team->disqualifyTeam(true);
+}
+
+/**
+ *	Recherche la match en cour de la team a disqualifier
+ */
+pMatch				Tournament::findCurrentActiveMatch(pTeam team) const
+{
+	std::vector<cpPhase> bracketPhases =
+	{
+		this->_final, this->_thirdPlace, this->_semis,
+		this->_quarters, this->_eighth, this->_sixteenths
+	};
+
+	for (cpPhase phase : bracketPhases)
+	{
+		if (!phase) 
+			continue;
+
+		for (pMatch match : phase->getMatches())
+		{
+			if (match && !match->isFinished())
+			{
+				if (match->getTeamA() == team || match->getTeamB() == team)
+					return (match);
+			}
+		}
+	}
+	
+	return (nullptr);
+}
+
+/**
+ *	Recherche le dernier match jouer de la team a disqualifier
+ */
+pMatch				Tournament::findPreviousMatch(pTeam team) const
+{
+	std::vector<cpPhase> reversePhases =
+	{
+		this->_final, this->_thirdPlace, this->_semis, 
+		this->_quarters, this->_eighth, this->_sixteenths
+	};
+
+	for (cpPhase phase : reversePhases)
+	{
+		if (!phase)
+			continue;
+
+		for (pMatch match : phase->getMatches())
+			if (match && match->isFinished())
+				if (match->getTeamA() == team || match->getTeamB() == team)
+					return (match);
+	}
+	
+	return (nullptr);
+}
+
+pTeam				Tournament::getNextBestTeamFromPool(pTeam disqualifiedTeam) const
+{
+	cpPool targetPool = nullptr;
+	for (cpPool pool : this->_pools)
+	{
+		if (pool && pool->containsTeam(disqualifiedTeam))
+		{
+			targetPool = pool;
+			break;
+		}
+	}
+
+	if (!targetPool)
+		return (nullptr);
+
+	pTeam repechedTeam = targetPool->getTeams()[2];
+
+	repechedTeam->setIsEliminated(false);
+
+	return (repechedTeam);
 }
 
 /****************************************************************************************************/
@@ -648,7 +783,7 @@ void				Tournament::clean()
 	this->_pools.clear();
 
 	delete this->_sixteenths;
-	delete this->_heighths;
+	delete this->_eighth;
 	delete this->_quarters;
 	delete this->_semis;
 	delete this->_final;
@@ -663,41 +798,9 @@ void				Tournament::addParticipant(cPart p)
 	this->_participants.push_back(new Participant(p.getPseudo(), p.getLastName(), p.getFirstName(), p.getGenderInt()));
 }
 
-/**
- *	Initialise le debut du tournois en creant les teams et les pools
- */
-bool				Tournament::initializeTournament()
-{
-	cInt required = this->_settings->getNbPlayers();
-	cInt actual = static_cast<int>(this->_participants.size());
-
-	if (actual < required && !this->_settings->getAllowMultiTeamPlayers())
-	{
-		PrintUtils::addError(std::format("Pas assez de joueurs ({}/{}).", actual, required));
-		return (false);
-	}
-
-	if (actual == 0)
-	{
-		PrintUtils::addError("Aucun joueur inscrit.");
-		return (false);
-	}
-
-	generateTeams();
-	generatePools();
-
-	cInt nbPools = this->_settings->getNbPools();
-
-	this->_hasSixteenth = (nbPools == 16);
-	this->_hasHeighth = (nbPools >= 8);
-	this->_isReady = true;
-	
-	return (true);
-}
-
 pTeam				Tournament::getTeamById(int id) const
 {
-	if (this->_teams.size() < (static_cast<size_t>(id) - 1))
+	if (id <= 0 || static_cast<size_t>(id) > this->_teams.size())
 		return (nullptr);
 	
 	return (this->_teams[id - 1]);
@@ -755,27 +858,27 @@ void				Tournament::generateSixteenths()
 /**
  * Genere les 1/8 soit en selectionnant les vainqueurs des 1/16 soit les 1 et 2 de chaque pool
  */
-void				Tournament::generateHeighths()
+void				Tournament::generateEighths()
 {
 	for (cpPool p: this->_pools)
 		if (!p->allMatchesFinished())
 			return;
 
-	if (this->_heighths || !this->_hasHeighth)
+	if (this->_eighth || !this->_hasEighth)
 		return;
 
-	this->_heighths = new Phase("1/8 de Finale", this->_settings->getNbSetPlayedHeigth());
+	this->_eighth = new Phase("1/8 de Finale", this->_settings->getNbSetPlayedHeigth());
 
 	if (this->_hasSixteenth)
 	{
-		if (!this->addEncountersFromPreviousPhase(this->_heighths, this->_sixteenths))
+		if (!this->addEncountersFromPreviousPhase(this->_eighth, this->_sixteenths))
 		{
-			delete this->_heighths;
-			this->_heighths = nullptr;
+			delete this->_eighth;
+			this->_eighth = nullptr;
 		}
 	}
 	else if (this->_pools.size() >= 8)
-		this->generateSymmetricPoolEncounters(this->_heighths, 8);
+		this->generateSymmetricPoolEncounters(this->_eighth, 8);
 }
 
 /**
@@ -792,9 +895,9 @@ void				Tournament::generateQuarters()
 
 	this->_quarters = new Phase("Quarts de Finale", this->_settings->getNbSetPlayedQuarters());
 
-	if (this->_hasHeighth)
+	if (this->_hasEighth)
 	{
-		if (!this->addEncountersFromPreviousPhase(this->_quarters, this->_heighths))
+		if (!this->addEncountersFromPreviousPhase(this->_quarters, this->_eighth))
 		{
 			delete this->_quarters;
 			this->_quarters = nullptr;
@@ -806,8 +909,8 @@ void				Tournament::generateQuarters()
 
 		for (size_t i = 0; i < 2; ++i)
 		{
-			this->_quarters->addEncounter(this->_pools[i]->getQualifiers()[0], this->_pools[i + 2]->getQualifiers()[1]);
-			this->_quarters->addEncounter(this->_pools[i + 2]->getQualifiers()[0], this->_pools[i]->getQualifiers()[1]);
+			this->_quarters->addEncounter(this->_pools[i]->getQualifiers()[0], this->_pools[i + 2]->getQualifiers()[1], this->_settings);
+			this->_quarters->addEncounter(this->_pools[i + 2]->getQualifiers()[0], this->_pools[i]->getQualifiers()[1], this->_settings);
 		}
 	}
 }
@@ -827,8 +930,8 @@ void				Tournament::generateSemis()
 
 	this->_semis = new Phase("Demi-Finales", this->_settings->getNbSetPlayedSemis());
 
-	this->_semis->addEncounter(winners[0], winners[2]);
-	this->_semis->addEncounter(winners[1], winners[3]);
+	this->_semis->addEncounter(winners[0], winners[2], this->_settings);
+	this->_semis->addEncounter(winners[1], winners[3], this->_settings);
 }
 
 /**
@@ -846,7 +949,7 @@ void				Tournament::generateFinal()
 
 	this->_final = new Phase("Finale", this->_settings->getNbSetPlayedFinal());
 	
-	this->_final->addEncounter(winners[0], winners[1]);
+	this->_final->addEncounter(winners[0], winners[1], this->_settings);
 }
 
 /**
@@ -863,5 +966,173 @@ void				Tournament::generateThirdPlace()
 		return;
 
 	this->_thirdPlace = new Phase("Petite Finale", this->_settings->getNbSetPlayedThirdPlace());
-	this->_thirdPlace->addEncounter(losers[0], losers[1]);
+	this->_thirdPlace->addEncounter(losers[0], losers[1], this->_settings);
+}
+
+/**
+ *	Disqualifie une equipe et la remplace par une autre selon le stage du tournoi
+ */
+void				Tournament::disqualifyTeam(pTeam team)
+{
+	if (!this->isPoolsFinished())
+		this->applyPoolDisqualification(team);
+	else
+		this->applyBracketDisqualification(team);
+}
+
+void				Tournament::unDisqualifyTeam(pTeam team)
+{
+	if (!team || !team->getIsDisqualified())
+		return;
+
+	if (!this->isPoolsFinished())
+	{
+		for (cpPool pool : this->_pools)
+		{
+			if (!pool)
+				continue;
+
+			for (pMatch match : pool->getMatches())
+				if (match && (match->getTeamA() == team || match->getTeamB() == team))
+				{
+					match->modifyScore(0, 0); 
+					match->setIsFinished(false);
+				}
+		}
+	}
+	else
+	{
+		auto it = this->_repechageHistory.find(team);
+
+		if (it != this->_repechageHistory.end())
+		{
+			pTeam replacementTeam = it->second;
+			pMatch currentMatch = this->findCurrentActiveMatch(replacementTeam);
+
+			if (currentMatch)
+			{
+				if (currentMatch->getTeamA() == replacementTeam)
+					currentMatch->setTeamA(team);
+				else
+					currentMatch->setTeamB(team);
+			}
+
+			this->_repechageHistory.erase(it);
+		}
+	}
+
+	team->disqualifyTeam(false);
+}
+
+/**
+ *	Initialise le debut du tournois en creant les teams et les pools
+ */
+bool				Tournament::initializeTournament()
+{
+	cInt required = this->_settings->getNbPlayers();
+	cInt actual = static_cast<int>(this->_participants.size());
+
+	if (actual < required && !this->_settings->getAllowMultiTeamPlayers())
+	{
+		PrintUtils::addError(std::format("Pas assez de joueurs ({}/{}).", actual, required));
+		return (false);
+	}
+
+	if (actual == 0)
+	{
+		PrintUtils::addError("Aucun joueur inscrit.");
+		return (false);
+	}
+
+	generateTeams();
+	generatePools();
+
+	cInt nbPools = this->_settings->getNbPools();
+
+	this->_hasSixteenth = (nbPools == 16);
+	this->_hasEighth = (nbPools >= 8);
+	this->_isReady = true;
+	
+	return (true);
+}
+
+/**
+ *	Verifie si tout les matchs de pools sont finis
+ */
+bool				Tournament::isPoolsFinished() const
+{
+	if (this->_pools.empty())
+		return (false);
+
+	for (cpPool pool : this->_pools)
+	{
+		if (!pool)
+			continue;
+
+		for (cpMatch m : pool->getMatches())
+			if (m && !m->isFinished())
+				return (false);
+	}
+
+	return (true);
+}
+
+/**
+ *	Active la phase de 1/16 si les matchs de pools sont finis et qu il y a des 1/16 a jouer
+ */
+bool				Tournament::isSixteenthUnlocked() const
+{
+	return (this->_hasSixteenth && this->isPoolsFinished());
+}
+
+/**
+ *	Active la phase de 1/8 si les matchs de pools ou de 1/16 sont finis et qu il y a des 1/8 a jouer
+ */
+bool				Tournament::isEighthUnlocked() const
+{
+	if (!this->_hasEighth)
+		return (false);
+
+	if (this->_hasSixteenth)
+		return (this->_sixteenths && this->_sixteenths->isFinished());
+
+	return (this->isPoolsFinished());
+}
+
+/**
+ *	Active la phase de 1/4 si les matchs de pools ou les 1/8 sont finis
+ */
+bool				Tournament::isQuartersUnlocked() const
+{
+	if (this->_hasEighth)
+		return (this->_eighth && this->_eighth->isFinished());
+
+	return (this->isPoolsFinished());
+}
+
+/**
+ *	Active la phase de 1/2 si les matchs de 1/4 sont finis
+ */
+bool				Tournament::isSemisUnlocked() const
+{
+	return (this->_quarters && this->_quarters->isFinished());
+}
+
+/**
+ *	Active la phase finale si les matchs de 1/2 sont finis
+ */
+bool				Tournament::isFinalUnlocked() const
+{
+	return (this->_semis && this->_semis->isFinished());
+}
+
+/**
+ *	Active le match de la 3 place si les matchs de 1/2 sont finis
+ */
+bool				Tournament::isThirdUnlocked() const
+{
+	if (!this->_hasThirdMatch)
+		return (false);
+
+	return (this->_semis && this->_semis->isFinished());
 }

@@ -6,11 +6,13 @@
 /*	INCLUDES																						*/
 /****************************************************************************************************/
 
+#include <random>
 #include <algorithm>
 
 #include "../includes/class/Pool.hpp"
-#include "../includes/class/Match.hpp"
 #include "../includes/class/Team.hpp"
+#include "../includes/class/Match.hpp"
+#include "../includes/class/Settings.hpp"
 
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
@@ -69,7 +71,7 @@ void				Pool::addTeam(pTeam team)
 		this->_teams.push_back(team);
 }
 
-void				Pool::generateMatches(cInt nbSetsPerEncounter)
+void				Pool::generateMatches(cInt nbSetsPerEncounter, pSet settings)
 {
 	for (cpMatch m : this->_matches)
 		delete m;
@@ -79,20 +81,36 @@ void				Pool::generateMatches(cInt nbSetsPerEncounter)
 	if (this->_teams.size() < 2)
 		return;
 
+	ScoreRules rules{
+		settings->getScoreMin(),
+		settings->getScoreMax(),
+		settings->getDiffPointsToWin()
+	};
+
 	for (size_t i = 0; i < this->_teams.size(); ++i)
 		for (size_t j = i + 1; j < this->_teams.size(); ++j)
 			for (int s = 0; s < nbSetsPerEncounter; ++s)
-				this->_matches.push_back(new Match(this->_teams[i], this->_teams[j]));
+				this->_matches.push_back(new Match(this->_teams[i], this->_teams[j], rules));
 }
 
 void				Pool::sortTeams()
 {
-	std::ranges::sort(this->_teams.begin(), this->_teams.end(), [](const Team* a, const Team* b)
+	std::random_device rd;
+	std::mt19937 g(rd());
+	std::ranges::shuffle(this->_teams.begin(), this->_teams.end(), g);
+
+	std::ranges::stable_sort(this->_teams.begin(), this->_teams.end(), [](const Team* a, const Team* b)
 	{
 		if (a->getPoint() != b->getPoint())
 			return (a->getPoint() > b->getPoint());
 
-		return (a->getScoreDiff() > b->getScoreDiff());
+		if (a->getScoreDiff() != b->getScoreDiff())
+			return (a->getScoreDiff() > b->getScoreDiff());
+
+		if (a->getIsMixed() != b->getIsMixed())
+			return (a->getIsMixed());
+
+		return (false); 
 	});
 }
 
@@ -109,6 +127,11 @@ bool				Pool::allMatchesFinished() const
 			return (false);
 
 	return (true);
+}
+
+bool				Pool::containsTeam(cpTeam team) const
+{
+	return (std::find(this->_teams.begin(), this->_teams.end(), team) != this->_teams.end());
 }
 
 vpTeam				Pool::getQualifiers() const

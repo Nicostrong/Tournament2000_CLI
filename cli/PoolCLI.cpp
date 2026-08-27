@@ -46,18 +46,11 @@
 
 void				PoolCLI::displayMenuUI(cTour tournament)
 {
-	handleTitle();
+	CLIUtils::handleTitle(TitleViewer::pools);
 	PrintUtils::handleMessages();
 	PoolViewer::displayPoolsList(tournament);
 	std::cout << "Selectionnez une pool en entrant son id (tapez 'r' pour revenir au menu precedent): ";
 	CLIUtils::checkInterruption();
-}
-
-void				PoolCLI::handleTitle()
-{
-	PrintUtils::clear();
-	TitleViewer::banner();
-	TitleViewer::pools();
 }
 
 void				PoolCLI::menuPool(pPool pool)
@@ -81,7 +74,7 @@ void				PoolCLI::submenuPool(pPool pool, Tournament& tournament)
 		{
 			menuPool(pool);
 
-			String input = fetchInput();
+			String input = CLIUtils::input();
 			
 			if (input.empty())
 				continue;
@@ -89,11 +82,11 @@ void				PoolCLI::submenuPool(pPool pool, Tournament& tournament)
 			if (input == "r" || input == "R")
 				return;
 
-			int choice = parseChoice(input);
+			auto choice = CLIUtils::parseInt(input);
 			
-			if (choice != -1)
+			if (choice.has_value())
 			{
-				executeChoice(choice, pool, tournament);
+				executeChoice(choice.value(), pool, tournament);
 				return;
 			}
 		}
@@ -104,43 +97,9 @@ void				PoolCLI::submenuPool(pPool pool, Tournament& tournament)
 	}
 }
 
-/********************/
-/*  HANDLER SAISIE	*/
-/********************/
-
-void				PoolCLI::clearInput()
-{
-	std::cin.clear();
-	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-}
-
-String				PoolCLI::fetchInput()
-{
-	String input;
-	
-	if (!(std::cin >> input))
-	{
-		CLIUtils::checkInterruption();
-		clearInput();
-		PrintUtils::addError("Saisie invalide.");
-		return ("");
-	}
-	
-	return (input);
-}
-
-int					PoolCLI::parseChoice(cString input)
-{
-	try
-	{
-		return (std::stoi(input));
-	}
-	catch (...)
-	{
-		PrintUtils::addError("Saisie invalide.");
-		return (-1);
-	}
-}
+/****************/
+/*  EXECUTION	*/
+/****************/
 
 void				PoolCLI::executeChoice(cInt choice, pPool pool, Tournament& tournament)
 {
@@ -174,7 +133,7 @@ void				PoolCLI::executeChoice(cInt choice, pPool pool, Tournament& tournament)
 /*  HELPER			*/
 /********************/
 
-bool				PoolCLI::checkTeamId(int id, Tournament& tournament)
+bool				PoolCLI::checkPoolId(int id, Tournament& tournament)
 {
 	return (id >= 1 && id <= static_cast<int>(tournament.getPools().size()));
 }
@@ -243,7 +202,7 @@ void				PoolCLI::handleMenuPool(Tournament& tournament)
 		{
 			displayMenuUI(tournament);
 
-			String input = fetchInput();
+			String input = CLIUtils::input();
 			
 			if (input.empty())
 				continue;
@@ -251,18 +210,18 @@ void				PoolCLI::handleMenuPool(Tournament& tournament)
 			if (input == "r" || input == "R")
 				return;
 
-			int choice = parseChoice(input);
+			auto choice = CLIUtils::parseInt(input);
 
-			if (!checkTeamId(choice, tournament))
+			if (choice.has_value() && !checkPoolId(choice.value(), tournament))
 			{
-				PrintUtils::addError(std::format("l'id {} n'existe pas.", choice));
+				PrintUtils::addError(std::format("l'id {} n'existe pas.", choice.value()));
 				continue;
 			}
 
 			cvpPool pool = tournament.getPools();
 			
-			if (!pool.empty())
-				submenuPool(pool[choice], tournament);
+			if (!pool.empty() && choice.has_value())
+				submenuPool(pool[choice.value() -1], tournament);
 		}
 	}
 	catch (const CLIInterrupted&)

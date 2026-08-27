@@ -173,12 +173,13 @@ bool				Team::replaceMember(size_t index, Participant* newMember)
 	return (false);
 }
 
-void				Team::disqualifyTeam()
+void				Team::disqualifyTeam(bool action)
 {
 	size_t nbMembers = this->_members.size();
 
 	for (size_t i = 0; i < nbMembers; ++i)
-		this->_members[i]->setIsEliminated(true);
+		if (!this->_members[i]->getIsMultiTeamPlayer())
+			this->_members[i]->setIsEliminated(action);
 	
-	setIsDisqualified(true);
+	setIsDisqualified(action);
 }

@@ -124,7 +124,7 @@ bool				CLIUtils::askBool(StringV prompt, bool defaultValue)
 		if (res == "N" || res == "n")
 			return (false);
 			
-		PrintUtils::addError("Veuillez repondre par O(ui) ou N(on).");
+		std::cout << Color::RED << "Veuillez repondre par O(ui) ou N(on).\n" << Color::RESET;
 	}
 }
 
@@ -146,7 +146,7 @@ String				CLIUtils::askString(StringV prompt, StringV defaultValue)
 			if (!defaultValue.empty())
 				return String(defaultValue);
 				
-			PrintUtils::addError("La saisie ne peut pas etre vide.");
+			std::cout << Color::RED << "La saisie ne peut pas etre vide.\n" << Color::RESET;
 		}
 		else
 			return (res);
@@ -170,17 +170,28 @@ int					CLIUtils::askInt(StringV prompt, int min, int max, int defaultValue)
 		if (parsed.has_value() && parsed.value() >= min && parsed.value() <= max)
 			return (parsed.value());
 		
-		PrintUtils::addError(std::format("Veuillez entrer un nombre entier compris entre {} et {}.", min, max));
+
+		std::cout << Color::RED << std::format("Veuillez entrer un nombre entier compris entre {} et {}.\n", min, max) << Color::RESET;
 	}
 }
 
 int					CLIUtils::askIntList(StringV prompt, cvInt allowedValues, int defaultValue)
 {
+	String optionsStr;
+
+	for (size_t i = 0; i < allowedValues.size(); ++i)
+	{
+		optionsStr += std::to_string(allowedValues[i]);
+
+		if (i < allowedValues.size() - 1)
+			optionsStr += ", ";
+	}
+
 	while (true)
 	{
 		checkInterruption();
 
-		std::cout << std::format("{} (defaut: {}) : ", prompt, defaultValue);
+		std::cout << std::format("{} [{}] (defaut: {}) : ", prompt, optionsStr, defaultValue);
 		String res = input();
 		
 		if (res.empty())
@@ -192,7 +203,7 @@ int					CLIUtils::askIntList(StringV prompt, cvInt allowedValues, int defaultVal
 			if (std::find(allowedValues.begin(), allowedValues.end(), parsed.value()) != allowedValues.end())
 				return (parsed.value());
 		
-		PrintUtils::addError("Cette valeur n'est pas dans la liste autorisee.");
+		std::cout << Color::RED << std::format("Cette valeur n'est pas dans la liste autorisee. Options : {}\n", optionsStr) << Color::RESET;
 	}
 }
 
@@ -203,7 +214,7 @@ void				CLIUtils::displayMenu(StringV title, std::span<const MenuItem> items)
 	for (const auto& item : items)
 		std::cout << Color::BYELLOW << "\t" << item.key << "\t" << Color::RESET << item.label << std::endl;
 	
-	std::cout << "Entrer le numero ou la lettre correspondant a ce que vous voulez: ";
+	std::cout << Color::GREEN << "Entrer le numero ou la lettre correspondant a ce que vous voulez: " << Color::RESET;
 }
 
 char				CLIUtils::askMenuChoice(std::span<const MenuItem> items)
@@ -224,6 +235,15 @@ char				CLIUtils::askMenuChoice(std::span<const MenuItem> items)
 		
 		PrintUtils::addError("Choix invalide. Veuillez selectionner une option du menu.");
 	}
+}
+
+void				CLIUtils::handleTitle(void (*function)())
+{
+	PrintUtils::clear();
+	TitleViewer::banner();
+	
+	if (function)
+		function();
 }
 
 void				CLIUtils::waitForEnter()

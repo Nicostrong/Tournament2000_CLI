@@ -57,18 +57,14 @@ class				PoolCLI
 	private:
 
 		static void					displayMenuUI(cTour tournament);
-		static void					handleTitle();
 		static void					menuPool(pPool pool);
 		static void					submenuPool(pPool pool, Tournament& tournament);
 
-		static void					clearInput();
-		static String				fetchInput();
-		static int					parseChoice(cString input);
 		static void					executeChoice(cInt choice, pPool pool, Tournament& tournament);
 
 		static void					manageSinglePool(cPool pool);
 
-		static bool					checkTeamId(int id, Tournament& tournament);
+		static bool					checkPoolId(int id, Tournament& tournament);
 
 	public:
 

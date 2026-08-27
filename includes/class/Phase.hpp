@@ -15,8 +15,9 @@
 /*	CLASSES																							*/
 /****************************************************************************************************/
 
-class				Match;
 class				Team;
+class				Match;
+class				Settings;
 
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
@@ -28,6 +29,8 @@ using				cString			=	const std::string&;
 using				cInt			=	const int;
 
 using				cBool			=	const bool;
+
+using				pSet			=	Settings*;
 
 using				pMatch			=	Match*;
 using				cMatch			=	const Match&;
@@ -86,7 +89,7 @@ class				Phase
 		void						setIsFinished(cBool isFinished);
 
 		//	METHOD
-		void						addEncounter(pTeam a, pTeam b);
+		void						addEncounter(pTeam a, pTeam b, pSet settings);
 		[[nodiscard]]
 		bool						isFinished() const;
 

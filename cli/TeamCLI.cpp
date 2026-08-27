@@ -48,18 +48,11 @@
 
 void				TeamCLI::displayMenuUI(cTour tournament)
 {
-	handleTitle();
+	CLIUtils::handleTitle(TitleViewer::teams);
 	PrintUtils::handleMessages();
 	TeamViewer::showAllTeams(tournament.getTeams());
 	std::cout << "Selectionnez une team en entrant son ID (tapez 'r' pour revenir au menu precedent): ";
 	CLIUtils::checkInterruption();
-}
-
-void				TeamCLI::handleTitle()
-{
-	PrintUtils::clear();
-	TitleViewer::banner();
-	TitleViewer::teams();
 }
 
 void				TeamCLI::menuTeam(pTeam team)
@@ -88,7 +81,7 @@ void				TeamCLI::submenuTeam(pTeam team, Tournament& tournament)
 		{
 			menuTeam(team);
 
-			String input = fetchInput();
+			String input = CLIUtils::input();
 			
 			if (input.empty())
 				continue;
@@ -96,11 +89,11 @@ void				TeamCLI::submenuTeam(pTeam team, Tournament& tournament)
 			if (input == "r" || input == "R")
 				return;
 
-			int choice = parseChoice(input);
+			auto choice = CLIUtils::parseInt(input);
 			
-			if (choice != -1)
+			if (choice.has_value())
 			{
-				executeChoice(choice, team, tournament);
+				executeChoice(choice.value(), team, tournament);
 				return;
 			}
 		}
@@ -108,44 +101,6 @@ void				TeamCLI::submenuTeam(pTeam team, Tournament& tournament)
 	catch (const CLIInterrupted&)
 	{
 		return;
-	}
-}
-
-/********************/
-/*  HANDLER SAISIE	*/
-/********************/
-
-void				TeamCLI::clearInput()
-{
-	std::cin.clear();
-	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-}
-
-String				TeamCLI::fetchInput()
-{
-	String input;
-	
-	if (!(std::cin >> input))
-	{
-		CLIUtils::checkInterruption();
-		clearInput();
-		PrintUtils::addError("Saisie invalide.");
-		return ("");
-	}
-	
-	return (input);
-}
-
-int					TeamCLI::parseChoice(cString input)
-{
-	try
-	{
-		return (std::stoi(input));
-	}
-	catch (...)
-	{
-		PrintUtils::addError("Saisie invalide.");
-		return (-1);
 	}
 }
 
@@ -162,7 +117,7 @@ void				TeamCLI::executeChoice(cInt choice, pTeam team, Tournament& tournament)
 			break;
 
 		case 3:
-			handleDisqualifiedTeam(team);
+			handleDisqualifiedTeam(team, tournament);
 			break;
 
 		default:
@@ -216,17 +171,17 @@ void				TeamCLI::handleModifyTeamMember(pTeam team, Tournament& tournament)
 		PrintUtils::addError("Erreur lors du remplacement du membre.");
 }
 
-void				TeamCLI::handleDisqualifiedTeam(pTeam team)
+void				TeamCLI::handleDisqualifiedTeam(pTeam team, Tournament& tournament)
 {
 	if (team->getIsDisqualified())
 	{
 		std::cout << "Voulez-vous retirer la disqualification de l'equipe " << team->getName() << "? (o/n)\n";
 		
-		String result = fetchInput();
+		String result = CLIUtils::input();
 		
 		if (result[0] == 'o' || result[0] == 'O')
 		{
-			team->setIsDisqualified(false);
+			team->disqualifyTeam(false);
 			PrintUtils::addSuccess(std::format("La disqualification de la team {} a ete retiree.", team->getName()));
 		}
 	}
@@ -234,11 +189,11 @@ void				TeamCLI::handleDisqualifiedTeam(pTeam team)
 	{
 		std::cout << "Voulez-vous vraiment disqualifier l'equipe " << team->getName() << "? (o/n)\n";
 		
-		String result = fetchInput();
+		String result = CLIUtils::input();
 		
 		if (result[0] == 'o' || result[0] == 'O')
 		{
-			team->disqualifyTeam();
+			tournament.disqualifyTeam(team);
 			PrintUtils::addSuccess(std::format("La team {} a ete disqualifiee.", team->getName()));
 		}
 	}
@@ -308,15 +263,15 @@ int					TeamCLI::selectMemberIndex(pTeam team)
 			std::cout << (i + 1) << ". " << members[i]->getPseudo() << "\n";
 
 	std::cout << "Index du membre a remplacer : ";
-	int memberIdx = parseChoice(fetchInput());
+	auto memberIdx = CLIUtils::parseInt(CLIUtils::input());
 
-	if (memberIdx < 1 || memberIdx > static_cast<int>(members.size()))
+	if (memberIdx.has_value() && (memberIdx.value() < 1 || memberIdx.value() > static_cast<int>(members.size())))
 	{
 		PrintUtils::addError("Index invalide.");
 		return -1;
 	}
 
-	return (memberIdx - 1);
+	return (memberIdx.value() - 1);
 }
 
 pPart				TeamCLI::selectSubstitutePlayer(vpPart candidates)
@@ -334,15 +289,15 @@ pPart				TeamCLI::selectSubstitutePlayer(vpPart candidates)
 			std::cout << (i + 1) << ". " << candidates[i]->getPseudo() << "\n";
 
 	std::cout << "Index du nouveau joueur : ";
-	int choice = parseChoice(fetchInput());
+	auto choice = CLIUtils::parseInt(CLIUtils::input());
 
-	if (choice < 1 || choice > static_cast<int>(candidates.size()))
+	if (choice.has_value() && (choice.value() < 1 || choice.value() > static_cast<int>(candidates.size())))
 	{
 		PrintUtils::addError("Index invalide.");
 		return (nullptr);
 	}
 
-	return (candidates[choice - 1]);
+	return (candidates[choice.value() - 1]);
 }
 
 /****************************************************************************************************/
@@ -357,7 +312,7 @@ void				TeamCLI::handleMenuTeam(Tournament& tournament)
 		{
 			displayMenuUI(tournament);
 
-			String input = fetchInput();
+			String input = CLIUtils::input();
 			
 			if (input.empty())
 				continue;
@@ -365,16 +320,22 @@ void				TeamCLI::handleMenuTeam(Tournament& tournament)
 			if (input == "r" || input == "R")
 				return;
 
-			int choice = parseChoice(input);
+			auto choice = CLIUtils::parseInt(input);
 
-			if (!checkTeamId(choice, tournament))
+			if (!choice.has_value())
 			{
-				PrintUtils::addError(std::format("l'id {} n'existe pas.", choice));
+				PrintUtils::addError("Saisie invalide");
 				continue;
 			}
 
-			pTeam team = tournament.getTeamById(choice);
-			
+			if (!checkTeamId(choice.value(), tournament))
+			{
+				PrintUtils::addError(std::format("l'id {} n'existe pas.", choice.value()));
+				continue;
+			}
+
+			pTeam team = tournament.getTeamById(choice.value());
+
 			if (team)
 				submenuTeam(team, tournament);
 		}

@@ -58,6 +58,7 @@ class				ParticipantCLI
 
 		//	MENU
 		static void					menuParticipant(cvpPart participants, cSet settings, bool showMenu);
+		static void					executeChoice(int choice, vpPart& participants, cSet settings);
 
 		//	SUBMENU
 		static Participant*			create(cvpPart participants, cSet settings);

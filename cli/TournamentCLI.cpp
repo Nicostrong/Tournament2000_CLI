@@ -62,20 +62,10 @@
  */
 void				TournamentCLI::displayMenuUI(cTour tournament)
 {
-	handleTitle();
+	CLIUtils::handleTitle(TitleViewer::tournament);
 	PrintUtils::handleMessages();
 	menuTournament(tournament);
 	CLIUtils::checkInterruption();
-}
-
-/**
- *	gere l affichage des titres
- */
-void				TournamentCLI::handleTitle()
-{
-	PrintUtils::clear();
-	TitleViewer::banner();
-	TitleViewer::tournament();
 }
 
 /**
@@ -90,25 +80,25 @@ void				TournamentCLI::menuTournament(cTour tournament)
 	};
 
 
-	if (tournament.getHasSixteenth() && isSixteenthUnlocked(tournament))
+	if (tournament.getHasSixteenth() && tournament.isSixteenthUnlocked())
 		items.push_back({'3', "1/16"});
 
-	if (tournament.getHasHeighth() && isHeighthUnlocked(tournament))
+	if (tournament.getHasEighth() && tournament.isEighthUnlocked())
 		items.push_back({'4', "1/8"});
 
-	if (isQuartersUnlocked(tournament))
+	if (tournament.isQuartersUnlocked())
 		items.push_back({'5', "1/4"});
 
-	if (isSemisUnlocked(tournament))
+	if (tournament.isSemisUnlocked())
 		items.push_back({'6', "1/2"});
 
-	if (isThirdUnlocked(tournament))
+	if (tournament.isThirdUnlocked())
 	{
 		items.push_back({'7', "Petite finale"});
 		items.push_back({'8', "Finale"});
 	}
 
-	if (isFinalUnlocked(tournament) && !tournament.getHasThirdMatch())
+	if (tournament.isFinalUnlocked() && !tournament.getHasThirdMatch())
 		items.push_back({'7', "Finale"});
 
 	items.push_back({'E', "Export"});
@@ -139,7 +129,7 @@ void				TournamentCLI::executeChoice(cInt choice, Tournament& tournament)
 			break;
 
 		case 3:		//	1/16
-			if (tournament.getHasSixteenth() && isSixteenthUnlocked(tournament))
+			if (tournament.getHasSixteenth() && tournament.isSixteenthUnlocked())
 				handleEliminationPhase(tournament.getSixteenth(), [&]() { tournament.generateSixteenths(); },
 					"1/16 DE FINALE", "1/16 generes avec succes !", "Impossible : verifiez que les poules soient terminees.");
 			else
@@ -147,15 +137,15 @@ void				TournamentCLI::executeChoice(cInt choice, Tournament& tournament)
 			break;
 
 		case 4:		//	1/8
-			if (tournament.getHasHeighth() && isHeighthUnlocked(tournament))
-				handleEliminationPhase(tournament.getHeighth(), [&]() { tournament.generateHeighths(); },
+			if (tournament.getHasEighth() && tournament.isEighthUnlocked())
+				handleEliminationPhase(tournament.getEighth(), [&]() { tournament.generateEighths(); },
 					"1/8 DE FINALE", "1/8 generes avec succes !", "Impossible : verifiez que la phase precedente soit terminee.");
 			else
 				PrintUtils::addError("Menu non disponible pour le moment.");
 			break;
 
 		case 5:		//	1/4
-			if (isQuartersUnlocked(tournament))
+			if (tournament.isQuartersUnlocked())
 				handleEliminationPhase(tournament.getQuarters(), [&]() { tournament.generateQuarters(); },
 					"QUARTS DE FINALE", "Quarts de finale generes avec succes !", "Impossible : verifiez que les poules/phases precedentes soient terminees.");
 			else
@@ -163,7 +153,7 @@ void				TournamentCLI::executeChoice(cInt choice, Tournament& tournament)
 			break;
 
 		case 6:		//	1/2
-			if (isSemisUnlocked(tournament))
+			if (tournament.isSemisUnlocked())
 				handleEliminationPhase(tournament.getSemis(), [&]() { tournament.generateSemis(); },
 					"DEMI-FINALE", "Demi-finale generees avec succes !", "Impossible : verifiez que les quarts soient termines.");
 			else
@@ -171,10 +161,10 @@ void				TournamentCLI::executeChoice(cInt choice, Tournament& tournament)
 			break;
 
 		case 7:		//	petite finale ou finale
-			if (isThirdUnlocked(tournament))
+			if (tournament.isThirdUnlocked())
 				handleEliminationPhase(tournament.getThirdPlace(), [&]() { tournament.generateThirdPlace(); },
 					"PETITE FINALE", "Matche de la petite finale generee avec succes !", "Impossible : verifiez que les demi-finales soient terminees.");
-			else if (isFinalUnlocked(tournament))
+			else if (tournament.isFinalUnlocked())
 				handleEliminationPhase(tournament.getFinal(), [&]() { tournament.generateFinal(); },
 					"FINALE", "Finale generee avec succes !", "Impossible : verifiez que les demi-finales soient terminees.");
 			else
@@ -182,7 +172,7 @@ void				TournamentCLI::executeChoice(cInt choice, Tournament& tournament)
 			break;
 		
 		case 8:		//	finale
-			if (isFinalUnlocked(tournament))
+			if (tournament.isFinalUnlocked())
 				handleEliminationPhase(tournament.getFinal(), [&]() { tournament.generateFinal(); },
 					"FINALE", "Finale generee avec succes !", "Impossible : verifiez que les demi-finales soient terminees.");
 			else
@@ -240,8 +230,7 @@ void				TournamentCLI::handleExport(Tournament& tournament)
 {
 	while (true)
 	{
-		handleTitle();
-		TitleViewer::exportMenu();
+		CLIUtils::handleTitle(TitleViewer::exportMenu);
 		std::cout << Color::YELLOW << "\t1.\t" << Color::RESET << "Players\n";
 		std::cout << Color::YELLOW << "\t2.\t" << Color::RESET << "Teams\n";
 		std::cout << Color::YELLOW << "\t3.\t" << Color::RESET << "Pools\n";
@@ -260,7 +249,7 @@ void				TournamentCLI::handleExport(Tournament& tournament)
 			sixteenthIdx = menuIdx++;
 		}
 
-		if (tournament.getHeighth() != nullptr)
+		if (tournament.getEighth() != nullptr)
 		{
 			std::cout << Color::YELLOW << std::format("\t{}.\t", menuIdx) << Color::RESET << "1/8" << std::endl;
 			heighthIdx = menuIdx++;
@@ -370,7 +359,7 @@ void				TournamentCLI::handleExport(Tournament& tournament)
 		else if (choice == sixteenthIdx)
 			ok = Exporter::exportPhaseToTxt(tournament.getSixteenth(), filename);
 		else if (choice == heighthIdx)
-			ok = Exporter::exportPhaseToTxt(tournament.getHeighth(), filename);
+			ok = Exporter::exportPhaseToTxt(tournament.getEighth(), filename);
 		else if (choice == quarterIdx)
 			ok = Exporter::exportPhaseToTxt(tournament.getQuarters(), filename);
 		else if (choice == semiIdx)
@@ -411,7 +400,7 @@ cpPhase				TournamentCLI::getPhaseByMenuChoice(cTour tournament, cInt choice)
 			return (tournament.getSixteenth());
 
 		case 3:
-			return (tournament.getHeighth());
+			return (tournament.getEighth());
 
 		case 4:
 			return (tournament.getQuarters());
@@ -428,92 +417,6 @@ cpPhase				TournamentCLI::getPhaseByMenuChoice(cTour tournament, cInt choice)
 		default:
 			return (nullptr);
 	}
-}
-
-/********************/
-/*  CHECKER PHASE	*/
-/********************/
-
-/********************/
-/*  CHECKER PHASE	*/
-/********************/
-
-/**
- *	Verifie si tout les matchs de pools sont finis
- */
-bool				TournamentCLI::isPoolsFinished(cTour tournament)
-{
-	for (cpPool pool : tournament.getPools())
-	{
-		if (!pool)
-			continue;
-
-		for (cpMatch m : pool->getMatches())
-			if (m && !m->isFinished())
-				return (false);
-	}
-
-	return (!tournament.getPools().empty());
-}
-
-/**
- *	Active la phase de 1/16 si les maths de pools sont finis et qu il y a des 1/16 a jouer
- */
-bool				TournamentCLI::isSixteenthUnlocked(cTour tournament)
-{
-	return (tournament.getHasSixteenth() && isPoolsFinished(tournament));
-}
-
-/**
- *	Active la phase de 1/8 si les maths de pools ou de 1/16 sont finis et qu il y a des 1/8 a jouer
- */
-bool				TournamentCLI::isHeighthUnlocked(cTour tournament)
-{
-	if (!tournament.getHasHeighth())
-		return (false);
-
-	if (tournament.getHasSixteenth())
-		return (tournament.getSixteenth() && tournament.getSixteenth()->isFinished());
-
-	return (isPoolsFinished(tournament));
-}
-
-/**
- *	Active la phase de 1/4 si les maths de pools ou les 1/8 sont finis
- */
-bool				TournamentCLI::isQuartersUnlocked(cTour tournament)
-{
-	if (tournament.getHasHeighth())
-		return (tournament.getHeighth() && tournament.getHeighth()->isFinished());
-
-	return (isPoolsFinished(tournament));
-}
-
-/**
- *	Active la phase de 1/2 si les maths de 1/4 sont finis
- */
-bool				TournamentCLI::isSemisUnlocked(cTour tournament)
-{
-	return (tournament.getQuarters() && tournament.getQuarters()->isFinished());
-}
-
-/**
- *	Active la phase finale si les maths de 1/2 sont finis
- */
-bool				TournamentCLI::isFinalUnlocked(cTour tournament)
-{
-	return (tournament.getSemis() && tournament.getSemis()->isFinished());
-}
-
-/**
- *	Active le match de la 3 place si les maths de 1/2 sont finis
- */
-bool				TournamentCLI::isThirdUnlocked(cTour tournament)
-{
-	if (!tournament.getHasThirdMatch())
-		return (false);
-
-	return (tournament.getSemis() && tournament.getSemis()->isFinished());
 }
 
 /************************/
@@ -533,7 +436,7 @@ void				TournamentCLI::handlePhase(Phase* phase, cString phaseName)
 
 	while (true)
 	{
-		handleTitle();
+		CLIUtils::handleTitle(TitleViewer::tournament);
 		PrintUtils::handleMessages();
 		std::cout << "\n========== " << phaseName << " ==========\n\n";
 

@@ -114,6 +114,6 @@ class				Team
 		bool						hasMember(cpPart p) const;
 		bool						sharesMemberWith(const Team* other) const;
 		bool						replaceMember(size_t index, Participant* newMember);
-		void						disqualifyTeam();
+		void						disqualifyTeam(bool action);
 
 };

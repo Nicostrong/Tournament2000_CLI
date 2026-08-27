@@ -93,6 +93,7 @@ class				CLIUtils
 		static char					askMenuChoice(std::span<const MenuItem> items);
 
 		// UI
+		static void					handleTitle(void (*function)());
 		static void					waitForEnter();
 		
 };

@@ -44,13 +44,15 @@ class				MatchCLI
 	private:
 
 		static void					displayMenuUI(cvpMatch matches);
-		static void					handleTitle();
 		static void					menuMatch(pMatch match);
 		static void					submenuMatch(pMatch match);
 
 		static void					executeChoice(cInt choice, pMatch match);
 
-		void						handelSaveScore(pMatch match);
+		static void					handleSaveScore(pMatch match);
+		static void					handleModifyScore(pMatch match);
+
+		static bool					checkMatchId(int id, size_t size);
 
 	public:
 

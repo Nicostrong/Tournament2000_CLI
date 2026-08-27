@@ -8,9 +8,10 @@
 
 #include <utility>
 
+#include "../includes/class/Team.hpp"
 #include "../includes/class/Phase.hpp"
 #include "../includes/class/Match.hpp"
-#include "../includes/class/Team.hpp"
+#include "../includes/class/Settings.hpp"
 
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
@@ -117,13 +118,19 @@ Team*				Phase::getEncounterWinner(size_t index) const
 /*	PUBLIC METHODS																					*/
 /****************************************************************************************************/
 
-void				Phase::addEncounter(pTeam a, pTeam b)
+void				Phase::addEncounter(pTeam a, pTeam b, pSet settings)
 {
 	if (!a || !b)
 		return;
 
+	ScoreRules rules{
+		settings->getScoreMin(),
+		settings->getScoreMax(),
+		settings->getDiffPointsToWin()
+	};
+
 	for (int i = 0; i < this->_nbSetsToPlay; ++i)
-		this->_matches.push_back(new Match(a, b));
+		this->_matches.push_back(new Match(a, b, rules));
 }
 
 bool				Phase::isFinished() const

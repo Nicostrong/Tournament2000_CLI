@@ -94,6 +94,62 @@ void				ParticipantCLI::menuParticipant(cvpPart participants, cSet settings, cBo
 	CLIUtils::displayMenu("PLAYERS", items);
 }
 
+void				ParticipantCLI::executeChoice(int choice, vpPart& participants, cSet settings)
+{
+	switch (choice)
+	{
+		case 1:
+			if (!_canAdd)
+				PrintUtils::addError("Option invalide.");
+			else
+				handleAddParticipant(participants, settings);
+			break;
+
+		case 2:
+			if (!_hasParticipants)
+				PrintUtils::addError("Option invalide.");
+			else
+				handleModifyParticipant(participants, settings);
+			break;
+
+		case 3:
+			if (!_hasParticipants)
+				PrintUtils::addError("Option invalide.");
+			else
+				handleDeleteParticipant(participants);
+			break;
+
+		case 4:
+			handleImport(participants, settings);
+			break;
+
+		case 5:
+			if (!_hasParticipants)
+				PrintUtils::addError("Option invalide.");
+			else
+				handleExport(participants);
+			break;
+
+		case 6:
+			if (!_hasParticipants)
+				PrintUtils::addError("Option invalide.");
+			else
+				handledisplay(participants);
+			break;
+
+		case 7:
+			if (!_enoughPlayers)
+				PrintUtils::addError("Option invalide.");
+			else
+				return;
+			break;
+
+		default:
+			PrintUtils::addError("Option invalide.");
+			break;
+	}
+}
+
 /****************/
 /*	SUBMENU		*/
 /****************/
@@ -461,13 +517,6 @@ void				ParticipantCLI::handleList()
 	_partList.clear();
 }
 
-void				ParticipantCLI::handleTitle()
-{
-	PrintUtils::clear();
-	TitleViewer::banner();
-	TitleViewer::players();
-}
-
 /************/
 /*	HELPER	*/
 /************/
@@ -554,99 +603,38 @@ void				ParticipantCLI::handleMenuParticipant(vpPart& participants, cSet setting
 {
 	try
 	{
-		String input;
-
 		while (true)
 		{
 			updateState(participants, settings);
-			handleTitle();
+			CLIUtils::handleTitle(TitleViewer::players);
 			PrintUtils::handleMessages();
 			handleList();
 			menuParticipant(participants, settings, _hasParticipants);
 			CLIUtils::checkInterruption();
 
-			if (!(std::cin >> input))
+			String input = CLIUtils::input();
+			
+			if (input.empty())
+				continue;
+
+			if (input == "r" || input == "R")
+				return;
+
+			auto choice = CLIUtils::parseInt(input);
+
+			if (!choice.has_value())
 			{
-				CLIUtils::checkInterruption();
-
-				std::cin.clear();
-				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-				PrintUtils::addError("Saisie invalide.");
+				PrintUtils::addError("Saisie invalide");
 				continue;
 			}
 
-			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-			try
-			{
-				int choice = std::stoi(input);
-
-				switch (choice)
-				{
-					case 1:
-						if (!_canAdd)
-							PrintUtils::addError("Option invalide.");
-						else
-							handleAddParticipant(participants, settings);
-						break;
-
-					case 2:
-						if (!_hasParticipants)
-							PrintUtils::addError("Option invalide.");
-						else
-							handleModifyParticipant(participants, settings);
-						break;
-
-					case 3:
-						if (!_hasParticipants)
-							PrintUtils::addError("Option invalide.");
-						else
-							handleDeleteParticipant(participants);
-						break;
-
-					case 4:
-						handleImport(participants, settings);
-						break;
-
-					case 5:
-						if (!_hasParticipants)
-							PrintUtils::addError("Option invalide.");
-						else
-							handleExport(participants);
-						break;
-
-					case 6:
-						if (!_hasParticipants)
-							PrintUtils::addError("Option invalide.");
-						else
-							handledisplay(participants);
-						break;
-
-					case 7:
-						if (!_enoughPlayers)
-							PrintUtils::addError("Option invalide.");
-						else
-							return;
-						break;
-
-					default:
-						PrintUtils::addError("Option invalide.");
-						break;
-				}
-			}
-			catch (const std::invalid_argument&)
-			{
-				PrintUtils::addError("Saisie invalide, veuillez entrer un nombre.");
-			}
-			catch (const std::out_of_range&)
-			{
-				PrintUtils::addError("Nombre trop grand.");
-			}
+			executeChoice(choice.value(), participants, settings);
 		}
 	}
 	catch (const CLIInterrupted&)
 	{
-		return ;
+		return;
 	}
 }
+
+

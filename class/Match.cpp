@@ -20,7 +20,8 @@ using				cBool			=	const bool;
 /*	CONSTRUCTOR / DESTRUCTOR																		*/
 /****************************************************************************************************/
 
-Match::Match(pTeam a, pTeam b): _teamA(a), _teamB(b), _scoreA(0), _scoreB(0), _isFinished(false)
+Match::Match(pTeam a, pTeam b, ScoreRules rules): _teamA(a), _teamB(b), _scoreA(0), _scoreB(0),
+	_isFinished(false), _rules(rules)
 {}
 
 /****************************************************************************************************/
@@ -39,15 +40,9 @@ bool				Match::isFinished() const	{	return (this->_isFinished);	}
 
 void				Match::setScoreA(int value)			{	this->_scoreA = value;		}
 void				Match::setScoreB(int value)			{	this->_scoreB = value;		}
+void				Match::setTeamA(pTeam value)		{	this->_teamA = value;		}
+void				Match::setTeamB(pTeam value)		{	this->_teamB = value;		}
 void				Match::setIsFinished(cBool value)	{	this->_isFinished = value;	}
-void				Match::setScore(cInt sA, cInt sB)
-{
-	setScoreA(sA);
-	setScoreB(sB);
-
-	this->applyStats(sA, sB, 1);
-	this->_isFinished = true;
-}
 
 /****************************************************************************************************/
 /*	PRIVATE METHOD																					*/
@@ -56,6 +51,24 @@ void				Match::setScore(cInt sA, cInt sB)
 bool				Match::isDraw() const
 {
 	return (this->_scoreA == this->_scoreB);
+}
+
+bool				Match::checkScore(int sA, int sB)
+{
+	if (sA < 0 || sB < 0)
+		return (false);
+
+	if (sA == sB)
+		return (false);
+
+	cInt winnerScore = std::max(sA, sB);
+	cInt loserScore = std::min(sA, sB);
+	cInt difference = winnerScore - loserScore;
+
+	if (winnerScore == this->_rules.scoreMaxToWin)
+		return (loserScore >= this->_rules.scoreMaxToWin - this->_rules.diffPointsToWin);
+
+	return (winnerScore >= this->_rules.scoreToWin && difference <= this->_rules.diffPointsToWin);
 }
 
 void				Match::applyStats(cInt sA, cInt sB, int multiplier)
@@ -108,4 +121,17 @@ void				Match::modifyScore(cInt sA, cInt sB)
 	this->_scoreB = sB;
 	
 	this->applyStats(this->_scoreA, this->_scoreB, 1);
+}
+
+bool				Match::setScore(cInt sA, cInt sB)
+{
+	if (!checkScore(sA, sB))
+		return (false);
+
+	setScoreA(sA);
+	setScoreB(sB);
+
+	this->applyStats(sA, sB, 1);
+	this->_isFinished = true;
+	return (true);
 }

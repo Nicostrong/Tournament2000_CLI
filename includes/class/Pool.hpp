@@ -15,8 +15,9 @@
 /*	CLASSES																							*/
 /****************************************************************************************************/
 
-class				Match;
 class				Team;
+class				Match;
+class				Settings;
 
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
@@ -28,6 +29,8 @@ using				cString			=	const std::string&;
 using				cInt			=	const int;
 
 using				cBool			=	const bool;
+
+using				pSet			=	Settings*;
 
 using				pMatch			=	Match*;
 using				cMatch			=	const Match&;
@@ -79,10 +82,11 @@ class				Pool
 
 		//	METHOD
 		void						addTeam(pTeam team);
-		void						generateMatches(cInt nbSetsPerEncounter);
+		void						generateMatches(cInt nbSetsPerEncounter, pSet settings);
 		void						sortTeams();
 		void						checkPoolIsFinished();
 		bool						allMatchesFinished() const;
+		bool						containsTeam(cpTeam team) const;
 
 		[[nodiscard]]
 		vpTeam						getQualifiers() const;
