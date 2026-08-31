@@ -117,7 +117,7 @@ void				PoolCLI::executeChoice(cInt choice, pPool pool, Tournament& tournament)
 	switch (choice)
 	{
 		case 1:
-			MatchCLI::handleMenuMatch(pool->getMatches());
+			MatchCLI::handleMenuMatch(pool->getMatches(), pool);
 			break;
 
 		case 2:

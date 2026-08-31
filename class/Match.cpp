@@ -57,20 +57,26 @@ bool				Match::isDraw() const
 
 bool				Match::checkScore(cInt sA, cInt sB) const
 {
-	if (sA < 0 || sB < 0)
-		return (false);
-
-	if (sA == sB)
+	if (sA < 0 || sB < 0 || sA == sB)
 		return (false);
 
 	cInt winnerScore = std::max(sA, sB);
 	cInt loserScore = std::min(sA, sB);
-	cInt difference = winnerScore - loserScore;
+	cInt diff = winnerScore - loserScore;
+
+	if (winnerScore > this->_rules.scoreMaxToWin)
+		return (false);
 
 	if (winnerScore == this->_rules.scoreMaxToWin)
-		return (loserScore >= this->_rules.scoreMaxToWin - this->_rules.diffPointsToWin);
+		return (diff <= this->_rules.diffPointsToWin);
 
-	return (winnerScore >= this->_rules.scoreToWin && difference <= this->_rules.diffPointsToWin);
+	if (winnerScore < this->_rules.scoreToWin)
+		return (false);
+
+	if (winnerScore == this->_rules.scoreToWin)
+		return (loserScore <= (this->_rules.scoreToWin - this->_rules.diffPointsToWin));
+
+	return (diff == this->_rules.diffPointsToWin);
 }
 
 void				Match::applyStats(cInt sA, cInt sB, cInt multiplier) const

@@ -54,7 +54,10 @@ void				PlayerCLI::menuPlayer(const PlayerManager& manager, cSet settings)
 	std::vector<MenuItem> items;
 	cInt actualPlayers = static_cast<int>(manager.getSize());
 	cInt maxPlayers = settings.getNbPlayers();
-
+	bool showMenu7 = (settings.getAllowMultiTeamPlayers() 
+		&& (maxPlayers - actualPlayers <= NBPLAYERINMULTITEAMMAX))
+		|| (maxPlayers == actualPlayers);
+	
 	if (actualPlayers < maxPlayers)
 		items.push_back({'1', "Ajouter un nouveau participant"});
 
@@ -72,7 +75,7 @@ void				PlayerCLI::menuPlayer(const PlayerManager& manager, cSet settings)
 		items.push_back({'6', "Afficher un/des participant(s)"});
 	}
 
-	if (maxPlayers - actualPlayers <= NBPLAYERINMULTITEAMMAX)
+	if (showMenu7)
 		items.push_back({'7', "Lancer le tournoi"});
 
 	CLIUtils::displayMenu("PLAYERS", items);
@@ -86,7 +89,10 @@ bool				PlayerCLI::executeChoice(cInt choice, PlayerManager& manager, cSet setti
 {
 	cInt actualPlayers = static_cast<int>(manager.getSize());
 	cInt maxPlayers = settings.getNbPlayers();
-	
+	bool showMenu7 = (settings.getAllowMultiTeamPlayers() 
+		&& (maxPlayers - actualPlayers <= NBPLAYERINMULTITEAMMAX))
+		|| (maxPlayers == actualPlayers);
+
 	switch (choice)
 	{
 		case 1:
@@ -129,7 +135,7 @@ bool				PlayerCLI::executeChoice(cInt choice, PlayerManager& manager, cSet setti
 			return (false);
 
 		case 7:
-			if ((maxPlayers - actualPlayers) > NBPLAYERINMULTITEAMMAX)
+			if (!showMenu7)
 			{
 				PrintUtils::addError("Option invalide.");
 				return (false);

@@ -106,40 +106,60 @@ void				PoolViewer::writeTable(std::ostream& out, cPool pool, cBool toFile)
 		return;
 	}
 
-	size_t maxLen = 6;
+	constexpr int TABLE_WIDTH = 80;
+	constexpr int W_RANK  = 4;
+	constexpr int W_PTS   = 5;
+	constexpr int W_PLUS  = 5;
+	constexpr int W_MINUS = 5;
+	constexpr int W_DIFF  = 6;
 
-	for (const Team* t : teams)
-		if (t->getName().size() > maxLen)
-			maxLen = t->getName().size();
+	constexpr int FIXED_CHARS = 1 + W_RANK + W_PTS + W_PLUS + W_MINUS + W_DIFF + (5 * 3) + 1;
+	constexpr int W_TEAM = TABLE_WIDTH - FIXED_CHARS;
 
-	cInt w = static_cast<int>(maxLen) + 2;
+	std::string separator = "+" + std::string(TABLE_WIDTH - 2, '-') + "+";
 
-	out << "  " << std::left << std::setw(4)  << "#"
-		<< std::setw(w)   << "Equipe"
-		<< std::setw(6)   << "Pts"
-		<< std::setw(8)   << "Diff"
-		<< "\n";
-
-	out << "  " << std::string(4 + w + 6 + 8, '-') << "\n";
+	out << separator << "\n";
+	out << std::format("| {:^{}} | {:<{}} | {:^{}} | {:^{}} | {:^{}} | {:^{}} |\n",
+		"#", W_RANK,
+		"Equipe", W_TEAM,
+		"Pts", W_PTS,
+		"P+", W_PLUS,
+		"P-", W_MINUS,
+		"Diff", W_DIFF);
+	out << separator << "\n";
 
 	for (size_t i = 0; i < teams.size(); ++i)
 	{
 		cpTeam t = teams[i];
+
+		if (!t)
+			continue;
+
 		cInt diff = t->getScoreDiff();
 		cBool isTop2 = (i < 2);
+		std::string teamName = t->getName();
+
+		if (teamName.length() > static_cast<size_t>(W_TEAM))
+			teamName = teamName.substr(0, W_TEAM - 3) + "...";
+
+		std::string diffStr = std::format("{}{}", (diff > 0 ? "+" : ""), diff);
 
 		if (!toFile && isTop2)
 			out << "\033[1;32m";
 
-		out << "  " << std::left  << std::setw(4) << (i + 1)
-			<< std::setw(w)  << t->getName()
-			<< std::setw(6)  << t->getPoint()
-			<< (diff >= 0 ? "+" : "") << diff
-			<< "\n";
+		out << std::format("| {:^{}} | {:<{}} | {:^{}} | {:^{}} | {:^{}} | {:^{}} |\n",
+			i + 1, W_RANK,
+			teamName, W_TEAM,
+			t->getPoint(), W_PTS,
+			t->getScoreMarked(), W_PLUS,
+			t->getScoreAgainst(), W_MINUS,
+			diffStr, W_DIFF);
 
 		if (!toFile && isTop2)
 			out << "\033[0m";
 	}
+
+	out << separator << "\n";
 }
 
 /****************************************************************************************************/
@@ -157,6 +177,7 @@ void				PoolViewer::displayTable(cPool pool)
 
 	for (const auto& team : pool.getTeams())
 		std::cout << std::left << std::setw(15) << team->getName() << " | " << team->getPoint() << " pts" << std::endl;
+
 }
 
 /**
