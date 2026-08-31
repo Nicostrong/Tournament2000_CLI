@@ -36,6 +36,6 @@ class				CheckerCSV
 {
 	public:
 
-		static bool					validateParticipantCSV(cString filename);
+		static bool					validatePlayerCSV(cString filename);
 		
 };

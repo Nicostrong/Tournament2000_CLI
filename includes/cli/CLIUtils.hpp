@@ -27,8 +27,6 @@
 using				String			=	std::string;
 using				StringV			=	std::string_view;
 
-using				cInt			=	const int;
-using				vInt			=	std::vector<int>;
 using				cvInt			=	const std::vector<int>&;
 
 /****************************************************************************************************/
@@ -55,6 +53,7 @@ class				CLIInterrupted : public std::exception
 {
 	public:
 
+		[[nodiscard]]
 		const char*					what() const noexcept override
 		{
 			return ("CLI Interrompue par l'utilisateur.");

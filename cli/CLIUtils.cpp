@@ -8,6 +8,7 @@
 
 #include <format>
 #include <limits>
+#include <string>
 #include <iostream>
 #include <exception>
 #include <algorithm>
@@ -22,6 +23,14 @@
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
 /****************************************************************************************************/
+
+using				String			=	std::string;
+using				StringV			=	std::string_view;
+
+using				cInt			=	const int;
+using				cvInt			=	const std::vector<int>&;
+
+using				cBool			=	const bool;
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
@@ -38,7 +47,7 @@
 void				CLIUtils::displayTitle(StringV title)
 {
 	size_t lenTitle = title.size();
-	int nbChar = (60 - static_cast<int>(lenTitle) - 2) / 2;
+	cInt nbChar = (60 - static_cast<int>(lenTitle) - 2) / 2;
 
 	std::cout << std::endl;
 
@@ -91,7 +100,7 @@ std::optional<int>	CLIUtils::parseInt(StringV input)
 	try
 	{
 		std::size_t pos = 0;
-		const int value = std::stoi(String(input), &pos);
+		cInt value = std::stoi(String(input), &pos);
 
 		if (pos != input.size())
 			return (std::nullopt);
@@ -104,7 +113,7 @@ std::optional<int>	CLIUtils::parseInt(StringV input)
 	}
 }
 
-bool				CLIUtils::askBool(StringV prompt, bool defaultValue)
+bool				CLIUtils::askBool(StringV prompt, cBool defaultValue)
 {
 	String defaultStr = defaultValue ? "o/O" : "n/N";
 	
@@ -175,7 +184,7 @@ int					CLIUtils::askInt(StringV prompt, int min, int max, int defaultValue)
 	}
 }
 
-int					CLIUtils::askIntList(StringV prompt, cvInt allowedValues, int defaultValue)
+int					CLIUtils::askIntList(StringV prompt, cvInt allowedValues, cInt defaultValue)
 {
 	String optionsStr;
 
@@ -200,7 +209,7 @@ int					CLIUtils::askIntList(StringV prompt, cvInt allowedValues, int defaultVal
 		auto parsed = parseInt(res);
 
 		if (parsed.has_value())
-			if (std::find(allowedValues.begin(), allowedValues.end(), parsed.value()) != allowedValues.end())
+			if (std::ranges::find(allowedValues.begin(), allowedValues.end(), parsed.value()) != allowedValues.end())
 				return (parsed.value());
 		
 		std::cout << Color::RED << std::format("Cette valeur n'est pas dans la liste autorisee. Options : {}\n", optionsStr) << Color::RESET;
@@ -226,7 +235,7 @@ char				CLIUtils::askMenuChoice(std::span<const MenuItem> items)
 		
 		if (res.length() == 1)
 		{
-			char choice = static_cast<char>(std::toupper(res[0]));
+			auto choice = static_cast<char>(std::toupper(res[0]));
 			
 			for (const auto& item : items)
 				if (std::toupper(item.key) == choice)

@@ -8,15 +8,13 @@
 
 #include <vector>
 #include <format>
-#include <limits>
+#include <string>
 #include <fstream>
-#include <iomanip>
 #include <iostream>
-#include <exception>
 
 #include "../includes/class/Pool.hpp"
 #include "../includes/class/Team.hpp"
-#include "../includes/class/Participant.hpp"
+#include "../includes/class/Player.hpp"
 #include "../includes/class/Tournament.hpp"
 
 #include "../includes/cli/TeamCLI.hpp"
@@ -29,6 +27,20 @@
 #include "../includes/utils/PrintUtils.hpp"
 
 #include "../includes/Color.hpp"
+
+/****************************************************************************************************/
+/*	TYPEDEF																							*/
+/****************************************************************************************************/
+
+using				String			=	std::string;
+using				cString			=	const std::string&;
+
+using				cInt			=	const int;
+
+using				pTeam			=	Team*;
+using				cpTeam			=	const Team*;
+
+using				cTour			=	const Tournament&;
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
@@ -81,7 +93,7 @@ void				TeamCLI::submenuTeam(pTeam team, Tournament& tournament)
 		{
 			menuTeam(team);
 
-			String input = CLIUtils::input();
+			cString input = CLIUtils::input();
 			
 			if (input.empty())
 				continue;
@@ -132,7 +144,7 @@ void				TeamCLI::executeChoice(cInt choice, pTeam team, Tournament& tournament)
 
 void				TeamCLI::handleModifyTeamName(pTeam team)
 {
-	String actualName = team->getName();
+	cString actualName = team->getName();
 
 	std::cout << "Nom actuel de la team: " << actualName << std::endl;
 	std::cout << "Entrez le nouveau nom de la team: ";
@@ -151,13 +163,13 @@ void				TeamCLI::handleModifyTeamName(pTeam team)
 
 void				TeamCLI::handleModifyTeamMember(pTeam team, Tournament& tournament)
 {
-	int memberIdx = selectMemberIndex(team);
+	cInt memberIdx = selectMemberIndex(team);
 
 	if (memberIdx == -1)
 		return;
 
-	vpPart candidates = getEligibleSubstitutes(team, tournament);
-	pPart newMember = selectSubstitutePlayer(candidates);
+	vpPlayer candidates = getEligibleSubstitutes(team, tournament);
+	pPlayer newMember = selectSubstitutePlayer(candidates);
 
 	if (!newMember)
 		return;
@@ -177,7 +189,7 @@ void				TeamCLI::handleDisqualifiedTeam(pTeam team, Tournament& tournament)
 	{
 		std::cout << "Voulez-vous retirer la disqualification de l'equipe " << team->getName() << "? (o/n)\n";
 		
-		String result = CLIUtils::input();
+		cString result = CLIUtils::input();
 		
 		if (result[0] == 'o' || result[0] == 'O')
 		{
@@ -189,7 +201,7 @@ void				TeamCLI::handleDisqualifiedTeam(pTeam team, Tournament& tournament)
 	{
 		std::cout << "Voulez-vous vraiment disqualifier l'equipe " << team->getName() << "? (o/n)\n";
 		
-		String result = CLIUtils::input();
+		cString result = CLIUtils::input();
 		
 		if (result[0] == 'o' || result[0] == 'O')
 		{
@@ -205,12 +217,12 @@ void				TeamCLI::handleDisqualifiedTeam(pTeam team, Tournament& tournament)
 
 bool				TeamCLI::checkTeamId(int id, Tournament& tournament)
 {
-	return (id >= 1 && id <= static_cast<int>(tournament.getTeams().size()));
+	return (id >= 0 && id < static_cast<int>(tournament.getTeams().size()));
 }
 
-cpPool				TeamCLI::findTeamPool(cpTeam team, Tournament& tournament)
+pPool				TeamCLI::findTeamPool(cpTeam team, Tournament& tournament)
 {
-	for (cpPool pool : tournament.getPools())
+	for (pPool pool : tournament.getPools())
 	{
 		if (!pool)
 			continue;
@@ -223,24 +235,24 @@ cpPool				TeamCLI::findTeamPool(cpTeam team, Tournament& tournament)
 	return (nullptr);
 }
 
-bool				TeamCLI::isPlayerInPool(cpPart player, cpPool pool)
+bool				TeamCLI::isPlayerInPool(pPlayer player, pPool pool)
 {
 	if (!pool || !player)
 		return (false);
 
-	for (cpTeam t : pool->getTeams())
-		if (t && t->hasMember(player))
+	for (cpTeam team : pool->getTeams())
+		if (team && team->hasMember(player))
 			return (true);
 	
 	return (false);
 }
 
-vpPart				TeamCLI::getEligibleSubstitutes(pTeam team, Tournament& tournament)
+vpPlayer				TeamCLI::getEligibleSubstitutes(pTeam team, Tournament& tournament)
 {
-	vpPart eligible;
-	cpPool targetPool = findTeamPool(team, tournament);
+	vpPlayer eligible;
+	pPool targetPool = findTeamPool(team, tournament);
 
-	for (auto* p : tournament.getParticipants())
+	for (auto* p : tournament.getPlayers())
 	{
 		if (!p || !p->getIsEliminated() || team->hasMember(p))
 			continue;
@@ -274,7 +286,7 @@ int					TeamCLI::selectMemberIndex(pTeam team)
 	return (memberIdx.value() - 1);
 }
 
-pPart				TeamCLI::selectSubstitutePlayer(vpPart candidates)
+pPlayer				TeamCLI::selectSubstitutePlayer(vpPlayer candidates)
 {
 	if (candidates.empty())
 	{
@@ -312,7 +324,7 @@ void				TeamCLI::handleMenuTeam(Tournament& tournament)
 		{
 			displayMenuUI(tournament);
 
-			String input = CLIUtils::input();
+			cString input = CLIUtils::input();
 			
 			if (input.empty())
 				continue;

@@ -152,6 +152,6 @@ class				SettingsChecker
 		static bool					isPoolMathConsistent(int nbPlayers, bool isDouble, int nbPools, int teamsPerPool);
 		static bool					isValid(Settings& settings, vString& errors);
 		static bool					validateAll(cSet settings);
-		static bool					canAccommodate(cSet settings, cInt actualParticipants);
+		static bool					canAccommodate(cSet settings, cInt actualPlayers);
 
 };

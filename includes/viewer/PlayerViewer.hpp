@@ -1,5 +1,5 @@
 //
-// Created by Nicolas Fordoxcel on 14/06/2026.
+// Created by Nicolas Fordoxcel on 21/08/2026.
 //
 
 #pragma once
@@ -8,20 +8,28 @@
 /*	INCLUDES																						*/
 /****************************************************************************************************/
 
+# include <string>
 # include <vector>
+# include <ostream>
 
 /****************************************************************************************************/
 /*	CLASSES																							*/
 /****************************************************************************************************/
 
-class				Match;
+class				Player;
 
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
 /****************************************************************************************************/
 
-using				pMatch			=	Match*;
-using				vpMatch			=	std::vector<Match*>;
+using				String			=	std::string;
+using				cString			=	const std::string&;
+
+using				pPlayer			=	Player*;
+using				cPlayer			=	const Player&;
+using				cpPlayer		=	const Player*;
+using				vpPlayer		=	std::vector<Player*>;
+using				cvpPlayer		=	const std::vector<Player*>&;
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
@@ -31,24 +39,14 @@ using				vpMatch			=	std::vector<Match*>;
 /*	CLASS																							*/
 /****************************************************************************************************/
 
-
-class				MatchCLI
+class				PlayerViewer
 {
-	private:
-
-		static void					displayMenuUI(vpMatch matches);
-		static void					menuMatch(pMatch match);
-		static void					submenuMatch(pMatch match);
-
-		static void					executeChoice(int choice, pMatch match);
-
-		static void					handleSaveScore(pMatch match);
-		static void					handleModifyScore(pMatch match);
-
-		static bool					checkMatchId(int id, size_t size);
-
 	public:
 
-		static void					handleMenuMatch(vpMatch matches);
+		static void					displayOne(cPlayer p);
+		static void					displayAll(cvpPlayer participants);
 
 };
+
+std::ostream&		operator<<(std::ostream& os, cPlayer p);
+

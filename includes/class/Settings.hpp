@@ -10,7 +10,7 @@
 
 # include <string>
 
-# include "./Participant.hpp"
+# include "./Player.hpp"
 
 /****************************************************************************************************/
 /*	CLASSES																							*/
@@ -22,12 +22,6 @@
 
 using				String			=	std::string;
 using				cString			=	const std::string&;
-
-using				cInt			=	const int;
-
-using				cBool			=	const bool;
-
-using				cGender			=	const Gender&;
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
@@ -70,8 +64,13 @@ class				Settings
 	public:
 
 		Settings();
-		Settings(const Settings& ) = default;
-		Settings&					operator=(const Settings& ) = default;
+
+		Settings(const Settings&) = default;
+		Settings& operator=(const Settings&) = default;
+
+		Settings(Settings&&) = default;
+		Settings& operator=(Settings&&) = default;
+
 		~Settings() = default;
 
 		/*  GETTERS */
@@ -121,28 +120,28 @@ class				Settings
 		Gender						getTournamentGender() const;
 
 		/*  SETTERS */
-		void						setName(cString value);
-		void						setNbPlayers(cInt value);
-		void						setNbPlayerByPool(cInt value);
-		void						setNbPools(cInt value);
-		void						setNbBadmintonCourt(cInt value);
-		void						setScoreMin(cInt value);
-		void						setScoreMax(cInt value);
-		void						setDiffPointsToWin(cInt value);
+		void						setName(String value);
+		void						setNbPlayers(int value);
+		void						setNbPlayerByPool(int value);
+		void						setNbPools(int value);
+		void						setNbBadmintonCourt(int value);
+		void						setScoreMin(int value);
+		void						setScoreMax(int value);
+		void						setDiffPointsToWin(int value);
 
-		void						setNbSetPlayedPools(cInt value);
-		void						setNbSetPlayedSixteenth(cInt value);
-		void						setNbSetPlayedHeigth(cInt value);
-		void						setNbSetPlayedQuarters(cInt value);
-		void						setNbSetPlayedSemis(cInt value);
-		void						setNbSetPlayedFinal(cInt value);
-		void						setNbSetPlayedThirdPlace(cInt value);
+		void						setNbSetPlayedPools(int value);
+		void						setNbSetPlayedSixteenth(int value);
+		void						setNbSetPlayedHeigth(int value);
+		void						setNbSetPlayedQuarters(int value);
+		void						setNbSetPlayedSemis(int value);
+		void						setNbSetPlayedFinal(int value);
+		void						setNbSetPlayedThirdPlace(int value);
 
-		void						setIsMixed(cBool value);
-		void						setIsDouble(cBool value);
-		void						setAllowMultiTeamPlayers(cBool value);
-		void						setIsThirdPlaceMatch(cBool value);
-		void						setIsValid(cBool value);
-		void						setTournamentGender(cGender value);
+		void						setIsMixed(bool value);
+		void						setIsDouble(bool value);
+		void						setAllowMultiTeamPlayers(bool value);
+		void						setIsThirdPlaceMatch(bool value);
+		void						setIsValid(bool value);
+		void						setTournamentGender(Gender value);
 
 };

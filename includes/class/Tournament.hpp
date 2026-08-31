@@ -12,62 +12,35 @@
 # include <string>
 # include <vector>
 
+# include "../manager/PoolManager.hpp"
+# include "../manager/TeamManager.hpp"
+# include "../manager/PhaseManager.hpp"
+
 /****************************************************************************************************/
 /*	CLASSES																							*/
 /****************************************************************************************************/
 
-class				Team;
 class				Pool;
+class				Team;
 class				Phase;
-class				Match;
+class				Player;
 class				Settings;
-class				Participant;
+class				PlayerManager;
 
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
 /****************************************************************************************************/
 
-using				String			=	std::string;
-using				cString			=	const std::string&;
-
-using				cInt			=	const int;
-
-using				cBool			=	const bool;
-
-using				pPool			=	Pool*;
-using				cPool			=	const Pool&;
-using				cpPool			=	const Pool*;
-using				vpPool			=	std::vector<Pool*>;
 using				cvpPool			=	const std::vector<Pool*>&;
 
 using				pTeam			=	Team*;
-using				cTeam			=	const Team&;
-using				cpTeam			=	const Team*;
 using				vpTeam			=	std::vector<Team*>;
-using				cvpTeam			=	const std::vector<Team*>&;
-using				mpTeam			=	std::map<Team*, Team*>;
-
-using				pMatch			=	Match*;
-using				cMatch			=	const Match&;
-using				cpMatch			=	const Match*;
-using				vpMatch			=	std::vector<Match*>;
-using				cvpMatch		=	const std::vector<Match*>&;
 
 using				pPhase			=	Phase*;
-using				cPhase			=	const Phase&;
-using				cpPhase			=	const Phase*;
-using				vpPhase			=	std::vector<Phase*>;
-using				cvpPhase		=	const std::vector<Phase*>&;
 
-using				pSet			=	Settings*;
 using				cSet			=	const Settings&;
-using				cpSet			=	const Settings*;
 
-using				pPart			=	Participant*;
-using				cPart			=	const Participant&;
-using				cpPart			=	const Participant*;
-using				vpPart			=	std::vector<Participant*>;
-using				cvpPart			=	const std::vector<Participant*>&;
+using				vpPlayer		=	std::vector<Player*>;
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
@@ -81,118 +54,53 @@ class				Tournament
 {
 	private:
 
-		pSet						_settings;
+		cSet						_settings;
+		
+		PlayerManager&				_playerManager;
 
-		vpPart						_participants;
-		vpTeam						_teams;
-		vpPool						_pools;
-
-		Phase*						_sixteenths;
-		Phase*						_eighth;
-		Phase*						_quarters;
-		Phase*						_semis;
-		Phase*						_final;
-		Phase*						_thirdPlace;
-
-		mpTeam						_repechageHistory;
+		TeamManager					_teamManager;
+		PoolManager					_poolManager;
+		PhaseManager				_phaseManager;
 
 		bool						_isReady;
 		bool						_isFinished;
-		bool						_hasSixteenth;
-		bool						_hasEighth;
-		bool						_hasThirdMatch;
-
-		void						generateTeams();
-		void						generatePools();
-
-		struct TeamCreationCtx
-		{
-			vpPart*					males			=	nullptr;
-			vpPart*					females			=	nullptr;
-			vpPart*					minoritary		=	nullptr;
-			vpPart*					majoritary		=	nullptr;
-			vpPart*					missingPool		=	nullptr;
-
-			size_t					minIdx			=	0;
-			size_t					majIdx			=	0;
-			size_t					missIdx			=	0;
-
-			int						missing			=	0;
-		};
-
-		//	METHOD
-		bool						teamsShareMember(cpTeam a, cpTeam b);
-		bool						poolHasConflict(cpPool pool, cpTeam incoming);
-		void						createTeamsUniplayer();
-		void						createMixedTeams();
-		void						createDoubleTeams();
-		bool						checkMissingPlayers(int& missing) const;
-		static void					generateMissingPool(const TeamCreationCtx& ctx);
-
-		static void					cloneForEqualGenders(const TeamCreationCtx& ctx);
-		static void					cloneForUnequalGenders(const TeamCreationCtx& ctx);
-		void						createStandardMixedTeams(TeamCreationCtx& ctx);
-		void						createMissingMixedTeams(TeamCreationCtx& ctx);
-		void						createUnigenreTeams(TeamCreationCtx& ctx);
-
-		void						createEmptyPools(cInt nbPools);
-		void						distributeTeamsToPools(cInt nbPools);
-		void						resolvePoolConflicts(cInt nbPools);
-		void						generatePoolMatches();
-		void						sortAllPools() const;
-		void						generateSymmetricPoolEncounters(pPhase targetPhase, size_t nbPools) const;
-		bool						addEncountersFromPreviousPhase(pPhase currentPhase, cpPhase previousPhase);
-		void						applyPoolDisqualification(pTeam team);
-		void						applyBracketDisqualification(pTeam team);
-		pMatch						findCurrentActiveMatch(pTeam team) const;
-		pMatch						findPreviousMatch(pTeam team) const;
-		pTeam						getNextBestTeamFromPool(pTeam disqualifiedTeam) const;
-
-		//	GETTER
-		[[nodiscard]]
-		vpPart						getAllMales() const;
-		[[nodiscard]]
-		vpPart						getAllFemales() const;
-		[[nodiscard]]
-		vpPart						getMultiTeamsPlayers(vpPart participants) const;
-		
-		//	SETTER
-		void						setIsReady(cBool value);
-		void						setIsFinished(cBool value);
 
 	public:
 
-		explicit Tournament(pSet settings);
-		Tournament(pSet settings, vpPart participants);
+		Tournament(cSet settings, PlayerManager& playerManager);
 		Tournament() = delete;
-		Tournament(const Tournament& ) = delete;
-		~Tournament();
 
-		Tournament&					operator=(const Tournament& ) = delete;
+		Tournament(const Tournament&) = delete;
+		Tournament& operator=(const Tournament&) = delete;
+
+		Tournament(Tournament&&) = delete;
+		Tournament& operator=(Tournament&&) = delete;
+
+		~Tournament() = default;
 
 		//	GETTER
 		[[nodiscard]]
-		vpPart						getParticipants() const;
+		vpPlayer					getPlayers() const;
 		[[nodiscard]]
 		vpTeam						getTeams() const;
 		[[nodiscard]]
 		pTeam						getTeamById(int id) const;
 		[[nodiscard]]
-		cpSet						getSettings() const;
+		cSet						getSettings() const;
 		[[nodiscard]]
-		cvpPool						getPools() const;
+		vpPool						getPools() const;
 		[[nodiscard]]
-		Phase*						getSixteenth() const;
+		pPhase						getSixteenth() const;
 		[[nodiscard]]
-		Phase*						getEighth() const;
+		pPhase						getEighth() const;
 		[[nodiscard]]
-		Phase*						getQuarters() const;
+		pPhase						getQuarters() const;
 		[[nodiscard]]
-		Phase*						getSemis() const;
+		pPhase						getSemis() const;
 		[[nodiscard]]
-		Phase*						getFinal() const;
+		pPhase						getFinal() const;
 		[[nodiscard]]
-		Phase*						getThirdPlace() const;
+		pPhase						getThirdPlace() const;
 		[[nodiscard]]
 		bool						getHasSixteenth() const;
 		[[nodiscard]]
@@ -205,13 +113,18 @@ class				Tournament
 		bool						getIsFinished() const;
 
 		//	SETTER
-		void						setHasSixteenth(cBool value);
-		void						setHasEighth(cBool value);
-		void						setHasThirdMatch(cBool value);
+		void						setHasSixteenth(bool value);
+		void						setHasEighth(bool value);
+		void						setHasThirdMatch(bool value);
+		void						setIsReady(bool value);
+		void						setIsFinished(bool value);
 
 		//	METHOD
 		void						clean();
-		void						addParticipant(cPart p);
+		
+		void						generateTeams();
+		void						generatePools();
+
 		void						generateSixteenths();
 		void						generateEighths();
 		void						generateQuarters();
@@ -224,13 +137,19 @@ class				Tournament
 
 		bool						initializeTournament();
 
-		//	CHECKER
+		[[nodiscard]]
 		bool						isPoolsFinished() const;
+		[[nodiscard]]
 		bool						isSixteenthUnlocked() const;
+		[[nodiscard]]
 		bool						isEighthUnlocked() const;
+		[[nodiscard]]
 		bool						isQuartersUnlocked() const;
+		[[nodiscard]]
 		bool						isSemisUnlocked() const;
+		[[nodiscard]]
 		bool						isFinalUnlocked() const;
+		[[nodiscard]]
 		bool						isThirdUnlocked() const;
 
 };

@@ -1,5 +1,5 @@
 //
-// Created by Nicolas Fordoxcel on 14/06/2026.
+// Created by Nicolas Fordoxcel on 15/07/2026.
 //
 
 #pragma once
@@ -8,20 +8,32 @@
 /*	INCLUDES																						*/
 /****************************************************************************************************/
 
+# include <string>
 # include <vector>
+# include <memory>
 
 /****************************************************************************************************/
 /*	CLASSES																							*/
 /****************************************************************************************************/
 
-class				Match;
+class				Player;
+class				PlayerManager;
 
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
 /****************************************************************************************************/
 
-using				pMatch			=	Match*;
-using				vpMatch			=	std::vector<Match*>;
+using				String			=	std::string;
+using				cString			=	const std::string&;
+
+using				cBool			=	const bool;
+
+using				pPlayer			=	Player*;
+using				cPlayer			=	const Player&;
+using				cpPlayer		=	const Player*;
+using				vpPlayer		=	std::vector<Player*>;
+using				cvpPlayer		=	const std::vector<Player*>&;
+using				uPlayer			=	std::unique_ptr<Player>;
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
@@ -31,24 +43,18 @@ using				vpMatch			=	std::vector<Match*>;
 /*	CLASS																							*/
 /****************************************************************************************************/
 
-
-class				MatchCLI
+/**
+ *	La classe Importer gere toutes les importations depuis les fichiers externes
+ */
+class				Importer
 {
 	private:
 
-		static void					displayMenuUI(vpMatch matches);
-		static void					menuMatch(pMatch match);
-		static void					submenuMatch(pMatch match);
-
-		static void					executeChoice(int choice, pMatch match);
-
-		static void					handleSaveScore(pMatch match);
-		static void					handleModifyScore(pMatch match);
-
-		static bool					checkMatchId(int id, size_t size);
+		static uPlayer				extractPlayerFromLine(cString line, cBool isFirstLine);
 
 	public:
 
-		static void					handleMenuMatch(vpMatch matches);
-
+		Importer() = delete;
+		
+		static int				importPlayers(cString path, PlayerManager& playerManager);
 };

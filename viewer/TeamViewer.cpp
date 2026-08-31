@@ -10,7 +10,7 @@
 #include <iostream>
 
 #include "../includes/class/Team.hpp"
-#include "../includes/class/Participant.hpp"
+#include "../includes/class/Player.hpp"
 
 #include "../includes/viewer/TeamViewer.hpp"
 #include "../includes/viewer/TitleViewer.hpp"

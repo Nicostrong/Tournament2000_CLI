@@ -99,7 +99,7 @@ void				TournamentViewer::displayFullBracket(cTour tournament)
 			winner = w->getName();
 	}
 
-	cBool hasThird = tournament.getSettings()->getIsThirdPlaceMatch();
+	cBool hasThird = tournament.getSettings().getIsThirdPlaceMatch();
 
 	std::cout << "\t" << q[0][0] << " ---\n";
 	std::cout << "\t\t\t\t|---> " << s[0][0] << " ---\n";

@@ -14,22 +14,24 @@
 /****************************************************************************************************/
 
 using				cInt			=	const int;
+
 using				cBool			=	const bool;
+
+using				pTeam			=	Team*;
 
 /****************************************************************************************************/
 /*	CONSTRUCTOR / DESTRUCTOR																		*/
 /****************************************************************************************************/
 
-Match::Match(pTeam a, pTeam b, ScoreRules rules): _teamA(a), _teamB(b), _scoreA(0), _scoreB(0),
-	_isFinished(false), _rules(rules)
-{}
+Match::Match(pTeam a, pTeam b, ScoreRules rules)
+	: _teamA(a), _teamB(b), _scoreA(0), _scoreB(0), _isFinished(false), _rules(rules) {}
 
 /****************************************************************************************************/
 /*	GETTER																							*/
 /****************************************************************************************************/
 
-Team*				Match::getTeamA() const		{	return (this->_teamA);		}
-Team*				Match::getTeamB() const		{	return (this->_teamB);		}
+pTeam				Match::getTeamA() const		{	return (this->_teamA);		}
+pTeam				Match::getTeamB() const		{	return (this->_teamB);		}
 int					Match::getScoreA() const	{	return (this->_scoreA);		}
 int					Match::getScoreB() const	{	return (this->_scoreB);		}
 bool				Match::isFinished() const	{	return (this->_isFinished);	}
@@ -38,8 +40,8 @@ bool				Match::isFinished() const	{	return (this->_isFinished);	}
 /*	SETTER																							*/
 /****************************************************************************************************/
 
-void				Match::setScoreA(int value)			{	this->_scoreA = value;		}
-void				Match::setScoreB(int value)			{	this->_scoreB = value;		}
+void				Match::setScoreA(cInt value)			{	this->_scoreA = value;		}
+void				Match::setScoreB(cInt value)			{	this->_scoreB = value;		}
 void				Match::setTeamA(pTeam value)		{	this->_teamA = value;		}
 void				Match::setTeamB(pTeam value)		{	this->_teamB = value;		}
 void				Match::setIsFinished(cBool value)	{	this->_isFinished = value;	}
@@ -53,7 +55,7 @@ bool				Match::isDraw() const
 	return (this->_scoreA == this->_scoreB);
 }
 
-bool				Match::checkScore(int sA, int sB)
+bool				Match::checkScore(cInt sA, cInt sB) const
 {
 	if (sA < 0 || sB < 0)
 		return (false);
@@ -71,7 +73,7 @@ bool				Match::checkScore(int sA, int sB)
 	return (winnerScore >= this->_rules.scoreToWin && difference <= this->_rules.diffPointsToWin);
 }
 
-void				Match::applyStats(cInt sA, cInt sB, int multiplier)
+void				Match::applyStats(cInt sA, cInt sB, cInt multiplier) const
 {
 	this->_teamA->addScoreMarked(sA * multiplier);
 	this->_teamA->addScoreAgainst(sB * multiplier);
@@ -94,7 +96,7 @@ void				Match::applyStats(cInt sA, cInt sB, int multiplier)
 /*	PUBLIC METHOD																					*/
 /****************************************************************************************************/
 
-Team*				Match::getWinner() const
+pTeam				Match::getWinner() const
 {
 	if (!this->_isFinished || this->isDraw())
 		return (nullptr);
@@ -102,7 +104,7 @@ Team*				Match::getWinner() const
 	return ((this->_scoreA > this->_scoreB) ? this->_teamA : this->_teamB);
 }
 
-Team*				Match::getLoser() const
+pTeam				Match::getLoser() const
 {
 	if (!this->_isFinished || this->isDraw())
 		return (nullptr);
@@ -134,4 +136,14 @@ bool				Match::setScore(cInt sA, cInt sB)
 	this->applyStats(sA, sB, 1);
 	this->_isFinished = true;
 	return (true);
+}
+
+void				Match::resetScore()
+{
+	if (this->_isFinished)
+		applyStats(this->_scoreA, this->_scoreB, -1);
+
+	this->_scoreA = 0;
+	this->_scoreB = 0;
+	this->_isFinished = false;
 }

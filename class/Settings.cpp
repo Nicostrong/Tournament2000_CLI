@@ -7,6 +7,7 @@
 /****************************************************************************************************/
 
 #include <format>
+#include <string>
 
 #include "../includes/class/Settings.hpp"
 
@@ -16,7 +17,9 @@
 /*	TYPEDEF																							*/
 /****************************************************************************************************/
 
-using				cBool			=	const bool;
+using				cString			=	const std::string&;
+
+using				cInt			=	const int;
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
@@ -26,14 +29,14 @@ using				cBool			=	const bool;
 /*	CONSTRUCTOR / DESTRUCTOR																		*/
 /****************************************************************************************************/
 
-Settings::Settings(): _name(TOURNAMENTNAME), _nbPlayers(NBPLAYER), _nbPlayerByPool(NBPLAYERPERPOOL),
-	_nbPools(NBPOOL), _nbBadmintonCourt(NBTERRAIN), _scoreMin(SCOREMIN), _scoreMax(SCOREMAX),
-	_diffPointsToWin(ECART), _nbSetPlayedPools(NBPLAYERPERPOOL), _nbSetPlayedSixteenth(NBSETSIXTEENTH),
-	_nbSetPlayedHeigth(NBSETHEIGTH), _nbSetPlayedQuarters(NBSETQUARTER), _nbSetPlayedSemis(NBSETSEMI),
-    _nbSetPlayedFinal(NBSETFINAL), _nbSetPlayedThirdPlace(NBSETTHIRD), _isMixed(ISMIXED),
-    _isDouble(ISDOUBLE), _allowMultiTeamPlayers(PLAYERMULTITEAM), _isThirdPlaceMatch(PLAYTHIRDPLACE),
-	_isValid(ISVALIDE), _gender(GENDER)
-{}
+Settings::Settings()
+	: _name(TOURNAMENTNAME), _nbPlayers(NBPLAYER), _nbPlayerByPool(NBPLAYERPERPOOL), _nbPools(NBPOOL),
+	_nbBadmintonCourt(NBTERRAIN), _scoreMin(SCOREMIN), _scoreMax(SCOREMAX), _diffPointsToWin(ECART),
+	_nbSetPlayedPools(NBPLAYERPERPOOL), _nbSetPlayedSixteenth(NBSETSIXTEENTH), _nbSetPlayedHeigth(NBSETHEIGTH),
+	_nbSetPlayedQuarters(NBSETQUARTER), _nbSetPlayedSemis(NBSETSEMI), _nbSetPlayedFinal(NBSETFINAL),
+	_nbSetPlayedThirdPlace(NBSETTHIRD), _isMixed(ISMIXED), _isDouble(ISDOUBLE),
+	_allowMultiTeamPlayers(PLAYERMULTITEAM), _isThirdPlaceMatch(PLAYTHIRDPLACE), _isValid(ISVALIDE),
+	_gender(GENDER) {}
 
 /****************************************************************************************************/
 /*	GETTER																							*/
@@ -65,7 +68,7 @@ Gender				Settings::getTournamentGender() const		{	return (this->_gender);					}
 /*	SETTER																							*/
 /****************************************************************************************************/
 
-void				Settings::setName(cString value)				{	this->_name = value;					}
+void				Settings::setName(String value)					{	this->_name = value;					}
 void				Settings::setNbPlayers(cInt value)				{	this->_nbPlayers = value;				}
 void				Settings::setNbPlayerByPool(cInt value)			{	this->_nbPlayerByPool = value;			}
 void				Settings::setNbPools(cInt value)				{	this->_nbPools = value;					}
@@ -85,7 +88,7 @@ void				Settings::setIsDouble(cBool value)				{	this->_isDouble = value;				}
 void				Settings::setAllowMultiTeamPlayers(cBool value)	{	this->_allowMultiTeamPlayers = value;	}
 void				Settings::setIsThirdPlaceMatch(cBool value)		{	this->_isThirdPlaceMatch = value;		}
 void				Settings::setIsValid(cBool value)				{	this->_isValid = value;					}
-void				Settings::setTournamentGender(cGender value)	{	this->_gender = value;					}
+void				Settings::setTournamentGender(Gender value)		{	this->_gender = value;					}
 
 /****************************************************************************************************/
 /*	PRIVATE METHODS																					*/

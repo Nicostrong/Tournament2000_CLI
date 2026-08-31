@@ -8,9 +8,7 @@
 
 #include <vector>
 #include <format>
-#include <limits>
 #include <iostream>
-#include <exception>
 
 #include "../includes/class/Team.hpp"
 #include "../includes/class/Pool.hpp"
@@ -31,6 +29,11 @@
 /*	TYPEDEF																							*/
 /****************************************************************************************************/
 
+using				cInt			=	const int;
+
+using				pMatch			=	Match*;
+using				cvpMatch		=	const std::vector<Match*>&;
+
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
 /****************************************************************************************************/
@@ -47,7 +50,7 @@
 /*  GESTION DU MENU		*/
 /************************/
 
-void				MatchCLI::displayMenuUI(cvpMatch matches)
+void				MatchCLI::displayMenuUI(vpMatch matches)
 {
 	CLIUtils::handleTitle(TitleViewer::matches);
 	PrintUtils::handleMessages();
@@ -127,8 +130,8 @@ void				MatchCLI::executeChoice(cInt choice, pMatch match)
 
 void				MatchCLI::handleSaveScore(pMatch match)
 {
-	int sA = CLIUtils::askInt(std::format("Score de {}", match->getTeamA()->getName()), 0, SCOREMAXTOWIN, 0);
-	int sB = CLIUtils::askInt(std::format("Score de {}", match->getTeamB()->getName()), 0, SCOREMAXTOWIN, 0);
+	cInt sA = CLIUtils::askInt(std::format("Score de {}", match->getTeamA()->getName()), 0, SCOREMAXTOWIN, 0);
+	cInt sB = CLIUtils::askInt(std::format("Score de {}", match->getTeamB()->getName()), 0, SCOREMAXTOWIN, 0);
 
 	if (match->setScore(sA, sB))
 		PrintUtils::addSuccess("Score enregistre !");
@@ -138,8 +141,8 @@ void				MatchCLI::handleSaveScore(pMatch match)
 
 void				MatchCLI::handleModifyScore(pMatch match)
 {
-	int sA = CLIUtils::askInt(std::format("Score actuel de {} => {}", match->getTeamA()->getName(), match->getScoreA()), 0, SCOREMAXTOWIN, match->getScoreA());
-	int sB = CLIUtils::askInt(std::format("Score actuel de {} => {}", match->getTeamB()->getName(), match->getScoreB()), 0, SCOREMAXTOWIN, match->getScoreB());
+	cInt sA = CLIUtils::askInt(std::format("Score actuel de {} => {}", match->getTeamA()->getName(), match->getScoreA()), 0, SCOREMAXTOWIN, match->getScoreA());
+	cInt sB = CLIUtils::askInt(std::format("Score actuel de {} => {}", match->getTeamB()->getName(), match->getScoreB()), 0, SCOREMAXTOWIN, match->getScoreB());
 
 	match->setScore(sA, sB);
 	PrintUtils::addSuccess("Score modifie !");
@@ -160,7 +163,7 @@ bool				MatchCLI::checkMatchId(int id, size_t size)
 
 
 
-void				MatchCLI::handleMenuMatch(cvpMatch matches)
+void				MatchCLI::handleMenuMatch(vpMatch matches)
 {
 	try
 	{

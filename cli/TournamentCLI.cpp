@@ -12,7 +12,6 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
-#include <exception>
 
 #include "../includes/class/Pool.hpp"
 #include "../includes/class/Team.hpp"
@@ -105,7 +104,7 @@ void				TournamentCLI::menuTournament(cTour tournament)
 	items.push_back({'S', "Show"});
 	items.push_back({'Q', "Quit"});
 	
-	CLIUtils::displayMenu(std::format("TOURNOI : {}", tournament.getSettings()->getName()), items);
+	CLIUtils::displayMenu(std::format("TOURNOI : {}", tournament.getSettings().getName()), items);
 }
 
 

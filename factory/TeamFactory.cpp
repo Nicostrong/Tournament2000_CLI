@@ -8,14 +8,12 @@
 
 #include <format>
 #include <random>
-#include <iostream>
+#include <memory>
 #include <algorithm>
 
 #include "../includes/class/Team.hpp"
-#include "../includes/class/Pool.hpp"
+#include "../includes/class/Player.hpp"
 #include "../includes/class/Settings.hpp"
-#include "../includes/class/Tournament.hpp"
-#include "../includes/class/Participant.hpp"
 
 #include "../includes/utils/PrintUtils.hpp"
 
@@ -39,9 +37,57 @@ using				cBool			=	const bool;
 /*	CONSTRUCTOR / DESTRUCTOR																		*/
 /****************************************************************************************************/
 
+TeamFactory::TeamFactory(cSet settings) : _settings(settings) {}
+
 /****************************************************************************************************/
 /*	GETTER																							*/
 /****************************************************************************************************/
+
+vpPlayer			TeamFactory::getAllMales(cvpPlayer players) const
+{
+	vpPlayer males;
+
+	for (pPlayer p : players)
+		if (p && p->getGenderInt() == Gender::MALE)
+			males.push_back(p);
+
+	return (males);
+}
+
+vpPlayer			TeamFactory::getAllFemales(cvpPlayer players) const
+{
+	vpPlayer females;
+
+	for (pPlayer p : players)
+		if (p && p->getGenderInt() == Gender::FEMALE)
+			females.push_back(p);
+
+	return (females);
+}
+
+vpPlayer			TeamFactory::getMultiTeamsPlayers(vpPlayer players) const
+{
+	vpPlayer result;
+	cInt actual = static_cast<int>(players.size());
+	cInt required = this->_settings.getNbPlayers();
+	cInt missing = std::max(0, required - actual);
+	cInt maxRecyclable = std::min(missing, NBPLAYERINMULTITEAMMAX);
+
+	if (maxRecyclable <= 0 || players.empty())
+		return (result);
+
+	std::random_device rd;
+	std::mt19937 g(rd());
+	std::ranges::shuffle(players.begin(), players.end(), g);
+
+	for (int i = 0; i < maxRecyclable && i < static_cast<int>(players.size()); ++i)
+	{
+		players[static_cast<size_t>(i)]->setIsMultiTeamPlayer(true);
+		result.push_back(players[static_cast<size_t>(i)]);
+	}
+
+	return (result);
+}
 
 /****************************************************************************************************/
 /*	SETTER																							*/
@@ -51,130 +97,121 @@ using				cBool			=	const bool;
 /*	PRIVATE METHOD																					*/
 /****************************************************************************************************/
 
-/**
- * Retourne true si deux equipes partagent au moins un Participant*.
- */
-bool				TeamFactory::teamsShareMember(cpTeam a, cpTeam b)
-{
-	for (cpPart pa : a->getMembers())
-		for (cpPart pb : b->getMembers())
-			if (pa == pb)
-				return (true);
+/****************************************************************************************************/
+/*	PUBLIC METHOD																					*/
+/****************************************************************************************************/
 
-	return (false);
+bool				TeamFactory::checkMissingPlayers(cvpPlayer players, int& missing) const
+{
+	cInt actual = static_cast<int>(players.size());
+	cInt required = this->_settings.getNbPlayers();
+	missing = std::max(0, required - actual);
+
+	return (missing <= NBPLAYERINMULTITEAMMAX);
 }
 
-/**
- *	creation des equipes d un player (tournois simple non mixte)
- */
-void				TeamFactory::createTeamsUniplayer()
+void				TeamFactory::createTeamsUniplayer(cvpPlayer players, vuTeam& teams)
 {
 	int missing = 0;
 
-	if (!checkMissingPlayers(missing))
+	if (!checkMissingPlayers(players, missing))
 		return;
 
-	cInt required = this->_settings->getNbPlayers();
-	cInt actual = static_cast<int>(this->_participants.size());
+	cInt required = this->_settings.getNbPlayers();
+	cInt actual = static_cast<int>(players.size());
 
 	std::random_device rd;
 	std::mt19937 g(rd());
-
-	vpPart shuffled = this->_participants;
-
+	vpPlayer shuffled = players;
 	std::ranges::shuffle(shuffled.begin(), shuffled.end(), g);
 
 	for (int i = 0; i < missing; ++i)
 	{
-		Participant* p = shuffled[static_cast<size_t>(i)];
+		pPlayer p = shuffled[static_cast<size_t>(i)];
+
+		if (!p)
+			continue;
 
 		p->setIsMultiTeamPlayer(true);
 
-		Team* clone = new Team();
+		auto team = std::make_unique<Team>();
 
-		clone->addMember(p);
-		clone->setHasMultiTeamPlayer(true);
-		clone->renameTeam();
+		team->addMember(p);
+		team->setHasMultiTeamPlayer(true);
+		team->renameTeam();
 
-		this->_teams.push_back(clone);
+		teams.push_back(std::move(team));
 	}
 
 	cInt normalLimit = std::min(actual, required - missing);
 
 	for (int i = 0; i < normalLimit; ++i)
 	{
-		Team* t = new Team();
+		pPlayer p = shuffled[static_cast<size_t>(i)];
 
-		t->addMember(shuffled[static_cast<size_t>(i)]);
-		t->renameTeam();
+		if (!p)
+			continue;
 
-		this->_teams.push_back(t);
+		auto team = std::make_unique<Team>();
+
+		team->addMember(p);
+		team->renameTeam();
+
+		teams.push_back(std::move(team));
 	}
-
-	if (static_cast<int>(this->_teams.size()) != required)
-		PrintUtils::addError(std::format("createTeamsUniplayer : {} equipes creees pour {} attendues.", this->_teams.size(), required ));
 }
 
-/**
- *	creations des equipes en double (tournois double non mixte)
- */
-void				TeamFactory::createDoubleTeams()
+void				TeamFactory::createDoubleTeams(cvpPlayer players, vuTeam& teams)
 {
-	vpPart pool = this->_participants;
-	cvpPart multiTeams = getMultiTeamsPlayers(pool);
+	vpPlayer pool = players;
+	vpPlayer multiTeams = getMultiTeamsPlayers(pool);
 
 	std::random_device rd;
 	std::mt19937 g(rd());
-
 	std::ranges::shuffle(pool.begin(), pool.end(), g);
-	
+
 	size_t pIdx = 0;
 	size_t mIdx = 0;
 
 	while (pIdx < pool.size() || mIdx < multiTeams.size())
 	{
-		Team* t = new Team();
-		
+		auto team = std::make_unique<Team>();
+
 		if (pIdx < pool.size())
-			t->addMember(pool[pIdx++]);
+			team->addMember(pool[pIdx++]);
 		else if (mIdx < multiTeams.size())
 		{
-			t->addMember(multiTeams[mIdx++]);
-			t->setHasMultiTeamPlayer(true);
+			team->addMember(multiTeams[mIdx++]);
+			team->setHasMultiTeamPlayer(true);
 		}
 
 		if (pIdx < pool.size())
-			t->addMember(pool[pIdx++]);
+			team->addMember(pool[pIdx++]);
 		else if (mIdx < multiTeams.size())
 		{
-			t->addMember(multiTeams[mIdx++]);
-			t->setHasMultiTeamPlayer(true);
+			team->addMember(multiTeams[mIdx++]);
+			team->setHasMultiTeamPlayer(true);
 		}
 		
-		t->renameTeam();
+		team->renameTeam();
 
-		if (t->getMembers().size() == 2)
-			this->_teams.push_back(t);
-		else
-			delete t;
+		if (team->getMembers().size() == 2)
+			teams.push_back(std::move(team));
 	}
 }
 
-/**
- *	creation des equipes mixtes (tournois double/mixte)
- */
-void				TeamFactory::createMixedTeams()
+void				TeamFactory::createMixedTeams(cvpPlayer players, vuTeam& teams)
 {
 	TeamCreationCtx ctx;
 
-	if (!checkMissingPlayers(ctx.missing))
+	if (!checkMissingPlayers(players, ctx.missing))
 		return;
 
-	vpPart males = getAllMales();
-	vpPart females = getAllFemales();
-	vpPart minoritaryPool = (females.size() < males.size()) ? females : males;
-	vpPart majoritaryPool = (females.size() < males.size()) ? males : females;
-	vpPart missingPool;
+	vpPlayer males = getAllMales(players);
+	vpPlayer females = getAllFemales(players);
+	vpPlayer minoritaryPool = (females.size() < males.size()) ? females : males;
+	vpPlayer majoritaryPool = (females.size() < males.size()) ? males : females;
+	vpPlayer missingPool;
 
 	ctx.males = &males;
 	ctx.females = &females;
@@ -186,20 +223,16 @@ void				TeamFactory::createMixedTeams()
 
 	std::random_device rd;
 	std::mt19937 g(rd());
-
 	std::ranges::shuffle(majoritaryPool.begin(), majoritaryPool.end(), g);
 	std::ranges::shuffle(minoritaryPool.begin(), minoritaryPool.end(), g);
 	std::ranges::shuffle(missingPool.begin(), missingPool.end(), g);
 
-	createStandardMixedTeams(ctx);
-	createMissingMixedTeams(ctx);
-	createUnigenreTeams(ctx);
+	createStandardMixedTeams(ctx, teams);
+	createMissingMixedTeams(ctx, teams);
+	createUnigenreTeams(ctx, teams);
 }
 
-/**
- *	generation de la pool des participants qui seront dans deux teams
- */
-void				TeamFactory::generateMissingPool(const TeamCreationCtx& ctx)
+void				TeamFactory::generateMissingPool(TeamCreationCtx& ctx)
 {
 	if (ctx.missing <= 0)
 		return;
@@ -210,17 +243,15 @@ void				TeamFactory::generateMissingPool(const TeamCreationCtx& ctx)
 		cloneForUnequalGenders(ctx);
 }
 
-/**
- *	creation d une pool de multiteamplayers en cas de parite de genre
- */
-void				TeamFactory::cloneForEqualGenders(const TeamCreationCtx& ctx)
+void				TeamFactory::cloneForEqualGenders(TeamCreationCtx& ctx)
 {
+	if (!ctx.males || !ctx.females || ctx.males->empty() || ctx.females->empty())
+		return;
+
 	std::random_device rd;
 	std::mt19937 g(rd());
-	
-	vpPart sampleA = *(ctx.males);
-	vpPart sampleB = *(ctx.females);
-
+	vpPlayer sampleA = *(ctx.males);
+	vpPlayer sampleB = *(ctx.females);
 	std::ranges::shuffle(sampleA.begin(), sampleA.end(), g);
 	std::ranges::shuffle(sampleB.begin(), sampleB.end(), g);
 
@@ -228,14 +259,14 @@ void				TeamFactory::cloneForEqualGenders(const TeamCreationCtx& ctx)
 	{
 		if (i % 2 == 0)
 		{
-			Participant* p = sampleA[i % sampleA.size()];
+			pPlayer p = sampleA[static_cast<size_t>(i) % sampleA.size()];
 
 			p->setIsMultiTeamPlayer(true);
 			ctx.missingPool->push_back(p);
 		}
 		else
 		{
-			Participant* p = sampleB[i % sampleB.size()];
+			pPlayer p = sampleB[static_cast<size_t>(i) % sampleB.size()];
 
 			p->setIsMultiTeamPlayer(true);
 			ctx.missingPool->push_back(p);
@@ -243,35 +274,30 @@ void				TeamFactory::cloneForEqualGenders(const TeamCreationCtx& ctx)
 	}
 }
 
-/**
- *	creation d une pool de multiteamplayers en utilisant la pool minoritaire de genre
- */
-void				TeamFactory::cloneForUnequalGenders(const TeamCreationCtx& ctx)
+void				TeamFactory::cloneForUnequalGenders(TeamCreationCtx& ctx)
 {
+	if (!ctx.minoritary || ctx.minoritary->empty())
+		return;
+
 	std::random_device rd;
 	std::mt19937 g(rd());
-
-	vpPart candidates = *(ctx.minoritary);
-
+	vpPlayer candidates = *(ctx.minoritary);
 	std::ranges::shuffle(candidates.begin(), candidates.end(), g);
 
 	for (int i = 0; i < ctx.missing; ++i)
 	{
-		Participant* p = candidates[i % candidates.size()];
+		pPlayer p = candidates[static_cast<size_t>(i) % candidates.size()];
 
 		p->setIsMultiTeamPlayer(true);
 		ctx.missingPool->push_back(p);
 	}
 }
 
-/**
- *	creation des equipes mixte
- */
-void				TeamFactory::createStandardMixedTeams(TeamCreationCtx& ctx)
+void				TeamFactory::createStandardMixedTeams(TeamCreationCtx& ctx, vuTeam& teams)
 {
 	while (ctx.minIdx < ctx.minoritary->size() && ctx.majIdx < ctx.majoritary->size())
 	{
-		Team* t = new Team();
+		auto t = std::make_unique<Team>();
 
 		t->addMember((*ctx.minoritary)[ctx.minIdx++]);
 		t->addMember((*ctx.majoritary)[ctx.majIdx++]);
@@ -281,36 +307,27 @@ void				TeamFactory::createStandardMixedTeams(TeamCreationCtx& ctx)
 
 		t->setIsMixed(true);
 		t->renameTeam();
-
-		this->_teams.push_back(t);
+		teams.push_back(std::move(t));
 	}
 }
 
-/**
- *	creation des equipes mixte en utilisant la pool de multiteamsplayer
- */
-void				TeamFactory::createMissingMixedTeams(TeamCreationCtx& ctx)
+void				TeamFactory::createMissingMixedTeams(TeamCreationCtx& ctx, vuTeam& teams)
 {
 	while (ctx.missIdx < ctx.missingPool->size() && ctx.majIdx < ctx.majoritary->size())
 	{
-		Team* t = new Team();
+		auto t = std::make_unique<Team>();
 
 		t->addMember((*ctx.missingPool)[ctx.missIdx++]);
 		t->addMember((*ctx.majoritary)[ctx.majIdx++]);
 		t->setHasMultiTeamPlayer(true);
-		
 		t->renameTeam();
-
-		this->_teams.push_back(t);
+		teams.push_back(std::move(t));
 	}
 }
 
-/**
- *	creation des equipes unigenre
- */
-void				TeamFactory::createUnigenreTeams(TeamCreationCtx& ctx)
+void				TeamFactory::createUnigenreTeams(TeamCreationCtx& ctx, vuTeam& teams)
 {
-	vpPart leftovers;
+	vpPlayer leftovers;
 
 	while (ctx.majIdx < ctx.majoritary->size())
 		leftovers.push_back((*ctx.majoritary)[ctx.majIdx++]);
@@ -320,104 +337,32 @@ void				TeamFactory::createUnigenreTeams(TeamCreationCtx& ctx)
 
 	while (ctx.missIdx < ctx.missingPool->size())
 		leftovers.push_back((*ctx.missingPool)[ctx.missIdx++]);
-
+	
 	for (size_t i = 0; i + 1 < leftovers.size(); i += 2)
 	{
-		Team* t = new Team();
+		auto t = std::make_unique<Team>();
 
 		t->addMember(leftovers[i]);
 		t->addMember(leftovers[i + 1]);
-		
+
 		if (leftovers[i]->getIsMultiTeamPlayer() || leftovers[i + 1]->getIsMultiTeamPlayer())
 			t->setHasMultiTeamPlayer(true);
-		
+
 		t->renameTeam();
-
-		this->_teams.push_back(t);
+		teams.push_back(std::move(t));
 	}
 }
 
-/**
- *	verifie le nombre de participants qui devront etre dans deux teams
- */
-bool				TeamFactory::checkMissingPlayers(int& missing) const
+vuTeam				TeamFactory::generateTeams(cvpPlayer players)
 {
-	cInt actual = static_cast<int>(this->_participants.size());
-	cInt required = this->_settings->getNbPlayers();
+	vuTeam teams;
 
-	missing = std::max(0, required - actual);
+	if (!this->_settings.getIsDouble())
+		createTeamsUniplayer(players, teams);
+	else if (this->_settings.getIsMixed())
+		createMixedTeams(players, teams);
+	else
+		createDoubleTeams(players, teams);
 
-	if (missing > NBPLAYERINMULTITEAMMAX)
-	{
-		PrintUtils::addError(std::format("Trop de joueurs manquants ({}). Limite de reutilisation autorisee : {}.", missing , NBPLAYERINMULTITEAMMAX));
-		return (false);
-	}
-
-	return (true);
-}
-
-/**
- *	retourne un vecteur avec tout les participants Homme
- */
-vpPart				TeamFactory::getAllMales() const
-{
-	vpPart males;
-
-	for (Participant* p : this->_participants)
-		if (p->getGenderInt() == Gender::MALE)
-			males.push_back(p);
-
-	return (males);
-}
-
-/**
- *	retourne un vecteur avec tout les participants Femme
- */
-vpPart				TeamFactory::getAllFemales() const
-{
-	vpPart females;
-
-	for (Participant* p : this->_participants)
-		if (p->getGenderInt() == Gender::FEMALE)
-			females.push_back(p);
-
-	return (females);
-}
-
-/**
- *	retourne un vecteur avec tout les participants qui sont dans plusieurs teams dans une pool donnee
- */
-vpPart				TeamFactory::getMultiTeamsPlayers(vpPart participants) const
-{
-	vpPart result;
-
-	cInt actual = static_cast<int>(this->_participants.size());
-	cInt required = this->_settings->getNbPlayers();
-	cInt missing = std::max(0, required - actual);
-	cInt maxRecyclable = std::min(missing, NBPLAYERINMULTITEAMMAX);
-
-	if (maxRecyclable <= 0 || participants.empty())
-		return (result);
-
-	std::random_device rd;
-	std::mt19937 g(rd());
-
-	std::ranges::shuffle(participants.begin(), participants.end(), g);
-
-	for (int i = 0; i < maxRecyclable && i < static_cast<int>(participants.size()); ++i)
-	{
-		participants[i]->setIsMultiTeamPlayer(true);
-		result.push_back(participants[i]);
-	}
-
-	return (result);
-}
-
-/****************************************************************************************************/
-/*	PUBLIC METHOD																					*/
-/****************************************************************************************************/
-
-vpTeam				TeamFactory::createTeams(const vpPart& participants,cpSet settings)
-{
-
+	return (teams);
 }

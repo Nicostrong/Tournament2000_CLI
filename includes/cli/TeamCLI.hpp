@@ -8,7 +8,6 @@
 /*	INCLUDES																						*/
 /****************************************************************************************************/
 
-# include <string>
 # include <vector>
 
 /****************************************************************************************************/
@@ -22,20 +21,10 @@ class				Tournament;
 /*	TYPEDEF																							*/
 /****************************************************************************************************/
 
-using				String			=	std::string;
-using				cString			=	const std::string&;
-
-using				cInt			=	const int;
-
 using				pTeam			=	Team*;
-using				cTeam			=	const Team&;
 using				cpTeam			=	const Team*;
-using				vpTeam			=	std::vector<Team*>;
-using				cvpTeam			=	const std::vector<Team*>&;
 
-using				pTour			=	Tournament*;
 using				cTour			=	const Tournament&;
-using				cpTour			=	const Tournament*;
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
@@ -53,18 +42,18 @@ class				TeamCLI
 		static void					menuTeam(pTeam team);
 		static void					submenuTeam(pTeam team, Tournament& tournament);
 
-		static void					executeChoice(cInt choice, pTeam team, Tournament& tournament);
+		static void					executeChoice(int choice, pTeam team, Tournament& tournament);
 
 		static void					handleModifyTeamName(pTeam team);
 		static void					handleModifyTeamMember(pTeam team, Tournament& tournament);
 		static void					handleDisqualifiedTeam(pTeam team, Tournament& tournament);
 
 		static bool					checkTeamId(int id, Tournament& tournament);
-		static cpPool				findTeamPool(cpTeam team, Tournament& tournament);
-		static bool					isPlayerInPool(cpPart player, cpPool pool);
-		static vpPart				getEligibleSubstitutes(pTeam team, Tournament& tournament);
+		static pPool				findTeamPool(cpTeam team, Tournament& tournament);
+		static bool					isPlayerInPool(pPlayer player, pPool pool);
+		static vpPlayer				getEligibleSubstitutes(pTeam team, Tournament& tournament);
 		static int					selectMemberIndex(pTeam team);
-		static pPart				selectSubstitutePlayer(vpPart candidates);
+		static pPlayer				selectSubstitutePlayer(vpPlayer candidates);
 
 	public:
 

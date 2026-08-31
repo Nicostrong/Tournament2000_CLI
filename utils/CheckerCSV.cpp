@@ -39,7 +39,7 @@
 /*	PUBLIC METHOD																					*/
 /****************************************************************************************************/
 
-bool				CheckerCSV::validateParticipantCSV(cString filename)
+bool				CheckerCSV::validatePlayerCSV(cString filename)
 {
 	std::ifstream file(filename);
 

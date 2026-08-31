@@ -7,17 +7,16 @@
 /****************************************************************************************************/
 
 #include <format>
-#include <fstream>
 #include <iostream>
 #include <algorithm>
 
 #include "../includes/class/Settings.hpp"
-#include "../includes/class/Participant.hpp"
+#include "../includes/class/Player.hpp"
 
 #include "../includes/utils/PrintUtils.hpp"
 
-#include "../includes/cli/ParticipantCLI.hpp"
-#include "../includes/viewer/ParticipantViewer.hpp"
+#include "../includes/cli/PlayerCLI.hpp"
+#include "../includes/viewer/PlayerViewer.hpp"
 
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
@@ -39,10 +38,10 @@
 /*	PUBLIC METHOD																					*/
 /****************************************************************************************************/
 
-void				ParticipantViewer::displayOne(cPart p)
+void				PlayerViewer::displayOne(cPlayer p)
 {
 	std::cout << "------------------------------------------------\n";
-	std::cout << "|  Participant\t" << p.getId() << "\n";
+	std::cout << "|  Player\t" << p.getId() << "\n";
 	std::cout << "------------------------------------------------\n";
 	std::cout << "|  Pseudo       : " << p.getPseudo() << std::endl;
 	std::cout << "|  Nom          : " << p.getLastName() << std::endl;
@@ -53,7 +52,7 @@ void				ParticipantViewer::displayOne(cPart p)
 	std::cout << "------------------------------------------------\n";
 }
 
-void				ParticipantViewer::displayAll(cvpPart participants)
+void				PlayerViewer::displayAll(cvpPlayer participants)
 {
 	if (participants.empty())
 	{
@@ -71,7 +70,7 @@ void				ParticipantViewer::displayAll(cvpPart participants)
 	size_t wElim = 7;
 	size_t wMulti = 5;
 
-	for (cpPart p : participants)
+	for (cpPlayer p : participants)
 	{
 		wId = std::max(wId, std::to_string(p->getId()).length());
 		wPseudo = std::max(wPseudo, p->getPseudo().length());
@@ -103,7 +102,7 @@ void				ParticipantViewer::displayAll(cvpPart participants)
 		" Multi", wMulti);
 	printSeparator();
 
-	for (cpPart p : participants)
+	for (cpPlayer p : participants)
 	{
 		String strElim = p->getIsEliminated() ? "Oui" : "Non";
 		String strMulti = p->getIsMultiTeamPlayer() ? "Oui" : "Non";

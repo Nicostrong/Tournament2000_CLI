@@ -80,7 +80,6 @@ class				TournamentCLI
 		static cpPhase				getPhaseByMenuChoice(cTour tournament, cInt choice);
 		
 		//	Helpers d affichage
-		//static void					handleMatchList(cvpMatch matches, cString title);
 		static void					handlePhase(pPhase phase, cString phaseName);
 		
 };

@@ -8,20 +8,20 @@
 /*	INCLUDES																						*/
 /****************************************************************************************************/
 
-# include <vector>
+# include "../class/Player.hpp"
 
 /****************************************************************************************************/
 /*	CLASSES																							*/
 /****************************************************************************************************/
 
-class				Match;
+class				Settings;
+class				PlayerManager;
 
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
 /****************************************************************************************************/
 
-using				pMatch			=	Match*;
-using				vpMatch			=	std::vector<Match*>;
+using				cSet			=	const Settings&;
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
@@ -31,24 +31,29 @@ using				vpMatch			=	std::vector<Match*>;
 /*	CLASS																							*/
 /****************************************************************************************************/
 
-
-class				MatchCLI
+/**
+ * Gere uniquement l'interaction CLI avec les participants.
+ */
+class				PlayerCLI
 {
 	private:
 
-		static void					displayMenuUI(vpMatch matches);
-		static void					menuMatch(pMatch match);
-		static void					submenuMatch(pMatch match);
+		static void					menuPlayer(const PlayerManager& manager, cSet settings);
+		static bool					executeChoice(int choice, PlayerManager& manager, cSet settings);
 
-		static void					executeChoice(int choice, pMatch match);
+		// ACTIONS UTILISATEUR
+		static void					handleAddPlayer(PlayerManager& manager, cSet settings);
+		static void					handleModifyPlayer(PlayerManager& manager, cSet settings);
+		static void					handleDeletePlayer(PlayerManager& manager);
+		static void					handleImport(PlayerManager& manager);
+		static void					handleExport(const PlayerManager& manager);
+		static void					handleDisplay(const PlayerManager& manager);
 
-		static void					handleSaveScore(pMatch match);
-		static void					handleModifyScore(pMatch match);
-
-		static bool					checkMatchId(int id, size_t size);
+		// SAISIE
+		static Gender				askGender(cSet settings, int currentGenderInt = -1);
 
 	public:
 
-		static void					handleMenuMatch(vpMatch matches);
+		static void					handleMenuPlayer( PlayerManager& manager,cSet settings);
 
 };

@@ -12,7 +12,7 @@
 
 #include "../includes/class/Team.hpp"
 #include "../includes/class/Match.hpp"
-#include "../includes/class/Participant.hpp"
+#include "../includes/class/Player.hpp"
 
 #include "../includes/utils/PrintUtils.hpp"
 #include "../includes/utils/TournamentHistory.hpp"
@@ -51,14 +51,14 @@ void				TournamentHistory::recordMatch(pMatch match)
 	if (!match)
 		return;
 
-	for (cpPart p : match->getTeamA()->getMembers())
-		this->_participantMatches[p].push_back(match);
+	for (cpPlayer p : match->getTeamA()->getMembers())
+		this->_playerMatches[p].push_back(match);
 
-	for (cpPart p : match->getTeamB()->getMembers())
-		this->_participantMatches[p].push_back(match);
+	for (cpPlayer p : match->getTeamB()->getMembers())
+		this->_playerMatches[p].push_back(match);
 }
 
-void				TournamentHistory::exportParticipantSummary(cpPart p, cString filename) const
+void				TournamentHistory::exportPlayerSummary(cpPlayer p, cString filename) const
 {
 	std::ofstream file(filename);
 
@@ -70,9 +70,9 @@ void				TournamentHistory::exportParticipantSummary(cpPart p, cString filename) 
 
 	file << "=== RESUME DU TOURNOI POUR " << p->getPseudo() << " ===\n\n";
 
-	auto it = this->_participantMatches.find(p);
+	auto it = this->_playerMatches.find(p);
 
-	if (it != this->_participantMatches.end() && !it->second.empty())
+	if (it != this->_playerMatches.end() && !it->second.empty())
 	{
 		for (cpMatch m : it->second)
 		{

@@ -9,6 +9,7 @@
 /****************************************************************************************************/
 
 # include <string>
+# include <fstream>
 
 /****************************************************************************************************/
 /*	CLASSES																							*/
@@ -18,7 +19,7 @@ class				Pool;
 class				Match;
 class				Phase;
 class				Tournament;
-class				Participant;
+class				Player;
 
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
@@ -45,11 +46,11 @@ using				cpPhase			=	const Phase*;
 using				vpPhase			=	std::vector<Phase*>;
 using				cvpPhase		=	const std::vector<Phase*>&;
 
-using				pPart			=	Participant*;
-using				cPart			=	const Participant&;
-using				cpPart			=	const Participant*;
-using				vpPart			=	std::vector<Participant*>;
-using				cvpPart			=	const std::vector<Participant*>&;
+using				pPlayer			=	Player*;
+using				cPlayer			=	const Player&;
+using				cpPlayer			=	const Player*;
+using				vpPlayer			=	std::vector<Player*>;
+using				cvpPlayer			=	const std::vector<Player*>&;
 
 using				pTour			=	Tournament*;
 using				cTour			=	const Tournament&;
@@ -72,12 +73,12 @@ class				Exporter
 
 		// Exports TXT
 		static bool					exportTournamentToTxt(cTour tournament, cString filename);
-		static bool					exportPhaseToTxt(cpPhase phase, cString filename);
+		static bool					exportPhaseToTxt(pPhase phase, cString filename);
 		static bool					exportPoolsToTxt(cTour tournament, cString filename);
 		static bool					exportToTxt(cPool pool, cString filename);
 
 		// Exports CSV
-		static bool					exportParticipantsToCSV(cvpPart participants, cString filename);
+		static bool					exportPlayersToCSV(cvpPlayer participants, cString filename);
 
 		// Exports JSON
 		//static bool					exportTournamentToJson(cTour tournament, cString filename);

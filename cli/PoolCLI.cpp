@@ -10,7 +10,6 @@
 #include <format>
 #include <limits>
 #include <iostream>
-#include <exception>
 
 #include "../includes/cli/PoolCLI.hpp"
 #include "../includes/cli/MatchCLI.hpp"
@@ -27,6 +26,16 @@
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
 /****************************************************************************************************/
+
+using				cString			=	const std::string&;
+
+using				cInt			=	const int;
+
+using				pPool			=	Pool*;
+using				cPool			=	const Pool&;
+using				cvpPool			=	const std::vector<Pool*>&;
+
+using				cTour			=	const Tournament&;
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
@@ -74,7 +83,7 @@ void				PoolCLI::submenuPool(pPool pool, Tournament& tournament)
 		{
 			menuPool(pool);
 
-			String input = CLIUtils::input();
+			cString input = CLIUtils::input();
 			
 			if (input.empty())
 				continue;
@@ -133,7 +142,7 @@ void				PoolCLI::executeChoice(cInt choice, pPool pool, Tournament& tournament)
 /*  HELPER			*/
 /********************/
 
-bool				PoolCLI::checkPoolId(int id, Tournament& tournament)
+bool				PoolCLI::checkPoolId(cInt id, Tournament& tournament)
 {
 	return (id >= 1 && id <= static_cast<int>(tournament.getPools().size()));
 }
@@ -202,7 +211,7 @@ void				PoolCLI::handleMenuPool(Tournament& tournament)
 		{
 			displayMenuUI(tournament);
 
-			String input = CLIUtils::input();
+			cString input = CLIUtils::input();
 			
 			if (input.empty())
 				continue;

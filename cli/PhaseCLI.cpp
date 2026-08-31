@@ -24,6 +24,17 @@
 /*	TYPEDEF																							*/
 /****************************************************************************************************/
 
+using				String			=	std::string;
+using				cString			=	const std::string&;
+
+using				cInt			=	const int;
+
+using				cPhase			=	const Phase&;
+
+using				cpTeam			=	const Team*;
+
+using				cvpMatch		=	const std::vector<Match*>&;
+
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
 /****************************************************************************************************/
@@ -44,7 +55,7 @@
  * Exporte l historique complet d une phase dans un fichier texte.
  * Pas de codes ANSI dans le fichier (toFile = true).
  */
-bool				PhaseCLI::exportToTxt(cPhase phase, cString filename)
+bool				PhaseCLI::exportToTxt(const Phase& phase, String filename)
 {
 	std::ofstream file(filename);
 

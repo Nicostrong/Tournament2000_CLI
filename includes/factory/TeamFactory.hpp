@@ -11,15 +11,17 @@
 # include <map>
 # include <string>
 # include <vector>
+# include <memory>
+
+# include "../class/Settings.hpp"
 
 /****************************************************************************************************/
 /*	CLASSES																							*/
 /****************************************************************************************************/
 
 class				Team;
-class				Pool;
+class				Player;
 class				Settings;
-class				Participant;
 
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
@@ -32,28 +34,24 @@ using				cInt			=	const int;
 
 using				cBool			=	const bool;
 
-using				pPool			=	Pool*;
-using				cPool			=	const Pool&;
-using				cpPool			=	const Pool*;
-using				vpPool			=	std::vector<Pool*>;
-using				cvpPool			=	const std::vector<Pool*>&;
-
 using				pTeam			=	Team*;
 using				cTeam			=	const Team&;
 using				cpTeam			=	const Team*;
 using				vpTeam			=	std::vector<Team*>;
 using				cvpTeam			=	const std::vector<Team*>&;
 using				mpTeam			=	std::map<Team*, Team*>;
+using				uTeam			=	std::unique_ptr<Team>;
+using				vuTeam			=	std::vector<std::unique_ptr<Team>>;
 
-using				pSet			=	Settings*;
 using				cSet			=	const Settings&;
-using				cpSet			=	const Settings*;
 
-using				pPart			=	Participant*;
-using				cPart			=	const Participant&;
-using				cpPart			=	const Participant*;
-using				vpPart			=	std::vector<Participant*>;
-using				cvpPart			=	const std::vector<Participant*>&;
+using				pPlayer			=	Player*;
+using				cPlayer			=	const Player&;
+using				cpPlayer		=	const Player*;
+using				vpPlayer		=	std::vector<Player*>;
+using				cvpPlayer		=	const std::vector<Player*>&;
+using				uPlayer			=	std::unique_ptr<Player>;
+using				vuPlayer		=	std::vector<std::unique_ptr<Player>>;
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
@@ -63,53 +61,61 @@ using				cvpPart			=	const std::vector<Participant*>&;
 /*	CLASS																							*/
 /****************************************************************************************************/
 
+/**
+ *	S occupe de la creation des Teams
+ */
 class				TeamFactory
 {
 	private:
 
-		struct TeamCreationCtx
+		cSet						_settings;
+
+		struct						TeamCreationCtx
 		{
-			vpPart*					males			=	nullptr;
-			vpPart*					females			=	nullptr;
-			vpPart*					minoritary		=	nullptr;
-			vpPart*					majoritary		=	nullptr;
-			vpPart*					missingPool		=	nullptr;
-
-			size_t					minIdx			=	0;
-			size_t					majIdx			=	0;
-			size_t					missIdx			=	0;
-
-			int						missing			=	0;
+			vpPlayer*				males = nullptr;
+			vpPlayer*				females = nullptr;
+			vpPlayer*				minoritary = nullptr;
+			vpPlayer*				majoritary = nullptr;
+			vpPlayer*				missingPool = nullptr;
+			size_t					minIdx = 0;
+			size_t					majIdx = 0;
+			size_t					missIdx = 0;
+			int						missing = 0;
 		};
 
-		//	METHOD
-		bool						teamsShareMember(cpTeam a, cpTeam b);
-		bool						poolHasConflict(cpPool pool, cpTeam incoming);
-		
-		void						createTeamsUniplayer();
-		void						createMixedTeams();
-		void						createDoubleTeams();
-		
-		static void					generateMissingPool(const TeamCreationCtx& ctx);
-		static void					cloneForEqualGenders(const TeamCreationCtx& ctx);
-		static void					cloneForUnequalGenders(const TeamCreationCtx& ctx);
-
-		void						createStandardMixedTeams(TeamCreationCtx& ctx);
-		void						createMissingMixedTeams(TeamCreationCtx& ctx);
-		void						createUnigenreTeams(TeamCreationCtx& ctx);
-
-		bool						checkMissingPlayers(int& missing) const;
-
-		//	GETTER
 		[[nodiscard]]
-		vpPart						getAllMales() const;
+		vpPlayer					getAllMales(cvpPlayer players) const;
 		[[nodiscard]]
-		vpPart						getAllFemales() const;
+		vpPlayer					getAllFemales(cvpPlayer players) const;
 		[[nodiscard]]
-		vpPart						getMultiTeamsPlayers(vpPart participants) const;
+		vpPlayer					getMultiTeamsPlayers(vpPlayer players) const;
+		[[nodiscard]]
+		bool						checkMissingPlayers(cvpPlayer players, int& missing) const;
+
+		void						createTeamsUniplayer(cvpPlayer players, vuTeam& teams);
+		void						createDoubleTeams(cvpPlayer players, vuTeam& teams);
+		void						createMixedTeams(cvpPlayer players, vuTeam& teams);
+
+		void						generateMissingPool(TeamCreationCtx& ctx);
+		void						cloneForEqualGenders(TeamCreationCtx& ctx);
+		void						cloneForUnequalGenders(TeamCreationCtx& ctx);
+		void						createStandardMixedTeams(TeamCreationCtx& ctx, vuTeam& teams);
+		void						createMissingMixedTeams(TeamCreationCtx& ctx, vuTeam& teams);
+		void						createUnigenreTeams(TeamCreationCtx& ctx, vuTeam& teams);
 
 	public:
 
-		static vpTeam				createTeams(const vpPart& participants,cpSet settings);
+		explicit TeamFactory(cSet settings);
+		
+		TeamFactory(const TeamFactory&) = delete;
+		TeamFactory& operator=(const TeamFactory&) = delete;
 
+		TeamFactory(TeamFactory&&) = delete;
+		TeamFactory& operator=(TeamFactory&&) = delete;
+
+		~TeamFactory() = default;
+
+		[[nodiscard]]
+		vuTeam							generateTeams(cvpPlayer players);
+		
 };

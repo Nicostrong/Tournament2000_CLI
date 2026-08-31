@@ -133,7 +133,7 @@ bool                SettingsChecker::validateAll(const Settings& settings)
     return (isValid(tempSettings, dummyErrors));
 }
 
-bool                SettingsChecker::canAccommodate(cSet settings, cInt actualParticipants)
+bool                SettingsChecker::canAccommodate(cSet settings, cInt actualPlayers)
 {
-    return ((settings.getNbPlayers() - actualParticipants) <= NBPLAYERINMULTITEAMMAX);
+    return ((settings.getNbPlayers() - actualPlayers) <= NBPLAYERINMULTITEAMMAX);
 }
