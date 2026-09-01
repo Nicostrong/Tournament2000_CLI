@@ -54,6 +54,9 @@ void				MatchCLI::displayMenuUI(vpMatch matches, pPool pool)
 {
 	CLIUtils::handleTitle(TitleViewer::matches);
 	PrintUtils::handleMessages();
+
+	pool->sortTeams();
+
 	PoolViewer::displayFullTable(*pool);
 	MatchViewer::displayAllMatches(matches);
 	std::cout << "Selectionnez un matche en entrant son id (tapez 'r' pour revenir au menu precedent): ";
@@ -69,11 +72,12 @@ void				MatchCLI::menuMatch(pMatch match)
 	else
 		items.push_back({'1', "Enregistrer un score"});
 
+	items.push_back({'2', "Afficher la rencontre"});
 	items.push_back({'R', "Retour au menu precedent"});
 	CLIUtils::displayMenu(std::format("{}\tVs\t{}", match->getTeamA()->getName(), match->getTeamB()->getName()), items);
 }
 
-void				MatchCLI::submenuMatch(pMatch match)
+void				MatchCLI::submenuMatch(pMatch match, pPool pool)
 {
 	try
 	{
@@ -93,7 +97,7 @@ void				MatchCLI::submenuMatch(pMatch match)
 			
 			if (choice.has_value())
 			{
-				executeChoice(choice.value(), match);
+				executeChoice(choice.value(), match, pool);
 				return;
 			}
 		}
@@ -108,7 +112,7 @@ void				MatchCLI::submenuMatch(pMatch match)
 /*  EXECUTION	*/
 /****************/
 
-void				MatchCLI::executeChoice(cInt choice, pMatch match)
+void				MatchCLI::executeChoice(cInt choice, pMatch match, pPool pool)
 {
 	switch (choice)
 	{
@@ -119,6 +123,11 @@ void				MatchCLI::executeChoice(cInt choice, pMatch match)
 				handleSaveScore(match);
 			break;
 		
+		case 2:
+			PoolViewer::displayMatches(*pool);
+			CLIUtils::waitForEnter();
+			break;
+
 		default:
 			PrintUtils::addError("Choix non disponible.");
 			break;
@@ -191,7 +200,7 @@ void				MatchCLI::handleMenuMatch(vpMatch matches, pPool pool)
 			}
 
 			if (!matches.empty() && choice.has_value())
-				submenuMatch(matches[choice.value()]);
+				submenuMatch(matches[choice.value()], pool);
 		}
 	}
 	catch (const CLIInterrupted&)

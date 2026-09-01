@@ -10,10 +10,12 @@
 
 #include "../includes/class/Settings.hpp"
 
-#include "../includes/Color.hpp"
+#include "../includes/cli/CLIUtils.hpp"
 
 #include "../includes/viewer/TitleViewer.hpp"
 #include "../includes/viewer/SettingsViewer.hpp"
+
+#include "../includes/Color.hpp"
 
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
@@ -35,11 +37,10 @@
 /*	PUBLIC METHOD																					*/
 /****************************************************************************************************/
 
-
 void				SettingsViewer::print(cSet s)
 {
 	TitleViewer::printSeparator(Color::YELLOW);
-	std::cout << Color::YELLOW << "=                  SYNTHESE DES PARAMETRES                 =\n";
+	CLIUtils::displayTitle("SYNTHESE DES PARAMETRES");
 	TitleViewer::printSeparator(Color::YELLOW);
 
 	std::cout << Color::BLUE << "[ TOURNOI ]\n" << Color::RESET;

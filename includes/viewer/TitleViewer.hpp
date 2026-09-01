@@ -58,7 +58,7 @@ class				TitleViewer
 		static void					pools();
 		static void					matches();
 		static void					sixteenths();
-		static void					heighths();
+		static void					eighths();
 		static void					quarters();
 		static void					semis();
 		static void					thirdPlace();

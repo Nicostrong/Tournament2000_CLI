@@ -24,6 +24,8 @@ using				String			=	std::string;
 using				cString			=	const std::string&;
 using				vString			=	std::vector<std::string>;
 
+using				cBool			=	const bool;
+
 using				vtupleMsg		=	std::vector<std::tuple<std::string, bool>>;
 
 /****************************************************************************************************/
@@ -43,7 +45,11 @@ class				PrintUtils
 
 		static vtupleMsg			_messages;
 
-	public:
+		static void					printHeader();
+		static void					printMessageLines(cString msg, cBool isError);
+		static void					printMessage(const std::tuple<cString, cBool>& msgTuple);
+	
+		public:
 	
 		static void					clear();
 		static void					addSuccess(cString msg);

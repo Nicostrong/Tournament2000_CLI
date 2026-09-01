@@ -16,6 +16,8 @@
 # include <exception>
 # include <string_view>
 
+#include "../Constantes.hpp"
+
 /****************************************************************************************************/
 /*	CLASSES																							*/
 /****************************************************************************************************/
@@ -69,7 +71,6 @@ class				CLIUtils
 
 	private:
 
-		static void					displayTitle(StringV title);
 		
 	public:
 
@@ -86,6 +87,8 @@ class				CLIUtils
 
 		static int					askInt(StringV prompt, int min, int max, int defaultValue);
 		static int					askIntList(StringV prompt, cvInt allowedValues, int defaultValue);
+
+		static void					displayTitle(StringV title,  int len = LENTITLE);
 
 		// Menu
 		static void					displayMenu(StringV title, std::span<const MenuItem> items);

@@ -67,7 +67,8 @@ void				PlayerCLI::menuPlayer(const PlayerManager& manager, cSet settings)
 		items.push_back({'3', "Supprimer un participant"});
 	}
 
-	items.push_back({'4', "Importer des participants (CSV)"});
+	if (actualPlayers < maxPlayers)
+		items.push_back({'4', "Importer des participants (CSV)"});
 
 	if (!manager.isEmpty())
 	{
@@ -78,7 +79,7 @@ void				PlayerCLI::menuPlayer(const PlayerManager& manager, cSet settings)
 	if (showMenu7)
 		items.push_back({'7', "Lancer le tournoi"});
 
-	CLIUtils::displayMenu("PLAYERS", items);
+	CLIUtils::displayMenu("MENU PLAYERS", items);
 }
 
 /****************************************************************************************************/
@@ -96,7 +97,7 @@ bool				PlayerCLI::executeChoice(cInt choice, PlayerManager& manager, cSet setti
 	switch (choice)
 	{
 		case 1:
-			if (actualPlayers > maxPlayers)
+			if (actualPlayers >= maxPlayers)
 				PrintUtils::addError("Option invalide.");
 			else
 				handleAddPlayer(manager, settings);
@@ -117,7 +118,10 @@ bool				PlayerCLI::executeChoice(cInt choice, PlayerManager& manager, cSet setti
 			return (false);
 
 		case 4:
-			handleImport(manager);
+			if (actualPlayers >= maxPlayers)
+				PrintUtils::addError("Option invalide.");
+			else
+				handleImport(manager);
 			return (false);
 
 		case 5:
@@ -313,10 +317,11 @@ void				PlayerCLI::handleDisplay(const PlayerManager& manager)
 	if (choice == 1)
 	{
 		PlayerViewer::displayAll(manager.getPlayers());
+		CLIUtils::waitForEnter();
 		return;
 	}
 
-	cInt id = CLIUtils::askInt("ID du participant", 0, 999999, -1);
+	cInt id = CLIUtils::askInt("ID du participant", 0, static_cast<int>(manager.getPlayers().size()), -1);
 
 	pPlayer player = manager.getPlayerById(static_cast<size_t>(id));
 
@@ -327,6 +332,7 @@ void				PlayerCLI::handleDisplay(const PlayerManager& manager)
 	}
 
 	PlayerViewer::displayOne(*player);
+	CLIUtils::waitForEnter();
 }
 
 /****************************************************************************************************/

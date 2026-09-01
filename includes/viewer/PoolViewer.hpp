@@ -47,8 +47,9 @@ class				PoolViewer
 {
 	private:
 
-		static void					writeMatches(std::ostream& out, cPool pool, bool toFile);
-		static void					writeTable(std::ostream& out, cPool pool, bool toFile);
+		static void					writeMatches(std::ostream& out, cPool pool, cBool toFile);
+		static void					writeSimpleTable(std::ostream& out, cPool pool, cBool toFile);
+		static void					writeCompleteTable(std::ostream& out, cPool pool, cBool toFile);
 
 	public:
 
@@ -60,6 +61,5 @@ class				PoolViewer
 		static void					displayPoolsList(cTour tournament);
 		static void					displayTeamsInPool(cPool pool);
 		static void					displayMatchesInPool(cPool pool);
-		static void					displayPoolStandings(cPool pool);
 
 };

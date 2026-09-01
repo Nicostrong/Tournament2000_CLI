@@ -44,24 +44,6 @@ using				cBool			=	const bool;
 /*	PRIVATE METHOD																					*/
 /****************************************************************************************************/
 
-void				CLIUtils::displayTitle(StringV title)
-{
-	size_t lenTitle = title.size();
-	cInt nbChar = (60 - static_cast<int>(lenTitle) - 2) / 2;
-
-	std::cout << std::endl;
-
-	for (int i = 0; i < nbChar; ++i)
-		std::cout << "=";
-
-	std::cout << " " << title << " ";
-
-	for (int i = 0; i < nbChar; ++i)
-		std::cout << "=";
-	
-	std::cout << std::endl;
-}
-
 /****************************************************************************************************/
 /*	PUBLIC METHOD																					*/
 /****************************************************************************************************/
@@ -214,6 +196,13 @@ int					CLIUtils::askIntList(StringV prompt, cvInt allowedValues, cInt defaultVa
 		
 		std::cout << Color::RED << std::format("Cette valeur n'est pas dans la liste autorisee. Options : {}\n", optionsStr) << Color::RESET;
 	}
+}
+
+void				CLIUtils::displayTitle(StringV title, int len)
+{
+	cString titleCenter = std::format(" {} ", title);
+
+	std::cout << std::format("{:=^{}}", titleCenter, len) << std::endl;
 }
 
 void				CLIUtils::displayMenu(StringV title, std::span<const MenuItem> items)

@@ -66,9 +66,13 @@ void				PoolCLI::menuPool(pPool pool)
 {
 	std::vector<MenuItem> items =
 	{
-		{'1', "Afficher les matchs de la pool"},
-		{'2', "Afficher les matchs a venir"},
-		{'3', "Afficher la synthese de la pool"},
+		{'1', "displayTable"},
+		{'2', "displayFullTable"},
+		{'3', "displayMatches"},
+		{'4', "displayPoolDetails"},
+		{'5', "displayPoolList"},
+		{'6', "displayTeamsInPool"},
+		{'7', "displayMatchesInPool"},
 		{'R', "Retour au menu precedent"}
 	};
 
@@ -81,6 +85,14 @@ void				PoolCLI::submenuPool(pPool pool, Tournament& tournament)
 	{
 		while (true)
 		{
+			CLIUtils::handleTitle(TitleViewer::pools);
+			PrintUtils::handleMessages();
+
+			if(pool->getIsFinished())
+				PoolViewer::displayFullTable(*pool);
+			else
+				PoolViewer::displayMatches(*pool);
+
 			menuPool(pool);
 
 			cString input = CLIUtils::input();
@@ -117,15 +129,21 @@ void				PoolCLI::executeChoice(cInt choice, pPool pool, Tournament& tournament)
 	switch (choice)
 	{
 		case 1:
-			MatchCLI::handleMenuMatch(pool->getMatches(), pool);
-			break;
-
-		case 2:
-			//handleModifyTeamMember(team, tournament);
-			break;
-
-		case 3:
-			//handleDisqualifiedTeam(team);
+			//MatchCLI::handleMenuMatch(pool->getMatches(), pool);
+			PoolViewer::displayTable(*pool);
+			CLIUtils::waitForEnter();
+			PoolViewer::displayFullTable(*pool);
+			CLIUtils::waitForEnter();
+			PoolViewer::displayMatches(*pool);
+			CLIUtils::waitForEnter();
+			PoolViewer::displayPoolDetails(*pool);
+			CLIUtils::waitForEnter();
+			PoolViewer::displayPoolsList(tournament);
+			CLIUtils::waitForEnter();
+			PoolViewer::displayTeamsInPool(*pool);
+			CLIUtils::waitForEnter();
+			PoolViewer::displayMatchesInPool(*pool);
+			CLIUtils::waitForEnter();
 			break;
 
 		default:

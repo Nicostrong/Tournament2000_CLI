@@ -12,8 +12,12 @@
 #include "../includes/class/Team.hpp"
 #include "../includes/class/Player.hpp"
 
+#include "../includes/cli/CLIUtils.hpp"
+
 #include "../includes/viewer/TeamViewer.hpp"
 #include "../includes/viewer/TitleViewer.hpp"
+
+#include "../includes/utils/PrintUtils.hpp"
 
 #include "../includes/Color.hpp"
 
@@ -35,8 +39,7 @@
 
 void				TeamViewer::showTeamDescription(cTeam team)
 {
-	TitleViewer::printSeparator(Color::BG_MAGENTA, '*');
-	std::cout << "__________ TEAM DESCRIPTION __________" << std::endl;
+	CLIUtils::displayTitle("TEAM DESCRIPTION");
 	std::cout << "Team ID: " << team.getId() << std::endl;
 	std::cout << "Nom: " << team.getName() << std::endl;
 
@@ -55,28 +58,20 @@ void				TeamViewer::showTeamDescription(cTeam team)
 		if (i < team.getMembers().size() - 1)
 			std::cout << "\t&\t";
 	}
-
-	TitleViewer::printSeparator(Color::BG_MAGENTA, '*');
+	
+	std::cout << std::endl;
 }
 
 void				TeamViewer::showAllTeams(vpTeam teams)
 {
 	if (teams.empty())
-	{
-		std::cout << "Aucune equipe.\n";
-		return;
-	}
+		return (PrintUtils::addError("Aucune equipe."));
 
 	int wName = 4;
 
 	for (const Team* team : teams)
-	{
 		if (team)
-			wName = std::max(
-				wName,
-				static_cast<int>(team->getName().size())
-			);
-	}
+			wName = std::max(wName,	static_cast<int>(team->getName().size()));
 
 	constexpr int W_ID      = 2;
 	constexpr int W_PTS     = 3;
@@ -98,11 +93,12 @@ void				TeamViewer::showAllTeams(vpTeam teams)
 		W_MIXED + 3 +
 		W_ELIM + 3 +
 		W_DISQ + 3 +
-		W_MULTI;
+		W_MULTI + 2;
 
-	std::cout << std::string(separatorSize, '-') << '\n';
+	CLIUtils::displayTitle("Tableau des teams", separatorSize + 2);
+	std::cout << "+" << std::string(separatorSize, '-') << "+\n";
 	std::cout << std::format(
-		"{:>{}} | {:<{}} | {:>{}} | {:>{}} | {:>{}} | {:>{}} | {:<{}} | {:<{}} | {:<{}} | {:<{}}\n",
+		"| {:>{}} | {:<{}} | {:>{}} | {:>{}} | {:>{}} | {:>{}} | {:<{}} | {:<{}} | {:<{}} | {:<{}} |\n",
 		"ID", W_ID,
 		"Equipe", wName,
 		"Pts", W_PTS,
@@ -114,7 +110,7 @@ void				TeamViewer::showAllTeams(vpTeam teams)
 		"Dis.", W_DISQ,
 		"Multi", W_MULTI
 	);
-	std::cout << std::string(separatorSize, '-') << '\n';
+	std::cout << "+" << std::string(separatorSize, '-') << "+\n";
 
 	for (const Team* team : teams)
 	{
@@ -122,7 +118,7 @@ void				TeamViewer::showAllTeams(vpTeam teams)
 			continue;
 
 		std::cout << std::format(
-			"{:>{}} | {:<{}} | {:>{}} | {:>{}} | {:>{}} | {:>{}} | {:<{}} | {:<{}} | {:<{}} | {:<{}}\n",
+			"| {:>{}} | {:<{}} | {:>{}} | {:>{}} | {:>{}} | {:>{}} | {:<{}} | {:<{}} | {:<{}} | {:<{}} |\n",
 			team->getId(), W_ID,
 			team->getName(), wName,
 			team->getPoint(), W_PTS,
@@ -136,5 +132,5 @@ void				TeamViewer::showAllTeams(vpTeam teams)
 		);
 	}
 
-	std::cout << std::string(separatorSize, '-') << '\n';
+	std::cout << "+" << std::string(separatorSize, '-') << "+\n";
 }

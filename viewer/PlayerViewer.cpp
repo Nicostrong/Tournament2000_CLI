@@ -15,8 +15,12 @@
 
 #include "../includes/utils/PrintUtils.hpp"
 
+#include "../includes/cli/CLIUtils.hpp"
 #include "../includes/cli/PlayerCLI.hpp"
+
 #include "../includes/viewer/PlayerViewer.hpp"
+
+#include "../includes/Constantes.hpp"
 
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
@@ -40,27 +44,28 @@
 
 void				PlayerViewer::displayOne(cPlayer p)
 {
-	std::cout << "------------------------------------------------\n";
-	std::cout << "|  Player\t" << p.getId() << "\n";
-	std::cout << "------------------------------------------------\n";
-	std::cout << "|  Pseudo       : " << p.getPseudo() << std::endl;
-	std::cout << "|  Nom          : " << p.getLastName() << std::endl;
-	std::cout << "|  Prenom       : " << p.getFirstName() << std::endl;
-	std::cout << "|  Genre        : " << p.getGenderStr() << std::endl;
-	std::cout << "|  Elimine      : " << (p.getIsEliminated() ? "Oui" : "Non") << std::endl;
-	std::cout << "|  Multi-equipe : " << (p.getIsMultiTeamPlayer() ? "Oui" : "Non") << std::endl;
-	std::cout << "------------------------------------------------\n";
+	const int len = std::max({MAXLENPSEUDO, MAXLENFIRSTNAME, MAXLENLASTNAME});
+	cString title = std::format("Player id\t{}", p.getId());
+
+	std::cout << "+--------------------------------------+\n";
+	std::cout << "|" << std::format("{:^38}", title) << "|\n";
+	std::cout << "+--------------------------------------+\n";
+	std::cout << "|  Pseudo       : " << std::format("{:>{}}",p.getPseudo(), len) << " |\n";
+	std::cout << "|  Nom          : " << std::format("{:>{}}",p.getLastName(), len) << " |\n";
+	std::cout << "|  Prenom       : " << std::format("{:>{}}",p.getFirstName(), len) << " |\n";
+	std::cout << "|  Genre        : " << std::format("{:>{}}",p.getGenderStr(), len) << " |\n";
+	std::cout << "|  Elimine      : " << std::format("{:^{}}", (p.getIsEliminated() ? "Oui" : "Non"), len) << " |\n";
+	std::cout << "|  Multi-equipe : " << std::format("{:^{}}", (p.getIsMultiTeamPlayer() ? "Oui" : "Non"), len) << " |\n";
+	std::cout << "+--------------------------------------+\n";
 }
 
 void				PlayerViewer::displayAll(cvpPlayer participants)
 {
 	if (participants.empty())
-	{
-		PrintUtils::addError("Aucun participant enregistre.");
-		return;
-	}
+		return (PrintUtils::addError("Aucun participant enregistre."));
 
-	std::cout << "\n=============== LISTE DES PARTICIPANTS  (" << participants.size() << ") ===============\n";
+	
+	CLIUtils::displayTitle(std::format("LISTE DES PARTICIPANTS ({})", participants.size()));
 
 	size_t wId = 2;
 	size_t wPseudo = 6;

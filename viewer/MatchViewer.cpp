@@ -53,25 +53,25 @@ void				MatchViewer::display(cMatch match)
 
 void				MatchViewer::displayAllMatches(cvpMatch matches)
 {
-	std::cout << std::string(108, '-') << '\n';
-	std::cout << std::format(" {:>2} | {:<80} | {:>4} | {:>4} | {:<4}\n",
+	std::cout << "+" << std::string(78, '-') << "+\n";
+	std::cout << std::format("| {:>2} | {:<44} | {:>4} | {:>4} | {:<4} |\n",
 		"ID",
 		"Rencontre",
 		"ST 1",
 		"ST 2",
 		"Fini"
 	);
-	std::cout << std::string(108, '-') << '\n';
+	std::cout << "+" << std::string(78, '-') << "+\n";
 
 	int i = 0;
 	for (cpMatch m : matches)
 	{
-		std::string encounter = std::format("{} vs {}", m->getTeamA()->getName(), m->getTeamB()->getName());
+		std::string encounter = std::format("{:<20.20} vs {:>20.20}", m->getTeamA()->getName(), m->getTeamB()->getName());
 		std::string scoreA = m->isFinished() ? std::to_string(m->getScoreA()) : "-";
 		std::string scoreB = m->isFinished() ? std::to_string(m->getScoreB()) : "-";
 		std::string status = m->isFinished() ? "Oui" : "Non";
 		
-		std::cout << std::format(" {:>2} | {:<80} | {:>4} | {:>4} | {:<4}\n", i++, encounter, scoreA, scoreB, status);
+		std::cout << std::format("| {:>2} | {:^44.44} | {:>4} | {:>4} | {:<4} |\n", i++, encounter, scoreA, scoreB, status);
 	}
-	std::cout << std::string(108, '-') << '\n';
+	std::cout << "+" << std::string(72, '-') << "+\n";
 }

@@ -16,6 +16,8 @@
 #include "../includes/class/Settings.hpp"
 #include "../includes/class/Tournament.hpp"
 
+#include "../includes/cli/CLIUtils.hpp"
+
 #include "../includes/viewer/PoolViewer.hpp"
 #include "../includes/viewer/TeamViewer.hpp"
 
@@ -46,11 +48,7 @@ void				PoolViewer::writeMatches(std::ostream& out, cPool pool, cBool toFile)
 	cvpMatch matches = pool.getMatches();
 
 	if (matches.empty())
-	{
-		PrintUtils::addError("Aucun match enregistre.");
-		return;
-	}
-
+		return (PrintUtils::addError("Aucun match enregistre."));
 	int i = 1;
 
 	for (cpMatch m : matches)
@@ -81,7 +79,7 @@ void				PoolViewer::writeMatches(std::ostream& out, cPool pool, cBool toFile)
 			if (!toFile)
 				out << "\033[1;33m";
 
-			out << "  [ À jouer ]";
+			out << "  [ A jouer ]";
 
 			if (!toFile)
 				out << "\033[0m";
@@ -92,23 +90,76 @@ void				PoolViewer::writeMatches(std::ostream& out, cPool pool, cBool toFile)
 }
 
 /**
- * Ecrit le tableau de classement de la poule dans le flux out.
- * Colonnes : Rang | Equipe | Pts | Diff
- * Si toFile = true : pas de codes couleur ANSI.
+ * Ecrit le tableau de classement SIMPLIFIÉ de la poule dans le flux out.
+ * Colonnes : Rang | Equipe | Pts
+ * Les 2 premières équipes sont mises en évidence.
  */
-void				PoolViewer::writeTable(std::ostream& out, cPool pool, cBool toFile)
+void				PoolViewer::writeSimpleTable(std::ostream& out, cPool pool, cBool toFile)
 {
 	cvpTeam teams = pool.getTeams();
 
 	if (teams.empty())
+		return (PrintUtils::addError("Aucune equipe dans cette poule."));
+
+	constexpr int TABLE_WIDTH = 45;
+	constexpr int W_RANK  = 3;
+	constexpr int W_PTS   = 4;
+	
+	constexpr int FIXED_CHARS = 1 + W_RANK + W_PTS + (2 * 3) + 1;
+	constexpr int W_TEAM = TABLE_WIDTH - FIXED_CHARS;
+
+	std::string separator = "+" + std::string(TABLE_WIDTH, '-') + "+";
+
+	out << separator << "\n";
+	out << std::format("| {:^{}} | {:<{}} | {:^{}} |\n",
+		"#", W_RANK,
+		"Equipe", W_TEAM,
+		"Pts", W_PTS);
+	out << separator << "\n";
+
+	for (size_t i = 0; i < teams.size(); ++i)
 	{
-		PrintUtils::addError("Aucune equipe dans cette poule.");
-		return;
+		cpTeam t = teams[i];
+
+		if (!t)
+			continue;
+
+		cBool isTop2 = (i < 2);
+		std::string teamName = t->getName();
+
+		if (teamName.length() > static_cast<size_t>(W_TEAM))
+			teamName = teamName.substr(0, W_TEAM - 3) + "...";
+
+		if (!toFile && isTop2)
+			out << "\033[1;32m";
+
+		out << std::format("| {:^{}} | {:<{}} | {:^{}} |\n",
+			i + 1, W_RANK,
+			teamName, W_TEAM,
+			t->getPoint(), W_PTS);
+
+		if (!toFile && isTop2)
+			out << "\033[0m";
 	}
 
+	out << separator << "\n";
+}
+
+/**
+ * Ecrit le tableau de classement COMPLET de la poule dans le flux out.
+ * Colonnes : Rang | Equipe | Pts | P+ | P- | Diff
+ * Les 2 premieres equipes sont mises en evidence.
+ */
+void				PoolViewer::writeCompleteTable(std::ostream& out, cPool pool, cBool toFile)
+{
+	cvpTeam teams = pool.getTeams();
+
+	if (teams.empty())
+		return (PrintUtils::addError("Aucune equipe dans cette poule."));
+
 	constexpr int TABLE_WIDTH = 80;
-	constexpr int W_RANK  = 4;
-	constexpr int W_PTS   = 5;
+	constexpr int W_RANK  = 3;
+	constexpr int W_PTS   = 4;
 	constexpr int W_PLUS  = 5;
 	constexpr int W_MINUS = 5;
 	constexpr int W_DIFF  = 6;
@@ -116,7 +167,7 @@ void				PoolViewer::writeTable(std::ostream& out, cPool pool, cBool toFile)
 	constexpr int FIXED_CHARS = 1 + W_RANK + W_PTS + W_PLUS + W_MINUS + W_DIFF + (5 * 3) + 1;
 	constexpr int W_TEAM = TABLE_WIDTH - FIXED_CHARS;
 
-	std::string separator = "+" + std::string(TABLE_WIDTH - 2, '-') + "+";
+	std::string separator = "+" + std::string(TABLE_WIDTH, '-') + "+";
 
 	out << separator << "\n";
 	out << std::format("| {:^{}} | {:<{}} | {:^{}} | {:^{}} | {:^{}} | {:^{}} |\n",
@@ -167,27 +218,21 @@ void				PoolViewer::writeTable(std::ostream& out, cPool pool, cBool toFile)
 /****************************************************************************************************/
 
 /**
- * Affiche la classement dans le terminal
+ * Affiche le classement SIMPLIFIE dans le terminal
  */
 void				PoolViewer::displayTable(cPool pool)
 {
-	std::cout << "\n=== CLASSEMENT " << pool.getName() << " ===" << std::endl;
-	std::cout << std::left << std::setw(15) << "Equipe" << " | " << "Points" << std::endl;
-	std::cout << "--------------------------" << std::endl;
-
-	for (const auto& team : pool.getTeams())
-		std::cout << std::left << std::setw(15) << team->getName() << " | " << team->getPoint() << " pts" << std::endl;
-
+	CLIUtils::displayTitle(std::format("CLASSEMENT {}", pool.getName()));
+	writeSimpleTable(std::cout, pool, false);
 }
 
 /**
- * Affiche le classement enrichi avec points et difference de score.
- * Les 2 premiers qualifies sont mis en vert.
+ * Affiche le classement COMPLET enrichi avec points et difference de score dans le terminal.
  */
 void				PoolViewer::displayFullTable(cPool pool)
 {
-	std::cout << "\n=== CLASSEMENT " << pool.getName() << " ===\n";
-	writeTable(std::cout, pool, false);
+	CLIUtils::displayTitle(std::format("CLASSEMENT DETAILLE {}", pool.getName()));
+	writeCompleteTable(std::cout, pool, false);
 }
 
 /**
@@ -195,8 +240,7 @@ void				PoolViewer::displayFullTable(cPool pool)
  */
 void				PoolViewer::displayMatches(cPool pool)
 {
-	std::cout << "\n=== MATCHS " << pool.getName() << " ===" << std::endl;
-
+	CLIUtils::displayTitle(std::format("MATCHS {}", pool.getName()));
 	writeMatches(std::cout, pool, false);
 }
 
@@ -213,10 +257,13 @@ void				PoolViewer::displayPoolDetails(cPool pool)
 		TeamViewer::showTeamDescription(*t);
 }
 
+/**
+ * Affiche la liste des poules du tournoi
+ */
 void				PoolViewer::displayPoolsList(cTour tournament)
 {
 	std::cout << std::string(44, '-') << '\n';
-	std::cout << std::format("| {:<4} | {:<20} | {:<10} |\n", "ID", "Nom", "Terminée");
+	std::cout << std::format("| {:<4} | {:<20} | {:<10} |\n", "ID", "Nom", "Terminee");
 	std::cout << std::string(44, '-') << '\n';
 
 	int i = 1;
@@ -230,18 +277,24 @@ void				PoolViewer::displayPoolsList(cTour tournament)
 	std::cout << std::string(44, '-') << "\n\n";
 }
 
+/**
+ * Affiche les equipes d'une poule
+ */
 void				PoolViewer::displayTeamsInPool(cPool pool)
 {
-	std::cout << std::format("\n=== EQUIPES DE LA POOL : {} ===\n", pool.getName());
+	CLIUtils::displayTitle(std::format("EQUIPES DE LA POOL : {}", pool.getName()));
 
 	for (const auto& team : pool.getTeams())
 		std::cout << std::format("- {}\n", team->getName());
 }
 
+/**
+ * Affiche l'etat d'avancement des rencontres dans une poule
+ */
 void				PoolViewer::displayMatchesInPool(cPool pool)
 {
-	std::cout << std::format("\n=== MATCHS DE LA POOL : {} ===\n", pool.getName());
-	std::cout << std::format("| {:<35} | {:<10} | {:<10} |\n", "Rencontre", "Résultat", "Terminé");
+	CLIUtils::displayTitle(std::format("MATCHS DE LA POOL : {}", pool.getName()));
+	std::cout << std::format("| {:<35} | {:<10} | {:<10} |\n", "Rencontre", "Resultat", "Termine");
 	std::cout << std::string(65, '-') << '\n';
 
 	for (const auto& match : pool.getMatches())
@@ -254,26 +307,18 @@ void				PoolViewer::displayMatchesInPool(cPool pool)
 	}
 }
 
-void				PoolViewer::displayPoolStandings(cPool pool)
-{
-	std::cout << std::format("\n=== CLASSEMENT DE LA POOL : {} ===\n", pool.getName());
-	std::cout << std::format("| {:<3} | {:<20} | {:<3} | {:<3} | {:<3} | {:<5} | {:<10} |\n",
-	"Pos", "Equipe", "Pts", "BP", "BC", "Diff", "Qualifié");
-	std::cout << std::string(72, '-') << '\n';
-
-	/*int position = 1;
-
-	for (const auto& stat : poolgetStandings())
-	{
-		std::string qualified = stat.isQualified() ? "Oui" : "Non";
-		
-		std::cout << std::format("| {:<3} | {:<20} | {:<3} | {:<3} | {:<3} | {:<5} | {:<10} |\n", 
-								position++, 
-								stat.getTeam().getName(), 
-								stat.getPoints(), 
-								stat.getGoalsScored(), 
-								stat.getGoalsConceded(), 
-								stat.getGoalDifference(), 
-								qualified);
-	}*/
-}
+/**
+ *	TO DO
+ *	
+ *	liste des methodes:
+ *	
+ *	displayTable			=>	affiiche tableau simple (POOL)
+ *	displayFullTable		=>	affiiche tableau complet (POOL)
+ *	displayMatches			=>	affiiche synthese des matches [a jouer || resultat] (MATCH)
+ *	displayPoolDetails		=>	affiiche la composition des teams (TEAM)
+ *	displayPoolsList		=>	affiiche la liste des pool + etat (POOL)
+ *	displayTeamsInPool		=>	affiiche liste des teams d une pool (TEAM)
+ *	displayMatchesInPool	=>	affiiche tablean du 3 (MATCH)
+ *
+ *	faire le dispatching dans les differentes classes
+ */

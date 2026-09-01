@@ -17,6 +17,8 @@
 
 #include "../includes/viewer/PhaseViewer.hpp"
 
+#include "../includes/utils/PrintUtils.hpp"
+
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
 /****************************************************************************************************/
@@ -155,10 +157,7 @@ void				PhaseViewer::displayPhase(cPhase phase)
 	std::cout << "╚══════════════════════════════════════════════════╝\n";
 
 	if (matches.empty())
-	{
-		std::cout << "  Aucun match enregistré dans cette phase.\n";
-		return;
-	}
+		return (PrintUtils::addError("Aucun match enregistre dans cette phase"));
 
 	int encounterNum = 1;
 
@@ -175,18 +174,15 @@ void				PhaseViewer::displayPhase(cPhase phase)
 void				PhaseViewer::displayResults(cPhase phase)
 {
 	if (!phase.isFinished())
-	{
-		std::cout << "\033[1;33m  [!] Phase non terminée — résultats indisponibles.\033[0m\n";
-		return;
-	}
+		return (PrintUtils::addError("Phase non terminee — resultats indisponibles."));
 
 	vpTeam winners	= phase.getWinners();
 	vpTeam losers	= phase.getLosers();
 
-	std::cout << "\n  ── Résultats de " << phase.getName() << " ──\n";
+	std::cout << "\n  ── Resultats de " << phase.getName() << " ──\n";
 	std::cout << "  " << String(40, '-') << "\n";
 
-	std::cout << "  Qualifiés :\n";
+	std::cout << "  Qualifies :\n";
 
 	for (size_t i = 0; i < winners.size(); ++i)
 	{
@@ -198,7 +194,7 @@ void				PhaseViewer::displayResults(cPhase phase)
 
 	if (!losers.empty())
 	{
-		std::cout << "  Éliminés :\n";
+		std::cout << "  Elimines :\n";
 
 		for (cpTeam t : losers)
 		{

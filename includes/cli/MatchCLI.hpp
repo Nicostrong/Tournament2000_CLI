@@ -41,9 +41,9 @@ class				MatchCLI
 
 		static void					displayMenuUI(vpMatch matches, pPool pool);
 		static void					menuMatch(pMatch match);
-		static void					submenuMatch(pMatch match);
+		static void					submenuMatch(pMatch match, pPool pool);
 
-		static void					executeChoice(int choice, pMatch match);
+		static void					executeChoice(int choice, pMatch match, pPool pool);
 
 		static void					handleSaveScore(pMatch match);
 		static void					handleModifyScore(pMatch match);
