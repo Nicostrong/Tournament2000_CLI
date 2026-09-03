@@ -16,6 +16,7 @@
 /****************************************************************************************************/
 
 class				Team;
+class				Pool;
 
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
@@ -37,6 +38,12 @@ using				cpTeam			=	const Team*;
 using				vpTeam			=	std::vector<Team*>;
 using				cvpTeam			=	const std::vector<Team*>&;
 
+using				pPool			=	Pool*;
+using				cPool			=	const Pool&;
+using				cpPool			=	const Pool*;
+using				vpPool			=	std::vector<Pool*>;
+using				cvpPool			=	const std::vector<Pool*>&;
+
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
 /****************************************************************************************************/
@@ -51,6 +58,8 @@ class				TeamViewer
 
 		static void					showTeamDescription(cTeam team);
 		static void					showAllTeams(vpTeam teams);
+		static void					displayTeamsInPool(cPool pool);
+		static void					displayPoolDetails(cPool pool);
 
 };
 

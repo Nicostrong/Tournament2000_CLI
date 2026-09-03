@@ -16,6 +16,7 @@
 #include "../includes/class/Tournament.hpp"
 
 #include "../includes/utils/PrintUtils.hpp"
+
 #include "../includes/viewer/PoolViewer.hpp"
 #include "../includes/viewer/MatchViewer.hpp"
 #include "../includes/viewer/TitleViewer.hpp"
@@ -124,7 +125,7 @@ void				MatchCLI::executeChoice(cInt choice, pMatch match, pPool pool)
 			break;
 		
 		case 2:
-			PoolViewer::displayMatches(*pool);
+			MatchViewer::displayMatches(*pool);
 			CLIUtils::waitForEnter();
 			break;
 

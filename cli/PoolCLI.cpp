@@ -19,7 +19,9 @@
 #include "../includes/class/Tournament.hpp"
 
 #include "../includes/utils/PrintUtils.hpp"
+
 #include "../includes/viewer/PoolViewer.hpp"
+#include "../includes/viewer/TeamViewer.hpp"
 #include "../includes/viewer/MatchViewer.hpp"
 #include "../includes/viewer/TitleViewer.hpp"
 
@@ -91,7 +93,7 @@ void				PoolCLI::submenuPool(pPool pool, Tournament& tournament)
 			if(pool->getIsFinished())
 				PoolViewer::displayFullTable(*pool);
 			else
-				PoolViewer::displayMatches(*pool);
+				MatchViewer::displayMatches(*pool);
 
 			menuPool(pool);
 
@@ -134,15 +136,15 @@ void				PoolCLI::executeChoice(cInt choice, pPool pool, Tournament& tournament)
 			CLIUtils::waitForEnter();
 			PoolViewer::displayFullTable(*pool);
 			CLIUtils::waitForEnter();
-			PoolViewer::displayMatches(*pool);
+			MatchViewer::displayMatches(*pool);
 			CLIUtils::waitForEnter();
-			PoolViewer::displayPoolDetails(*pool);
+			TeamViewer::displayPoolDetails(*pool);
 			CLIUtils::waitForEnter();
 			PoolViewer::displayPoolsList(tournament);
 			CLIUtils::waitForEnter();
-			PoolViewer::displayTeamsInPool(*pool);
+			TeamViewer::displayTeamsInPool(*pool);
 			CLIUtils::waitForEnter();
-			PoolViewer::displayMatchesInPool(*pool);
+			MatchViewer::displayMatchesInPool(*pool);
 			CLIUtils::waitForEnter();
 			break;
 
@@ -196,10 +198,10 @@ void				PoolCLI::manageSinglePool(cPool pool)
 				PoolViewer::displayFullTable(pool);
 				break;
 			case 2:
-				PoolViewer::displayMatches(pool);
+				MatchViewer::displayMatches(pool);
 				break;
 			case 3:
-				PoolViewer::displayPoolDetails(pool);
+				TeamViewer::displayPoolDetails(pool);
 				break;
 			case 4:
 				break;

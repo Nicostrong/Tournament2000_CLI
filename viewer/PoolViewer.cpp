@@ -40,56 +40,6 @@
 /****************************************************************************************************/
 
 /**
- * Ecrit la liste des matchs de la poule dans le flux out.
- * Si toFile = true : pas de codes couleur ANSI.
- */
-void				PoolViewer::writeMatches(std::ostream& out, cPool pool, cBool toFile)
-{
-	cvpMatch matches = pool.getMatches();
-
-	if (matches.empty())
-		return (PrintUtils::addError("Aucun match enregistre."));
-	int i = 1;
-
-	for (cpMatch m : matches)
-	{
-		if (!m)
-			continue;
-
-		out << "  " << std::setw(2) << i++ << ". ";
-		out << m->getTeamA()->getName() << " vs " << m->getTeamB()->getName();
-
-		if (m->isFinished())
-		{
-			out << "  [ " << m->getScoreA() << " - " << m->getScoreB() << " ]";
-
-			if (m->getWinner())
-			{
-				if (!toFile)
-					out << "\033[1;32m";
-
-				out << "  ->  Vainqueur : " << m->getWinner()->getName();
-
-				if (!toFile)
-					out << "\033[0m";
-			}
-		}
-		else
-		{
-			if (!toFile)
-				out << "\033[1;33m";
-
-			out << "  [ A jouer ]";
-
-			if (!toFile)
-				out << "\033[0m";
-		}
-
-		out << "\n";
-	}
-}
-
-/**
  * Ecrit le tableau de classement SIMPLIFIÉ de la poule dans le flux out.
  * Colonnes : Rang | Equipe | Pts
  * Les 2 premières équipes sont mises en évidence.
@@ -236,28 +186,6 @@ void				PoolViewer::displayFullTable(cPool pool)
 }
 
 /**
- * Affiche liste des matchs
- */
-void				PoolViewer::displayMatches(cPool pool)
-{
-	CLIUtils::displayTitle(std::format("MATCHS {}", pool.getName()));
-	writeMatches(std::cout, pool, false);
-}
-
-/**
- * Affiche la composition detaillee des equipes
- */
-void				PoolViewer::displayPoolDetails(cPool pool)
-{
-	std::cout << "\n============================================" << std::endl;
-	std::cout << "   COMPOSITION DES EQUIPES - " << pool.getName() << std::endl;
-	std::cout << "============================================" << std::endl;
-
-	for (cpTeam t : pool.getTeams())
-		TeamViewer::showTeamDescription(*t);
-}
-
-/**
  * Affiche la liste des poules du tournoi
  */
 void				PoolViewer::displayPoolsList(cTour tournament)
@@ -278,47 +206,14 @@ void				PoolViewer::displayPoolsList(cTour tournament)
 }
 
 /**
- * Affiche les equipes d'une poule
- */
-void				PoolViewer::displayTeamsInPool(cPool pool)
-{
-	CLIUtils::displayTitle(std::format("EQUIPES DE LA POOL : {}", pool.getName()));
-
-	for (const auto& team : pool.getTeams())
-		std::cout << std::format("- {}\n", team->getName());
-}
-
-/**
- * Affiche l'etat d'avancement des rencontres dans une poule
- */
-void				PoolViewer::displayMatchesInPool(cPool pool)
-{
-	CLIUtils::displayTitle(std::format("MATCHS DE LA POOL : {}", pool.getName()));
-	std::cout << std::format("| {:<35} | {:<10} | {:<10} |\n", "Rencontre", "Resultat", "Termine");
-	std::cout << std::string(65, '-') << '\n';
-
-	for (const auto& match : pool.getMatches())
-	{
-		std::string encounter = std::format("{} vs {}", match->getTeamA()->getName(), match->getTeamB()->getName());
-		std::string score = match->isFinished() ? std::format("{} - {}", match->getScoreA(), match->getScoreB()) : "- : -";
-		std::string status = match->isFinished() ? "Oui" : "Non";
-		
-		std::cout << std::format("| {:<35} | {:<10} | {:<10} |\n", encounter, score, status);
-	}
-}
-
-/**
  *	TO DO
  *	
  *	liste des methodes:
  *	
- *	displayTable			=>	affiiche tableau simple (POOL)
- *	displayFullTable		=>	affiiche tableau complet (POOL)
- *	displayMatches			=>	affiiche synthese des matches [a jouer || resultat] (MATCH)
- *	displayPoolDetails		=>	affiiche la composition des teams (TEAM)
- *	displayPoolsList		=>	affiiche la liste des pool + etat (POOL)
- *	displayTeamsInPool		=>	affiiche liste des teams d une pool (TEAM)
- *	displayMatchesInPool	=>	affiiche tablean du 3 (MATCH)
+ *	displayTable			=>	affiche tableau simple (POOL)
+ *	displayFullTable		=>	affiche tableau complet (POOL)
+ *	displayMatches			=>	affiche synthese des matches [a jouer || resultat] (MATCH)
+ *	displayPoolsList		=>	affiche la liste des pool + etat (POOL)
  *
  *	faire le dispatching dans les differentes classes
  */

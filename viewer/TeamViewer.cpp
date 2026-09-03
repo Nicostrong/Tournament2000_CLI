@@ -9,6 +9,7 @@
 #include <format>
 #include <iostream>
 
+#include "../includes/class/Pool.hpp"
 #include "../includes/class/Team.hpp"
 #include "../includes/class/Player.hpp"
 
@@ -16,6 +17,8 @@
 
 #include "../includes/viewer/TeamViewer.hpp"
 #include "../includes/viewer/TitleViewer.hpp"
+
+#include "../includes/cli/CLIUtils.hpp"
 
 #include "../includes/utils/PrintUtils.hpp"
 
@@ -133,4 +136,28 @@ void				TeamViewer::showAllTeams(vpTeam teams)
 	}
 
 	std::cout << "+" << std::string(separatorSize, '-') << "+\n";
+}
+
+/**
+ * Affiche les equipes d'une poule
+ */
+void				TeamViewer::displayTeamsInPool(cPool pool)
+{
+	CLIUtils::displayTitle(std::format("EQUIPES DE LA POOL : {}", pool.getName()));
+
+	for (const auto& team : pool.getTeams())
+		std::cout << std::format("- {}\n", team->getName());
+}
+
+/**
+ * Affiche la composition detaillee des equipes
+ */
+void				TeamViewer::displayPoolDetails(cPool pool)
+{
+	std::cout << "\n============================================" << std::endl;
+	std::cout << "   COMPOSITION DES EQUIPES - " << pool.getName() << std::endl;
+	std::cout << "============================================" << std::endl;
+
+	for (cpTeam t : pool.getTeams())
+		TeamViewer::showTeamDescription(*t);
 }
