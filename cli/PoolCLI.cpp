@@ -59,7 +59,7 @@ void				PoolCLI::displayMenuUI(cTour tournament)
 {
 	CLIUtils::handleTitle(TitleViewer::pools);
 	PrintUtils::handleMessages();
-	PoolViewer::displayPoolsList(tournament);
+	PoolViewer::showPoolsListWithStatus(tournament);
 	std::cout << "Selectionnez une pool en entrant son id (tapez 'r' pour revenir au menu precedent): ";
 	CLIUtils::checkInterruption();
 }
@@ -91,9 +91,9 @@ void				PoolCLI::submenuPool(pPool pool, Tournament& tournament)
 			PrintUtils::handleMessages();
 
 			if(pool->getIsFinished())
-				PoolViewer::displayFullTable(*pool);
+				PoolViewer::showDetailsPoolStanding(*pool);
 			else
-				MatchViewer::displayMatches(*pool);
+				MatchViewer::showAllMatchesWithStatusInPool(*pool);
 
 			menuPool(pool);
 
@@ -132,19 +132,19 @@ void				PoolCLI::executeChoice(cInt choice, pPool pool, Tournament& tournament)
 	{
 		case 1:
 			//MatchCLI::handleMenuMatch(pool->getMatches(), pool);
-			PoolViewer::displayTable(*pool);
+			PoolViewer::showPoolStanding(*pool);
 			CLIUtils::waitForEnter();
-			PoolViewer::displayFullTable(*pool);
+			PoolViewer::showDetailsPoolStanding(*pool);
 			CLIUtils::waitForEnter();
-			MatchViewer::displayMatches(*pool);
+			MatchViewer::showAllMatchesWithStatusInPool(*pool);
 			CLIUtils::waitForEnter();
-			TeamViewer::displayPoolDetails(*pool);
+			TeamViewer::showAllTemasCardInPool(*pool);
 			CLIUtils::waitForEnter();
-			PoolViewer::displayPoolsList(tournament);
+			PoolViewer::showPoolsListWithStatus(tournament);
 			CLIUtils::waitForEnter();
-			TeamViewer::displayTeamsInPool(*pool);
+			TeamViewer::showListOfTeamsInPool(*pool);
 			CLIUtils::waitForEnter();
-			MatchViewer::displayMatchesInPool(*pool);
+			MatchViewer::showDetailsTableOfAllMatchesInPool(*pool);
 			CLIUtils::waitForEnter();
 			break;
 
@@ -195,13 +195,13 @@ void				PoolCLI::manageSinglePool(cPool pool)
 		switch (choice)
 		{
 			case 1:
-				PoolViewer::displayFullTable(pool);
+				PoolViewer::showDetailsPoolStanding(pool);
 				break;
 			case 2:
-				MatchViewer::displayMatches(pool);
+				MatchViewer::showAllMatchesWithStatusInPool(pool);
 				break;
 			case 3:
-				TeamViewer::displayPoolDetails(pool);
+				TeamViewer::showAllTemasCardInPool(pool);
 				break;
 			case 4:
 				break;

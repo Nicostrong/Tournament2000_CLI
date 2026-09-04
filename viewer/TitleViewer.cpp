@@ -10,9 +10,9 @@
 #include <iostream>
 
 #include "../includes/viewer/TitleViewer.hpp"
+#include "../includes/utils/PrintUtils.hpp"
 
 #include "../includes/Color.hpp"
-#include "../includes/Constantes.hpp"
 
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
@@ -91,7 +91,7 @@ void				TitleViewer::setting()
 {
 	const char* color = getRandomColor();
 
-    printSeparator(color);
+    PrintUtils::printSeparator(color);
     std::cout << color << (R"(
               _____       _   _    _
              / ____|     | |_| |_ (_)       ____
@@ -103,7 +103,7 @@ void				TitleViewer::setting()
 
 )") << Color::RESET << std::endl;
 
-    printSeparator(color);
+    PrintUtils::printSeparator(color);
 }
 
 /**
@@ -113,7 +113,7 @@ void				TitleViewer::players()
 {
 	const char* color = getRandomColor();
 
-	printSeparator(color);
+	PrintUtils::printSeparator(color);
 	std::cout << color << R"(
              _____  _
             |  __ \| |
@@ -125,7 +125,7 @@ void				TitleViewer::players()
                             |___/
 
 )" << Color::RESET << std::endl;
-	printSeparator(color);
+	PrintUtils::printSeparator(color);
 }
 
 /**
@@ -135,7 +135,7 @@ void				TitleViewer::tournament()
 {
 	const char* color = getRandomColor();
 
-	printSeparator(color);
+	PrintUtils::printSeparator(color);
 	std::cout << color << R"(
  _______                                                _
 |__   __|                                              | |
@@ -145,7 +145,7 @@ void				TitleViewer::tournament()
    |_|\___/ \__,_|_|  |_| |_|\__,_|_| |_| |_|\___|_| |_|\__|
 
 )" << Color::RESET << std::endl;
-	printSeparator(color);
+	PrintUtils::printSeparator(color);
 }
 
 /**
@@ -155,7 +155,7 @@ void				TitleViewer::teams()
 {
 	const char* color = getRandomColor();
 
-	printSeparator(color);
+	PrintUtils::printSeparator(color);
 	std::cout << color << R"(
              _______
             |__   __|
@@ -165,7 +165,7 @@ void				TitleViewer::teams()
                |_|\___|\__,_|_| |_| |_|___/
 
 )" << Color::RESET << std::endl;
-	printSeparator(color);
+	PrintUtils::printSeparator(color);
 }
 
 /**
@@ -175,7 +175,7 @@ void				TitleViewer::pools()
 {
 	const char* color = getRandomColor();
 
-	printSeparator(color);
+	PrintUtils::printSeparator(color);
 	std::cout << color << R"(
                 _____           _
                |  __ \         | |
@@ -185,7 +185,7 @@ void				TitleViewer::pools()
                |_|   \___/\___/|_|___/
 
 )" << Color::RESET << std::endl;
-	printSeparator(color);
+	PrintUtils::printSeparator(color);
 }
 
 /**
@@ -195,7 +195,7 @@ void				TitleViewer::matches()
 {
 	const char* color = getRandomColor();
 
-	printSeparator(color);
+	PrintUtils::printSeparator(color);
 	std::cout << color << R"(
            __    __        _        _
           |  \  /  |      | |__    | |
@@ -205,7 +205,7 @@ void				TitleViewer::matches()
           |_|    |_|\___,_|__/\___/|_|  |_|\___/|____/
 
 )" << Color::RESET << std::endl;
-	printSeparator(color);
+	PrintUtils::printSeparator(color);
 }
 
 /**
@@ -215,7 +215,7 @@ void				TitleViewer::sixteenths()
 {
 	const char* color = getRandomColor();
 
-	printSeparator(color);
+	PrintUtils::printSeparator(color);
 	std::cout << color << R"(
      _____ _        _                   _    _
     / ____(_)      | |                 | |  | |
@@ -225,7 +225,7 @@ void				TitleViewer::sixteenths()
    |_____/|_|/_/\_\|_|  \__|\___||_| |_|\__||_| |_|___/
 
 )" << Color::RESET << std::endl;
-	printSeparator(color);
+	PrintUtils::printSeparator(color);
 }
 
 /**
@@ -235,7 +235,7 @@ void				TitleViewer::eighths()
 {
 	const char* color = getRandomColor();
 
-	printSeparator(color);
+	PrintUtils::printSeparator(color);
 	std::cout << color << R"(
           ______  _       _     _   _
          |  ____|(_)     | |   | | | |
@@ -247,7 +247,7 @@ void				TitleViewer::eighths()
                    |___/
 
 )" << Color::RESET << std::endl;
-	printSeparator(color);
+	PrintUtils::printSeparator(color);
 }
 
 /**
@@ -257,7 +257,7 @@ void				TitleViewer::quarters()
 {
 	const char* color = getRandomColor();
 
-	printSeparator(color);
+	PrintUtils::printSeparator(color);
 	std::cout << color << R"(
            ____                   _
           / __ \                 | |
@@ -267,7 +267,7 @@ void				TitleViewer::quarters()
           \___\_\\__,_|\__,_|_|   \__\___|_|  |___/
 
 )" << Color::RESET << std::endl;
-	printSeparator(color);
+	PrintUtils::printSeparator(color);
 }
 
 /**
@@ -277,7 +277,7 @@ void				TitleViewer::semis()
 {
 	const char* color = getRandomColor();
 
-	printSeparator(color);
+	PrintUtils::printSeparator(color);
 	std::cout << color << R"(
               _____                _
              / ____|              (_)
@@ -287,7 +287,7 @@ void				TitleViewer::semis()
             |_____/ \___|_| |_| |_|_|___/
 
 )" << Color::RESET << std::endl;
-	printSeparator(color);
+	PrintUtils::printSeparator(color);
 }
 
 /**
@@ -297,7 +297,7 @@ void				TitleViewer::thirdPlace()
 {
 	const char* color = getRandomColor();
 
-	printSeparator(color);
+	PrintUtils::printSeparator(color);
 	std::cout << color << R"(
     _______ _     _          _ _____  _
    |__   __| |   (_)        | |  __ \| |
@@ -307,7 +307,7 @@ void				TitleViewer::thirdPlace()
       |_|  |_| |_|_|_|   \___/\_|    |_|\__,_|\___\___|
 
 )" << Color::RESET << std::endl;
-	printSeparator(color);
+	PrintUtils::printSeparator(color);
 }
 
 /**
@@ -317,7 +317,7 @@ void				TitleViewer::final()
 {
 	const char* color = getRandomColor();
 
-	printSeparator(color);
+	PrintUtils::printSeparator(color);
 	std::cout << color << R"(
                    ______ _             _
                   |  ____(_)           | |
@@ -327,7 +327,7 @@ void				TitleViewer::final()
                   |_|    |_|_| |_|\__,_|_|
 
 )" << Color::RESET << std::endl;
-	printSeparator(color);
+	PrintUtils::printSeparator(color);
 }
 
 /**
@@ -337,7 +337,7 @@ void				TitleViewer::exportMenu()
 {
 	const char* color = getRandomColor();
 
-	printSeparator(color);
+	PrintUtils::printSeparator(color);
 	std::cout << color << R"(
              ______                      _
             |  ____|                    | |
@@ -349,28 +349,5 @@ void				TitleViewer::exportMenu()
                         |_|
 
 )" << Color::RESET << std::endl;
-	printSeparator(color);
-}
-
-void				TitleViewer::printSeparator(const char c)
-{
-	for (int i = 0; i < LENSEPARATOR; ++i)
-		std::cout << rainbowColors[i % rainbowColors.size()] << c;
-
-	std::cout << Color::RESET << std::endl;
-}
-
-void				TitleViewer::printSeparator(cString color, const char c)
-{
-	if (color.empty())
-	{
-		printSeparator(c);
-		return;
-	}
-	std::cout << color;
-
-	for (int i = 0; i < LENSEPARATOR; ++i)
-		std::cout << c;
-
-	std::cout << Color::RESET << std::endl;
+	PrintUtils::printSeparator(color);
 }

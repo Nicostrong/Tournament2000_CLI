@@ -130,3 +130,14 @@ void				FormatUtils::trimAndPutToLower(String& s)
 
     toLower(s);
 }
+
+String              FormatUtils::truncate(cString str, size_t width)
+{
+    if (str.length() <= width)
+        return (str);
+
+    if (width <= 3)
+        return (str.substr(0, width));
+
+    return (str.substr(0, width - 3) + "...");
+}

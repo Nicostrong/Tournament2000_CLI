@@ -88,8 +88,6 @@ class				CLIUtils
 		static int					askInt(StringV prompt, int min, int max, int defaultValue);
 		static int					askIntList(StringV prompt, cvInt allowedValues, int defaultValue);
 
-		static void					displayTitle(StringV title,  int len = LENTITLE);
-
 		// Menu
 		static void					displayMenu(StringV title, std::span<const MenuItem> items);
 		static char					askMenuChoice(std::span<const MenuItem> items);

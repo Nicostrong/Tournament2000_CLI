@@ -310,60 +310,6 @@ void				Exporter::writePalmares(std::ofstream& out, cTour tournament)
 }
 
 /**
- * Ecrit la liste des matchs de la poule dans le flux out.
- * Si toFile = true : pas de codes couleur ANSI.
- */
-void				Exporter::writeMatches(std::ostream& out, cPool pool, cBool toFile)
-{
-	cvpMatch matches = pool.getMatches();
-
-	if (matches.empty())
-	{
-		PrintUtils::addError("Aucun match enregistre.");
-		return;
-	}
-
-	int i = 1;
-
-	for (cpMatch m : matches)
-	{
-		if (!m)
-			continue;
-
-		out << "  " << std::setw(2) << i++ << ". ";
-		out << m->getTeamA()->getName() << " vs " << m->getTeamB()->getName();
-
-		if (m->isFinished())
-		{
-			out << "  [ " << m->getScoreA() << " - " << m->getScoreB() << " ]";
-
-			if (m->getWinner())
-			{
-				if (!toFile)
-					out << "\033[1;32m";
-
-				out << "  ->  Vainqueur : " << m->getWinner()->getName();
-
-				if (!toFile)
-					out << "\033[0m";
-			}
-		}
-		else
-		{
-			if (!toFile)
-				out << "\033[1;33m";
-
-			out << "  [ À jouer ]";
-
-			if (!toFile)
-				out << "\033[0m";
-		}
-
-		out << "\n";
-	}
-}
-
-/**
  * Ecrit le tableau de classement de la poule dans le flux out.
  * Colonnes : Rang | Equipe | Pts | Diff
  * Si toFile = true : pas de codes couleur ANSI.
@@ -373,10 +319,7 @@ void				Exporter::writeTable(std::ostream& out, cPool pool, cBool toFile)
 	cvpTeam teams = pool.getTeams();
 
 	if (teams.empty())
-	{
-		PrintUtils::addError("Aucune equipe dans cette poule.");
-		return;
-	}
+		return (PrintUtils::addError("Aucune equipe dans cette poule."));
 
 	size_t maxLen = 6;
 
@@ -516,7 +459,7 @@ bool				Exporter::exportToTxt(cPool pool, cString filename)
 	}
 
 	file << "\n[MATCHS]\n";
-	writeMatches(file, pool, true);
+	PrintUtils::writeMatchesList(file, pool.getMatches(), true);
 
 	file << "\n[CLASSEMENT FINAL]\n";
 	writeTable(file, pool, true);

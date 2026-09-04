@@ -7,23 +7,24 @@
 /****************************************************************************************************/
 
 #include <format>
+#include <iomanip>
 #include <iostream>
 #include <algorithm>
 
+#include "../includes/class/Match.hpp"
+
 #include "../includes/utils/PrintUtils.hpp"
 
-#include "../includes/viewer/TitleViewer.hpp"
-
 #include "../includes/Color.hpp"
-#include "../includes/Constantes.hpp"
+#include "../includes/class/Team.hpp"
 
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
 /****************************************************************************************************/
 
-using				String			=	std::string;
 using				cString			=	const std::string&;
-using				vString			=	std::vector<std::string>;
+
+using				cInt			=	const int;
 
 using				cBool			=	const bool;
 
@@ -47,9 +48,9 @@ void				PrintUtils::printHeader()
 {
 	cString title = "MESSAGES | MESSAGES | MESSAGES | MESSAGES | MESSAGES";
 	
-	TitleViewer::printSeparator(Color::BBLUE, '=');
+	printSeparator(Color::BBLUE, '=');
 	std::cout << Color::BBLUE << std::format("{:^{}}", title, LENSEPARATOR) << '\n' << Color::RESET;
-	TitleViewer::printSeparator(Color::BBLUE, '=');
+	printSeparator(Color::BBLUE, '=');
 }
 
 void				PrintUtils::printMessageLines(cString msg, cBool isError)
@@ -121,62 +122,80 @@ void				PrintUtils::handleMessages()
 		printMessage(msgTuple);
 	}
 	
-	TitleViewer::printSeparator(Color::BBLUE, '=');
+	printSeparator(Color::BBLUE, '=');
 	_messages.clear();
 }
 
-/*void				PrintUtils::handleMessages()
+void				PrintUtils::printTitle(StringV title, int len)
 {
-	if (!_messages.empty())
+	cString titleCenter = std::format(" {} ", title);
+
+	std::cout << std::format("{:=^{}}", titleCenter, len) << std::endl;
+}
+
+void				PrintUtils::printSeparator(const char c, cInt len)
+{
+	for (int i = 0; i < len; ++i)
+		std::cout << c;
+
+	std::cout << std::endl;
+}
+
+void				PrintUtils::printSeparator(cString color, const char c)
+{
+	if (color.empty())
 	{
-		cString title = "MESSAGES | MESSAGES | MESSAGES | MESSAGES | MESSAGES";
-
-		TitleViewer::printSeparator(Color::BBLUE, '=');
-		std::cout << Color::BBLUE << std::format("{:^{}}", title, LENSEPARATOR) << std::endl << Color::RESET;
-		TitleViewer::printSeparator(Color::BBLUE, '=');
-
-		const size_t MAX_TEXT_LEN = LENSEPARATOR - 5;
-
-		for (const auto& msgTuple : _messages)
-		{
-			cString msg = std::get<0>(msgTuple);
-			cBool isError = std::get<1>(msgTuple);
-
-			std::cout << (isError ? Color::RED : Color::GREEN);
-
-			size_t start = 0;
-			bool firstLine = true;
-
-			while (start < msg.length())
-			{
-				size_t currentLen = std::min(MAX_TEXT_LEN, msg.length() - start);
-
-				if (start + currentLen < msg.length())
-				{
-					size_t lastSpace = msg.rfind(' ', start + currentLen);
-
-					if (lastSpace != std::string::npos && lastSpace > start)
-						currentLen = lastSpace - start;
-				}
-
-				if (firstLine)
-				{
-					std::cout << (isError ? " [!] " : " [v] ") << msg.substr(start, currentLen) << '\n';
-					firstLine = false;
-				}
-				else
-					std::cout << "     " << msg.substr(start, currentLen) << '\n';
-
-				start += currentLen;
-
-				while (start < msg.length() && msg[start] == ' ')
-					start++;
-			}
-			std::cout << Color::RESET;
-		}
-		
-		TitleViewer::printSeparator(Color::BBLUE, '=');
-		
-		_messages.clear();
+		printSeparator(c);
+		return;
 	}
-}*/
+	std::cout << color;
+
+	for (int i = 0; i < LENSEPARATOR; ++i)
+		std::cout << c;
+
+	std::cout << Color::RESET << std::endl;
+}
+
+void				PrintUtils::writeMatchesList(std::ostream& out, cvpMatch matches, bool toFile)
+{
+	if (matches.empty())
+
+		return (addError("No matches."));
+
+	int i = 1;
+
+	for (const Match* m : matches)
+	{
+		if (!m)
+			continue;
+
+		out << "  " << std::setw(2) << i++ << ". " << m->getTeamA()->getName() << " vs " << m->getTeamB()->getName();
+
+		if (m->isFinished())
+		{
+			out << "  [ " << m->getScoreA() << " - " << m->getScoreB() << " ]";
+
+			if (m->getWinner())
+			{
+				if (!toFile)
+					out << Color::BGREEN;
+
+				out << "  ->  " << (toFile ? "Vainqueur : " : "Winner : ") << m->getWinner()->getName();
+
+				if (!toFile)
+					out << Color::RESET;
+			}
+		}
+		else
+		{
+			if (!toFile)
+				out << Color::BYELLOW;
+
+			out << "  [ " << (toFile ? "À jouer" : "To play") << " ]";
+
+			if (!toFile)
+				out << Color::RESET;
+		}
+		out << "\n";
+	}
+}

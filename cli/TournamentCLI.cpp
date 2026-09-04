@@ -26,9 +26,13 @@
 #include "../includes/cli/MatchCLI.hpp"
 #include "../includes/cli/TournamentCLI.hpp"
 
+#include "../includes/viewer/TeamViewer.hpp"
+#include "../includes/viewer/PhaseViewer.hpp"
+#include "../includes/viewer/PoolViewer.hpp"
 #include "../includes/viewer/TitleViewer.hpp"
 #include "../includes/viewer/MatchViewer.hpp"
-#include "../includes/viewer/PoolViewer.hpp"
+#include "../includes/viewer/PlayerViewer.hpp"
+#include "../includes/viewer/SettingsViewer.hpp"
 #include "../includes/viewer/TournamentViewer.hpp"
 
 #include "../includes/utils/Exporter.hpp"
@@ -75,7 +79,14 @@ void				TournamentCLI::menuTournament(cTour tournament)
 	std::vector<MenuItem> items =
 	{
 		{'1', "Teams"},
-		{'2', "Pool"}
+		{'2', "Pool"},
+		{'3', "Print Pool"},
+		{'4', "Print Team"},
+		{'5', "Print Match"},
+		{'6', "Print Phase"},
+		{'7', "Print Player"},
+		{'8', "Print Settings"},
+		{'9', "Print Tournament"}
 	};
 
 
@@ -127,7 +138,42 @@ void				TournamentCLI::executeChoice(cInt choice, Tournament& tournament)
 			PoolCLI::handleMenuPool(tournament);
 			break;
 
-		case 3:		//	1/16
+		case 3:		//	Print Pool
+			PoolViewer::printAll(tournament);
+			CLIUtils::waitForEnter();
+			break;
+
+		case 4:		//	Print Team
+			TeamViewer::printAll(tournament);
+			CLIUtils::waitForEnter();
+			break;
+
+		case 5:		//	Print Match
+			MatchViewer::printAll(tournament);
+			CLIUtils::waitForEnter();
+			break;
+
+		case 6:		//	Print Phase
+			PhaseViewer::printAll(tournament);
+			CLIUtils::waitForEnter();
+			break;
+
+		case 7:		//	Print Player
+			PlayerViewer::printAll(tournament);
+			CLIUtils::waitForEnter();
+			break;
+
+		case 8:		//	Print Settings
+			SettingsViewer::printAll(tournament);
+			CLIUtils::waitForEnter();
+			break;
+
+		case 9:		//	Print Tournament
+			TournamentViewer::printAll(tournament);
+			CLIUtils::waitForEnter();
+			break;
+
+		/* case 3:		//	1/16
 			if (tournament.getHasSixteenth() && tournament.isSixteenthUnlocked())
 				handleEliminationPhase(tournament.getSixteenth(), [&]() { tournament.generateSixteenths(); },
 					"1/16 DE FINALE", "1/16 generes avec succes !", "Impossible : verifiez que les poules soient terminees.");
@@ -178,7 +224,7 @@ void				TournamentCLI::executeChoice(cInt choice, Tournament& tournament)
 				PrintUtils::addError("Menu non disponible pour le moment.");
 			break;
 
-		/*
+		*//*
 		case 8:
 			if (tournament.getQuarters() != nullptr)
 				TournamentViewer::displayFullBracket(tournament);
@@ -454,7 +500,7 @@ void				TournamentCLI::handlePhase(Phase* phase, cString phaseName)
 			if (m)
 			{
 				std::cout << "  " << std::setw(2) << count << ". ";
-				MatchViewer::display(*m);
+				MatchViewer::showMatchTitle(*m);
 				std::cout << std::endl;
 			}
 			count++;

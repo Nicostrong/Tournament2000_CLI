@@ -13,6 +13,7 @@
 /****************************************************************************************************/
 
 class				Settings;
+class				Tournament;
 
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
@@ -33,6 +34,8 @@ class				SettingsViewer
 	public:
 
 		static void					print(cSet s);
+
+		static void					printAll(Tournament& tournament);
 
 };
 

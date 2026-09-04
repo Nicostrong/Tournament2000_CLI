@@ -198,16 +198,9 @@ int					CLIUtils::askIntList(StringV prompt, cvInt allowedValues, cInt defaultVa
 	}
 }
 
-void				CLIUtils::displayTitle(StringV title, int len)
-{
-	cString titleCenter = std::format(" {} ", title);
-
-	std::cout << std::format("{:=^{}}", titleCenter, len) << std::endl;
-}
-
 void				CLIUtils::displayMenu(StringV title, std::span<const MenuItem> items)
 {
-	displayTitle(title);
+	PrintUtils::printTitle(title);
 
 	for (const auto& item : items)
 		std::cout << Color::BYELLOW << "\t" << item.key << "\t" << Color::RESET << item.label << std::endl;

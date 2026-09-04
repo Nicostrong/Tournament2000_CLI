@@ -9,8 +9,9 @@
 #include <iostream>
 
 #include "../includes/class/Settings.hpp"
+#include "../includes/class/Tournament.hpp"
 
-#include "../includes/cli/CLIUtils.hpp"
+#include "../includes/utils/PrintUtils.hpp"
 
 #include "../includes/viewer/TitleViewer.hpp"
 #include "../includes/viewer/SettingsViewer.hpp"
@@ -39,9 +40,9 @@
 
 void				SettingsViewer::print(cSet s)
 {
-	TitleViewer::printSeparator(Color::YELLOW);
-	CLIUtils::displayTitle("SYNTHESE DES PARAMETRES");
-	TitleViewer::printSeparator(Color::YELLOW);
+	PrintUtils::printSeparator(Color::YELLOW);
+	PrintUtils::printTitle("SYNTHESE DES PARAMETRES");
+	PrintUtils::printSeparator(Color::YELLOW);
 
 	std::cout << Color::BLUE << "[ TOURNOI ]\n" << Color::RESET;
     std::cout << "\tNom\t\t\t:\t" << s.getName() << "\n";
@@ -70,6 +71,16 @@ void				SettingsViewer::print(cSet s)
 	else
 		std::cout << "\tPetite Finale (3e place):\tNon jouee\n";
 
-	TitleViewer::printSeparator(Color::YELLOW);
+	PrintUtils::printSeparator(Color::YELLOW);
 
+}
+
+/**
+ * TESTER FUNCTION - TO REMOVED or DELETED
+ */
+void				SettingsViewer::printAll(Tournament& tournament)
+{
+	cSet s = tournament.getSettings();
+	PrintUtils::printTitle("SettingsViewer");
+	print(s);
 }

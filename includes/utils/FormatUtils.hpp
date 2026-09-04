@@ -47,5 +47,7 @@ class				FormatUtils
 		static void					trimAndCapitalize(String& s);
 		static void					trimAndPutToUpper(String& s);
 		static void					trimAndPutToLower(String& s);
+
+		static String				truncate(cString str, size_t width);
 		
 };

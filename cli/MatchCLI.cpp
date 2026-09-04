@@ -58,8 +58,8 @@ void				MatchCLI::displayMenuUI(vpMatch matches, pPool pool)
 
 	pool->sortTeams();
 
-	PoolViewer::displayFullTable(*pool);
-	MatchViewer::displayAllMatches(matches);
+	PoolViewer::showDetailsPoolStanding(*pool);
+	MatchViewer::showExtendedTableOfAllMatchesInPool(matches);
 	std::cout << "Selectionnez un matche en entrant son id (tapez 'r' pour revenir au menu precedent): ";
 	CLIUtils::checkInterruption();
 }
@@ -125,7 +125,7 @@ void				MatchCLI::executeChoice(cInt choice, pMatch match, pPool pool)
 			break;
 		
 		case 2:
-			MatchViewer::displayMatches(*pool);
+			MatchViewer::showAllMatchesWithStatusInPool(*pool);
 			CLIUtils::waitForEnter();
 			break;
 

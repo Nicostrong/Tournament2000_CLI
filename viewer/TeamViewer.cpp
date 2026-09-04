@@ -12,15 +12,12 @@
 #include "../includes/class/Pool.hpp"
 #include "../includes/class/Team.hpp"
 #include "../includes/class/Player.hpp"
-
-#include "../includes/cli/CLIUtils.hpp"
+#include "../includes/class/Tournament.hpp"
 
 #include "../includes/viewer/TeamViewer.hpp"
-#include "../includes/viewer/TitleViewer.hpp"
-
-#include "../includes/cli/CLIUtils.hpp"
 
 #include "../includes/utils/PrintUtils.hpp"
+#include "../includes/utils/TablePrinter.hpp"
 
 #include "../includes/Color.hpp"
 
@@ -40,9 +37,12 @@
 /*	PUBLIC METHOD																					*/
 /****************************************************************************************************/
 
-void				TeamViewer::showTeamDescription(cTeam team)
+/**
+ * Affiche la carte de la team avec id, nom et membres
+ */
+void				TeamViewer::showTeamCard(cTeam team)
 {
-	CLIUtils::displayTitle("TEAM DESCRIPTION");
+	PrintUtils::printTitle("TEAM Card");
 	std::cout << "Team ID: " << team.getId() << std::endl;
 	std::cout << "Nom: " << team.getName() << std::endl;
 
@@ -65,85 +65,51 @@ void				TeamViewer::showTeamDescription(cTeam team)
 	std::cout << std::endl;
 }
 
-void				TeamViewer::showAllTeams(vpTeam teams)
+/**
+ * Affiche un tableau detaille de toute les teams
+ * id | teamName | pts | + | - | diff | mixte | eli. | disq. | multi
+ */
+void				TeamViewer::showTeamsTableDetails(vpTeam teams)
 {
 	if (teams.empty())
-		return (PrintUtils::addError("Aucune equipe."));
+		return (PrintUtils::addError("No team."));
 
-	int wName = 4;
+	TablePrinter table;
 
-	for (const Team* team : teams)
-		if (team)
-			wName = std::max(wName,	static_cast<int>(team->getName().size()));
-
-	constexpr int W_ID      = 2;
-	constexpr int W_PTS     = 3;
-	constexpr int W_MARKED  = 5;
-	constexpr int W_AGAINST = 5;
-	constexpr int W_DIFF    = 4;
-	constexpr int W_MIXED   = 5;
-	constexpr int W_ELIM    = 4;
-	constexpr int W_DISQ    = 4;
-	constexpr int W_MULTI   = 5;
-
-	const int separatorSize =
-		W_ID + 3 +
-		wName + 3 +
-		W_PTS + 3 +
-		W_MARKED + 3 +
-		W_AGAINST + 3 +
-		W_DIFF + 3 +
-		W_MIXED + 3 +
-		W_ELIM + 3 +
-		W_DISQ + 3 +
-		W_MULTI + 2;
-
-	CLIUtils::displayTitle("Tableau des teams", separatorSize + 2);
-	std::cout << "+" << std::string(separatorSize, '-') << "+\n";
-	std::cout << std::format(
-		"| {:>{}} | {:<{}} | {:>{}} | {:>{}} | {:>{}} | {:>{}} | {:<{}} | {:<{}} | {:<{}} | {:<{}} |\n",
-		"ID", W_ID,
-		"Equipe", wName,
-		"Pts", W_PTS,
-		"Pts +", W_MARKED,
-		"Pts -", W_AGAINST,
-		"Diff", W_DIFF,
-		"Mixte", W_MIXED,
-		"Eli.", W_ELIM,
-		"Dis.", W_DISQ,
-		"Multi", W_MULTI
-	);
-	std::cout << "+" << std::string(separatorSize, '-') << "+\n";
+	table.setHeaders({"ID", "Equipe", "Pts", "Pts +", "Pts -", "Diff", "Mixte", "Eli.", "Dis.", "Multi"});
+	int i = 0;
 
 	for (const Team* team : teams)
 	{
 		if (!team)
 			continue;
 
-		std::cout << std::format(
-			"| {:>{}} | {:<{}} | {:>{}} | {:>{}} | {:>{}} | {:>{}} | {:<{}} | {:<{}} | {:<{}} | {:<{}} |\n",
-			team->getId(), W_ID,
-			team->getName(), wName,
-			team->getPoint(), W_PTS,
-			team->getScoreMarked(), W_MARKED,
-			team->getScoreAgainst(), W_AGAINST,
-			team->getScoreDiff(), W_DIFF,
-			team->getIsMixed() ? "Oui" : "Non", W_MIXED,
-			team->getIsEliminated() ? "Oui" : "Non", W_ELIM,
-			team->getIsDisqualified() ? "Oui" : "Non", W_DISQ,
-			team->getHasMultiTeamPlayer() ? "Oui" : "Non", W_MULTI
-		);
+		vString rowData = {
+			std::to_string(team->getId()),
+			team->getName(),
+			std::to_string(team->getPoint()),
+			std::to_string(team->getScoreMarked()),
+			std::to_string(team->getScoreAgainst()),
+			std::to_string(team->getScoreDiff()),
+			team->getIsMixed() ? "Oui" : "Non",
+			team->getIsEliminated() ? "Oui" : "Non",
+			team->getIsDisqualified() ? "Oui" : "Non",
+			team->getHasMultiTeamPlayer() ? "Oui" : "Non"
+		};
+		cString color = (i++ < 2) ? Color::BGREEN : Color::RESET;
+
+		table.addRow(rowData, color);
 	}
 
-	std::cout << "+" << std::string(separatorSize, '-') << "+\n";
+	table.printTable(std::cout);
 }
 
 /**
- * Affiche les equipes d'une poule
+ * Affiche la liste des nom des equipes dans une poule
  */
-void				TeamViewer::displayTeamsInPool(cPool pool)
+void				TeamViewer::showListOfTeamsInPool(cPool pool)
 {
-	CLIUtils::displayTitle(std::format("EQUIPES DE LA POOL : {}", pool.getName()));
+	PrintUtils::printTitle(std::format("TEAMS IN POOL: {}", pool.getName()));
 
 	for (const auto& team : pool.getTeams())
 		std::cout << std::format("- {}\n", team->getName());
@@ -152,12 +118,35 @@ void				TeamViewer::displayTeamsInPool(cPool pool)
 /**
  * Affiche la composition detaillee des equipes
  */
-void				TeamViewer::displayPoolDetails(cPool pool)
+void				TeamViewer::showAllTemasCardInPool(cPool pool)
 {
-	std::cout << "\n============================================" << std::endl;
-	std::cout << "   COMPOSITION DES EQUIPES - " << pool.getName() << std::endl;
-	std::cout << "============================================" << std::endl;
+	PrintUtils::printSeparator();
+	PrintUtils::printTitle(std::format("COMPOSITION DES EQUIPES - {}", pool.getName()));
+	PrintUtils::printSeparator();
 
 	for (cpTeam t : pool.getTeams())
-		TeamViewer::showTeamDescription(*t);
+		TeamViewer::showTeamCard(*t);
+}
+
+/**
+ * TESTER FUNCTION - TO REMOVED or DELETED
+ */
+void				TeamViewer::printAll(Tournament& tournament)
+{
+	PrintUtils::printTitle("TeamViewer");
+
+	auto teams = tournament.getTeams();
+
+	if (!teams.empty() && teams[0])
+		showTeamCard(*teams[0]);
+
+	showTeamsTableDetails(teams);
+
+	auto pools = tournament.getPools();
+
+	if (!pools.empty() && pools[0])
+	{
+		showListOfTeamsInPool(*pools[0]);
+		showAllTemasCardInPool(*pools[0]);
+	}
 }

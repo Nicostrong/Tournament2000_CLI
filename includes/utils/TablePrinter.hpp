@@ -1,5 +1,5 @@
 //
-// Created by Nicolas Fordoxcel on 21/08/2026.
+// Created by Nicolas Fordoxcel on 04/09/2026.
 //
 
 #pragma once
@@ -10,14 +10,11 @@
 
 # include <string>
 # include <vector>
+# include <iomanip>
 
 /****************************************************************************************************/
 /*	CLASSES																							*/
 /****************************************************************************************************/
-
-class				Team;
-class				Pool;
-class				Tournament;
 
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
@@ -25,25 +22,8 @@ class				Tournament;
 
 using				String			=	std::string;
 using				cString			=	const std::string&;
-using				vString			=	std::vector<std::string>;
-
-using				cInt			=	const int;
-using				vInt			=	std::vector<int>;
-using				cvInt			=	const std::vector<int>&;
-
-using				cBool			=	const bool;
-
-using				pTeam			=	Team*;
-using				cTeam			=	const Team&;
-using				cpTeam			=	const Team*;
-using				vpTeam			=	std::vector<Team*>;
-using				cvpTeam			=	const std::vector<Team*>&;
-
-using				pPool			=	Pool*;
-using				cPool			=	const Pool&;
-using				cpPool			=	const Pool*;
-using				vpPool			=	std::vector<Pool*>;
-using				cvpPool			=	const std::vector<Pool*>&;
+using				vString			=	std::vector<String>;
+using				cvString		=	const std::vector<String>&;
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
@@ -53,17 +33,30 @@ using				cvpPool			=	const std::vector<Pool*>&;
 /*	CLASS																							*/
 /****************************************************************************************************/
 
-class				TeamViewer
+/**
+ * Gestion du paramettrage et l affichage d un tableau
+ */
+class				TablePrinter
 {
+	private:
+
+		struct		Row
+		{
+					vString			columns;
+					String			color;
+		};
+
+		vString						_headers;
+		std::vector<Row>			_rows;
+		std::vector<size_t>			_colWidths;
+
+		void						updateWidths(cvString cols);
+		void						printLine(std::ostream& out) const;
+
 	public:
 
-		static void					showTeamCard(cTeam team);
-		static void					showTeamsTableDetails(vpTeam teams);
-		static void					showListOfTeamsInPool(cPool pool);
-		static void					showAllTemasCardInPool(cPool pool);
-
-		static void					printAll(Tournament& tournament);
+		void						setHeaders(cvString headers);
+		void						addRow(cvString columns, cString color = "");
+		void						printTable(std::ostream& out, bool toFile = false) const;
 
 };
-
-

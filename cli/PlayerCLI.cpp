@@ -185,7 +185,7 @@ void				PlayerCLI::handleModifyPlayer(PlayerManager& manager, cSet settings)
 		return;
 	}
 
-	PlayerViewer::displayAll(manager.getPlayers());
+	PlayerViewer::showFullTableOfPlayers(manager.getPlayers());
 
 	int id = CLIUtils::askInt("ID du participant a modifier", 0, static_cast<int>(manager.getSize() > 0 ? manager.getPlayers().back()->getId() : 0), -1);
 
@@ -223,7 +223,7 @@ void				PlayerCLI::handleDeletePlayer(PlayerManager& manager)
 		return;
 	}
 
-	PlayerViewer::displayAll(manager.getPlayers());
+	PlayerViewer::showFullTableOfPlayers(manager.getPlayers());
 
 	cInt id = CLIUtils::askInt("ID du participant a supprimer", 0, 999999, -1);
 
@@ -316,7 +316,7 @@ void				PlayerCLI::handleDisplay(const PlayerManager& manager)
 
 	if (choice == 1)
 	{
-		PlayerViewer::displayAll(manager.getPlayers());
+		PlayerViewer::showFullTableOfPlayers(manager.getPlayers());
 		CLIUtils::waitForEnter();
 		return;
 	}
@@ -331,7 +331,7 @@ void				PlayerCLI::handleDisplay(const PlayerManager& manager)
 		return;
 	}
 
-	PlayerViewer::displayOne(*player);
+	PlayerViewer::showPlayerCard(*player);
 	CLIUtils::waitForEnter();
 }
 
@@ -379,7 +379,7 @@ void				PlayerCLI::handleMenuPlayer(PlayerManager& manager, cSet settings)
 			PrintUtils::handleMessages();
 
 			if (!manager.isEmpty())
-				PlayerViewer::displayAll(manager.getPlayers());
+				PlayerViewer::showFullTableOfPlayers(manager.getPlayers());
 
 			menuPlayer(manager, settings);
 

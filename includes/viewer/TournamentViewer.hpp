@@ -25,6 +25,7 @@ class				Tournament;
 using				String			=	std::string;
 using				cString			=	const std::string&;
 using				vString			=	std::vector<std::string>;
+using				vpairString		=	std::vector<std::pair<String, String>>;
 
 using				cInt			=	const int;
 using				vInt			=	std::vector<int>;
@@ -59,10 +60,13 @@ class				TournamentViewer
 	private:
 
 		static String				getTeamNameOrPlaceholder(cpPhase phase, size_t matchIdx, cInt teamPos);
+		static void					extractEncounterNames(cpPhase phase, size_t count, vpairString& outNames);
 
 	public:
 
 		static void					displayFullBracket(cTour tournament);
 		static void					displayPodium(cTour tournament);
+
+		static void					printAll(Tournament& tournament);
 
 };

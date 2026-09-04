@@ -17,6 +17,7 @@
 /****************************************************************************************************/
 
 class				Player;
+class				Tournament;
 
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
@@ -43,8 +44,10 @@ class				PlayerViewer
 {
 	public:
 
-		static void					displayOne(cPlayer p);
-		static void					displayAll(cvpPlayer participants);
+		static void					showPlayerCard(cPlayer p);
+		static void					showFullTableOfPlayers(cvpPlayer playerss);
+
+		static void					printAll(Tournament& tournament);
 
 };
 

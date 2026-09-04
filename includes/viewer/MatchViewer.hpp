@@ -12,14 +12,14 @@
 /****************************************************************************************************/
 
 # include <vector>
-# include <fstream>
 
 /****************************************************************************************************/
 /*	CLASSES																							*/
 /****************************************************************************************************/
-
-class				Match;
+;
 class				Pool;
+class				Match;
+class				Tournament;
 
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
@@ -48,16 +48,14 @@ using				cpPool			=	const Pool*;
 
 class				MatchViewer
 {
-	private:
-
-		static void					writeMatches(std::ostream& out, cPool pool, cBool toFile);
-
 	public:
 
-		static void					display(cMatch match);
-		static void					displayAllMatches(cvpMatch matches);
-		static void					displayMatchesInPool(cPool pool);
-		static void					displayMatches(cPool pool);
+		static void					showMatchTitle(cMatch match);
+		static void					showExtendedTableOfAllMatchesInPool(cvpMatch matches);
+		static void					showDetailsTableOfAllMatchesInPool(cPool pool);
+		static void					showAllMatchesWithStatusInPool(cPool pool);
+
+		static void					printAll(Tournament& tournament);
 
 };
 

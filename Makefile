@@ -74,6 +74,7 @@ UTILS			=	./utils/CheckerCSV.cpp \
 					./utils/FormatUtils.cpp \
 					./utils/PrintUtils.cpp \
 					./utils/SettingsChecker.cpp \
+					./utils/TablePrinter.cpp \
 					./utils/TournamentHistory.cpp
 
 VIEWER			=	./viewer/MatchViewer.cpp \

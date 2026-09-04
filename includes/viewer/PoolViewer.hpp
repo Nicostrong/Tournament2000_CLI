@@ -52,8 +52,10 @@ class				PoolViewer
 
 	public:
 
-		static void					displayTable(cPool pool);
-		static void					displayFullTable(cPool pool);
-		static void					displayPoolsList(cTour tournament);
+		static void					showPoolStanding(cPool pool);
+		static void					showDetailsPoolStanding(cPool pool);
+		static void					showPoolsListWithStatus(cTour tournament);
+
+		static void					printAll(Tournament& tournament);
 
 };

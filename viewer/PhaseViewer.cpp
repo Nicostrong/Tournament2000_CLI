@@ -14,10 +14,13 @@
 #include "../includes/class/Team.hpp"
 #include "../includes/class/Match.hpp"
 #include "../includes/class/Phase.hpp"
+#include "../includes/class/Tournament.hpp"
 
 #include "../includes/viewer/PhaseViewer.hpp"
 
 #include "../includes/utils/PrintUtils.hpp"
+
+#include "../includes/Color.hpp"
 
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
@@ -66,7 +69,7 @@ void				PhaseViewer::writeEncounter(std::ostream& out, cvpMatch matches, const s
 	cString	nameB = first->getTeamB() ? first->getTeamB()->getName() : "?";
 
 	out << "\n";
-	out << "  Rencontre " << encounterNum << " :  "
+	out << "  Match " << encounterNum << " :  "
 		<< nameA << "  vs  " << nameB << "\n";
 	out << "  " << String(nameA.size() + nameB.size() + 14, '-') << "\n";
 
@@ -86,7 +89,7 @@ void				PhaseViewer::writeEncounter(std::ostream& out, cvpMatch matches, const s
 
 		if (!m || !m->isFinished())
 		{
-			out << "[ à jouer ]\n";
+			out << "[ to play ]\n";
 			continue;
 		}
 
@@ -99,12 +102,12 @@ void				PhaseViewer::writeEncounter(std::ostream& out, cvpMatch matches, const s
 		if (winner)
 		{
 			if (!toFile)
-				out << "\033[1;32m";
+				out << Color::BGREEN;
 
-			out << "  ->  Vainqueur : " << winner->getName();
+			out << "  ->  Winner : " << winner->getName();
 
 			if (!toFile)
-				out << "\033[0m";
+				out << Color::RESET;
 
 			if (winner == first->getTeamA())
 				winsA++;
@@ -122,25 +125,25 @@ void				PhaseViewer::writeEncounter(std::ostream& out, cvpMatch matches, const s
 	if (winsA > winsB)
 	{
 		if (!toFile)
-			out << "\033[1;33m";
+			out << Color::BYELLOW;
 
-		out << "Vainqueur de la rencontre : " << nameA;
+		out << "Winner of the match: " << nameA;
 
 		if (!toFile)
-			out << "\033[0m";
+			out << Color::RESET;
 	}
 	else if (winsB > winsA)
 	{
 		if (!toFile)
-			out << "\033[1;33m";
+			out << Color::BYELLOW;
 
-		out << "Vainqueur de la rencontre : " << nameB;
+		out << "Winner of the match: " << nameB;
 
 		if (!toFile)
-			out << "\033[0m";
+			out << Color::RESET;
 	}
 	else
-		out << "Rencontre non terminée";
+		out << "Match no ended.";
 
 	out << "\n";
 }
@@ -157,7 +160,7 @@ void				PhaseViewer::displayPhase(cPhase phase)
 	std::cout << "╚══════════════════════════════════════════════════╝\n";
 
 	if (matches.empty())
-		return (PrintUtils::addError("Aucun match enregistre dans cette phase"));
+		return (PrintUtils::addError("No matches for this stage."));
 
 	int encounterNum = 1;
 
@@ -174,36 +177,54 @@ void				PhaseViewer::displayPhase(cPhase phase)
 void				PhaseViewer::displayResults(cPhase phase)
 {
 	if (!phase.isFinished())
-		return (PrintUtils::addError("Phase non terminee — resultats indisponibles."));
+		return (PrintUtils::addError("Stage no ended — No results available."));
 
 	vpTeam winners	= phase.getWinners();
 	vpTeam losers	= phase.getLosers();
 
-	std::cout << "\n  ── Resultats de " << phase.getName() << " ──\n";
+	std::cout << "\n  ── Results of " << phase.getName() << " ──\n";
 	std::cout << "  " << String(40, '-') << "\n";
 
-	std::cout << "  Qualifies :\n";
+	std::cout << "  Qualified:\n";
 
 	for (size_t i = 0; i < winners.size(); ++i)
 	{
 		if (!winners[i])
 			continue;
 
-		std::cout << "\033[1;32m    " << (i + 1) << ". " << winners[i]->getName() << "\033[0m\n";
+		std::cout << Color::BGREEN << "    " << (i + 1) << ". " << winners[i]->getName() << Color::RESET << "\n";
 	}
 
 	if (!losers.empty())
 	{
-		std::cout << "  Elimines :\n";
+		std::cout << "  Eliminated:\n";
 
 		for (cpTeam t : losers)
 		{
 			if (!t)
 				continue;
 
-			std::cout << "\033[1;31m    - " << t->getName() << "\033[0m\n";
+			std::cout << Color::BRED << "    - " << t->getName() << Color::RESET << "\n";
 		}
 	}
 
 	std::cout << "  " << String(40, '-') << "\n";
+}
+
+/**
+ * TESTER FUNCTION - TO REMOVED or DELETED
+ */
+void				PhaseViewer::printAll(Tournament& tournament)
+{
+	PrintUtils::printTitle("PhaseViewer");
+
+	Phase* finalPhase = tournament.getFinal();
+
+	if (finalPhase)
+	{
+		displayPhase(*finalPhase);
+
+		if (finalPhase->isFinished())
+			displayResults(*finalPhase);
+	}
 }

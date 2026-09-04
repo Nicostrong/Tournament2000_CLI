@@ -97,7 +97,6 @@ class				Exporter
 		static void					writePalmares(std::ofstream& out, cTour tournament);
 		
 		//	POOL
-		static void					writeMatches(std::ostream& out, cPool pool, bool toFile);
 		static void					writeTable(std::ostream& out, cPool pool, bool toFile);
 
 };

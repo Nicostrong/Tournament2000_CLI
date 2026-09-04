@@ -62,7 +62,7 @@ void				TeamCLI::displayMenuUI(cTour tournament)
 {
 	CLIUtils::handleTitle(TitleViewer::teams);
 	PrintUtils::handleMessages();
-	TeamViewer::showAllTeams(tournament.getTeams());
+	TeamViewer::showTeamsTableDetails(tournament.getTeams());
 	std::cout << "Selectionnez une team en entrant son ID (tapez 'r' pour revenir au menu precedent): ";
 	CLIUtils::checkInterruption();
 }

@@ -90,32 +90,22 @@ vpTeam				Phase::getLosers() const
 		return (losers);
 
 	vpTeam winners = this->getWinners();
+	const size_t step = static_cast<size_t>(this->_nbSetsToPlay);
 
 	for (size_t i = 0; i < winners.size(); ++i)
 	{
-		const size_t matchIdx = i * static_cast<size_t>(this->_nbSetsToPlay);
+		const size_t matchIdx = i * step;
 
-		if (matchIdx >= this->_matches.size())
-			break;
-
-		const uMatch& match = this->_matches[matchIdx];
-
-		if (!match)
+		if (matchIdx >= this->_matches.size() || !this->_matches[matchIdx])
 			continue;
 
-		pTeam a = match->getTeamA();
-		pTeam b = match->getTeamB();
+		pTeam a = this->_matches[matchIdx]->getTeamA();
+		pTeam b = this->_matches[matchIdx]->getTeamB();
 
-		if (winners[i] == a)
-		{
-			if (b)
-				losers.push_back(b);
-		}
-		else if (winners[i] == b)
-		{
-			if (a)
-				losers.push_back(a);
-		}
+		if (winners[i] == a && b)
+			losers.push_back(b);
+		else if (winners[i] == b && a)
+			losers.push_back(a);
 	}
 
 	return (losers);
