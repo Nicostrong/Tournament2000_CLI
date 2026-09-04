@@ -8,6 +8,11 @@
 /*	INCLUDES																						*/
 /****************************************************************************************************/
 
+# include <array>
+# include <string>
+
+# include "../Color.hpp"
+
 /****************************************************************************************************/
 /*	CLASSES																							*/
 /****************************************************************************************************/
@@ -16,9 +21,21 @@
 /*	TYPEDEF																							*/
 /****************************************************************************************************/
 
+using				cString			=	const std::string&;
+
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
 /****************************************************************************************************/
+
+static constexpr std::array<const char*, 6>	rainbowColors =
+{
+	Color::BRED,
+	Color::BGREEN,
+	Color::BYELLOW,
+	Color::BBLUE,
+	Color::BMAGENTA,
+	Color::BCYAN
+};
 
 /****************************************************************************************************/
 /*	CLASS																							*/
@@ -26,6 +43,10 @@
 
 class				TitleViewer
 {
+	private:
+
+		static void					printRainbow(cString text);
+		static const char*			getRandomColor();
 
 	public:
 
@@ -35,8 +56,9 @@ class				TitleViewer
 		static void					tournament();
 		static void					teams();
 		static void					pools();
+		static void					matches();
 		static void					sixteenths();
-		static void					heighths();
+		static void					eighths();
 		static void					quarters();
 		static void					semis();
 		static void					thirdPlace();

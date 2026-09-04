@@ -14,6 +14,7 @@
 /*	CLASSES																							*/
 /****************************************************************************************************/
 
+class				Pool;
 class				Match;
 
 /****************************************************************************************************/
@@ -21,10 +22,9 @@ class				Match;
 /****************************************************************************************************/
 
 using				pMatch			=	Match*;
-using				cMatch			=	const Match&;
-using				cpMatch			=	const Match*;
 using				vpMatch			=	std::vector<Match*>;
-using				cvpMatch		=	const std::vector<Match*>&;
+
+using				pPool			=	Pool*;
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
@@ -37,8 +37,21 @@ using				cvpMatch		=	const std::vector<Match*>&;
 
 class				MatchCLI
 {
+	private:
+
+		static void					displayMenuUI(vpMatch matches, pPool pool);
+		static void					menuMatch(pMatch match);
+		static void					submenuMatch(pMatch match, pPool pool);
+
+		static void					executeChoice(int choice, pMatch match, pPool pool);
+
+		static void					handleSaveScore(pMatch match);
+		static void					handleModifyScore(pMatch match);
+
+		static bool					checkMatchId(int id, size_t size);
+
 	public:
 
-		static void					inputScore(Match& match);
+		static void					handleMenuMatch(vpMatch matches, pPool pool);
 
 };

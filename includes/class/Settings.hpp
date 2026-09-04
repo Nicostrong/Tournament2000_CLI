@@ -8,13 +8,9 @@
 /*	INCLUDES																						*/
 /****************************************************************************************************/
 
-# include <array>
-# include <tuple>
 # include <string>
-# include <vector>
-# include <algorithm>
 
-# include "./Participant.hpp"
+# include "./Player.hpp"
 
 /****************************************************************************************************/
 /*	CLASSES																							*/
@@ -26,108 +22,6 @@
 
 using				String			=	std::string;
 using				cString			=	const std::string&;
-using				vString			=	std::vector<std::string>;
-using				vtupleMsg		=	std::vector<std::tuple<std::string, bool>>;
-
-using				cInt			=	const int;
-using				vInt			=	std::vector<int>;
-using				cvInt			=	const std::vector<int>;
-template<std::size_t N>
-using				aInt			=	std::array<int, N>;
-
-using				cBool			=	const bool;
-
-/****************************************************************************************************/
-/*	ENUM																							*/
-/****************************************************************************************************/
-
-enum class nbPlayer : int
-{
-	douze = 12,
-	seize = 16,
-	vingt = 20,
-	vingtQuatre = 24,
-	trenteDeux = 32,
-	quarante = 40,
-	quaranteHuit = 48,
-	soixanteQuatre = 64,
-	quatreVingt = 80,
-	nonanteSix = 96,
-	centVingtHuit = 128,
-	centSoixante = 160
-};
-
-constexpr aInt<9> allowedNbPlayersSimple =
-{
-	static_cast<int>(nbPlayer::douze),
-	static_cast<int>(nbPlayer::seize),
-	static_cast<int>(nbPlayer::vingt),
-	static_cast<int>(nbPlayer::vingtQuatre),
-	static_cast<int>(nbPlayer::trenteDeux),
-	static_cast<int>(nbPlayer::quarante),
-	static_cast<int>(nbPlayer::quaranteHuit),
-	static_cast<int>(nbPlayer::soixanteQuatre),
-	static_cast<int>(nbPlayer::quatreVingt)
-};
-
-constexpr aInt<9> allowedNbPlayersDouble =
-{
-	static_cast<int>(nbPlayer::vingtQuatre),
-	static_cast<int>(nbPlayer::trenteDeux),
-	static_cast<int>(nbPlayer::quarante),
-	static_cast<int>(nbPlayer::quaranteHuit),
-	static_cast<int>(nbPlayer::soixanteQuatre),
-	static_cast<int>(nbPlayer::quatreVingt),
-	static_cast<int>(nbPlayer::nonanteSix),
-	static_cast<int>(nbPlayer::centVingtHuit),
-	static_cast<int>(nbPlayer::centSoixante)
-};
-
-enum class nbPool : int
-{
-	quatre = 4,
-	huit = 8,
-	seize = 16
-};
-
-constexpr aInt<3>					allowedNbPools =
-{
-	static_cast<int>(nbPool::quatre),
-	static_cast<int>(nbPool::huit),
-	static_cast<int>(nbPool::seize)
-};
-
-enum class nbPlayersOrTeamPerPool : int
-{
-	trois = 3,
-	quatre = 4,
-	cinq = 5
-};
-
-constexpr aInt<3>					allowedNbPlayersOrTeamsPerPools =
-{
-	static_cast<int>(nbPlayersOrTeamPerPool::trois),
-	static_cast<int>(nbPlayersOrTeamPerPool::quatre),
-	static_cast<int>(nbPlayersOrTeamPerPool::cinq)
-};
-
-enum class nbSetToPlay : int
-{
-	un = 1,
-	deux = 2,
-	trois = 3,
-	quatre = 4,
-	cinq = 5
-};
-
-constexpr aInt<5>					allowedNbSetToPlay =
-{
-	static_cast<int>(nbSetToPlay::un),
-	static_cast<int>(nbSetToPlay::deux),
-	static_cast<int>(nbSetToPlay::trois),
-	static_cast<int>(nbSetToPlay::quatre),
-	static_cast<int>(nbSetToPlay::cinq)
-};
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
@@ -167,20 +61,16 @@ class				Settings
 
 		Gender						_gender;
 
-		static bool					addErrorIf(cBool condition, cString message, vString errors);
-		void						checkLogicalTournament(vString errors) const;
-
-		template<typename Container>
-		bool						isInList(cInt value, const Container& list) const
-		{
-			return (std::find(list.begin(), list.end(), value) != list.end());
-		}
-
 	public:
 
 		Settings();
-		Settings(const Settings& ) = default;
-		Settings&					operator=(const Settings& ) = default;
+
+		Settings(const Settings&) = default;
+		Settings& operator=(const Settings&) = default;
+
+		Settings(Settings&&) = default;
+		Settings& operator=(Settings&&) = default;
+
 		~Settings() = default;
 
 		/*  GETTERS */
@@ -230,33 +120,28 @@ class				Settings
 		Gender						getTournamentGender() const;
 
 		/*  SETTERS */
-		void						setName(cString value);
-		void						setNbPlayers(cInt value);
-		void						setNbPlayerByPool(cInt value);
-		void						setNbPools(cInt value);
-		void						setNbBadmintonCourt(cInt value);
-		void						setScoreMin(cInt value);
-		void						setScoreMax(cInt value);
-		void						setDiffPointsToWin(cInt value);
+		void						setName(String value);
+		void						setNbPlayers(int value);
+		void						setNbPlayerByPool(int value);
+		void						setNbPools(int value);
+		void						setNbBadmintonCourt(int value);
+		void						setScoreMin(int value);
+		void						setScoreMax(int value);
+		void						setDiffPointsToWin(int value);
 
-		void						setNbSetPlayedPools(cInt value);
-		void						setNbSetPlayedSixteenth(cInt value);
-		void						setNbSetPlayedHeigth(cInt value);
-		void						setNbSetPlayedQuarters(cInt value);
-		void						setNbSetPlayedSemis(cInt value);
-		void						setNbSetPlayedFinal(cInt value);
-		void						setNbSetPlayedThirdPlace(cInt value);
+		void						setNbSetPlayedPools(int value);
+		void						setNbSetPlayedSixteenth(int value);
+		void						setNbSetPlayedHeigth(int value);
+		void						setNbSetPlayedQuarters(int value);
+		void						setNbSetPlayedSemis(int value);
+		void						setNbSetPlayedFinal(int value);
+		void						setNbSetPlayedThirdPlace(int value);
 
-		void						setIsMixed(cBool value);
-		void						setIsDouble(cBool value);
-		void						setAllowMultiTeamPlayers(cBool value);
-		void						setIsThirdPlaceMatch(cBool value);
-		void						setIsValid(cBool value);
-		void						setTournamentGender(cGender value);
-
-		/*	METHOD	*/
-		bool						isValid(vString errors);
-		[[nodiscard]]
-		bool						canAccommodate(cInt actualParticipants) const;
+		void						setIsMixed(bool value);
+		void						setIsDouble(bool value);
+		void						setAllowMultiTeamPlayers(bool value);
+		void						setIsThirdPlaceMatch(bool value);
+		void						setIsValid(bool value);
+		void						setTournamentGender(Gender value);
 
 };

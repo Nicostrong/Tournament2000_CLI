@@ -15,7 +15,7 @@
 /*	CLASSES																							*/
 /****************************************************************************************************/
 
-class				Participant;
+class				Player;
 
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
@@ -24,15 +24,9 @@ class				Participant;
 using				String			=	std::string;
 using				cString			=	const std::string&;
 
-using				cInt			=	const int;
-
-using				cBool			=	const bool;
-
-using				pPart			=	Participant*;
-using				cPart			=	const Participant&;
-using				cpPart			=	const Participant*;
-using				vpPart			=	std::vector<Participant*>;
-using				cvpPart			=	const std::vector<Participant*>&;
+using				pPlayer			=	Player*;
+using				vpPlayer		=	std::vector<Player*>;
+using				cvpPlayer		=	const std::vector<Player*>&;
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
@@ -43,7 +37,7 @@ using				cvpPart			=	const std::vector<Participant*>&;
 /****************************************************************************************************/
 
 /**
- * la classe Team represente un enssemble de Participant qui joueront enssemble
+ * la classe Team represente un enssemble de Player qui joueront enssemble
  */
 class				Team
 {
@@ -54,13 +48,13 @@ class				Team
 		int							_id;
 		int							_point;
 		int							_scoreMarked;
-        int							_scoreAgainst;
+		int							_scoreAgainst;
 		bool						_isMixed;
 		bool						_isEliminated;
+		bool						_isDisqualified;
 		bool						_hasMultiTeamPlayer;
 		String						_name;
-		vpPart						_members;
-
+		vpPlayer					_members;
 
 	public:
 
@@ -78,6 +72,8 @@ class				Team
 		[[nodiscard]]
 		bool						getIsEliminated() const;
 		[[nodiscard]]
+		bool						getIsDisqualified() const;
+		[[nodiscard]]
 		bool						getHasMultiTeamPlayer() const;
 		[[nodiscard]]
 		int							getId() const;
@@ -92,21 +88,26 @@ class				Team
 		[[nodiscard]]
 		cString						getName() const;
 		[[nodiscard]]
-		cvpPart						getMembers() const;
+		cvpPlayer					getMembers() const;
 
 		//	SETTER
-		void						setIsMixed(cBool value);
-		void						setIsEliminated(cBool value);
-		void						setHasMultiTeamPlayer(cBool value);
-		void						setName(cString value);
+		void						setIsMixed(bool value);
+		void						setIsEliminated(bool value);
+		void						setIsDisqualified(bool value);
+		void						setHasMultiTeamPlayer(bool value);
+		void						setName(String value);
 
 		//	METHOD
 		[[nodiscard]]
-		bool						isComplete(cInt requiredSize) const;
-		void						addMember(Participant* member);
+		bool						isComplete(int requiredSize) const;
+		void						addMember(Player* member);
 		void						renameTeam();
-		void						addPoint(cInt point);
-		void						addScoreMarked(cInt score);
-		void						addScoreAgainst(cInt score);
+		void						addPoint(int point);
+		void						addScoreMarked(int score);
+		void						addScoreAgainst(int score);
+		bool						hasMember(pPlayer p) const;
+		bool						sharesMemberWith(const Team* other) const;
+		bool						replaceMember(size_t index, Player* newMember);
+		void						disqualifyTeam(bool action);
 
 };

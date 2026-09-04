@@ -10,13 +10,15 @@
 
 # include <string>
 # include <vector>
+# include <memory>
 
 /****************************************************************************************************/
 /*	CLASSES																							*/
 /****************************************************************************************************/
 
-class				Match;
 class				Team;
+class				Match;
+class				Settings;
 
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
@@ -29,14 +31,12 @@ using				cInt			=	const int;
 
 using				cBool			=	const bool;
 
-using				pMatch			=	Match*;
-using				cMatch			=	const Match&;
-using				cpMatch			=	const Match*;
+using				cSet			=	const Settings&;
+
 using				vpMatch			=	std::vector<Match*>;
-using				cvpMatch		=	const std::vector<Match*>&;
+using				vuMatch			=	std::vector<std::unique_ptr<Match>>;
 
 using				pTeam			=	Team*;
-using				cTeam			=	const Team&;
 using				cpTeam			=	const Team*;
 using				vpTeam			=	std::vector<Team*>;
 using				cvpTeam			=	const std::vector<Team*>&;
@@ -56,15 +56,22 @@ class				Pool
 		static int					_idCounter;
 		String						_name;
 		vpTeam						_teams;
-		vpMatch						_matches;
+		vuMatch						_matches;
+		bool						_isFinished;
 
 	public:
 
 		Pool();
-		explicit Pool(cString ) = delete;
-		Pool(const Pool& ) = delete;
-		Pool&						operator=(const Pool& ) = delete;
-		~Pool();
+
+		Pool(cString) = delete;
+
+		Pool(const Pool&) = delete;
+		Pool& operator=(const Pool&) = delete;
+
+		Pool(Pool&&) = delete;
+		Pool& operator=(Pool&&) = delete;
+
+		~Pool() = default;
 
 		//	GETTER
 		[[nodiscard]]
@@ -72,14 +79,21 @@ class				Pool
 		[[nodiscard]]
 		cvpTeam						getTeams() const;
 		[[nodiscard]]
-		cvpMatch					getMatches() const;
+		vpTeam&						getTeamsMutable();
+		[[nodiscard]]
+		vpMatch						getMatches() const;
+		[[nodiscard]]
+		cBool						getIsFinished() const;
 
 		//	METHOD
 		void						addTeam(pTeam team);
-		void						generateMatches(cInt nbSetsPerEncounter);
+		void						generateMatches(int nbSetsPerEncounter, cSet settings);
 		void						sortTeams();
+		void						checkPoolIsFinished();
+		[[nodiscard]]
 		bool						allMatchesFinished() const;
-
+		[[nodiscard]]
+		bool						containsTeam(cpTeam team) const;
 		[[nodiscard]]
 		vpTeam						getQualifiers() const;
 

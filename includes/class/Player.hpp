@@ -30,8 +30,6 @@ using				cString			=	const std::string&;
 
 using				cBool			=	const bool;
 
-using				cGender			=	const Gender&;
-
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
 /****************************************************************************************************/
@@ -41,9 +39,9 @@ using				cGender			=	const Gender&;
 /****************************************************************************************************/
 
 /**
- * la classe Participant represente un joueur humain.
+ * la classe Player represente un joueur humain.
  */
-class				Participant
+class				Player
 {
 	private:
 
@@ -58,11 +56,16 @@ class				Participant
 
 	public:
 
-		Participant() = delete;
-		Participant(cString pseudo, cString lastName, cString firstName, cGender gender);
-		Participant(const Participant& p) = delete;
-		Participant&				operator=(const Participant& p) = delete;
-		~Participant() = default;
+		Player() = delete;
+		Player(String pseudo, String lastName, String firstName, Gender gender);
+
+		Player(const Player&) = delete;
+		Player& operator=(const Player&) = delete;
+
+		Player(Player&&) = delete;
+		Player& operator=(Player&&) = delete;
+
+		~Player() = default;
 
 		//	GETTER
 		[[nodiscard]]
@@ -76,6 +79,8 @@ class				Participant
 		[[nodiscard]]
 		String						getGenderStr() const;
 		[[nodiscard]]
+		String						getFullName() const;
+		[[nodiscard]]
 		Gender						getGenderInt() const;
 		[[nodiscard]]
 		bool						getIsEliminated() const;
@@ -83,11 +88,15 @@ class				Participant
 		bool						getIsMultiTeamPlayer() const;
 
 		//	SETTER
-		void						setPseudo(cString value);
-		void						setFirstName(cString value);
-		void						setLastName(cString value);
-		void						setGender(cGender value);
-		void						setIsEliminated(cBool value);
-		void						setIsMultiTeamPlayer(cBool value);
+		void						setPseudo(String value);
+		void						setFirstName(String value);
+		void						setLastName(String value);
+		void						setGender(Gender value);
+		void						setIsEliminated(bool value);
+		void						setIsMultiTeamPlayer(bool value);
+
+		//	METHODE
+
+		bool						operator==(const Player& other) const;
 
 };

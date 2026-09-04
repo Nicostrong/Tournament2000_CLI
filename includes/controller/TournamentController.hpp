@@ -1,5 +1,5 @@
 //
-// Created by Nicolas Fordoxcel on 21/08/2026.
+// Created by Nicolas Fordoxcel on 30/08/2026.
 //
 
 #pragma once
@@ -8,44 +8,73 @@
 /*	INCLUDES																						*/
 /****************************************************************************************************/
 
-# include <string>
-# include <vector>
+# include <memory>
+# include <csignal>
+
+# include "../class/Player.hpp"
+# include "../class/Pool.hpp"
+
 
 /****************************************************************************************************/
 /*	CLASSES																							*/
 /****************************************************************************************************/
 
-class				Participant;
+class				Settings;
+class				Tournament;
+class				PlayerManager;
 
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
 /****************************************************************************************************/
 
-using				String			=	std::string;
-using				cString			=	const std::string&;
+using				cSet			=	const Settings&;
+using				uSet			=	std::unique_ptr<Settings>;
 
-using				pPart			=	Participant*;
-using				cPart			=	const Participant&;
-using				cpPart			=	const Participant*;
-using				vpPart			=	std::vector<Participant*>;
-using				cvpPart			=	const std::vector<Participant*>&;
+using				uPlayerMan		=	std::unique_ptr<PlayerManager>;
+
+using				uTour			=	std::unique_ptr<Tournament>;
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
 /****************************************************************************************************/
 
+extern volatile std::sig_atomic_t g_running;
+
 /****************************************************************************************************/
 /*	CLASS																							*/
 /****************************************************************************************************/
 
-class				ParticipantViewer
+class				TournamentController
 {
+	private:
+	
+		enum class					State
+		{
+			SETTING,
+			PLAYER,
+			INIT_TOURNAMENT,
+			RUN_TOURNAMENT,
+			EXIT
+		};
+
+		uSet						_settings;
+		uPlayerMan					_playerManager;
+		uTour						_tournament;
+
+		State						handleSettingPhase();
+		State						handlePlayerPhase();
+		State						handleInitPhase();
+		State						handleRunPhase();
+
 	public:
 
-		static void					displayOne(cPart p);
-		static void					displayAll(cvpPart participants);
+		TournamentController();
+
+		TournamentController(const TournamentController&) = delete;
+		TournamentController& operator=(const TournamentController&) = delete;
+		
+		~TournamentController();
+		
+		void						run();
 
 };
-
-std::ostream&		operator<<(std::ostream& os, cPart p);
-

@@ -18,6 +18,7 @@
 
 class				Phase;
 class				Match;
+class				Tournament;
 
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
@@ -54,6 +55,8 @@ class				PhaseViewer
 									size_t startIdx, int nbSets, int encounterNum, bool toFile);
 		static void					displayPhase(cPhase phase);
 		static void					displayResults(cPhase phase);
+
+		static void					printAll(Tournament& tournament);
 
 };
 

@@ -1,0 +1,9 @@
+services:
+  cpp-env:
+    build: .
+    container_name: tournament2000_container
+    volumes:
+      - /Users/nicolasfordoxcel/Programmation/C++/Tournament2000_CLI:/app
+    working_dir: /app
+    stdin_open: true
+    tty: true

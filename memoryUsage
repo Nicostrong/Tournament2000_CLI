@@ -1,0 +1,54 @@
+TournamentController
+│
+├── unique_ptr<Settings>
+│
+├── unique_ptr<ParticipantManager>
+│       │
+│       └── vector<unique_ptr<Participant>>
+│
+└── unique_ptr<Tournament>
+        │
+        ├── const Settings&
+        │
+        ├── ParticipantManager&
+        │
+        ├── TeamManager
+        │       │
+        │       └── vector<unique_ptr<Team>>
+        │
+        ├── PoolManager
+        │       │
+        │       └── vector<unique_ptr<Pool>>
+        │
+        └── PhaseManager
+                │
+                ├── unique_ptr<Phase>
+                ├── unique_ptr<Phase>
+                ├── unique_ptr<Phase>
+                └── ...
+
+relation non proprietaires
+
+Team
+ └── Participant*
+
+Pool
+ └── Team*
+
+Match
+ ├── Team*
+ └── Team*
+
+Phase
+ └── unique_ptr<Match>
+
+Ownership:
+        std::unique_ptr<T>
+
+reference non owner obligatoire:
+        T&
+reference non owner obligatoire et lecture seule:
+        const T&
+
+reference non owner nullable
+        T*

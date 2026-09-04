@@ -6,7 +6,7 @@
 #    By: nfordoxc <nfordoxc@42luxembourg.lu>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/16 08:27:57 by nfordoxc          #+#    #+#              #
-#    Updated: 2026/07/15 10:49:39 by nfordoxc         ###   Luxembourg.lu      #
+#    Updated: 2026/08/30 15:55:06 by nfordoxc         ###   Luxembourg.lu      #
 #                                                                              #
 # **************************************************************************** #
 
@@ -42,16 +42,26 @@ RM				=	rm -f
 #	Mandatory part															   #
 ################################################################################
 
+CONTROLLER		=	./controller/TournamentController.cpp
+
 CLASS			=	./class/Match.cpp \
-					./class/Participant.cpp \
+					./class/Player.cpp \
 					./class/Phase.cpp \
 					./class/Pool.cpp \
 					./class/Settings.cpp \
 					./class/Team.cpp \
 					./class/Tournament.cpp
 
-CLI				=	./cli/MatchCLI.cpp \
-					./cli/ParticipantCLI.cpp \
+FACTORY			=	./factory/TeamFactory.cpp
+
+MANAGER			=	./manager/PhaseManager.cpp \
+					./manager/PoolManager.cpp \
+					./manager/TeamManager.cpp \
+					./manager/PlayerManager.cpp
+
+CLI				=	./cli/CLIUtils.cpp \
+					./cli/MatchCLI.cpp \
+					./cli/PlayerCLI.cpp \
 					./cli/PhaseCLI.cpp \
 					./cli/PoolCLI.cpp \
 					./cli/SettingsCLI.cpp \
@@ -60,21 +70,28 @@ CLI				=	./cli/MatchCLI.cpp \
 
 UTILS			=	./utils/CheckerCSV.cpp \
 					./utils/Exporter.cpp \
+					./utils/Importer.cpp \
 					./utils/FormatUtils.cpp \
 					./utils/PrintUtils.cpp \
+					./utils/SettingsChecker.cpp \
+					./utils/TablePrinter.cpp \
 					./utils/TournamentHistory.cpp
 
 VIEWER			=	./viewer/MatchViewer.cpp \
-                    ./viewer/ParticipantViewer.cpp \
+                    ./viewer/PlayerViewer.cpp \
                     ./viewer/PhaseViewer.cpp \
                     ./viewer/PoolViewer.cpp \
+                    ./viewer/SettingsViewer.cpp \
                     ./viewer/TeamViewer.cpp \
                     ./viewer/TitleViewer.cpp \
                     ./viewer/TournamentViewer.cpp
 
 
 SRC				=	./src/main.cpp \
+					$(CONTROLLER) \
 					$(CLASS) \
+					$(FACTORY) \
+					$(MANAGER) \
 					$(CLI) \
 					$(UTILS) \
 					$(VIEWER)
@@ -83,7 +100,7 @@ OBJ				=	$(SRC:.cpp=.o)
 
 DEP				=	$(SRC:.cpp=.d)
 
-NAME			=Tournament2000
+NAME			=	Tournament2000
 
 ################################################################################
 #	Tester part
@@ -217,12 +234,20 @@ deb:			all
 clean:
 	$(call delete_progress, ./src/*.o)
 	$(call delete_progress, ./class/*.o)
+	$(call delete_progress, ./controller/*.o)
+	$(call delete_progress, ./factory/*.o)
+	$(call delete_progress, ./manager/*.o)
 	$(call delete_progress, ./cli/*.o)
 	$(call delete_progress, ./utils/*.o)
+	$(call delete_progress, ./viewer/*.o)
 	$(call delete_progress, ./src/*.d)
 	$(call delete_progress, ./class/*.d)
+	$(call delete_progress, ./controller/*.d)
+	$(call delete_progress, ./factory/*.d)
+	$(call delete_progress, ./manager/*.d)
 	$(call delete_progress, ./cli/*.d)
 	$(call delete_progress, ./utils/*.d)
+	$(call delete_progress, ./viewer/*.d)
 
 fclean: 	clean
 	$(call delete_file, $(NAME))

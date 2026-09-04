@@ -16,6 +16,7 @@
 /****************************************************************************************************/
 
 class				Pool;
+class				Tournament;
 
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
@@ -30,6 +31,10 @@ using				cpPool			=	const Pool*;
 using				vpPool			=	std::vector<Pool*>;
 using				cvpPool			=	const std::vector<Pool*>&;
 
+using				pTour			=	Tournament*;
+using				cTour			=	const Tournament&;
+using				cpTour			=	const Tournament*;
+
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
 /****************************************************************************************************/
@@ -42,14 +47,15 @@ class				PoolViewer
 {
 	private:
 
-		static void					writeMatches(std::ostream& out, cPool pool, bool toFile);
-		static void					writeTable(std::ostream& out, cPool pool, bool toFile);
+		static void					writeSimpleTable(std::ostream& out, cPool pool, cBool toFile);
+		static void					writeCompleteTable(std::ostream& out, cPool pool, cBool toFile);
 
 	public:
 
-		static void					displayTable(cPool pool);
-		static void					displayFullTable(cPool pool);
-		static void					displayMatches(cPool pool);
-		static void					displayPoolDetails(cPool pool);
+		static void					showPoolStanding(cPool pool);
+		static void					showDetailsPoolStanding(cPool pool);
+		static void					showPoolsListWithStatus(cTour tournament);
+
+		static void					printAll(Tournament& tournament);
 
 };

@@ -16,6 +16,8 @@
 /****************************************************************************************************/
 
 class				Team;
+class				Pool;
+class				Tournament;
 
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
@@ -27,7 +29,7 @@ using				vString			=	std::vector<std::string>;
 
 using				cInt			=	const int;
 using				vInt			=	std::vector<int>;
-using				cvInt			=	const std::vector<int>;
+using				cvInt			=	const std::vector<int>&;
 
 using				cBool			=	const bool;
 
@@ -36,6 +38,12 @@ using				cTeam			=	const Team&;
 using				cpTeam			=	const Team*;
 using				vpTeam			=	std::vector<Team*>;
 using				cvpTeam			=	const std::vector<Team*>&;
+
+using				pPool			=	Pool*;
+using				cPool			=	const Pool&;
+using				cpPool			=	const Pool*;
+using				vpPool			=	std::vector<Pool*>;
+using				cvpPool			=	const std::vector<Pool*>&;
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
@@ -49,7 +57,12 @@ class				TeamViewer
 {
 	public:
 
-		static void					print(cTeam team);
+		static void					showTeamCard(cTeam team);
+		static void					showTeamsTableDetails(vpTeam teams);
+		static void					showListOfTeamsInPool(cPool pool);
+		static void					showAllTemasCardInPool(cPool pool);
+
+		static void					printAll(Tournament& tournament);
 
 };
 

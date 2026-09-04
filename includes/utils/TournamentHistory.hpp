@@ -17,7 +17,7 @@
 /****************************************************************************************************/
 
 class				Match;
-class				Participant;
+class				Player;
 
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
@@ -33,13 +33,13 @@ using				cpMatch			=	const Match*;
 using				vpMatch			=	std::vector<Match*>;
 using				cvpMatch		=	const std::vector<Match*>&;
 
-using				pPart			=	Participant*;
-using				cPart			=	const Participant&;
-using				cpPart			=	const Participant*;
-using				vpPart			=	std::vector<Participant*>;
-using				cvpPart			=	const std::vector<Participant*>&;
+using				pPlayer			=	Player*;
+using				cPlayer			=	const Player&;
+using				cpPlayer		=	const Player*;
+using				vpPlayer		=	std::vector<Player*>;
+using				cvpPlayer		=	const std::vector<Player*>&;
 
-using				mcpPartvpMatch	=	std::map<const Participant*, std::vector<Match*>>;
+using				mcpPlayervpMatch	=	std::map<const Player*, std::vector<Match*>>;
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
@@ -53,20 +53,25 @@ class				TournamentHistory
 {
 	private:
 
-		mcpPartvpMatch				_participantMatches;
+		mcpPlayervpMatch			_playerMatches;
 		vString						_globalEvents;
 
 	public:
 
 		//	CANONICAL
 		TournamentHistory() = default;
-		TournamentHistory(const TournamentHistory& ) = delete;
-		TournamentHistory&			operator=(const TournamentHistory& ) = delete;
+
+		TournamentHistory(const TournamentHistory&) = delete;
+		TournamentHistory& operator=(const TournamentHistory& ) = delete;
+
+		TournamentHistory(TournamentHistory&&) = delete;
+		TournamentHistory& operator=(TournamentHistory&&) = delete;
+
         ~TournamentHistory() = default;
 
 		//	METHODS
         void						logEvent(cString event);
         void						recordMatch(pMatch match);
-        void						exportParticipantSummary(cpPart p, cString filename) const;
+        void						exportPlayerSummary(cpPlayer p, cString filename) const;
 
 };

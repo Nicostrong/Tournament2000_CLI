@@ -7,10 +7,12 @@
 /****************************************************************************************************/
 
 #include <utility>
+#include <memory>
 
+#include "../includes/class/Team.hpp"
 #include "../includes/class/Phase.hpp"
 #include "../includes/class/Match.hpp"
-#include "../includes/class/Team.hpp"
+#include "../includes/class/Settings.hpp"
 
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
@@ -23,6 +25,14 @@ using				cInt			=	const int;
 
 using				cBool			=	const bool;
 
+using				cSet			=	const Settings&;
+
+using				vpMatch			=	std::vector<Match*>;
+using				uMatch			=	std::unique_ptr<Match>;
+
+using				pTeam			=	Team*;
+using				vpTeam			=	std::vector<Team*>;
+
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
 /****************************************************************************************************/
@@ -31,19 +41,8 @@ using				cBool			=	const bool;
 /*	CONSTRUCTOR / DESTRUCTOR																		*/
 /****************************************************************************************************/
 
-Phase::Phase(String name, cInt nbSets): _name(std::move(name)), _nbSetsToPlay(nbSets), _isFinished(false)
-{
-	this->_matches.clear();
-}
-
-Phase::~Phase()
-{
-	if (!this->_matches.empty())
-		for (cpMatch m : this->_matches)
-			delete m;
-	
-	this->_matches.clear();
-}
+Phase::Phase(String name, cInt nbSets)
+	: _name(std::move(name)), _nbSetsToPlay(nbSets), _isFinished(false) {}
 
 /****************************************************************************************************/
 /*	GETTER																							*/
@@ -52,28 +51,32 @@ Phase::~Phase()
 cString				Phase::getName() const			{	return (this->_name);			}
 int					Phase::getNbSetToPlay() const	{	return (this->_nbSetsToPlay);	}
 bool				Phase::getIsFinished() const	{	return (this->_isFinished);		}
-cvpMatch			Phase::getMatches() const		{	return (this->_matches);		}
+vpMatch				Phase::getMatches() const
+{
+	vpMatch matches;
+
+	matches.reserve(this->_matches.size());
+
+	for (const uMatch& match : this->_matches)
+		if (match)
+			matches.push_back(match.get());
+
+	return (matches);
+}
 
 vpTeam				Phase::getWinners() const
 {
-	vpTeam winners;	
+	vpTeam winners;
 
-	for (size_t i = 0; i < this->_matches.size(); i += this->_nbSetsToPlay)
+	if (this->_nbSetsToPlay <= 0)
+		return (winners);
+
+	for (size_t i = 0; i < this->_matches.size(); i += static_cast<size_t>(this->_nbSetsToPlay))
 	{
-		int winsA = 0;
-		int winsB = 0;
-		pTeam a = this->_matches[i]->getTeamA();
-		pTeam b = this->_matches[i]->getTeamB();
+		pTeam winner = this->getEncounterWinner(i);
 
-		for (int j = 0; j < this->_nbSetsToPlay; ++j)
-		{
-			if (this->_matches[i + j]->getWinner() == a)
-				winsA++;
-			else if (this->_matches[i + j]->getWinner() == b)
-				winsB++;
-		}
-		
-		winners.push_back(winsA >= winsB ? a : b);
+		if (winner)
+			winners.push_back(winner);
 	}
 
 	return (winners);
@@ -82,19 +85,27 @@ vpTeam				Phase::getWinners() const
 vpTeam				Phase::getLosers() const
 {
 	vpTeam losers;
-	vpTeam winners = getWinners();
+
+	if (this->_nbSetsToPlay <= 0)
+		return (losers);
+
+	vpTeam winners = this->getWinners();
+	const size_t step = static_cast<size_t>(this->_nbSetsToPlay);
 
 	for (size_t i = 0; i < winners.size(); ++i)
 	{
-		const size_t matchIdx = i * static_cast<size_t>(this->_nbSetsToPlay);
+		const size_t matchIdx = i * step;
 
-		if (matchIdx >= this->_matches.size())
-			break;
+		if (matchIdx >= this->_matches.size() || !this->_matches[matchIdx])
+			continue;
 
-		Team* a = this->_matches[matchIdx]->getTeamA();
-		Team* b = this->_matches[matchIdx]->getTeamB();
+		pTeam a = this->_matches[matchIdx]->getTeamA();
+		pTeam b = this->_matches[matchIdx]->getTeamB();
 
-		losers.push_back((winners[i] == a) ? b : a);
+		if (winners[i] == a && b)
+			losers.push_back(b);
+		else if (winners[i] == b && a)
+			losers.push_back(a);
 	}
 
 	return (losers);
@@ -110,17 +121,69 @@ void				Phase::setIsFinished(cBool isFinished)	{	this->_isFinished = isFinished;
 /*	PRIVATE METHODS																					*/
 /****************************************************************************************************/
 
+Team*				Phase::getEncounterWinner(size_t index) const
+{
+	if (this->_nbSetsToPlay <= 0 || index >= this->_matches.size())
+		return (nullptr);
+
+	const uMatch& firstMatch = this->_matches[index];
+
+	if (!firstMatch)
+		return (nullptr);
+
+	pTeam a = firstMatch->getTeamA();
+	pTeam b = firstMatch->getTeamB();
+
+	if (!a || !b)
+		return (nullptr);
+
+	int winsA = 0;
+	int winsB = 0;
+
+	const auto nbSets = static_cast<size_t>(this->_nbSetsToPlay);
+
+	if (index + nbSets > this->_matches.size())
+		return (nullptr);
+
+	for (size_t j = 0; j < nbSets; ++j)
+	{
+		const uMatch& match = this->_matches[index + j];
+
+		if (!match)
+			return (nullptr);
+
+		pTeam winner = match->getWinner();
+
+		if (winner == a)
+			++winsA;
+		else if (winner == b)
+			++winsB;
+	}
+
+	return (winsA >= winsB ? a : b);
+}
+
 /****************************************************************************************************/
 /*	PUBLIC METHODS																					*/
 /****************************************************************************************************/
 
-void				Phase::addEncounter(pTeam a, pTeam b)
+void				Phase::addEncounter(pTeam a, pTeam b, cSet settings)
 {
 	if (!a || !b)
 		return;
 
+	if (this->_nbSetsToPlay <= 0)
+		return;
+
+	ScoreRules rules
+	{
+		settings.getScoreMin(),
+		settings.getScoreMax(),
+		settings.getDiffPointsToWin()
+	};
+
 	for (int i = 0; i < this->_nbSetsToPlay; ++i)
-		this->_matches.push_back(new Match(a, b));
+		this->_matches.push_back(std::make_unique<Match>(a, b, rules));
 }
 
 bool				Phase::isFinished() const
@@ -128,8 +191,8 @@ bool				Phase::isFinished() const
 	if (this->_matches.empty())
 		return (false);
 
-	for (const auto m : this->_matches)
-		if (!m->isFinished())
+	for (const uMatch& m : this->_matches)
+		if (!m || !m->isFinished())
 			return (false);
 
 	return (true);

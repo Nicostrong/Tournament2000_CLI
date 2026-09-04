@@ -20,13 +20,18 @@ class				Team;
 /*	TYPEDEF																							*/
 /****************************************************************************************************/
 
-using				cInt			=	const int;
-
 using				pTeam			=	Team*;
-using				cTeam			=	const Team&;
-using				cpTeam			=	const Team*;
-using				vpTeam			=	std::vector<Team*>;
-using				cvpTeam			=	const std::vector<Team*>&;
+
+/****************************************************************************************************/
+/*	STRUCT																							*/
+/****************************************************************************************************/
+
+struct				ScoreRules
+{
+	int				scoreToWin;
+	int				scoreMaxToWin;
+	int				diffPointsToWin;
+};
 
 /****************************************************************************************************/
 /*	CLASSE																							*/
@@ -39,25 +44,37 @@ class				Match
 {
 	private:
 
-		Team*						_teamA;
-		Team*						_teamB;
+		pTeam						_teamA;
+		pTeam						_teamB;
 		int							_scoreA;
 		int							_scoreB;
 		bool						_isFinished;
+		ScoreRules					_rules;
+
+		[[nodiscard]]
+		bool						isDraw() const;
+		[[nodiscard]]
+		bool						checkScore(int sA, int sB) const;
+		void						applyStats(int sA, int sB, int multiplier) const;
 
 	public:
 
 		Match() = delete;
-		Match(Team* a, Team* b);
-		Match(const Match& match) = delete;
-		Match&						operator=(const Match& match) = delete;
+		Match(pTeam a, pTeam b, ScoreRules rules);
+
+		Match(const Match&) = delete;
+		Match& operator=(const Match&) = delete;
+
+		Match(Match&&) = delete;
+		Match& operator=(Match&&) = delete;
+
 		~Match() = default;
 
 		//	GETTER
 		[[nodiscard]]
-		Team*						getTeamA() const;
+		pTeam						getTeamA() const;
 		[[nodiscard]]
-		Team*						getTeamB() const;
+		pTeam						getTeamB() const;
 		[[nodiscard]]
 		int							getScoreA() const;
 		[[nodiscard]]
@@ -66,12 +83,19 @@ class				Match
 		bool						isFinished() const;
 
 		//	SETTER
-		void						setScore(cInt sA, cInt sB);
+		void						setScoreA(int value);
+		void						setScoreB(int value);
+		void						setTeamA(pTeam value);
+		void						setTeamB(pTeam value);
+		void						setIsFinished(bool value);
 
 		//	METHOD
 		[[nodiscard]]
-		Team*						getWinner() const;
+		pTeam						getWinner() const;
 		[[nodiscard]]
-		Team*						getLoser() const;
+		pTeam						getLoser() const;
+		void						modifyScore(int sA, int sB);
+		bool						setScore(int sA, int sB);
+		void						resetScore();
 
 };

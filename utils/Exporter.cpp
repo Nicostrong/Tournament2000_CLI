@@ -7,7 +7,6 @@
 /****************************************************************************************************/
 
 #include <format>
-#include <fstream>
 #include <iomanip>
 
 #include "../includes/class/Team.hpp"
@@ -16,7 +15,7 @@
 #include "../includes/class/Phase.hpp"
 #include "../includes/class/Settings.hpp"
 #include "../includes/class/Tournament.hpp"
-#include "../includes/class/Participant.hpp"
+#include "../includes/class/Player.hpp"
 
 #include "../includes/cli/PhaseCLI.hpp"
 
@@ -27,7 +26,7 @@
 /*	TYPEDEF																							*/
 /****************************************************************************************************/
 
-using				cpSet			=	const Settings*;
+using				cSet			=	const Settings&;
 
 /****************************************************************************************************/
 /*	CONSTRUCTOR / DESTRUCTOR																		*/
@@ -51,27 +50,27 @@ using				cpSet			=	const Settings*;
 
 void				Exporter::writeHeader(std::ofstream& out, cTour tournament)
 {
-	cpSet s = tournament.getSettings();
+	cSet s = tournament.getSettings();
 
 	out << "############################################################\n";
-	out << "##\t\tTOURNOI :\t" << s->getName() << "\n";
+	out << "##\t\tTOURNOI :\t" << s.getName() << "\n";
 	out << "############################################################\n\n";
 
 	out << "\tType\t\t\t:\t";
 
-	if (s->getIsDouble() && s->getIsMixed())
+	if (s.getIsDouble() && s.getIsMixed())
 		out << "Double mixte\n";
-	else if (s->getIsDouble())
+	else if (s.getIsDouble())
 		out << "Double\n";
 	else
 		out << "Simple\n";
 
-	out << "\tJoueurs\t\t\t:\t" << s->getNbPlayers() << "\n";
-	out << "\tPoules\t\t\t:\t" << s->getNbPools() << " x " << s->getNbPlayerByPool() << " equipes\n";
-	out << "\tScore min/max\t:\t" << s->getScoreMin() << " / " << s->getScoreMax()
-		<< " (ecart " << s->getDiffPointsToWin() << ")\n";
-	out << "\tMulti-team\t\t:\t" << (s->getAllowMultiTeamPlayers() ? "Oui" : "Non") << "\n";
-	out << "\tPetite finale\t:\t" << (s->getIsThirdPlaceMatch()    ? "Oui" : "Non") << "\n\n";
+	out << "\tJoueurs\t\t\t:\t" << s.getNbPlayers() << "\n";
+	out << "\tPoules\t\t\t:\t" << s.getNbPools() << " x " << s.getNbPlayerByPool() << " equipes\n";
+	out << "\tScore min/max\t:\t" << s.getScoreMin() << " / " << s.getScoreMax()
+		<< " (ecart " << s.getDiffPointsToWin() << ")\n";
+	out << "\tMulti-team\t\t:\t" << (s.getAllowMultiTeamPlayers() ? "Oui" : "Non") << "\n";
+	out << "\tPetite finale\t:\t" << (s.getIsThirdPlaceMatch()    ? "Oui" : "Non") << "\n\n";
 }
 
 void				Exporter::writePools(std::ofstream& out, cTour tournament)
@@ -311,60 +310,6 @@ void				Exporter::writePalmares(std::ofstream& out, cTour tournament)
 }
 
 /**
- * Ecrit la liste des matchs de la poule dans le flux out.
- * Si toFile = true : pas de codes couleur ANSI.
- */
-void				Exporter::writeMatches(std::ostream& out, cPool pool, cBool toFile)
-{
-	cvpMatch matches = pool.getMatches();
-
-	if (matches.empty())
-	{
-		PrintUtils::addError("Aucun match enregistre.");
-		return;
-	}
-
-	int i = 1;
-
-	for (cpMatch m : matches)
-	{
-		if (!m)
-			continue;
-
-		out << "  " << std::setw(2) << i++ << ". ";
-		out << m->getTeamA()->getName() << " vs " << m->getTeamB()->getName();
-
-		if (m->isFinished())
-		{
-			out << "  [ " << m->getScoreA() << " - " << m->getScoreB() << " ]";
-
-			if (m->getWinner())
-			{
-				if (!toFile)
-					out << "\033[1;32m";
-
-				out << "  ->  Vainqueur : " << m->getWinner()->getName();
-
-				if (!toFile)
-					out << "\033[0m";
-			}
-		}
-		else
-		{
-			if (!toFile)
-				out << "\033[1;33m";
-
-			out << "  [ À jouer ]";
-
-			if (!toFile)
-				out << "\033[0m";
-		}
-
-		out << "\n";
-	}
-}
-
-/**
  * Ecrit le tableau de classement de la poule dans le flux out.
  * Colonnes : Rang | Equipe | Pts | Diff
  * Si toFile = true : pas de codes couleur ANSI.
@@ -374,10 +319,7 @@ void				Exporter::writeTable(std::ostream& out, cPool pool, cBool toFile)
 	cvpTeam teams = pool.getTeams();
 
 	if (teams.empty())
-	{
-		PrintUtils::addError("Aucune equipe dans cette poule.");
-		return;
-	}
+		return (PrintUtils::addError("Aucune equipe dans cette poule."));
 
 	size_t maxLen = 6;
 
@@ -433,7 +375,7 @@ bool				Exporter::exportTournamentToTxt(cTour tournament, cString filename)
 	writeHeader(out, tournament);
 	writePools(out, tournament);
 	writePhaseBlock(out, tournament.getSixteenth());
-	writePhaseBlock(out, tournament.getHeighth());
+	writePhaseBlock(out, tournament.getEighth());
 	writePhaseBlock(out, tournament.getQuarters());
 	writePhaseBlock(out, tournament.getSemis());
 	writePhaseBlock(out, tournament.getThirdPlace());
@@ -445,7 +387,7 @@ bool				Exporter::exportTournamentToTxt(cTour tournament, cString filename)
 	return (true);
 }
 
-bool				Exporter::exportPhaseToTxt(cpPhase phase, cString filename)
+bool				Exporter::exportPhaseToTxt(pPhase phase, cString filename)
 {
 	if (!phase)
 	{
@@ -500,7 +442,7 @@ bool				Exporter::exportToTxt(cPool pool, cString filename)
 
 		file << " : ";
 
-		cvpPart members = t->getMembers();
+		cvpPlayer members = t->getMembers();
 
 		for (size_t i = 0; i < members.size(); ++i)
 		{
@@ -517,7 +459,7 @@ bool				Exporter::exportToTxt(cPool pool, cString filename)
 	}
 
 	file << "\n[MATCHS]\n";
-	writeMatches(file, pool, true);
+	PrintUtils::writeMatchesList(file, pool.getMatches(), true);
 
 	file << "\n[CLASSEMENT FINAL]\n";
 	writeTable(file, pool, true);
@@ -532,7 +474,7 @@ bool				Exporter::exportToTxt(cPool pool, cString filename)
 /*	EXPORTS CSV	*/
 /****************/
 
-bool				Exporter::exportParticipantsToCSV(cvpPart participants, cString filename)
+bool				Exporter::exportPlayersToCSV(cvpPlayer participants, cString filename)
 {
 	std::ofstream file(filename);
 
@@ -541,7 +483,7 @@ bool				Exporter::exportParticipantsToCSV(cvpPart participants, cString filename
 
 	file << "pseudo,nom,prenom,genre\n";
 
-	for (cpPart p : participants)
+	for (cpPlayer p : participants)
 		if (p)
 			file << p->getPseudo() << ","
 				<< p->getLastName() << ","

@@ -71,3 +71,12 @@
 # define NBSETTHIRDMAX				3
 # define NBSETFINALMIN				1
 # define NBSETFINALMAX				5
+
+//	Len string
+# define LENSEPARATOR				60
+# define LENTITLE					60
+# define MAXLENPSEUDO				15
+# define MAXLENFIRSTNAME			20
+# define MAXLENLASTNAME				20
+# define MAXLENTEAMNAME				15
+# define MAXLENPOOLNAME				20

@@ -9,7 +9,6 @@
 /****************************************************************************************************/
 
 # include <string>
-# include <vector>
 
 /****************************************************************************************************/
 /*	CLASSES																							*/
@@ -22,14 +21,6 @@ class				Phase;
 /****************************************************************************************************/
 
 using				String			=	std::string;
-using				cString			=	const std::string&;
-
-
-using				pPhase			=	Phase*;
-using				cPhase			=	const Phase&;
-using				cpPhase			=	const Phase*;
-using				vpPhase			=	std::vector<Phase*>;
-using				cvpPhase		=	const std::vector<Phase*>&;
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
@@ -44,6 +35,6 @@ class				PhaseCLI
 
 	public:
 
-		static bool					exportToTxt(cPhase phase, cString filename);
+		static bool					exportToTxt(const Phase& phase, String filename);
 
 };
