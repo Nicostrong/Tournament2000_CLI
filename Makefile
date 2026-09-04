@@ -65,6 +65,7 @@ CLI				=	./cli/CLIUtils.cpp \
 					./cli/PhaseCLI.cpp \
 					./cli/PoolCLI.cpp \
 					./cli/SettingsCLI.cpp \
+					./cli/ShowCLI.cpp \
 					./cli/TeamCLI.cpp \
 					./cli/TournamentCLI.cpp
 

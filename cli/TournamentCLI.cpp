@@ -8,7 +8,6 @@
 
 #include <vector>
 #include <format>
-#include <limits>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -23,7 +22,7 @@
 #include "../includes/cli/CLIUtils.hpp"
 #include "../includes/cli/PoolCLI.hpp"
 #include "../includes/cli/TeamCLI.hpp"
-#include "../includes/cli/MatchCLI.hpp"
+#include "../includes/cli/ShowCLI.hpp"
 #include "../includes/cli/TournamentCLI.hpp"
 
 #include "../includes/viewer/TeamViewer.hpp"
@@ -80,13 +79,6 @@ void				TournamentCLI::menuTournament(cTour tournament)
 	{
 		{'1', "Teams"},
 		{'2', "Pool"},
-		{'3', "Print Pool"},
-		{'4', "Print Team"},
-		{'5', "Print Match"},
-		{'6', "Print Phase"},
-		{'7', "Print Player"},
-		{'8', "Print Settings"},
-		{'9', "Print Tournament"}
 	};
 
 
@@ -138,42 +130,7 @@ void				TournamentCLI::executeChoice(cInt choice, Tournament& tournament)
 			PoolCLI::handleMenuPool(tournament);
 			break;
 
-		case 3:		//	Print Pool
-			PoolViewer::printAll(tournament);
-			CLIUtils::waitForEnter();
-			break;
-
-		case 4:		//	Print Team
-			TeamViewer::printAll(tournament);
-			CLIUtils::waitForEnter();
-			break;
-
-		case 5:		//	Print Match
-			MatchViewer::printAll(tournament);
-			CLIUtils::waitForEnter();
-			break;
-
-		case 6:		//	Print Phase
-			PhaseViewer::printAll(tournament);
-			CLIUtils::waitForEnter();
-			break;
-
-		case 7:		//	Print Player
-			PlayerViewer::printAll(tournament);
-			CLIUtils::waitForEnter();
-			break;
-
-		case 8:		//	Print Settings
-			SettingsViewer::printAll(tournament);
-			CLIUtils::waitForEnter();
-			break;
-
-		case 9:		//	Print Tournament
-			TournamentViewer::printAll(tournament);
-			CLIUtils::waitForEnter();
-			break;
-
-		/* case 3:		//	1/16
+		case 3:		//	1/16
 			if (tournament.getHasSixteenth() && tournament.isSixteenthUnlocked())
 				handleEliminationPhase(tournament.getSixteenth(), [&]() { tournament.generateSixteenths(); },
 					"1/16 DE FINALE", "1/16 generes avec succes !", "Impossible : verifiez que les poules soient terminees.");
@@ -224,7 +181,7 @@ void				TournamentCLI::executeChoice(cInt choice, Tournament& tournament)
 				PrintUtils::addError("Menu non disponible pour le moment.");
 			break;
 
-		*//*
+		/*
 		case 8:
 			if (tournament.getQuarters() != nullptr)
 				TournamentViewer::displayFullBracket(tournament);
@@ -570,7 +527,7 @@ void				TournamentCLI::handleMenuTournament(Tournament& tournament)
 
 			if (input == "s" || input == "S")
 			{
-				//handleShow(tournament);
+				ShowCLI::handleMenuShow(tournament);
 				continue;
 			}
 

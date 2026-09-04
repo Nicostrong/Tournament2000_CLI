@@ -102,8 +102,9 @@ void				PoolViewer::writeCompleteTable(std::ostream& out, cPool pool, cBool toFi
 			std::to_string(t->getPoint()),
 			std::to_string(t->getScoreMarked()),
 			std::to_string(t->getScoreAgainst()),
-			std::to_string(t->getScoreDiff())};
-		cString color = (i <= 2) ? Color::BGREEN : "";
+			std::to_string(t->getScoreDiff())
+		};
+		cString color = (i < 2) ? Color::BGREEN : "";
 
 		table.addRow(rowData, color);
 	}
