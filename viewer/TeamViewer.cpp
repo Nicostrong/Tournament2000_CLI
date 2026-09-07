@@ -77,7 +77,6 @@ void				TeamViewer::showTeamsTableDetails(vpTeam teams)
 	TablePrinter table;
 
 	table.setHeaders({"ID", "Equipe", "Pts", "Pts +", "Pts -", "Diff", "Mixte", "Eli.", "Dis.", "Multi"});
-	int i = 0;
 
 	for (const Team* team : teams)
 	{
@@ -96,9 +95,8 @@ void				TeamViewer::showTeamsTableDetails(vpTeam teams)
 			team->getIsDisqualified() ? "Oui" : "Non",
 			team->getHasMultiTeamPlayer() ? "Oui" : "Non"
 		};
-		cString color = (i++ < 2) ? Color::BGREEN : Color::RESET;
 
-		table.addRow(rowData, color);
+		table.addRow(rowData);
 	}
 
 	table.printTable(std::cout);

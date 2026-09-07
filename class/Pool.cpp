@@ -46,7 +46,7 @@ int					Pool::_idCounter = 1;
 /****************************************************************************************************/
 
 Pool::Pool()
-	: _name("Pool " + std::to_string(_idCounter++)), _isFinished(false) {}
+	: _name("Pool " + std::to_string(_idCounter++)) {}
 
 /****************************************************************************************************/
 /*	GETTER																							*/
@@ -55,7 +55,6 @@ Pool::Pool()
 cString				Pool::getName() const			{	return (this->_name);		}
 cvpTeam				Pool::getTeams() const			{	return (this->_teams);		}
 vpTeam&				Pool::getTeamsMutable()			{	return (this->_teams);		}
-cBool				Pool::getIsFinished() const		{	return (this->_isFinished);	}
 
 vpMatch				Pool::getMatches() const
 {
@@ -91,7 +90,6 @@ void				Pool::addTeam(pTeam team)
 void				Pool::generateMatches(cInt nbSetsPerEncounter, cSet settings)
 {
 	this->_matches.clear();
-	this->_isFinished = false;
 
 	if (this->_teams.size() < 2)
 		return;
@@ -138,11 +136,6 @@ void				Pool::sortTeams()
 
 		return (false); 
 	});
-}
-
-void				Pool::checkPoolIsFinished()
-{
-	this->_isFinished = this->allMatchesFinished();
 }
 
 bool				Pool::allMatchesFinished() const

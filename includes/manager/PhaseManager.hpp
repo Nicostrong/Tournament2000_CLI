@@ -130,7 +130,7 @@ class				PhaseManager
 
 		//	GETTER
 		[[nodiscard]]
-		pPhase						getSixteenth() const;
+		pPhase						getSixteenths() const;
 		[[nodiscard]]
 		pPhase						getEighth() const;
 		[[nodiscard]]

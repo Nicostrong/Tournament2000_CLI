@@ -55,7 +55,7 @@ vpTeam				Tournament::getTeams() const			{	return (this->_teamManager.getTeams()
 pTeam				Tournament::getTeamById(cInt id) const	{	return (this->_teamManager.getTeamById(id));			}
 cSet				Tournament::getSettings() const			{	return (this->_settings);								}
 vpPool				Tournament::getPools() const			{	return (this->_poolManager.getPools());					}
-pPhase				Tournament::getSixteenth() const		{	return (this->_phaseManager.getSixteenth());			}
+pPhase				Tournament::getSixteenth() const		{	return (this->_phaseManager.getSixteenths());			}
 pPhase				Tournament::getEighth() const			{	return (this->_phaseManager.getEighth());				}
 pPhase				Tournament::getQuarters() const			{	return (this->_phaseManager.getQuarters());				}
 pPhase				Tournament::getSemis() const			{	return (this->_phaseManager.getSemis());				}
@@ -95,53 +95,76 @@ void				Tournament::clean()
 	this->_isFinished = false;
 }
 
-void				Tournament::generateTeams()
+bool				Tournament::generateTeams()
 {
 	this->_teamManager.generateTeams(this->_playerManager.getPlayers());
+	return (!this->_teamManager.getTeams().empty());
 }
 
-void				Tournament::generatePools()
+bool				Tournament::generatePools()
 {
 	this->_poolManager.generatePools(this->_teamManager.getTeams());
+	return (!this->_poolManager.getPools().empty());
 }
 
-void				Tournament::generateSixteenths()
+bool				Tournament::generateSixteenths()
 {
 	if (!this->_poolManager.isPoolsFinished())
-		return;
+		return (false);
 
 	this->_phaseManager.generateSixteenths(this->_poolManager.getPools());
+
+	return (this->_phaseManager.getSixteenths());
 }
 
-void				Tournament::generateEighths()
+bool				Tournament::generateEighths()
 {
 	if (!this->_poolManager.isPoolsFinished())
-		return;
+		return (false);
 
 	this->_phaseManager.generateEighths(this->_poolManager.getPools());
+
+	return (this->_phaseManager.getEighth());
 }
 
-void				Tournament::generateQuarters()
+bool				Tournament::generateQuarters()
 {
 	if (!this->_poolManager.isPoolsFinished())
-		return;
+		return (false);
 
 	this->_phaseManager.generateQuarters(this->_poolManager.getPools());
+
+	return (this->_phaseManager.getQuarters());
 }
 
-void				Tournament::generateSemis()
+bool				Tournament::generateSemis()
 {
+	if (!this->_phaseManager.isSemisUnlocked())
+		return (false);
+
 	this->_phaseManager.generateSemis();
+
+	return (this->_phaseManager.getSemis());
 }
 
-void				Tournament::generateFinal()
+bool				Tournament::generateFinal()
 {
+	if (!this->_phaseManager.isFinalUnlocked())
+		return (false);
+
 	this->_phaseManager.generateFinal();
+
+	return (this->_phaseManager.getFinal());
 }
 
-void				Tournament::generateThirdPlace()
+bool				Tournament::generateThirdPlace()
 {
+	if (!this->_phaseManager.isThirdUnlocked())
+		return (false);
+
 	this->_phaseManager.generateThirdPlace();
+
+	return (this->_phaseManager.getThirdPlace());
 }
 
 void				Tournament::disqualifyTeam(pTeam team)

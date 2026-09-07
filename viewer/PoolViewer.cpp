@@ -153,7 +153,7 @@ void				PoolViewer::showPoolsListWithStatus(cTour tournament)
 		vString rowData = {
 			std::to_string(i++),
 			pool->getName(),
-			pool->getIsFinished() ? "oui" : "non"
+			pool->allMatchesFinished() ? "oui" : "non"
 		};
 
 		table.addRow(rowData);

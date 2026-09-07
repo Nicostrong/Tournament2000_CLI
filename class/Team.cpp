@@ -67,7 +67,7 @@ void				Team::setIsMixed(cBool value)				{	this->_isMixed = value;				}
 void				Team::setIsEliminated(cBool value)			{	this->_isEliminated = value;		}
 void				Team::setIsDisqualified(cBool value)		{	this->_isDisqualified = value;		}
 void				Team::setHasMultiTeamPlayer(cBool value)	{	this->_hasMultiTeamPlayer = value;	}
-void				Team::setName(String value)					{	this->_name = value;				}
+void				Team::setName(cString value)				{	this->_name = value;				}
 
 /****************************************************************************************************/
 /*	PRIVATE METHODS																					*/

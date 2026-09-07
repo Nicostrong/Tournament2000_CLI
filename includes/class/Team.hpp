@@ -95,7 +95,7 @@ class				Team
 		void						setIsEliminated(bool value);
 		void						setIsDisqualified(bool value);
 		void						setHasMultiTeamPlayer(bool value);
-		void						setName(String value);
+		void						setName(cString value);
 
 		//	METHOD
 		[[nodiscard]]

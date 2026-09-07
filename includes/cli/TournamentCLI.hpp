@@ -74,12 +74,12 @@ class				TournamentCLI
 		//	Handlers de saisie
 		static void					executeChoice(cInt choice, Tournament& tournament);
 
-		static void					handleEliminationPhase(pPhase phase, const std::function<void()>& generateFn,
+		static void					handleEliminationPhase(pPhase phase, const std::function<bool()>& generateFn,
 										cString phaseName, cString successMsg, cString errorMsg);
 		static void					handleExport(Tournament& tournament);
 		static cpPhase				getPhaseByMenuChoice(cTour tournament, cInt choice);
 		
 		//	Helpers d affichage
-		static void					handlePhase(pPhase phase, cString phaseName);
+		//static void					handlePhase(pPhase phase, cString phaseName);
 		
 };

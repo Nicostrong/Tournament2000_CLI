@@ -11,8 +11,7 @@
 #include <iostream>
 
 #include "../includes/class/Team.hpp"
-#include "../includes/class/Pool.hpp"
-# include "../includes/class/Match.hpp"
+#include "../includes/class/Match.hpp"
 #include "../includes/class/Tournament.hpp"
 
 #include "../includes/utils/PrintUtils.hpp"
@@ -51,16 +50,20 @@ using				cvpMatch		=	const std::vector<Match*>&;
 /*  GESTION DU MENU		*/
 /************************/
 
-void				MatchCLI::displayMenuUI(vpMatch matches, pPool pool)
+void				MatchCLI::displayMenuUI(vpMatch matches, cString title)
 {
 	CLIUtils::handleTitle(TitleViewer::matches);
 	PrintUtils::handleMessages();
 
-	pool->sortTeams();
+	if (!title.empty())
+		PrintUtils::printTitle(std::format("MATCHES — {}", title));
+	else
+		PrintUtils::printTitle("LISTE DES MATCHES");
 
-	PoolViewer::showDetailsPoolStanding(*pool);
 	MatchViewer::showExtendedTableOfAllMatchesInPool(matches);
-	std::cout << "Selectionnez un matche en entrant son id (tapez 'r' pour revenir au menu precedent): ";
+
+	std::cout << "Select the ID of match you want to interract with ('r' to return): ";
+
 	CLIUtils::checkInterruption();
 }
 
@@ -69,16 +72,17 @@ void				MatchCLI::menuMatch(pMatch match)
 	std::vector<MenuItem> items;
 
 	if (match->isFinished())
-		items.push_back({'1', "Modifier le score"});
+		items.push_back({'1', "Modify score"});
 	else
-		items.push_back({'1', "Enregistrer un score"});
+		items.push_back({'1', "Save score"});
 
-	items.push_back({'2', "Afficher la rencontre"});
-	items.push_back({'R', "Retour au menu precedent"});
+	items.push_back({'2', "Show the match"});
+	items.push_back({'R', "Return"});
+
 	CLIUtils::displayMenu(std::format("{}\tVs\t{}", match->getTeamA()->getName(), match->getTeamB()->getName()), items);
 }
 
-void				MatchCLI::submenuMatch(pMatch match, pPool pool)
+void				MatchCLI::submenuMatch(pMatch match)
 {
 	try
 	{
@@ -98,7 +102,7 @@ void				MatchCLI::submenuMatch(pMatch match, pPool pool)
 			
 			if (choice.has_value())
 			{
-				executeChoice(choice.value(), match, pool);
+				executeChoice(choice.value(), match);
 				return;
 			}
 		}
@@ -113,7 +117,7 @@ void				MatchCLI::submenuMatch(pMatch match, pPool pool)
 /*  EXECUTION	*/
 /****************/
 
-void				MatchCLI::executeChoice(cInt choice, pMatch match, pPool pool)
+void				MatchCLI::executeChoice(cInt choice, pMatch match)
 {
 	switch (choice)
 	{
@@ -125,7 +129,7 @@ void				MatchCLI::executeChoice(cInt choice, pMatch match, pPool pool)
 			break;
 		
 		case 2:
-			MatchViewer::showAllMatchesWithStatusInPool(*pool);
+			MatchViewer::showMatchTitle(*match);
 			CLIUtils::waitForEnter();
 			break;
 
@@ -167,22 +171,23 @@ void				MatchCLI::handleModifyScore(pMatch match)
 
 bool				MatchCLI::checkMatchId(int id, size_t size)
 {
-	return (id < static_cast<int>(size) && id >= 0);
+	return (id >= 0 && id < static_cast<int>(size));
 }
 
 /****************************************************************************************************/
 /*	PUBLIC METHOD																					*/
 /****************************************************************************************************/
 
-
-
-void				MatchCLI::handleMenuMatch(vpMatch matches, pPool pool)
+void				MatchCLI::handleMenuMatch(vpMatch matches, cString title)
 {
+	if (matches.empty())
+		return (PrintUtils::addError("No matches found !"));
+
 	try
 	{
 		while (true)
 		{
-			displayMenuUI(matches, pool);
+			displayMenuUI(matches, title);
 
 			String input = CLIUtils::input();
 			
@@ -200,8 +205,10 @@ void				MatchCLI::handleMenuMatch(vpMatch matches, pPool pool)
 				continue;
 			}
 
-			if (!matches.empty() && choice.has_value())
-				submenuMatch(matches[choice.value()], pool);
+			if (matches[choice.value()])
+				submenuMatch(matches[choice.value()]);
+			else
+				PrintUtils::addError("Saisie invallide.");
 		}
 	}
 	catch (const CLIInterrupted&)

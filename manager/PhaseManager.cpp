@@ -40,7 +40,7 @@ PhaseManager::~PhaseManager() = default;
 /*	GETTER																							*/
 /****************************************************************************************************/
 
-pPhase				PhaseManager::getSixteenth() const			{	return (this->_sixteenths.get());		}
+pPhase				PhaseManager::getSixteenths() const			{	return (this->_sixteenths.get());		}
 pPhase				PhaseManager::getEighth() const				{	return (this->_eighth.get());			}
 pPhase				PhaseManager::getQuarters() const			{	return (this->_quarters.get());			}
 pPhase				PhaseManager::getSemis() const				{	return (this->_semis.get());			}

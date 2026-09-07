@@ -18,7 +18,7 @@
 # define NBPLAYER					12 //ISDOUBLE ? (NBPOOL * NBPLAYERPERPOOL * 2) : (NBPOOL * NBPLAYERPERPOOL)
 # define NBPOOL						4
 # define NBTERRAIN					5
-# define SCOREMIN					21
+# define SCOREMIN					15
 # define SCOREMAX					30
 # define ECART						2
 # define NBPLAYERPERPOOL			3
@@ -40,7 +40,7 @@
 //	Game settings
 # define NBTERRAINMIN				1
 # define NBTERRAINMAX				12
-# define SCOREMINTOWIN				5
+# define SCOREMINTOWIN				15
 # define SCOREMAXTOWIN				30
 # define ECARTMIN					1
 # define ECARTMAX					5

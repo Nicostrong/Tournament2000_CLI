@@ -8,23 +8,26 @@
 /*	INCLUDES																						*/
 /****************************************************************************************************/
 
+# include <string>
 # include <vector>
 
 /****************************************************************************************************/
 /*	CLASSES																							*/
 /****************************************************************************************************/
 
-class				Pool;
 class				Match;
 
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
 /****************************************************************************************************/
 
+using				String			=	std::string;
+using				cString			=	const std::string&;
+
+using				cInt			=	const int;
+
 using				pMatch			=	Match*;
 using				vpMatch			=	std::vector<Match*>;
-
-using				pPool			=	Pool*;
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
@@ -39,11 +42,10 @@ class				MatchCLI
 {
 	private:
 
-		static void					displayMenuUI(vpMatch matches, pPool pool);
+		static void					displayMenuUI(vpMatch matches, cString title = "");
 		static void					menuMatch(pMatch match);
-		static void					submenuMatch(pMatch match, pPool pool);
 
-		static void					executeChoice(int choice, pMatch match, pPool pool);
+		static void					executeChoice(cInt choice, pMatch match);
 
 		static void					handleSaveScore(pMatch match);
 		static void					handleModifyScore(pMatch match);
@@ -52,6 +54,7 @@ class				MatchCLI
 
 	public:
 
-		static void					handleMenuMatch(vpMatch matches, pPool pool);
+		static void					handleMenuMatch(vpMatch matches, cString title = "");
+		static void					submenuMatch(pMatch match);
 
 };
