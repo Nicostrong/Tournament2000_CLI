@@ -20,6 +20,8 @@
 #include "../includes/class/Match.hpp"
 #include "../includes/class/Tournament.hpp"
 
+#include "../includes/Color.hpp"
+
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
 /****************************************************************************************************/
@@ -108,8 +110,15 @@ void				MatchViewer::showDetailsTableOfAllMatches(cvpMatch matches, cString titl
 			match->isFinished() ? std::format("{} - {}", match->getScoreA(), match->getScoreB()) : "- : -",
 			match->isFinished() ? "Oui" : "Non"
 		};
-		
-		table.addRow(rowData);
+
+		String color;
+
+		if (match->isFinished())
+			color = Color::GREEN;
+		else
+			color = Color::RED;
+
+		table.addRow(rowData, color);
 	}
 
 	table.printTable(std::cout);

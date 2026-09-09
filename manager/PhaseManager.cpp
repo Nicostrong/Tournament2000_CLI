@@ -67,7 +67,7 @@ void				PhaseManager::generateSymmetricPoolEncounters(pPhase targetPhase, cvpPoo
 	if (!targetPhase || pools.size() < nbPools)
 		return;
 
-	for (size_t i = 0; i < nbPools / 2; ++i)
+	for (size_t i = 0; i < nbPools; ++i)
 	{
 		pPool firstPool = pools[i];
 		pPool oppositePool = pools[nbPools - 1 - i];
@@ -82,7 +82,6 @@ void				PhaseManager::generateSymmetricPoolEncounters(pPhase targetPhase, cvpPoo
 			continue;
 
 		targetPhase->addEncounter(firstQualifiers[0], oppositeQualifiers[1], this->_settings);
-		targetPhase->addEncounter(oppositeQualifiers[0], firstQualifiers[1], this->_settings);
 	}
 }
 
@@ -264,24 +263,7 @@ void				PhaseManager::generateQuarters(cvpPool pools)
 		if (pools.size() < 4)
 			return;
 
-		for (size_t i = 0; i < 2; ++i)
-		{
-			pPool firstPool = pools[i];
-			pPool oppositePool = pools[i + 2];
-
-			if (!firstPool || !oppositePool)
-				continue;
-
-			vpTeam firstQualifiers = firstPool->getQualifiers();
-			vpTeam oppositeQualifiers = oppositePool->getQualifiers();
-
-			if (firstQualifiers.size() < 2 || oppositeQualifiers.size() < 2)
-				continue;
-
-			phase->addEncounter(firstQualifiers[0], oppositeQualifiers[1], this->_settings);
-
-			phase->addEncounter(oppositeQualifiers[0], firstQualifiers[1], this->_settings);
-		}
+		generateSymmetricPoolEncounters(phase.get(), pools, 4);
 	}
 
 	if (!phase->getMatches().empty())
@@ -294,14 +276,10 @@ void				PhaseManager::generateSemis()
 		return;
 
 	vpTeam winners = this->_quarters->getWinners();
-
-	if (winners.size() < 4)
-		return;
-
 	auto phase = std::make_unique<Phase>("Demi-Finales", this->_settings.getNbSetPlayedSemis());
 
-	phase->addEncounter(winners[0], winners[2], this->_settings);
-	phase->addEncounter(winners[1], winners[3], this->_settings);
+	if (!addEncountersFromPreviousPhase(phase.get(), this->_quarters.get()))
+		return;
 
 	this->_semis = std::move(phase);
 }

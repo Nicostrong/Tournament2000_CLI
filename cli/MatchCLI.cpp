@@ -159,7 +159,7 @@ void				MatchCLI::handleModifyScore(pMatch match)
 	cInt sA = CLIUtils::askInt(std::format("Score actuel de {} => {}", match->getTeamA()->getName(), match->getScoreA()), 0, SCOREMAXTOWIN, match->getScoreA());
 	cInt sB = CLIUtils::askInt(std::format("Score actuel de {} => {}", match->getTeamB()->getName(), match->getScoreB()), 0, SCOREMAXTOWIN, match->getScoreB());
 
-	if(match->setScore(sA, sB))
+	if(match->modifyScore(sA, sB))
 		PrintUtils::addSuccess("Score modifie !");
 	else
 		PrintUtils::addError(std::format("Les scores ne sont pas valide TeamA: {} - TeamB: {}.", sA, sB));

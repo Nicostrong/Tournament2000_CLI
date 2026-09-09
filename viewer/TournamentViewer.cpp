@@ -129,170 +129,196 @@ void				TournamentViewer::extractEncounterNames(cpPhase phase, size_t count, vpa
 
 void				TournamentViewer::displayFullBracket(cTour tournament)
 {
-	struct PhaseInfo {
-		std::string name;
-		cpPhase phase;
-		int count;
-		vpairString pairs;
-	};
+    struct PhaseInfo {
+        std::string name;
+        cpPhase phase;
+        int count;
+        vpairString pairs;
+    };
 
-	// 1. Détection dynamique des phases présentes dans le tournoi
-	std::vector<PhaseInfo> phases;
-	
-	// Remplacer/compléter selon vos méthodes d'accès aux phases dans cTour
-	if (cpPhase p = tournament.getSixteenth())
-		phases.push_back({"1/16 FINALE", p, 16, {}});
-	if (cpPhase p = tournament.getEighth())
-		phases.push_back({"1/8 FINALE",  p, 8,  {}});
-	if (cpPhase p = tournament.getQuarters())
-		phases.push_back({"QUARTS",      p, 4,  {}});
-	if (cpPhase p = tournament.getSemis())
-		phases.push_back({"DEMIS",       p, 2,  {}});
-	if (cpPhase p = tournament.getFinal())
-		phases.push_back({"FINALE",      p, 1,  {}});
-	if (phases.empty())
-		return;
+    // 1. Détection dynamique des phases présentes dans le tournoi
+    std::vector<PhaseInfo> phases;
 
-	// Extraction des paires pour chaque phase active
-	for (auto& info : phases)
-		extractEncounterNames(info.phase, info.count, info.pairs);
+    if (cpPhase p = tournament.getSixteenth())
+        phases.push_back({"1/16 FINALE", p, 16, {}});
+    if (cpPhase p = tournament.getEighth())
+        phases.push_back({"1/8 FINALE", p, 8, {}});
+    if (cpPhase p = tournament.getQuarters())
+        phases.push_back({"QUARTS", p, 4, {}});
+    if (cpPhase p = tournament.getSemis())
+        phases.push_back({"DEMIS", p, 2, {}});
+    if (cpPhase p = tournament.getFinal())
+        phases.push_back({"FINALE", p, 1, {}});
 
-	int totalRounds = static_cast<int>(phases.size());
-	int initialMatches = phases[0].count;
+    if (phases.empty())
+        return;
 
-	// 2. Calcul des dimensions du Canvas 2D
-	const int colWidth = 24; 
-	int canvasHeight = initialMatches * 4; // 4 lignes par match au 1er tour
-	int canvasWidth = (totalRounds + 1) * colWidth + 10;
+    // Extraction des paires pour chaque phase active
+    for (auto& info : phases)
+        extractEncounterNames(info.phase, info.count, info.pairs);
 
-	std::vector<std::string> canvas(canvasHeight, std::string(canvasWidth, ' '));
+    int totalRounds = static_cast<int>(phases.size());
+    int initialMatches = phases[0].count;
 
-	auto drawText = [&](int x, int y, const std::string& str) {
-		if (y < 0 || y >= canvasHeight)
-			return;
+    // 2. Calcul des dimensions du Canvas 2D
+    const int colWidth = 24;
+    int canvasHeight = initialMatches * 4; // 4 lignes par match au 1er tour
 
-		for (size_t i = 0; i < str.length() && (static_cast<size_t>(x) + i) < static_cast<size_t>(canvasWidth); ++i)
-			canvas[y][x + i] = str[i];
-	};
+    // On ajoute de l'espace supplémentaire en bas pour dessiner la petite finale
+    bool hasThirdPlace = tournament.getSettings().getIsThirdPlaceMatch() && tournament.getThirdPlace();
+    if (hasThirdPlace) {
+        canvasHeight += 6;
+    }
 
-	// 3. Calcul dynamique des coordonnées Y
-	// matchMidpoints[round][matchIndex] conserve le centre Y de chaque match
-	std::vector<std::vector<int>> matchMidpoints(totalRounds);
+    int canvasWidth = (totalRounds + 1) * colWidth + 10;
 
-	// Tour Initial (Round 0)
-	matchMidpoints[0].resize(initialMatches);
-	for (int i = 0; i < initialMatches; ++i)
-	{
-		int y1 = i * 4;
-		int y2 = i * 4 + 2;
-		int yMid = i * 4 + 1;
-		matchMidpoints[0][i] = yMid;
+    std::vector<std::string> canvas(canvasHeight, std::string(canvasWidth, ' '));
 
-		std::string team1 = (i < (int)phases[0].pairs.size()) ? phases[0].pairs[i].first  : "A determiner";
-		std::string team2 = (i < (int)phases[0].pairs.size()) ? phases[0].pairs[i].second : "A determiner";
+    auto drawText = [&](int x, int y, const std::string& str) {
+        if (y < 0 || y >= canvasHeight)
+            return;
+        for (size_t i = 0; i < str.length() && (static_cast<size_t>(x) + i) < static_cast<size_t>(canvasWidth); ++i)
+            canvas[y][x + i] = str[i];
+    };
 
-		drawText(0, y1, team1);
-		drawText(0, y2, team2);
+    // 3. Calcul dynamique des coordonnées Y
+    std::vector<std::vector<int>> matchMidpoints(totalRounds);
 
-		// Connecteurs
-		canvas[y1][16] = '+';
-		canvas[y2][16] = '+';
-		canvas[yMid][16] = '|';
-		canvas[yMid][17] = '-';
-		canvas[yMid][18] = '-';
-		canvas[yMid][19] = '>';
-	}
+    // Tour Initial (Round 0)
+    matchMidpoints[0].resize(initialMatches);
+    for (int i = 0; i < initialMatches; ++i)
+    {
+        int y1 = i * 4;
+        int y2 = i * 4 + 2;
+        int yMid = i * 4 + 1;
+        matchMidpoints[0][i] = yMid;
 
-	// Tours suivants (Round 1 à Finale)
-	for (int r = 1; r < totalRounds; ++r)
-	{
-		int matchCount = phases[r].count;
-		matchMidpoints[r].resize(matchCount);
-		int x = r * colWidth;
+        std::string team1 = (i < (int)phases[0].pairs.size()) ? phases[0].pairs[i].first : "A determiner";
+        std::string team2 = (i < (int)phases[0].pairs.size()) ? phases[0].pairs[i].second : "A determiner";
 
-		for (int i = 0; i < matchCount; ++i)
-		{
-			int prevY1 = matchMidpoints[r - 1][2 * i];
-			int prevY2 = matchMidpoints[r - 1][2 * i + 1];
-			int yMid = (prevY1 + prevY2) / 2;
-			matchMidpoints[r][i] = yMid;
+        drawText(0, y1, team1);
+        drawText(0, y2, team2);
 
-			std::string team1 = (i < (int)phases[r].pairs.size()) ? phases[r].pairs[i].first  : "A determiner";
-			std::string team2 = (i < (int)phases[r].pairs.size()) ? phases[r].pairs[i].second : "A determiner";
+        // Connecteurs
+        canvas[y1][16] = '+';
+        canvas[y2][16] = '+';
+        canvas[yMid][16] = '|';
+        canvas[yMid][17] = '-';
+        canvas[yMid][18] = '-';
+        canvas[yMid][19] = '>';
+    }
 
-			drawText(x, prevY1, team1);
-			drawText(x, prevY2, team2);
+    // Tours suivants (Round 1 à Finale)
+    for (int r = 1; r < totalRounds; ++r)
+    {
+        int matchCount = phases[r].count;
+        matchMidpoints[r].resize(matchCount);
+        int x = r * colWidth;
 
-			// Ligne verticale reliant les deux rencontres précédentes
-			for (int y = prevY1; y <= prevY2; ++y)
-				canvas[y][x + 16] = '|';
+        for (int i = 0; i < matchCount; ++i)
+        {
+            int prevY1 = matchMidpoints[r - 1][2 * i];
+            int prevY2 = matchMidpoints[r - 1][2 * i + 1];
+            int yMid = (prevY1 + prevY2) / 2;
+            matchMidpoints[r][i] = yMid;
 
-			canvas[prevY1][x + 16] = '+';
-			canvas[prevY2][x + 16] = '+';
+            std::string team1 = (i < (int)phases[r].pairs.size()) ? phases[r].pairs[i].first : "A determiner";
+            std::string team2 = (i < (int)phases[r].pairs.size()) ? phases[r].pairs[i].second : "A determiner";
 
-			// Connecteur vers le tour suivant
-			canvas[yMid][x + 17] = '-';
-			canvas[yMid][x + 18] = '-';
-			canvas[yMid][x + 19] = '>';
-		}
-	}
+            drawText(x, prevY1, team1);
+            drawText(x, prevY2, team2);
 
-	// Récupération du Vainqueur Final
-	std::string winner = "A determiner";
-	cpPhase finalPhase = phases.back().phase;
-	if (finalPhase && finalPhase->isFinished() && !finalPhase->getMatches().empty())
-		if (cpTeam w = finalPhase->getMatches()[0]->getWinner())
-			winner = w->getName();
+            // Ligne verticale reliant les deux rencontres précédentes
+            for (int y = prevY1; y <= prevY2; ++y)
+                canvas[y][x + 16] = '|';
 
-	drawText(totalRounds * colWidth, matchMidpoints.back()[0], winner);
+            canvas[prevY1][x + 16] = '+';
+            canvas[prevY2][x + 16] = '+';
 
-	// 4. Rendu dans la console
-	PrintUtils::clear();
-	PrintUtils::printSeparator('=', 150);
-	PrintUtils::printTitle("ARBRE DU TOURNOI", 150);
-	PrintUtils::printSeparator('=', 150);
+            // Connecteur vers le tour suivant
+            canvas[yMid][x + 17] = '-';
+            canvas[yMid][x + 18] = '-';
+            canvas[yMid][x + 19] = '>';
+        }
+    }
 
-	// En-têtes de colonnes
-	for (int r = 0; r < totalRounds; ++r)
-	{
-		std::cout << phases[r].name;
-		int padding = colWidth - static_cast<int>(phases[r].name.length());
-		std::cout << std::string(std::max(1, padding), ' ');
-	}
-	std::cout << "VAINQUEUR\n\n";
+    // Récupération du Vainqueur Final
+    std::string winner = "A determiner";
+    cpPhase finalPhase = phases.back().phase;
+    if (finalPhase && finalPhase->isFinished() && !finalPhase->getMatches().empty())
+        if (cpTeam w = finalPhase->getMatches()[0]->getWinner())
+            winner = w->getName();
 
-	// Affichage ligne par ligne du canvas
-	for (const auto& line : canvas)
-	{
-		size_t end = line.find_last_not_of(' ');
+    drawText(totalRounds * colWidth, matchMidpoints.back()[0], winner);
 
-		if (end != std::string::npos)
-			std::cout << line.substr(0, end + 1) << "\n";
-		else
-			std::cout << "\n";
-	}
+    // ==========================================
+    // AJOUT: Intégration de la Petite Finale
+    // ==========================================
+    if (hasThirdPlace)
+    {
+        cpPhase T = tournament.getThirdPlace();
+        vpairString t3;
+        extractEncounterNames(T, 1, t3);
 
-	// Petite Finale (3e place)
-	if (tournament.getSettings().getIsThirdPlaceMatch())
-	{
-		cpPhase T = tournament.getThirdPlace();
-		vpairString t3;
-		extractEncounterNames(T, 1, t3);
-		
-		std::cout << "\n" << std::string(30, '-') << "\n";
-		std::cout << "MATCH 3e PLACE : ";
-		if (!t3.empty())
-		{
-			std::cout << t3[0].first << " vs " << t3[0].second;
+        // On l'aligne sur la même colonne que la Finale
+        int x = (totalRounds - 1) * colWidth;
 
-			if (T && T->isFinished() && !T->getMatches().empty())
-				if (cpTeam w3 = T->getMatches()[0]->getWinner())
-					std::cout << "  ===> 3e Place : " << w3->getName();
-		}
-		std::cout << "\n";
-	}
+        // Coordonnées Y tout en bas du canvas
+        int y1 = canvasHeight - 5;
+        int y2 = canvasHeight - 3;
+        int yMid = (y1 + y2) / 2;
 
-	PrintUtils::printSeparator('=', 150);
+        std::string team1 = (!t3.empty()) ? t3[0].first : "A determiner";
+        std::string team2 = (!t3.empty()) ? t3[0].second : "A determiner";
+
+        drawText(x, y1 - 1, "[PETITE FINALE]");
+        drawText(x, y1, team1);
+        drawText(x, y2, team2);
+
+        // Connecteurs de la petite finale
+        canvas[y1][x + 16] = '+';
+        canvas[y2][x + 16] = '+';
+        canvas[yMid][x + 16] = '|';
+        canvas[yMid][x + 17] = '-';
+        canvas[yMid][x + 18] = '-';
+        canvas[yMid][x + 19] = '>';
+
+        // Vainqueur de la 3e place
+        std::string thirdWinner = "A determiner";
+        if (T && T->isFinished() && !T->getMatches().empty())
+            if (cpTeam w3 = T->getMatches()[0]->getWinner())
+                thirdWinner = w3->getName() + " (3e)";
+
+        drawText(totalRounds * colWidth, yMid, thirdWinner);
+    }
+
+    // 4. Rendu dans la console
+    PrintUtils::clear();
+    PrintUtils::printSeparator('=', 150);
+    PrintUtils::printTitle("ARBRE DU TOURNOI", 150);
+    PrintUtils::printSeparator('=', 150);
+
+    // En-têtes de colonnes
+    for (int r = 0; r < totalRounds; ++r)
+    {
+        std::cout << phases[r].name;
+        int padding = colWidth - static_cast<int>(phases[r].name.length());
+        std::cout << std::string(std::max(1, padding), ' ');
+    }
+    std::cout << "VAINQUEUR\n\n";
+
+    // Affichage ligne par ligne du canvas
+    for (const auto& line : canvas)
+    {
+        size_t end = line.find_last_not_of(' ');
+
+        if (end != std::string::npos)
+            std::cout << line.substr(0, end + 1) << "\n";
+        else
+            std::cout << "\n";
+    }
+
+    PrintUtils::printSeparator('=', 150);
 }
 
 void				TournamentViewer::displayPodium(cTour tournament)

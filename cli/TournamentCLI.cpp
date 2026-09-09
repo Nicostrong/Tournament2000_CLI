@@ -124,10 +124,11 @@ void				TournamentCLI::menuTournament(cTour tournament)
 
 	if (tournament.isThirdUnlocked() && tournament.getThirdPlace())
 		menuLst.push_back({'7', "Manage Petite finale"});
-	else if (tournament.isThirdUnlocked() && tournament.getFinal())
-		menuLst.push_back({'8', "Manage Finale"});
 	else if (tournament.isThirdUnlocked() && !tournament.getThirdPlace())
 		menuLst.push_back({'7', "Generate Petite finale"});
+	
+	if (tournament.isThirdUnlocked() && tournament.getFinal())
+		menuLst.push_back({'8', "Manage Finale"});
 	else if (tournament.isThirdUnlocked() && !tournament.getFinal())
 		menuLst.push_back({'8', "Generate Finale"});
 

@@ -110,7 +110,12 @@ void				Pool::generateMatches(cInt nbSetsPerEncounter, cSet settings)
 				continue;
 
 			for (int s = 0; s < nbSetsPerEncounter; ++s)
-				this->_matches.push_back(std::make_unique<Match>(this->_teams[i], this->_teams[j], rules));
+			{
+				auto match = std::make_unique<Match>(this->_teams[i], this->_teams[j], rules);
+
+				match->setOnScoreChanged([this]() { this->sortTeams(); });
+				this->_matches.push_back(std::move(match));
+			}
 		}
 }
 

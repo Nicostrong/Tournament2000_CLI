@@ -6,6 +6,7 @@
 /*	INCLUDES																						*/
 /****************************************************************************************************/
 
+#include <string>
 #include <format>
 #include <iomanip>
 #include <iostream>
@@ -26,6 +27,9 @@
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
 /****************************************************************************************************/
+
+using				String			=	std::string;
+using				cString			=	const std::string&;
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
@@ -157,8 +161,14 @@ void				PoolViewer::showPoolsListWithStatus(cTour tournament)
 			pool->getName(),
 			pool->allMatchesFinished() ? "oui" : "non"
 		};
+		String color;
 
-		table.addRow(rowData);
+		if (pool->allMatchesFinished())
+			color = Color::BGREEN;
+		else
+			color = Color::RED;
+
+		table.addRow(rowData, color);
 	}
 
 	table.printTable(std::cout);
