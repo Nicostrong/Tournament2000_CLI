@@ -9,7 +9,7 @@
 #include <vector>
 #include <format>
 #include <string>
-#include <fstream>
+#include <ostream>
 #include <iostream>
 
 #include "../includes/class/Pool.hpp"
@@ -350,6 +350,8 @@ void				TeamCLI::handleMenuTeam(Tournament& tournament)
 
 			if (team)
 				submenuTeam(team, tournament);
+			else
+				PrintUtils::addError("Saisie invalide.");
 		}
 	}
 	catch (const CLIInterrupted&)

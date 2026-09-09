@@ -58,12 +58,11 @@ class				TeamViewer
 	public:
 
 		static void					showTeamCard(cTeam team);
-		static void					showTeamsTableDetails(vpTeam teams);
+		static void					showTeamsTableDetails(cvpTeam teams);
 		static void					showListOfTeamsInPool(cPool pool);
 		static void					showAllTemasCardInPool(cPool pool);
+		static void					showSelectedPlayers(cvpPool pools);
 
 		static void					printAll(Tournament& tournament);
 
 };
-
-

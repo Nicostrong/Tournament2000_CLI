@@ -40,8 +40,8 @@ bool				Match::isFinished() const	{	return (this->_isFinished);	}
 /*	SETTER																							*/
 /****************************************************************************************************/
 
-void				Match::setScoreA(cInt value)			{	this->_scoreA = value;		}
-void				Match::setScoreB(cInt value)			{	this->_scoreB = value;		}
+void				Match::setScoreA(cInt value)		{	this->_scoreA = value;		}
+void				Match::setScoreB(cInt value)		{	this->_scoreB = value;		}
 void				Match::setTeamA(pTeam value)		{	this->_teamA = value;		}
 void				Match::setTeamB(pTeam value)		{	this->_teamB = value;		}
 void				Match::setIsFinished(cBool value)	{	this->_isFinished = value;	}
@@ -152,4 +152,16 @@ void				Match::resetScore()
 	this->_scoreA = 0;
 	this->_scoreB = 0;
 	this->_isFinished = false;
+}
+
+bool				Match::checkAllMatchesFinished(vpMatch matches)
+{
+	if (matches.empty())
+		return (false);
+	
+	for (pMatch match: matches)
+		if (!match->isFinished())
+			return (false);
+	
+	return (true);
 }

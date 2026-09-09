@@ -32,7 +32,7 @@ using				cInt			=	const int;
 Settings::Settings()
 	: _name(TOURNAMENTNAME), _nbPlayers(NBPLAYER), _nbPlayerByPool(NBPLAYERPERPOOL), _nbPools(NBPOOL),
 	_nbBadmintonCourt(NBTERRAIN), _scoreMin(SCOREMIN), _scoreMax(SCOREMAX), _diffPointsToWin(ECART),
-	_nbSetPlayedPools(NBPLAYERPERPOOL), _nbSetPlayedSixteenth(NBSETSIXTEENTH), _nbSetPlayedHeigth(NBSETHEIGTH),
+	_nbSetPlayedPools(NBSETPOOL), _nbSetPlayedSixteenth(NBSETSIXTEENTH), _nbSetPlayedHeigth(NBSETHEIGTH),
 	_nbSetPlayedQuarters(NBSETQUARTER), _nbSetPlayedSemis(NBSETSEMI), _nbSetPlayedFinal(NBSETFINAL),
 	_nbSetPlayedThirdPlace(NBSETTHIRD), _isMixed(ISMIXED), _isDouble(ISDOUBLE),
 	_allowMultiTeamPlayers(PLAYERMULTITEAM), _isThirdPlaceMatch(PLAYTHIRDPLACE), _isValid(ISVALIDE),

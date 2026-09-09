@@ -24,6 +24,12 @@
 /*	TYPEDEF																							*/
 /****************************************************************************************************/
 
+using				pMatch			=	Match*;
+using				cMatch			=	const Match&;
+using				cpMatch			=	const Match*;
+using				vpMatch			=	std::vector<Match*>;
+using				cvpMatch		=	const std::vector<Match*>&;
+
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
 /****************************************************************************************************/
@@ -61,14 +67,14 @@ void				MatchViewer::showMatchTitle(cMatch match)
  * Affiche un tableau de tout les matches avec details
  * id | match | score team 1 | score team 2 | fini
  */
-void				MatchViewer::showExtendedTableOfAllMatchesInPool(cvpMatch matches)
+void				MatchViewer::showExtendedTableOfAllMatches(cvpMatch matches)
 {
 	TablePrinter table;
 
 	table.setHeaders({"ID", "Rencontre", "ST 1", "ST 2", "Fini"});
 
 	int i = 0;
-	for (cpMatch m : matches)
+	for (cpMatch m: matches)
 	{
 		vString rowData = {
 			std::to_string(i++),
@@ -87,15 +93,15 @@ void				MatchViewer::showExtendedTableOfAllMatchesInPool(cvpMatch matches)
 /**
  * Affiche l'etat d'avancement des rencontres dans une poule
  */
-void				MatchViewer::showDetailsTableOfAllMatchesInPool(cPool pool)
+void				MatchViewer::showDetailsTableOfAllMatches(cvpMatch matches, cString titleOfStage)
 {
 	TablePrinter table;
 
-	PrintUtils::printTitle(std::format("MATCHES OF POOL: {}", pool.getName()));
+	PrintUtils::printTitle(std::format("MATCHES: {}", titleOfStage));
 
 	table.setHeaders({"Rencontre", "Resultat", "Termine"});
 
-	for (const auto& match : pool.getMatches())
+	for (const auto& match: matches)
 	{
 		vString rowData = {
 			std::format("{} vs {}", match->getTeamA()->getName(), match->getTeamB()->getName()),
@@ -112,10 +118,10 @@ void				MatchViewer::showDetailsTableOfAllMatchesInPool(cPool pool)
 /**
  * Affiche liste des matchs avec le status
  */
-void				MatchViewer::showAllMatchesWithStatusInPool(cPool pool)
+void				MatchViewer::showAllMatchesWithStatus(cvpMatch matches)
 {
-	PrintUtils::printTitle(std::format("MATCHES OF {}", pool.getName()));
-	PrintUtils::writeMatchesList(std::cout, pool.getMatches(), false);
+	PrintUtils::printTitle("MATCHES LIST");
+	PrintUtils::writeMatchesList(std::cout, matches, false);
 	PrintUtils::printSeparator();
 }
 
@@ -135,8 +141,8 @@ void				MatchViewer::printAll(Tournament& tournament)
 		if (!matches.empty() && matches[0])
 			showMatchTitle(*matches[0]);
 
-		showExtendedTableOfAllMatchesInPool(matches);
-		showDetailsTableOfAllMatchesInPool(*pools[0]);
-		showAllMatchesWithStatusInPool(*pools[0]);
+		showExtendedTableOfAllMatches(matches);
+		showDetailsTableOfAllMatches(matches, "POOL");
+		showAllMatchesWithStatus(matches);
 	}
 }

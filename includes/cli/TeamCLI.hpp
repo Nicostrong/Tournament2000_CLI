@@ -14,7 +14,9 @@
 /*	CLASSES																							*/
 /****************************************************************************************************/
 
+class				Pool;
 class				Team;
+class				Player;
 class				Tournament;
 
 /****************************************************************************************************/
@@ -25,6 +27,14 @@ using				pTeam			=	Team*;
 using				cpTeam			=	const Team*;
 
 using				cTour			=	const Tournament&;
+
+using				pTeam			=	Team*;
+using				cpTeam			=	const Team*;
+
+using				pPool			=	Pool*;
+
+using				pPlayer			=	Player*;
+using				vpPlayer		=	std::vector<Player*>;
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/

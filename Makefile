@@ -60,6 +60,7 @@ MANAGER			=	./manager/PhaseManager.cpp \
 					./manager/PlayerManager.cpp
 
 CLI				=	./cli/CLIUtils.cpp \
+					./cli/ExportCLI.cpp \
 					./cli/MatchCLI.cpp \
 					./cli/PlayerCLI.cpp \
 					./cli/PhaseCLI.cpp \

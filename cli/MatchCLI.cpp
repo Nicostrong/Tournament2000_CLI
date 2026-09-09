@@ -58,9 +58,9 @@ void				MatchCLI::displayMenuUI(vpMatch matches, cString title)
 	if (!title.empty())
 		PrintUtils::printTitle(std::format("MATCHES — {}", title));
 	else
-		PrintUtils::printTitle("LISTE DES MATCHES");
+		PrintUtils::printTitle("MATCHES LISTE");
 
-	MatchViewer::showExtendedTableOfAllMatchesInPool(matches);
+	MatchViewer::showExtendedTableOfAllMatches(matches);
 
 	std::cout << "Select the ID of match you want to interract with ('r' to return): ";
 
@@ -205,7 +205,7 @@ void				MatchCLI::handleMenuMatch(vpMatch matches, cString title)
 				continue;
 			}
 
-			if (matches[choice.value()])
+			if (choice.has_value() && matches[choice.value()])
 				submenuMatch(matches[choice.value()]);
 			else
 				PrintUtils::addError("Saisie invallide.");

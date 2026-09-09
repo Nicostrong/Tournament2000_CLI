@@ -22,6 +22,7 @@
 # define SCOREMAX					30
 # define ECART						2
 # define NBPLAYERPERPOOL			3
+# define NBSETPOOL  				1
 # define NBSETSIXTEENTH				1
 # define NBSETHEIGTH				1
 # define NBSETQUARTER				1

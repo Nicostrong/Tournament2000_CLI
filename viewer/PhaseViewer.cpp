@@ -156,7 +156,7 @@ void				PhaseViewer::displayPhase(cPhase phase)
 	std::cout << "\n";
 	std::cout << "╔══════════════════════════════════════════════════╗\n";
 	std::cout << "║  PHASE : " << std::left << std::setw(40) << phase.getName() << "║\n";
-	std::cout << "║  Sets par rencontre : " << std::left << std::setw(28) << nbSets << "║\n";
+	std::cout << "║  Sets par rencontre : " << std::left << std::setw(27) << nbSets << "║\n";
 	std::cout << "╚══════════════════════════════════════════════════╝\n";
 
 	if (matches.empty())

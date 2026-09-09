@@ -60,6 +60,9 @@ void				PoolCLI::displayMenuUI(cTour tournament)
 	CLIUtils::handleTitle(TitleViewer::pools);
 	PrintUtils::handleMessages();
 	PoolViewer::showPoolsListWithStatus(tournament);
+
+	//PoolViewer::showFullSummaryPoolStanding(tournament);
+
 	std::cout << "Selectionnez une pool en entrant son id (tapez 'r' pour revenir au menu precedent): ";
 	CLIUtils::checkInterruption();
 }
@@ -98,10 +101,6 @@ void				PoolCLI::handleMenuPool(Tournament& tournament)
 
 			displayMenuUI(tournament);
 
-			for (auto pool: pools)
-				if (pool->allMatchesFinished())
-					PoolViewer::showDetailsPoolStanding(*pool);
-
 			cString input = CLIUtils::input();
 			
 			if (input.empty())
@@ -125,9 +124,11 @@ void				PoolCLI::handleMenuPool(Tournament& tournament)
 				if (selectedPool)
 				{
 					selectedPool->sortTeams();
-					MatchCLI::handleMenuMatch(selectedPool->getMatches(), std::format("POULE {}", selectedPool->getName()));
+					MatchCLI::handleMenuMatch(selectedPool->getMatches(), std::format("POOL {}", selectedPool->getName()));
 				}
 			}
+			else
+				PrintUtils::addError("Saisie invalide.");
 		}
 	}
 	catch (const CLIInterrupted&)

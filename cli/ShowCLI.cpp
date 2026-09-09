@@ -94,7 +94,7 @@ void				ShowCLI::menuShow(cTour tournament)
 
 	items.push_back({'7', "Print Tournament"});
 	items.push_back({'8', "Print Settings"});
-	items.push_back({'Q', "Quit"});
+	items.push_back({'R', "Return"});
 
 	CLIUtils::displayMenu(std::format("TOURNOI : {}", tournament.getSettings().getName()), items);
 }
@@ -185,7 +185,7 @@ void				ShowCLI::handleMenuShow(Tournament& tournament)
 			if (input.empty())
 				continue;
 
-			if (input == "q" || input == "Q")
+			if (input == "r" || input == "R")
 				return;
 
 			if (input == "p" || input == "P")

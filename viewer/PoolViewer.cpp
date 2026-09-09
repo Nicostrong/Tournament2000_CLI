@@ -14,7 +14,9 @@
 #include "../includes/class/Team.hpp"
 #include "../includes/class/Tournament.hpp"
 
+#include "../includes/viewer/TeamViewer.hpp"
 #include "../includes/viewer/PoolViewer.hpp"
+#include "../includes/viewer/MatchViewer.hpp"
 
 #include "../includes/utils/PrintUtils.hpp"
 #include "../includes/utils/TablePrinter.hpp"
@@ -162,6 +164,16 @@ void				PoolViewer::showPoolsListWithStatus(cTour tournament)
 	table.printTable(std::cout);
 }
 
+void				PoolViewer::showFullSummaryPoolStanding(cTour tournament)
+{
+	for (auto pool: tournament.getPools())
+	{
+		PrintUtils::printTitle(std::format("Pool: {}", pool->getName()));
+		showDetailsPoolStanding(*pool);
+		MatchViewer::showDetailsTableOfAllMatches(pool->getMatches(), pool->getName());
+	}
+}
+
 /**
  * TESTER FUNCTION - TO REMOVED or DELETED
  */
@@ -178,4 +190,5 @@ void				PoolViewer::printAll(Tournament& tournament)
 	}
 
 	showPoolsListWithStatus(tournament);
+	showFullSummaryPoolStanding(tournament);
 }
