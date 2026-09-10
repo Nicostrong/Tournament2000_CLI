@@ -42,6 +42,8 @@ using				cpTeam			=	const Team*;
 
 using				cTour			=	const Tournament&;
 
+using				vMenuItem		=	std::vector<MenuItem>;
+
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
 /****************************************************************************************************/
@@ -67,22 +69,23 @@ void				TeamCLI::displayMenuUI(cTour tournament)
 	CLIUtils::checkInterruption();
 }
 
-void				TeamCLI::menuTeam(pTeam team)
+vMenuItem			TeamCLI::menuTeam(pTeam team)
 {
-	std::vector<MenuItem> items =
+	std::vector<MenuItem> menuLst =
 	{
-		{'1', "Modifier le nom"},
-		{'2', "Modifier un membre"}
+		{"1", "Modifier le nom"},
+		{"2", "Modifier un membre"}
 	};
 
 	if (team->getIsDisqualified())
-		items.push_back({'3', "Retirer la disqualification"});
+		menuLst.push_back({"3", "Retirer la disqualification"});
 	else
-		items.push_back({'3', "Disqualifier l'equipe"});
+		menuLst.push_back({"3", "Disqualifier l'equipe"});
 
-	items.push_back({'R', "Retour au menu precedent"});
+	menuLst.push_back({"R", "Retour au menu precedent"});
 
-	CLIUtils::displayMenu(std::format("TEAM\t{}", team->getName()), items);
+	CLIUtils::displayMenu(std::format("TEAM\t{}", team->getName()), menuLst);
+	return (menuLst);
 }
 
 void				TeamCLI::submenuTeam(pTeam team, Tournament& tournament)
@@ -91,9 +94,8 @@ void				TeamCLI::submenuTeam(pTeam team, Tournament& tournament)
 	{
 		while (true)
 		{
-			menuTeam(team);
-
-			cString input = CLIUtils::input();
+			vMenuItem menu = menuTeam(team);
+			cString input = CLIUtils::askMenuChoice(menu);
 			
 			if (input.empty())
 				continue;

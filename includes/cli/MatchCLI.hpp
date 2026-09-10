@@ -11,6 +11,8 @@
 # include <string>
 # include <vector>
 
+# include "./CLIUtils.hpp"
+
 /****************************************************************************************************/
 /*	CLASSES																							*/
 /****************************************************************************************************/
@@ -25,6 +27,8 @@ using				String			=	std::string;
 using				cString			=	const std::string&;
 
 using				cInt			=	const int;
+
+using				vMenuItem		=	std::vector<MenuItem>;
 
 using				pMatch			=	Match*;
 using				vpMatch			=	std::vector<Match*>;
@@ -43,7 +47,7 @@ class				MatchCLI
 	private:
 
 		static void					displayMenuUI(vpMatch matches, cString title = "");
-		static void					menuMatch(pMatch match);
+		static vMenuItem			menuMatch(pMatch match);
 
 		static void					executeChoice(cInt choice, pMatch match);
 

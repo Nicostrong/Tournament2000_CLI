@@ -9,11 +9,14 @@
 #include <format>
 #include <limits>
 #include <string>
+#include <vector>
 #include <iostream>
 #include <exception>
 #include <algorithm>
 
 #include "../includes/utils/PrintUtils.hpp"
+#include "../includes/utils/FormatUtils.hpp"
+
 #include "../includes/viewer/TitleViewer.hpp"
 
 #include "../includes/cli/CLIUtils.hpp"
@@ -198,34 +201,56 @@ int					CLIUtils::askIntList(StringV prompt, cvInt allowedValues, cInt defaultVa
 	}
 }
 
-void				CLIUtils::displayMenu(StringV title, std::span<const MenuItem> items)
+void				CLIUtils::displayMenu(StringV title, std::span<const MenuItem> menus)
 {
 	PrintUtils::printTitle(title);
 
-	for (const auto& item : items)
+	for (const auto& item : menus)
 		std::cout << Color::BYELLOW << "\t" << item.key << "\t" << Color::RESET << item.label << std::endl;
 	
 	std::cout << Color::GREEN << "Entrer le numero ou la lettre correspondant a ce que vous voulez: " << Color::RESET;
 }
 
-char				CLIUtils::askMenuChoice(std::span<const MenuItem> items)
+String				CLIUtils::askMenuChoice(std::span<const MenuItem> menus)
 {
-	while (true)
+	String choice = input();
+	FormatUtils::toLower(choice);
+
+	if (choice.empty())
+		return ("");
+
+	for (const auto& item : menus)
 	{
-		std::cout << "Votre choix : ";
-		String res = input();
-		
-		if (res.length() == 1)
-		{
-			auto choice = static_cast<char>(std::toupper(res[0]));
-			
-			for (const auto& item : items)
-				if (std::toupper(item.key) == choice)
-					return (item.key);
-		}
-		
-		PrintUtils::addError("Choix invalide. Veuillez selectionner une option du menu.");
+		String key = item.key;
+		FormatUtils::toLower(key);
+
+		if (key == choice)
+			return (item.key);
 	}
+
+	std::vector<MenuItem> matches;
+
+	for (const auto& item : menus)
+	{
+		std::string lowerLabel = item.label;
+		FormatUtils::toLower(lowerLabel);
+
+		if (lowerLabel.find(choice) != std::string::npos)
+			matches.push_back(item);
+	}
+
+	if (matches.size() == 1)
+		return (matches[0].key);
+	else if (matches.size() > 1)
+	{
+		PrintUtils::addError("Saisie ambigue, plusieurs menus correspondent.");
+
+		for (const auto& match : matches)
+			PrintUtils::addError(std::format(" - {} (Taper {})", match.label, match.key));
+	}
+	else
+		PrintUtils::addError("Saisie invalide, veuillez réessayer.");
+	return ("");
 }
 
 void				CLIUtils::handleTitle(void (*function)())

@@ -10,6 +10,8 @@
 
 # include "../class/Player.hpp"
 
+# include "./CLIUtils.hpp"
+
 /****************************************************************************************************/
 /*	CLASSES																							*/
 /****************************************************************************************************/
@@ -22,6 +24,8 @@ class				PlayerManager;
 /****************************************************************************************************/
 
 using				cSet			=	const Settings&;
+
+using				vMenuItem		=	std::vector<MenuItem>;
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
@@ -38,7 +42,7 @@ class				PlayerCLI
 {
 	private:
 
-		static void					menuPlayer(const PlayerManager& manager, cSet settings);
+		static vMenuItem			menuPlayer(const PlayerManager& manager, cSet settings);
 		static bool					executeChoice(int choice, PlayerManager& manager, cSet settings);
 
 		// ACTIONS UTILISATEUR

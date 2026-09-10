@@ -41,6 +41,8 @@ using				cSet			=	const Settings&;
 
 using				cGender			=	const Gender&;
 
+using				vMenuItem		=	std::vector<MenuItem>;
+
 /****************************************************************************************************/
 /*	PRIVATE METHODS																					*/
 /****************************************************************************************************/
@@ -49,9 +51,9 @@ using				cGender			=	const Gender&;
 /*  MENU				*/
 /************************/
 
-void				PlayerCLI::menuPlayer(const PlayerManager& manager, cSet settings)
+vMenuItem			PlayerCLI::menuPlayer(const PlayerManager& manager, cSet settings)
 {
-	std::vector<MenuItem> items;
+	std::vector<MenuItem> menuLst;
 	cInt actualPlayers = static_cast<int>(manager.getSize());
 	cInt maxPlayers = settings.getNbPlayers();
 	bool showMenu7 = (settings.getAllowMultiTeamPlayers() 
@@ -59,27 +61,28 @@ void				PlayerCLI::menuPlayer(const PlayerManager& manager, cSet settings)
 		|| (maxPlayers == actualPlayers);
 	
 	if (actualPlayers < maxPlayers)
-		items.push_back({'1', "Ajouter un nouveau participant"});
+		menuLst.push_back({"1", "Ajouter un nouveau participant"});
 
 	if (!manager.isEmpty())
 	{
-		items.push_back({'2', "Modifier un participant"});
-		items.push_back({'3', "Supprimer un participant"});
+		menuLst.push_back({"2", "Modifier un participant"});
+		menuLst.push_back({"3", "Supprimer un participant"});
 	}
 
 	if (actualPlayers < maxPlayers)
-		items.push_back({'4', "Importer des participants (CSV)"});
+		menuLst.push_back({"4", "Importer des participants (CSV)"});
 
 	if (!manager.isEmpty())
 	{
-		items.push_back({'5', "Exporter des participants (CSV)"});
-		items.push_back({'6', "Afficher un/des participant(s)"});
+		menuLst.push_back({"5", "Exporter des participants (CSV)"});
+		menuLst.push_back({"6", "Afficher un/des participant(s)"});
 	}
 
 	if (showMenu7)
-		items.push_back({'7', "Lancer le tournoi"});
+		menuLst.push_back({"7", "Lancer le tournoi"});
 
-	CLIUtils::displayMenu("MENU PLAYERS", items);
+	CLIUtils::displayMenu("MENU PLAYERS", menuLst);
+	return (menuLst);
 }
 
 /****************************************************************************************************/
@@ -88,63 +91,33 @@ void				PlayerCLI::menuPlayer(const PlayerManager& manager, cSet settings)
 
 bool				PlayerCLI::executeChoice(cInt choice, PlayerManager& manager, cSet settings)
 {
-	cInt actualPlayers = static_cast<int>(manager.getSize());
-	cInt maxPlayers = settings.getNbPlayers();
-	bool showMenu7 = (settings.getAllowMultiTeamPlayers() 
-		&& (maxPlayers - actualPlayers <= NBPLAYERINMULTITEAMMAX))
-		|| (maxPlayers == actualPlayers);
-
 	switch (choice)
 	{
 		case 1:
-			if (actualPlayers >= maxPlayers)
-				PrintUtils::addError("Option invalide.");
-			else
-				handleAddPlayer(manager, settings);
+			handleAddPlayer(manager, settings);
 			return (false);
 
 		case 2:
-			if (manager.isEmpty())
-				PrintUtils::addError("Option invalide.");
-			else
-				handleModifyPlayer(manager, settings);
+			handleModifyPlayer(manager, settings);
 			return (false);
 
 		case 3:
-			if (manager.isEmpty())
-				PrintUtils::addError("Option invalide.");
-			else
-				handleDeletePlayer(manager);
+			handleDeletePlayer(manager);
 			return (false);
 
 		case 4:
-			if (actualPlayers >= maxPlayers)
-				PrintUtils::addError("Option invalide.");
-			else
-				handleImport(manager);
+			handleImport(manager);
 			return (false);
 
 		case 5:
-			if (manager.isEmpty())
-				PrintUtils::addError("Option invalide.");
-			else
-				handleExport(manager);
+			handleExport(manager);
 			return (false);
 
 		case 6:
-			if (manager.isEmpty())
-				PrintUtils::addError("Option invalide.");
-			else
-				handleDisplay(manager);
+			handleDisplay(manager);
 			return (false);
 
 		case 7:
-			if (!showMenu7)
-			{
-				PrintUtils::addError("Option invalide.");
-				return (false);
-			}
-
 			return (true);
 
 		default:
@@ -381,11 +354,12 @@ void				PlayerCLI::handleMenuPlayer(PlayerManager& manager, cSet settings)
 			if (!manager.isEmpty())
 				PlayerViewer::showFullTableOfPlayers(manager.getPlayers());
 
-			menuPlayer(manager, settings);
-
+			vMenuItem menu = menuPlayer(manager, settings);
+			cString input = CLIUtils::askMenuChoice(menu);
+			
 			CLIUtils::checkInterruption();
 
-			cString input = CLIUtils::input();
+
 
 			if (input.empty())
 				continue;

@@ -12,6 +12,8 @@
 # include <vector>
 # include <functional>
 
+# include "./CLIUtils.hpp"
+
 /****************************************************************************************************/
 /*	CLASSES																							*/
 /****************************************************************************************************/
@@ -33,6 +35,8 @@ using				cpPhase			=	const Phase*;
 
 using				cTour			=	const Tournament&;
 
+using				vMenuItem		=	std::vector<MenuItem>;
+
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
 /****************************************************************************************************/
@@ -51,8 +55,8 @@ class				TournamentCLI
 	private:
 
 		//	Affichage du menu
-		static void					displayMenuUI(cTour tournament);
-		static void					menuTournament(cTour tournament);
+		static vMenuItem			displayMenuUI(cTour tournament);
+		static vMenuItem			menuTournament(cTour tournament);
 
 		//	Handlers de saisie
 		static void					executeChoice(cInt choice, Tournament& tournament);

@@ -351,3 +351,20 @@ void				TitleViewer::exportMenu()
 )" << Color::RESET << std::endl;
 	PrintUtils::printSeparator(color);
 }
+
+void				TitleViewer::showMenu()
+{
+	const char* color = getRandomColor();
+
+	PrintUtils::printSeparator(color);
+	std::cout << color << R"(
+          _____ _
+         / ____| |
+        | (___ | |__   _____      __
+         \___ \| '_ \ / _ \ \ /\ / /
+         ____) | | | | (_) \ V  V /
+        |_____/|_| |_|\___/ \_/\_/
+
+)" << Color::RESET << std::endl;
+	PrintUtils::printSeparator(color);
+}

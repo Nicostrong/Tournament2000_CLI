@@ -64,5 +64,6 @@ class				TitleViewer
 		static void					thirdPlace();
 		static void					final();
 		static void					exportMenu();
+		static void					showMenu();
 
 };

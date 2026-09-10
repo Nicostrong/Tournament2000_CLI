@@ -10,7 +10,8 @@
 
 # include <string>
 # include <vector>
-# include <functional>
+
+# include "./CLIUtils.hpp"
 
 /****************************************************************************************************/
 /*	CLASSES																							*/
@@ -30,6 +31,8 @@ using				cInt			=	const int;
 
 using				cBool			=	const bool;
 
+using				vMenuItem		=	std::vector<MenuItem>;
+
 using				pTour			=	Tournament*;
 using				cTour			=	const Tournament&;
 using				cpTour			=	const Tournament*;
@@ -47,8 +50,8 @@ class				ShowCLI
 	private:
 
 		//	Affichage du menu
-		static void					displayMenuUI(cTour tournament);
-		static void					menuShow(cTour tournament);
+		static vMenuItem			displayMenuUI(cTour tournament);
+		static vMenuItem			menuShow(cTour tournament);
 
 		//	Handlers de saisie
 		static void					executeChoice(cInt choice, Tournament& tournament);

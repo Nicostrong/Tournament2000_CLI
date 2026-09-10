@@ -34,6 +34,8 @@ using				cInt			=	const int;
 using				pMatch			=	Match*;
 using				cvpMatch		=	const std::vector<Match*>&;
 
+using				vMenuItem		=	std::vector<MenuItem>;
+
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
 /****************************************************************************************************/
@@ -67,19 +69,20 @@ void				MatchCLI::displayMenuUI(vpMatch matches, cString title)
 	CLIUtils::checkInterruption();
 }
 
-void				MatchCLI::menuMatch(pMatch match)
+vMenuItem			MatchCLI::menuMatch(pMatch match)
 {
 	std::vector<MenuItem> items;
 
 	if (match->isFinished())
-		items.push_back({'1', "Modify score"});
+		items.push_back({"1", "Modify score"});
 	else
-		items.push_back({'1', "Save score"});
+		items.push_back({"1", "Save score"});
 
-	items.push_back({'2', "Show the match"});
-	items.push_back({'R', "Return"});
+	items.push_back({"2", "Show the match"});
+	items.push_back({"R", "Return"});
 
 	CLIUtils::displayMenu(std::format("{}\tVs\t{}", match->getTeamA()->getName(), match->getTeamB()->getName()), items);
+	return (items);
 }
 
 void				MatchCLI::submenuMatch(pMatch match)
@@ -88,10 +91,9 @@ void				MatchCLI::submenuMatch(pMatch match)
 	{
 		while (true)
 		{
-			menuMatch(match);
+			vMenuItem menu = menuMatch(match);
+			String input = CLIUtils::askMenuChoice(menu);
 
-			String input = CLIUtils::input();
-			
 			if (input.empty())
 				continue;
 

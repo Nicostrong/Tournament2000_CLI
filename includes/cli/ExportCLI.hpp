@@ -10,14 +10,13 @@
 
 # include <string>
 # include <vector>
-# include <functional>
+
+# include "./CLIUtils.hpp"
 
 /****************************************************************************************************/
 /*	CLASSES																							*/
 /****************************************************************************************************/
 
-//class				Match;
-//class				Phase;
 class				Tournament;
 
 /****************************************************************************************************/
@@ -34,17 +33,7 @@ using				cvInt			=	const std::vector<int>&;
 
 using				cBool			=	const bool;
 
-/*using				pMatch			=	Match*;
-using				cMatch			=	const Match&;
-using				cpMatch			=	const Match*;
-using				vpMatch			=	std::vector<Match*>;
-using				cvpMatch		=	const std::vector<Match*>&;
-
-using				pPhase			=	Phase*;
-using				cPhase			=	const Phase&;
-using				cpPhase			=	const Phase*;
-using				vpPhase			=	std::vector<Phase*>;
-using				cvpPhase		=	const std::vector<Phase*>&;*/
+using				vMenuItem		=	std::vector<MenuItem>;
 
 using				pTour			=	Tournament*;
 using				cTour			=	const Tournament&;
@@ -68,8 +57,8 @@ class				ExportCLI
 	private:
 
 		//	Affichage du menu
-		static void					displayMenuUI(cTour tournament);
-		static void					menuExport(cTour tournament);
+		static vMenuItem			displayMenuUI(cTour tournament);
+		static vMenuItem			menuExport(cTour tournament);
 
 		//	Handlers de saisie
 		static void					executeChoice(cInt choice, Tournament& tournament);
