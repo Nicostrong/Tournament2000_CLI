@@ -6,6 +6,8 @@
 /*	INCLUDES																						*/
 /****************************************************************************************************/
 
+#include <string>
+#include <vector>
 #include <format>
 #include <iostream>
 
@@ -24,6 +26,13 @@
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
 /****************************************************************************************************/
+
+using				vString			=	std::vector<std::string>;
+
+using				pPool			=	Pool*;
+using				cPool			=	const Pool&;
+using				cpPool			=	const Pool*;
+using				vpPool			=	std::vector<Pool*>;
 
 /****************************************************************************************************/
 /*	EXCEPTION																						*/
@@ -69,7 +78,7 @@ void				TeamViewer::showTeamCard(cTeam team)
  * Affiche un tableau detaille de toute les teams
  * id | teamName | pts | + | - | diff | mixte | eli. | disq. | multi
  */
-void				TeamViewer::showTeamsTableDetails(vpTeam teams)
+void				TeamViewer::showTeamsTableDetails(cvpTeam teams)
 {
 	if (teams.empty())
 		return (PrintUtils::addError("No team."));
@@ -77,7 +86,6 @@ void				TeamViewer::showTeamsTableDetails(vpTeam teams)
 	TablePrinter table;
 
 	table.setHeaders({"ID", "Equipe", "Pts", "Pts +", "Pts -", "Diff", "Mixte", "Eli.", "Dis.", "Multi"});
-	int i = 0;
 
 	for (const Team* team : teams)
 	{
@@ -96,9 +104,8 @@ void				TeamViewer::showTeamsTableDetails(vpTeam teams)
 			team->getIsDisqualified() ? "Oui" : "Non",
 			team->getHasMultiTeamPlayer() ? "Oui" : "Non"
 		};
-		cString color = (i++ < 2) ? Color::BGREEN : Color::RESET;
 
-		table.addRow(rowData, color);
+		table.addRow(rowData);
 	}
 
 	table.printTable(std::cout);
@@ -128,6 +135,34 @@ void				TeamViewer::showAllTemasCardInPool(cPool pool)
 		TeamViewer::showTeamCard(*t);
 }
 
+
+void				TeamViewer::showSelectedPlayers(cvpPool pools)
+{
+	PrintUtils::printTitle("Selected teams for next stage");
+
+	TablePrinter table;
+
+	table.setHeaders({"Pool", "Rank", "Team", "Pts", "P+", "P-", "Diff"});
+
+	for (cpPool pool: pools)
+	{
+		int rank = 1;
+		for (cpTeam team: pool->getTeams())
+		{
+			vString rowData = {
+				pool->getName(),
+				std::to_string(rank++),
+				team->getName(),
+				std::to_string(team->getPoint()),
+				std::to_string(team->getScoreMarked()),
+				std::to_string(team->getScoreAgainst()),
+				std::to_string(team->getScoreDiff())
+			};
+			table.addRow(rowData);
+		}
+	}
+}
+
 /**
  * TESTER FUNCTION - TO REMOVED or DELETED
  */
@@ -149,4 +184,7 @@ void				TeamViewer::printAll(Tournament& tournament)
 		showListOfTeamsInPool(*pools[0]);
 		showAllTemasCardInPool(*pools[0]);
 	}
+
+	PrintUtils::printTitle("Selectedp layers");
+	showSelectedPlayers(tournament.getPools());
 }

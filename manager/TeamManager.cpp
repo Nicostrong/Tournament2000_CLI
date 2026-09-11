@@ -7,7 +7,6 @@
 /****************************************************************************************************/
 
 #include "../includes/class/Team.hpp"
-#include "../includes/class/Player.hpp"
 #include "../includes/class/Settings.hpp"
 
 #include "../includes/manager/TeamManager.hpp"
@@ -75,10 +74,11 @@ void				TeamManager::clean()
 	this->_teams.clear();
 }
 
-void				TeamManager::generateTeams(cvpPlayer players)
+bool				TeamManager::generateTeams(cvpPlayer players)
 {
 	if (!this->_teams.empty())
-		return;
+		return (false);
 
 	this->_teams = this->_teamFactory.generateTeams(players);
+	return (this->_teams.empty());
 }

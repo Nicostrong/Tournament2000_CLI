@@ -1,5 +1,5 @@
 //
-// Created by Nicolas Fordoxcel on 14/06/2026.
+// Created by Nicolas Fordoxcel on 08/09/2026.
 //
 
 #pragma once
@@ -17,7 +17,7 @@
 /*	CLASSES																							*/
 /****************************************************************************************************/
 
-class				Match;
+class				Tournament;
 
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
@@ -25,13 +25,19 @@ class				Match;
 
 using				String			=	std::string;
 using				cString			=	const std::string&;
+using				vString			=	std::vector<std::string>;
 
 using				cInt			=	const int;
+using				vInt			=	std::vector<int>;
+using				cvInt			=	const std::vector<int>&;
+
+using				cBool			=	const bool;
 
 using				vMenuItem		=	std::vector<MenuItem>;
 
-using				pMatch			=	Match*;
-using				vpMatch			=	std::vector<Match*>;
+using				pTour			=	Tournament*;
+using				cTour			=	const Tournament&;
+using				cpTour			=	const Tournament*;
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
@@ -41,24 +47,20 @@ using				vpMatch			=	std::vector<Match*>;
 /*	CLASS																							*/
 /****************************************************************************************************/
 
-
-class				MatchCLI
+class				ExportCLI
 {
-	private:
-
-		static void					displayMenuUI(vpMatch matches, cString title = "");
-		static vMenuItem			generateMenuMatch(pMatch match);
-
-		static void					executeChoice(cInt choice, pMatch match);
-
-		static void					handleSaveScore(pMatch match);
-		static void					handleModifyScore(pMatch match);
-
-		static bool					checkMatchId(int id, size_t size);
-
 	public:
 
-		static void					handleMenuMatch(vpMatch matches, cString title = "");
-		static void					submenuMatch(pMatch match);
+		//	Menu principal
+		static void					handleMenuExport(Tournament& tournament);
+
+	private:
+
+		//	Affichage du menu
+		static vMenuItem			displayMenuUI(cTour tournament);
+		static vMenuItem			generateMenuExport(cTour tournament);
+
+		//	Handlers de saisie
+		static void					executeChoice(cInt choice, Tournament& tournament);
 
 };

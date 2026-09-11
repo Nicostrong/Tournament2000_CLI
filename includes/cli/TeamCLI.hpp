@@ -10,11 +10,15 @@
 
 # include <vector>
 
+# include "./CLIUtils.hpp"
+
 /****************************************************************************************************/
 /*	CLASSES																							*/
 /****************************************************************************************************/
 
+class				Pool;
 class				Team;
+class				Player;
 class				Tournament;
 
 /****************************************************************************************************/
@@ -25,6 +29,16 @@ using				pTeam			=	Team*;
 using				cpTeam			=	const Team*;
 
 using				cTour			=	const Tournament&;
+
+using				pTeam			=	Team*;
+using				cpTeam			=	const Team*;
+
+using				pPool			=	Pool*;
+
+using				pPlayer			=	Player*;
+using				vpPlayer		=	std::vector<Player*>;
+
+using				vMenuItem		=	std::vector<MenuItem>;
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
@@ -39,7 +53,7 @@ class				TeamCLI
 	private:
 
 		static void					displayMenuUI(cTour tournament);
-		static void					menuTeam(pTeam team);
+		static vMenuItem			generateSubmenuTeam(pTeam team);
 		static void					submenuTeam(pTeam team, Tournament& tournament);
 
 		static void					executeChoice(int choice, pTeam team, Tournament& tournament);

@@ -6,6 +6,7 @@
 /*	INCLUDES																						*/
 /****************************************************************************************************/
 
+#include <string>
 #include <format>
 #include <iomanip>
 #include <iostream>
@@ -14,7 +15,9 @@
 #include "../includes/class/Team.hpp"
 #include "../includes/class/Tournament.hpp"
 
+#include "../includes/viewer/TeamViewer.hpp"
 #include "../includes/viewer/PoolViewer.hpp"
+#include "../includes/viewer/MatchViewer.hpp"
 
 #include "../includes/utils/PrintUtils.hpp"
 #include "../includes/utils/TablePrinter.hpp"
@@ -24,6 +27,9 @@
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
 /****************************************************************************************************/
+
+using				String			=	std::string;
+using				cString			=	const std::string&;
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
@@ -102,8 +108,9 @@ void				PoolViewer::writeCompleteTable(std::ostream& out, cPool pool, cBool toFi
 			std::to_string(t->getPoint()),
 			std::to_string(t->getScoreMarked()),
 			std::to_string(t->getScoreAgainst()),
-			std::to_string(t->getScoreDiff())};
-		cString color = (i <= 2) ? Color::BGREEN : "";
+			std::to_string(t->getScoreDiff())
+		};
+		cString color = (i < 2) ? Color::BGREEN : "";
 
 		table.addRow(rowData, color);
 	}
@@ -152,13 +159,29 @@ void				PoolViewer::showPoolsListWithStatus(cTour tournament)
 		vString rowData = {
 			std::to_string(i++),
 			pool->getName(),
-			pool->getIsFinished() ? "oui" : "non"
+			pool->allMatchesFinished() ? "oui" : "non"
 		};
+		String color;
 
-		table.addRow(rowData);
+		if (pool->allMatchesFinished())
+			color = Color::BGREEN;
+		else
+			color = Color::RED;
+
+		table.addRow(rowData, color);
 	}
 
 	table.printTable(std::cout);
+}
+
+void				PoolViewer::showFullSummaryPoolStanding(cTour tournament)
+{
+	for (auto pool: tournament.getPools())
+	{
+		PrintUtils::printTitle(std::format("Pool: {}", pool->getName()));
+		showDetailsPoolStanding(*pool);
+		MatchViewer::showDetailsTableOfAllMatches(pool->getMatches(), pool->getName());
+	}
 }
 
 /**
@@ -177,4 +200,5 @@ void				PoolViewer::printAll(Tournament& tournament)
 	}
 
 	showPoolsListWithStatus(tournament);
+	showFullSummaryPoolStanding(tournament);
 }

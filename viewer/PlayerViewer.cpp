@@ -6,6 +6,8 @@
 /*	INCLUDES																						*/
 /****************************************************************************************************/
 
+#include <string>
+#include <vector>
 #include <format>
 #include <iostream>
 #include <algorithm>
@@ -24,6 +26,8 @@
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
 /****************************************************************************************************/
+
+using				vString			=	std::vector<std::string>;
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
@@ -67,14 +71,7 @@ void				PlayerViewer::showFullTableOfPlayers(cvpPlayer players)
 
 	TablePrinter table;
 
-	table.setHeaders({
-		" ID",
-		" Pseudo",
-		" Nom",
-		" Prenom",
-		" Genre",
-		" Elimine",
-		"Multi"});
+	table.setHeaders({" ID", " Pseudo", " Nom", " Prenom", " Genre", " Elimine", "Multi"});
 
 	for (cpPlayer p : players)
 	{

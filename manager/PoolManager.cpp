@@ -290,27 +290,30 @@ void				PoolManager::applyPoolDisqualification(pTeam team)
 
 		for (pMatch match : p->getMatches())
 		{
-			if (!match || (match->getTeamA() != team && match->getTeamB() != team))
+			if (!match || !match->getTeamA() || !match->getTeamB())
 				continue;
 
-			if (match->getTeamA() == team && match->isFinished())
-				match->modifyScore(0, SCOREMAXTOWIN);
-			else if (match->getTeamB() == team && match->isFinished())
-				match->modifyScore(SCOREMAXTOWIN, 0);
-			else if (match->getTeamA() == team)
-				match->setScore(0, SCOREMAXTOWIN);
+			bool isTeamA = (match->getTeamA()->getId() == team->getId());
+			bool isTeamB = (match->getTeamB()->getId() == team->getId());
+
+			if (!isTeamA && !isTeamB)
+				continue;
+
+			if (isTeamA && match->isFinished())
+				match->modifyScore(0, SCOREMINTOWIN);
+			else if (isTeamB && match->isFinished())
+				match->modifyScore(SCOREMINTOWIN, 0);
+			else if (isTeamA)
+				match->setScore(0, SCOREMINTOWIN);
 			else
-				match->setScore(SCOREMAXTOWIN, 0);
+				match->setScore(SCOREMINTOWIN, 0);
 			
 			match->setIsFinished(true);
 			found = true;
 		}
 
 		if (found)
-		{
 			team->disqualifyTeam(true);
-			p->checkPoolIsFinished();
-		}
 	}
 }
 

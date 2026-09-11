@@ -21,6 +21,9 @@ class				Phase;
 /****************************************************************************************************/
 
 using				String			=	std::string;
+using				cString			=	const std::string&;
+
+using				cPhase			=	const Phase&;
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
@@ -35,6 +38,7 @@ class				PhaseCLI
 
 	public:
 
-		static bool					exportToTxt(const Phase& phase, String filename);
+		static bool					exportToTxt(cPhase phase, String filename);
+		static void					handleMenuPhase(Phase* phase, cString phaseName);
 
 };

@@ -74,7 +74,7 @@ Testing/
 Tournament2000
 
 # data
-*.csv
+#*.csv
 *.xlsx
 Using
 LINUX

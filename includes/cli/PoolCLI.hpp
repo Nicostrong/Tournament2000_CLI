@@ -8,8 +8,6 @@
 /*	INCLUDES																						*/
 /****************************************************************************************************/
 
-# include <vector>
-
 /****************************************************************************************************/
 /*	CLASSES																							*/
 /****************************************************************************************************/
@@ -40,13 +38,6 @@ class				PoolCLI
 	private:
 
 		static void					displayMenuUI(cTour tournament);
-		static void					menuPool(pPool pool);
-		static void					submenuPool(pPool pool, Tournament& tournament);
-
-		static void					executeChoice(int choice, pPool pool, Tournament& tournament);
-
-		static void					manageSinglePool(cPool pool);
-
 		static bool					checkPoolId(int id, Tournament& tournament);
 
 	public:

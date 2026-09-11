@@ -11,6 +11,7 @@
 /*	INCLUDES																						*/
 /****************************************************************************************************/
 
+# include <string>
 # include <vector>
 
 /****************************************************************************************************/
@@ -24,6 +25,9 @@ class				Tournament;
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
 /****************************************************************************************************/
+
+using				String			=	std::string;
+using				cString			=	const std::string&;
 
 using				cBool			=	const bool;
 
@@ -51,9 +55,9 @@ class				MatchViewer
 	public:
 
 		static void					showMatchTitle(cMatch match);
-		static void					showExtendedTableOfAllMatchesInPool(cvpMatch matches);
-		static void					showDetailsTableOfAllMatchesInPool(cPool pool);
-		static void					showAllMatchesWithStatusInPool(cPool pool);
+		static void					showExtendedTableOfAllMatches(cvpMatch matches);
+		static void					showDetailsTableOfAllMatches(cvpMatch matches, cString titleOfStage);
+		static void					showAllMatchesWithStatus(cvpMatch matches);
 
 		static void					printAll(Tournament& tournament);
 

@@ -6,6 +6,8 @@
 /*	INCLUDES																						*/
 /****************************************************************************************************/
 
+#include <functional>
+
 #include "../includes/class/Match.hpp"
 #include "../includes/class/Team.hpp"
 
@@ -16,6 +18,8 @@
 using				cInt			=	const int;
 
 using				cBool			=	const bool;
+
+using				fxVoid			=	std::function<void()>;
 
 using				pTeam			=	Team*;
 
@@ -40,11 +44,12 @@ bool				Match::isFinished() const	{	return (this->_isFinished);	}
 /*	SETTER																							*/
 /****************************************************************************************************/
 
-void				Match::setScoreA(cInt value)			{	this->_scoreA = value;		}
-void				Match::setScoreB(cInt value)			{	this->_scoreB = value;		}
-void				Match::setTeamA(pTeam value)		{	this->_teamA = value;		}
-void				Match::setTeamB(pTeam value)		{	this->_teamB = value;		}
-void				Match::setIsFinished(cBool value)	{	this->_isFinished = value;	}
+void				Match::setScoreA(cInt value)				{	this->_scoreA = value;				}
+void				Match::setScoreB(cInt value)				{	this->_scoreB = value;				}
+void				Match::setTeamA(pTeam value)				{	this->_teamA = value;				}
+void				Match::setTeamB(pTeam value)				{	this->_teamB = value;				}
+void				Match::setIsFinished(cBool value)			{	this->_isFinished = value;			}
+void				Match::setOnScoreChanged(fxVoid callback)	{	this->_onScoreChanged = callback;	}
 
 /****************************************************************************************************/
 /*	PRIVATE METHOD																					*/
@@ -118,10 +123,10 @@ pTeam				Match::getLoser() const
 	return ((this->_scoreA < this->_scoreB) ? this->_teamA : this->_teamB);
 }
 
-void				Match::modifyScore(cInt sA, cInt sB)
+bool				Match::modifyScore(cInt sA, cInt sB)
 {
 	if (!this->_isFinished)
-		return;
+		return (false);
 	
 	this->applyStats(this->_scoreA, this->_scoreB, -1);
 	
@@ -129,6 +134,11 @@ void				Match::modifyScore(cInt sA, cInt sB)
 	this->_scoreB = sB;
 	
 	this->applyStats(this->_scoreA, this->_scoreB, 1);
+
+	if (this->_onScoreChanged)
+		this->_onScoreChanged();
+
+	return (true);
 }
 
 bool				Match::setScore(cInt sA, cInt sB)
@@ -141,6 +151,10 @@ bool				Match::setScore(cInt sA, cInt sB)
 
 	this->applyStats(sA, sB, 1);
 	this->_isFinished = true;
+
+	if (this->_onScoreChanged)
+		this->_onScoreChanged();
+
 	return (true);
 }
 
@@ -152,4 +166,19 @@ void				Match::resetScore()
 	this->_scoreA = 0;
 	this->_scoreB = 0;
 	this->_isFinished = false;
+
+	if (this->_onScoreChanged)
+		this->_onScoreChanged();
+}
+
+bool				Match::checkAllMatchesFinished(vpMatch matches)
+{
+	if (matches.empty())
+		return (false);
+	
+	for (pMatch match: matches)
+		if (!match->isFinished())
+			return (false);
+	
+	return (true);
 }

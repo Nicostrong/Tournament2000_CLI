@@ -9,18 +9,25 @@
 /****************************************************************************************************/
 
 # include <vector>
+# include <functional>
 
 /****************************************************************************************************/
 /*	CLASSES																							*/
 /****************************************************************************************************/
 
 class				Team;
+class				Match;
 
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
 /****************************************************************************************************/
 
+using				fxVoid			=	std::function<void()>;
+
 using				pTeam			=	Team*;
+
+using				pMatch			=	Match*;
+using				vpMatch			=	std::vector<Match*>;
 
 /****************************************************************************************************/
 /*	STRUCT																							*/
@@ -50,6 +57,7 @@ class				Match
 		int							_scoreB;
 		bool						_isFinished;
 		ScoreRules					_rules;
+		fxVoid						_onScoreChanged;
 
 		[[nodiscard]]
 		bool						isDraw() const;
@@ -88,14 +96,16 @@ class				Match
 		void						setTeamA(pTeam value);
 		void						setTeamB(pTeam value);
 		void						setIsFinished(bool value);
+		void						setOnScoreChanged(fxVoid callback);
 
 		//	METHOD
 		[[nodiscard]]
 		pTeam						getWinner() const;
 		[[nodiscard]]
 		pTeam						getLoser() const;
-		void						modifyScore(int sA, int sB);
+		bool						modifyScore(int sA, int sB);
 		bool						setScore(int sA, int sB);
 		void						resetScore();
+		static bool					checkAllMatchesFinished(vpMatch matches);
 
 };

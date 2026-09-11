@@ -97,7 +97,7 @@ void				TitleViewer::setting()
              / ____|     | |_| |_ (_)       ____
             | (___  ___  |  _|  _|| |_ _   / _  |
              \___ \/ _ \ | | | |  | | '_ \| (_| |
-             ____) |  __/| ||| |  | | | | |\_,  |
+             ____) |  __/| |_| |_ | | | | |\_,  |
             |_____/ \___|\__| \_| |_|_| |_|__/  |
                                           |____/
 
@@ -347,6 +347,23 @@ void				TitleViewer::exportMenu()
             |______/_/\_\ .__/ \___/|_|  \__|___/
                         | |
                         |_|
+
+)" << Color::RESET << std::endl;
+	PrintUtils::printSeparator(color);
+}
+
+void				TitleViewer::showMenu()
+{
+	const char* color = getRandomColor();
+
+	PrintUtils::printSeparator(color);
+	std::cout << color << R"(
+          _____ _
+         / ____| |
+        | (___ | |__   _____      __
+         \___ \| '_ \ / _ \ \ /\ / /
+         ____) | | | | (_) \ V  V /
+        |_____/|_| |_|\___/ \_/\_/
 
 )" << Color::RESET << std::endl;
 	PrintUtils::printSeparator(color);

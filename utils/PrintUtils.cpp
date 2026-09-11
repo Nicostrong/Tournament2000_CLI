@@ -180,7 +180,7 @@ void				PrintUtils::writeMatchesList(std::ostream& out, cvpMatch matches, bool t
 				if (!toFile)
 					out << Color::BGREEN;
 
-				out << "  ->  " << (toFile ? "Vainqueur : " : "Winner : ") << m->getWinner()->getName();
+				out << "  ->  " << "Winner : " << m->getWinner()->getName();
 
 				if (!toFile)
 					out << Color::RESET;
@@ -191,7 +191,7 @@ void				PrintUtils::writeMatchesList(std::ostream& out, cvpMatch matches, bool t
 			if (!toFile)
 				out << Color::BYELLOW;
 
-			out << "  [ " << (toFile ? "À jouer" : "To play") << " ]";
+			out << "  [ To play ]";
 
 			if (!toFile)
 				out << Color::RESET;

@@ -122,15 +122,15 @@ class				Tournament
 		//	METHOD
 		void						clean();
 		
-		void						generateTeams();
-		void						generatePools();
+		bool						generateTeams();
+		bool						generatePools();
 
-		void						generateSixteenths();
-		void						generateEighths();
-		void						generateQuarters();
-		void						generateSemis();
-		void						generateFinal();
-		void						generateThirdPlace();
+		bool						generateSixteenths();
+		bool						generateEighths();
+		bool						generateQuarters();
+		bool						generateSemis();
+		bool						generateFinal();
+		bool						generateThirdPlace();
 
 		void						disqualifyTeam(pTeam team);
 		void						unDisqualifyTeam(pTeam team);

@@ -8,8 +8,6 @@
 
 #include <vector>
 #include <format>
-#include <limits>
-#include <iostream>
 
 #include "../includes/cli/PoolCLI.hpp"
 #include "../includes/cli/MatchCLI.hpp"
@@ -21,8 +19,6 @@
 #include "../includes/utils/PrintUtils.hpp"
 
 #include "../includes/viewer/PoolViewer.hpp"
-#include "../includes/viewer/TeamViewer.hpp"
-#include "../includes/viewer/MatchViewer.hpp"
 #include "../includes/viewer/TitleViewer.hpp"
 
 /****************************************************************************************************/
@@ -34,7 +30,6 @@ using				cString			=	const std::string&;
 using				cInt			=	const int;
 
 using				pPool			=	Pool*;
-using				cPool			=	const Pool&;
 using				cvpPool			=	const std::vector<Pool*>&;
 
 using				cTour			=	const Tournament&;
@@ -51,187 +46,46 @@ using				cTour			=	const Tournament&;
 /*	PRIVATE METHOD																					*/
 /****************************************************************************************************/
 
-/************************/
-/*  GESTION DU MENU		*/
-/************************/
-
+/**
+ *	Gestion de l affichage du menu principale
+ */
 void				PoolCLI::displayMenuUI(cTour tournament)
 {
 	CLIUtils::handleTitle(TitleViewer::pools);
 	PrintUtils::handleMessages();
 	PoolViewer::showPoolsListWithStatus(tournament);
-	std::cout << "Selectionnez une pool en entrant son id (tapez 'r' pour revenir au menu precedent): ";
 	CLIUtils::checkInterruption();
 }
 
-void				PoolCLI::menuPool(pPool pool)
-{
-	std::vector<MenuItem> items =
-	{
-		{'1', "displayTable"},
-		{'2', "displayFullTable"},
-		{'3', "displayMatches"},
-		{'4', "displayPoolDetails"},
-		{'5', "displayPoolList"},
-		{'6', "displayTeamsInPool"},
-		{'7', "displayMatchesInPool"},
-		{'R', "Retour au menu precedent"}
-	};
-
-	CLIUtils::displayMenu(std::format("{}", pool->getName()), items);
-}
-
-void				PoolCLI::submenuPool(pPool pool, Tournament& tournament)
-{
-	try
-	{
-		while (true)
-		{
-			CLIUtils::handleTitle(TitleViewer::pools);
-			PrintUtils::handleMessages();
-
-			if(pool->getIsFinished())
-				PoolViewer::showDetailsPoolStanding(*pool);
-			else
-				MatchViewer::showAllMatchesWithStatusInPool(*pool);
-
-			menuPool(pool);
-
-			cString input = CLIUtils::input();
-			
-			if (input.empty())
-				continue;
-
-			if (input == "r" || input == "R")
-				return;
-
-			auto choice = CLIUtils::parseInt(input);
-			
-			if (choice.has_value())
-			{
-				executeChoice(choice.value(), pool, tournament);
-				return;
-			}
-		}
-	}
-	catch (const CLIInterrupted&)
-	{
-		return;
-	}
-}
-
-/****************/
-/*  EXECUTION	*/
-/****************/
-
-void				PoolCLI::executeChoice(cInt choice, pPool pool, Tournament& tournament)
-{
-	(void)tournament;
-
-	switch (choice)
-	{
-		case 1:
-			//MatchCLI::handleMenuMatch(pool->getMatches(), pool);
-			PoolViewer::showPoolStanding(*pool);
-			CLIUtils::waitForEnter();
-			PoolViewer::showDetailsPoolStanding(*pool);
-			CLIUtils::waitForEnter();
-			MatchViewer::showAllMatchesWithStatusInPool(*pool);
-			CLIUtils::waitForEnter();
-			TeamViewer::showAllTemasCardInPool(*pool);
-			CLIUtils::waitForEnter();
-			PoolViewer::showPoolsListWithStatus(tournament);
-			CLIUtils::waitForEnter();
-			TeamViewer::showListOfTeamsInPool(*pool);
-			CLIUtils::waitForEnter();
-			MatchViewer::showDetailsTableOfAllMatchesInPool(*pool);
-			CLIUtils::waitForEnter();
-			break;
-
-		default:
-			PrintUtils::addError("Choix non disponible.");
-			break;
-	}
-}
-
-/********************/
-/*  HANDLER ACTION	*/
-/********************/
-
-/********************/
-/*  HELPER			*/
-/********************/
-
+/**
+ *	Verification d un id
+ */
 bool				PoolCLI::checkPoolId(cInt id, Tournament& tournament)
 {
 	return (id >= 1 && id <= static_cast<int>(tournament.getPools().size()));
-}
-
-/*******************************************************************************/
-
-void				PoolCLI::manageSinglePool(cPool pool)
-{
-	int choice = 0;
-
-	while (choice != 4)
-	{
-		PrintUtils::clear();
-		TitleViewer::pools();
-		
-		std::cout << "\n=== GESTION DE LA " << pool.getName() << " ===\n\n";
-		std::cout << "  1. Afficher le classement détaillé\n";
-		std::cout << "  2. Afficher les matchs\n";
-		std::cout << "  3. Afficher la composition des équipes\n";
-		std::cout << "  4. Retour\n\n";
-		std::cout << "Votre choix : ";
-
-		if (!(std::cin >> choice))
-		{
-			std::cin.clear();
-			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-			choice = 0;
-		}
-
-		switch (choice)
-		{
-			case 1:
-				PoolViewer::showDetailsPoolStanding(pool);
-				break;
-			case 2:
-				MatchViewer::showAllMatchesWithStatusInPool(pool);
-				break;
-			case 3:
-				TeamViewer::showAllTemasCardInPool(pool);
-				break;
-			case 4:
-				break;
-			default:
-				PrintUtils::addError("Choix invalide.");
-				break;
-		}
-
-		if (choice != 4)
-		{
-			std::cout << "\nAppuyez sur Entrée pour continuer...";
-			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-			std::cin.get();
-		}
-	}
 }
 
 /****************************************************************************************************/
 /*	PUBLIC METHOD																					*/
 /****************************************************************************************************/
 
+/**
+ *	Menu principale du menu Pool
+ */
 void				PoolCLI::handleMenuPool(Tournament& tournament)
 {
 	try
 	{
 		while (true)
 		{
+			cvpPool pools = tournament.getPools();
+
+			if (pools.empty())
+				return (PrintUtils::addError("Probleme de generation de pool."));
+
 			displayMenuUI(tournament);
 
-			cString input = CLIUtils::input();
+			cString input = CLIUtils::askString("Selectionnez une pool en entrant son id (tapez 'r' pour revenir au menu precedent):", "R");
 			
 			if (input.empty())
 				continue;
@@ -246,11 +100,19 @@ void				PoolCLI::handleMenuPool(Tournament& tournament)
 				PrintUtils::addError(std::format("l'id {} n'existe pas.", choice.value()));
 				continue;
 			}
-
-			cvpPool pool = tournament.getPools();
 			
-			if (!pool.empty() && choice.has_value())
-				submenuPool(pool[choice.value() -1], tournament);
+			if (!pools.empty() && choice.has_value())
+			{
+				pPool selectedPool = pools[choice.value() - 1];
+
+				if (selectedPool)
+				{
+					selectedPool->sortTeams();
+					MatchCLI::handleMenuMatch(selectedPool->getMatches(), std::format("POOL {}", selectedPool->getName()));
+				}
+			}
+			else
+				PrintUtils::addError("Saisie invalide.");
 		}
 	}
 	catch (const CLIInterrupted&)

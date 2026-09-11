@@ -16,8 +16,6 @@
 # include <exception>
 # include <string_view>
 
-#include "../Constantes.hpp"
-
 /****************************************************************************************************/
 /*	CLASSES																							*/
 /****************************************************************************************************/
@@ -43,7 +41,7 @@ extern volatile std::sig_atomic_t	g_running;
 
 struct				MenuItem
 {
-	char			key;
+	String			key;
 	String			label;
 };
 
@@ -89,8 +87,8 @@ class				CLIUtils
 		static int					askIntList(StringV prompt, cvInt allowedValues, int defaultValue);
 
 		// Menu
-		static void					displayMenu(StringV title, std::span<const MenuItem> items);
-		static char					askMenuChoice(std::span<const MenuItem> items);
+		static void					displayMenu(std::span<const MenuItem> menus, StringV title = "");
+		static String				askMenuChoice(std::span<const MenuItem> menus);
 
 		// UI
 		static void					handleTitle(void (*function)());

@@ -14,8 +14,10 @@
 #include "../includes/class/Match.hpp"
 #include "../includes/class/Phase.hpp"
 
+#include "../includes/viewer/MatchViewer.hpp"
 #include "../includes/viewer/PhaseViewer.hpp"
 
+#include "../includes/cli/MatchCLI.hpp"
 #include "../includes/cli/PhaseCLI.hpp"
 
 #include "../includes/utils/PrintUtils.hpp"
@@ -127,4 +129,15 @@ bool				PhaseCLI::exportToTxt(const Phase& phase, String filename)
 	file.close();
 
 	return (true);
+}
+
+/**
+ *	Menu principale du menu Team
+ */
+void				PhaseCLI::handleMenuPhase(Phase* phase, cString phaseName)
+{
+    if (!phase)
+	    return (PrintUtils::addError(std::format("La phase '{}' n'est pas encore generee.", phaseName)));
+
+	MatchCLI::handleMenuMatch(phase->getMatches(), phaseName);
 }

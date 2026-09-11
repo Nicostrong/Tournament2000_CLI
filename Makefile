@@ -60,11 +60,13 @@ MANAGER			=	./manager/PhaseManager.cpp \
 					./manager/PlayerManager.cpp
 
 CLI				=	./cli/CLIUtils.cpp \
+					./cli/ExportCLI.cpp \
 					./cli/MatchCLI.cpp \
 					./cli/PlayerCLI.cpp \
 					./cli/PhaseCLI.cpp \
 					./cli/PoolCLI.cpp \
 					./cli/SettingsCLI.cpp \
+					./cli/ShowCLI.cpp \
 					./cli/TeamCLI.cpp \
 					./cli/TournamentCLI.cpp
 

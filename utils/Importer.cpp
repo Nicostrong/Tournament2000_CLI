@@ -49,13 +49,13 @@ uPlayer				Importer::extractPlayerFromLine(cString line, cBool isFirstLine)
 	String genderStr;
 
 	std::getline(ss, pseudo, ',');
-	std::getline(ss, lastName, ',');
 	std::getline(ss, firstName, ',');
+	std::getline(ss, lastName, ',');
 	std::getline(ss, genderStr, ',');
 
 	FormatUtils::trim(pseudo);
-	FormatUtils::trim(lastName);
 	FormatUtils::trim(firstName);
+	FormatUtils::trim(lastName);
 	FormatUtils::trim(genderStr);
 
 	if (isFirstLine && pseudo == "pseudo")

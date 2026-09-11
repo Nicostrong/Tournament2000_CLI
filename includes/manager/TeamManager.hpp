@@ -86,5 +86,5 @@ class				TeamManager
 
 		// MANAGEMENT
 		void						clean();
-		void						generateTeams(cvpPlayer players);
+		bool						generateTeams(cvpPlayer players);
 };

@@ -55,6 +55,7 @@ class				PoolViewer
 		static void					showPoolStanding(cPool pool);
 		static void					showDetailsPoolStanding(cPool pool);
 		static void					showPoolsListWithStatus(cTour tournament);
+		static void					showFullSummaryPoolStanding(cTour tournament);
 
 		static void					printAll(Tournament& tournament);
 

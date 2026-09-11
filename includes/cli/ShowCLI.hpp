@@ -1,5 +1,5 @@
 //
-// Created by Nicolas Fordoxcel on 14/06/2026.
+// Created by Nicolas Fordoxcel on 04/09/2026.
 //
 
 #pragma once
@@ -17,7 +17,7 @@
 /*	CLASSES																							*/
 /****************************************************************************************************/
 
-class				Match;
+class				Tournament;
 
 /****************************************************************************************************/
 /*	TYPEDEF																							*/
@@ -25,13 +25,17 @@ class				Match;
 
 using				String			=	std::string;
 using				cString			=	const std::string&;
+using				vString			=	std::vector<std::string>;
 
 using				cInt			=	const int;
 
+using				cBool			=	const bool;
+
 using				vMenuItem		=	std::vector<MenuItem>;
 
-using				pMatch			=	Match*;
-using				vpMatch			=	std::vector<Match*>;
+using				pTour			=	Tournament*;
+using				cTour			=	const Tournament&;
+using				cpTour			=	const Tournament*;
 
 /****************************************************************************************************/
 /*	STATIC VARIABLES																				*/
@@ -41,24 +45,20 @@ using				vpMatch			=	std::vector<Match*>;
 /*	CLASS																							*/
 /****************************************************************************************************/
 
-
-class				MatchCLI
+class				ShowCLI
 {
 	private:
 
-		static void					displayMenuUI(vpMatch matches, cString title = "");
-		static vMenuItem			generateMenuMatch(pMatch match);
+		//	Affichage du menu
+		static vMenuItem			displayMenuUI(cTour tournament);
+		static vMenuItem			generateMenuShow(cTour tournament);
 
-		static void					executeChoice(cInt choice, pMatch match);
-
-		static void					handleSaveScore(pMatch match);
-		static void					handleModifyScore(pMatch match);
-
-		static bool					checkMatchId(int id, size_t size);
+		//	Handlers de saisie
+		static void					executeChoice(cInt choice, Tournament& tournament);
 
 	public:
 
-		static void					handleMenuMatch(vpMatch matches, cString title = "");
-		static void					submenuMatch(pMatch match);
+		//	Menu principal
+		static void					handleMenuShow(Tournament& tournament);
 
 };

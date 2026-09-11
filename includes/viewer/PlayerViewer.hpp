@@ -25,6 +25,7 @@ class				Tournament;
 
 using				String			=	std::string;
 using				cString			=	const std::string&;
+using				vString			=	std::vector<std::string>;
 
 using				pPlayer			=	Player*;
 using				cPlayer			=	const Player&;
