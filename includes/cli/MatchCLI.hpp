@@ -47,7 +47,7 @@ class				MatchCLI
 	private:
 
 		static void					displayMenuUI(vpMatch matches, cString title = "");
-		static vMenuItem			menuMatch(pMatch match);
+		static vMenuItem			generateMenuMatch(pMatch match);
 
 		static void					executeChoice(cInt choice, pMatch match);
 

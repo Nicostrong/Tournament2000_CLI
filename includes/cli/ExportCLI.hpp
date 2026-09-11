@@ -58,7 +58,7 @@ class				ExportCLI
 
 		//	Affichage du menu
 		static vMenuItem			displayMenuUI(cTour tournament);
-		static vMenuItem			menuExport(cTour tournament);
+		static vMenuItem			generateMenuExport(cTour tournament);
 
 		//	Handlers de saisie
 		static void					executeChoice(cInt choice, Tournament& tournament);

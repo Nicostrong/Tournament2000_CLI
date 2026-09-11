@@ -16,8 +16,6 @@
 # include <exception>
 # include <string_view>
 
-#include "../Constantes.hpp"
-
 /****************************************************************************************************/
 /*	CLASSES																							*/
 /****************************************************************************************************/
@@ -89,7 +87,7 @@ class				CLIUtils
 		static int					askIntList(StringV prompt, cvInt allowedValues, int defaultValue);
 
 		// Menu
-		static void					displayMenu(StringV title, std::span<const MenuItem> menus);
+		static void					displayMenu(std::span<const MenuItem> menus, StringV title = "");
 		static String				askMenuChoice(std::span<const MenuItem> menus);
 
 		// UI

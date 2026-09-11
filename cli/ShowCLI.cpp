@@ -45,28 +45,26 @@ using				vMenuItem		=	std::vector<MenuItem>;
 /*	PRIVATE METHOD																					*/
 /****************************************************************************************************/
 
-/************************/
-/*  GESTION DU MENU		*/
-/************************/
-
 /**
- *	Gestion de l affichage des menu
+ *	Gestion de l affichage du menu
  */
 vMenuItem			ShowCLI::displayMenuUI(cTour tournament)
 {
+	vMenuItem menu = generateMenuShow(tournament);
+
 	CLIUtils::handleTitle(TitleViewer::showMenu);
 	PrintUtils::handleMessages();
-	vMenuItem menu = menuShow(tournament);
 	CLIUtils::checkInterruption();
+
 	return (menu);
 }
 
 /**
- *	Affiche les menus sous conditions du tournoi
+ *	Creation dynamique du menu
  */
-vMenuItem			ShowCLI::menuShow(cTour tournament)
+vMenuItem			ShowCLI::generateMenuShow(cTour tournament)
 {
-	std::vector<MenuItem> items =
+	std::vector<MenuItem> menuLst =
 	{
 		{"1", "Print Player list"},
 		{"2", "Print Team"},
@@ -75,39 +73,32 @@ vMenuItem			ShowCLI::menuShow(cTour tournament)
 	};
 
 	if (tournament.getHasSixteenth() && tournament.isSixteenthUnlocked())
-		items.push_back({"5", "Print 1/16"});
+		menuLst.push_back({"5", "Print 1/16"});
 
 	if (tournament.getHasEighth() && tournament.isEighthUnlocked())
-		items.push_back({"6", "Print 1/8"});
+		menuLst.push_back({"6", "Print 1/8"});
 
 	if (tournament.isQuartersUnlocked())
-		items.push_back({"7", "Print 1/4"});
+		menuLst.push_back({"7", "Print 1/4"});
 
 	if (tournament.isSemisUnlocked())
-		items.push_back({"8", "Print 1/2"});
+		menuLst.push_back({"8", "Print 1/2"});
 
 	if (tournament.isThirdUnlocked())
-		items.push_back({"9", "Print Petite finale"});
+		menuLst.push_back({"9", "Print Petite finale"});
 
 	if (tournament.isFinalUnlocked())
-		items.push_back({"10", "Print Finale"});
+		menuLst.push_back({"10", "Print Finale"});
 
-	items.push_back({"11", "Print Tournament"});
-	items.push_back({"12", "Print Settings"});
-	items.push_back({"R", "Return"});
+	menuLst.push_back({"11", "Print Tournament"});
+	menuLst.push_back({"12", "Print Settings"});
+	menuLst.push_back({"R", "Return"});
 
-	CLIUtils::displayMenu(std::format("TOURNOI : {}", tournament.getSettings().getName()), items);
-
-	return (items);
+	return (menuLst);
 }
 
-
-/********************/
-/*  HANDLER SAISIE	*/
-/********************/
-
 /**
- *	Appel la bonne methode d apres le choix de l utilisateur
+ *	Aiguillage du menu
  */
 void				ShowCLI::executeChoice(cInt choice, Tournament& tournament)
 {
@@ -183,7 +174,7 @@ void				ShowCLI::executeChoice(cInt choice, Tournament& tournament)
 /****************************************************************************************************/
 
 /**
- *	Gestion du menu Tournament du programme
+ *	Menu principale du menu Show
  */
 void				ShowCLI::handleMenuShow(Tournament& tournament)
 {
@@ -192,6 +183,9 @@ void				ShowCLI::handleMenuShow(Tournament& tournament)
 		while (true)
 		{
 			vMenuItem menu = displayMenuUI(tournament);
+
+			CLIUtils::displayMenu(menu);
+
 			String input = CLIUtils::askMenuChoice(menu);
 
 			if (input.empty())

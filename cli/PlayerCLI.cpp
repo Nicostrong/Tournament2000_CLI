@@ -47,16 +47,25 @@ using				vMenuItem		=	std::vector<MenuItem>;
 /*	PRIVATE METHODS																					*/
 /****************************************************************************************************/
 
-/************************/
-/*  MENU				*/
-/************************/
+/**
+ *	Gestion de l affichage du menu principale
+ */
+void				PlayerCLI::displayMenuUI()
+{
+	CLIUtils::handleTitle(TitleViewer::players);
+	PrintUtils::handleMessages();
+	CLIUtils::checkInterruption();
+}
 
-vMenuItem			PlayerCLI::menuPlayer(const PlayerManager& manager, cSet settings)
+/**
+ *	Creation dynamique du menu
+ */
+vMenuItem			PlayerCLI::generateMenuPlayer(const PlayerManager& manager, cSet settings)
 {
 	std::vector<MenuItem> menuLst;
 	cInt actualPlayers = static_cast<int>(manager.getSize());
 	cInt maxPlayers = settings.getNbPlayers();
-	bool showMenu7 = (settings.getAllowMultiTeamPlayers() 
+	cBool showMenu7 = (settings.getAllowMultiTeamPlayers()
 		&& (maxPlayers - actualPlayers <= NBPLAYERINMULTITEAMMAX))
 		|| (maxPlayers == actualPlayers);
 	
@@ -81,14 +90,12 @@ vMenuItem			PlayerCLI::menuPlayer(const PlayerManager& manager, cSet settings)
 	if (showMenu7)
 		menuLst.push_back({"7", "Lancer le tournoi"});
 
-	CLIUtils::displayMenu("MENU PLAYERS", menuLst);
 	return (menuLst);
 }
 
-/****************************************************************************************************/
-/*	EXECUTION																						*/
-/****************************************************************************************************/
-
+/**
+ *	Aiguillage du menu
+ */
 bool				PlayerCLI::executeChoice(cInt choice, PlayerManager& manager, cSet settings)
 {
 	switch (choice)
@@ -126,10 +133,13 @@ bool				PlayerCLI::executeChoice(cInt choice, PlayerManager& manager, cSet setti
 	}
 }
 
-/****************************************************************************************************/
-/*	ADD																								*/
-/****************************************************************************************************/
+/********************/
+/*  HANDLER ACTION	*/
+/********************/
 
+/**
+ *	Ajouter un player
+ */
 void				PlayerCLI::handleAddPlayer(PlayerManager& manager, cSet settings)
 {
 	cString lastName = CLIUtils::askString("Nom", "");
@@ -138,25 +148,18 @@ void				PlayerCLI::handleAddPlayer(PlayerManager& manager, cSet settings)
 	cGender gender = askGender(settings);
 
 	if (!manager.addPlayer(pseudo, lastName, firstName, gender))
-	{
-		PrintUtils::addError("Impossible d'ajouter le participant. Verifiez le pseudo, le quota et le genre.");
-		return;
-	}
+		return (PrintUtils::addError("Impossible d'ajouter le participant. Verifiez le pseudo, le quota et le genre."));
 
 	PrintUtils::addSuccess(std::format("Nouveau participant avec le pseudo {} ajoute avec succes.", pseudo));
 }
 
-/****************************************************************************************************/
-/*	MODIFY																							*/
-/****************************************************************************************************/
-
+/**
+ *	Modifier un player
+ */
 void				PlayerCLI::handleModifyPlayer(PlayerManager& manager, cSet settings)
 {
 	if (manager.isEmpty())
-	{
-		PrintUtils::addError("Aucun participant a modifier.");
-		return;
-	}
+		return (PrintUtils::addError("Aucun participant a modifier."));
 
 	PlayerViewer::showFullTableOfPlayers(manager.getPlayers());
 
@@ -165,10 +168,7 @@ void				PlayerCLI::handleModifyPlayer(PlayerManager& manager, cSet settings)
 	pPlayer player = manager.getPlayerById(static_cast<size_t>(id));
 
 	if (!player)
-	{
-		PrintUtils::addError(std::format("Le participant avec l'id {} est introuvable.", id));
-		return;
-	}
+		return (PrintUtils::addError(std::format("Le participant avec l'id {} est introuvable.", id)));
 
 	cString lastName = CLIUtils::askString("Nom", player->getLastName());
 	cString firstName = CLIUtils::askString("Prenom", player->getFirstName());
@@ -176,25 +176,18 @@ void				PlayerCLI::handleModifyPlayer(PlayerManager& manager, cSet settings)
 	cGender gender = askGender(settings, static_cast<int>(player->getGenderInt()));
 
 	if (!manager.modifyPlayer(player->getId(), pseudo, lastName, firstName, gender))
-	{
-		PrintUtils::addError("Impossible de modifier le participant. Verifiez le pseudo et le genre.");
-		return;
-	}
+		return (PrintUtils::addError("Impossible de modifier le participant. Verifiez le pseudo et le genre."));
 
 	PrintUtils::addSuccess(std::format("Le participant avec le pseudo {} a ete modifie avec succes.", player->getPseudo()));
 }
 
-/****************************************************************************************************/
-/*	DELETE																							*/
-/****************************************************************************************************/
-
+/**
+ *	Supprimer un player
+ */
 void				PlayerCLI::handleDeletePlayer(PlayerManager& manager)
 {
 	if (manager.isEmpty())
-	{
-		PrintUtils::addError("Aucun participant a supprimer.");
-		return;
-	}
+		return (PrintUtils::addError("Aucun participant a supprimer."));
 
 	PlayerViewer::showFullTableOfPlayers(manager.getPlayers());
 
@@ -203,18 +196,12 @@ void				PlayerCLI::handleDeletePlayer(PlayerManager& manager)
 	pPlayer player = manager.getPlayerById(static_cast<size_t>(id));
 
 	if (!player)
-	{
-		PrintUtils::addError(std::format("Aucun participant avec l'ID {} n'a ete trouve.", id));
-		return;
-	}
+		return (PrintUtils::addError(std::format("Aucun participant avec l'ID {} n'a ete trouve.", id)));
 
 	cBool confirm = CLIUtils::askBool(std::format("Supprimer {} ?", player->getPseudo()), false);
 
 	if (!confirm)
-	{
-		PrintUtils::addSuccess("Suppression annulee.");
-		return;
-	}
+		return (PrintUtils::addSuccess("Suppression annulee."));
 
 	if (manager.removePlayer(player->getId()))
 		PrintUtils::addSuccess(std::format("Le participant {} a ete supprime avec succes.", player->getPseudo()));
@@ -222,10 +209,9 @@ void				PlayerCLI::handleDeletePlayer(PlayerManager& manager)
 		PrintUtils::addError("Impossible de supprimer le participant.");
 }
 
-/****************************************************************************************************/
-/*	IMPORT																							*/
-/****************************************************************************************************/
-
+/**
+ *	Importer des players
+ */
 void				PlayerCLI::handleImport(PlayerManager& manager)
 {
 	CLIUtils::checkInterruption();
@@ -233,10 +219,7 @@ void				PlayerCLI::handleImport(PlayerManager& manager)
 	cString path = CLIUtils::askString("Chemin du fichier CSV", "joueurs.csv");
 
 	if (path.empty())
-	{
-		PrintUtils::addError("Chemin vide. Import annule.");
-		return;
-	}
+		return (PrintUtils::addError("Chemin vide. Import annule."));
 
 	cInt imported = Importer::importPlayers(path, manager);
 
@@ -246,38 +229,27 @@ void				PlayerCLI::handleImport(PlayerManager& manager)
 		PrintUtils::addError("Impossible d'importer les participants.");
 }
 
-/****************************************************************************************************/
-/*	EXPORT																							*/
-/****************************************************************************************************/
-
+/**
+ *	Exporter des players
+ */
 void				PlayerCLI::handleExport(const PlayerManager& manager)
 {
 	if (manager.isEmpty())
-	{
-		PrintUtils::addError("Aucun participant a exporter.");
-		return;
-	}
+		return (PrintUtils::addError("Aucun participant a exporter."));
 
 	cString path = CLIUtils::askString("Nom du fichier CSV", "export_joueurs.csv");
 
 	if (path.empty())
-	{
-		PrintUtils::addError("Chemin vide. Export annule.");
-		return;
-	}
+		return (PrintUtils::addError("Chemin vide. Export annule."));
 }
 
-/****************************************************************************************************/
-/*	DISPLAY																							*/
-/****************************************************************************************************/
-
+/**
+ *	Afficher un/des player/s
+ */
 void				PlayerCLI::handleDisplay(const PlayerManager& manager)
 {
 	if (manager.isEmpty())
-	{
-		PrintUtils::addError("Aucun participant enregistre.");
-		return;
-	}
+		return (PrintUtils::addError("Aucun participant enregistre."));
 
 	std::cout
 		<< Color::YELLOW
@@ -299,19 +271,15 @@ void				PlayerCLI::handleDisplay(const PlayerManager& manager)
 	pPlayer player = manager.getPlayerById(static_cast<size_t>(id));
 
 	if (!player)
-	{
-		PrintUtils::addError(std::format("Aucun participant avec cet ID {}.", id));
-		return;
-	}
+		return (PrintUtils::addError(std::format("Aucun participant avec cet ID {}.", id)));
 
 	PlayerViewer::showPlayerCard(*player);
 	CLIUtils::waitForEnter();
 }
 
-/****************************************************************************************************/
-/*	HELPER																							*/
-/****************************************************************************************************/
-
+/**
+ *	Demander le genre
+ */
 Gender				PlayerCLI::askGender(cSet settings, cInt currentGenderInt)
 {
 	while (true)
@@ -342,29 +310,30 @@ Gender				PlayerCLI::askGender(cSet settings, cInt currentGenderInt)
 /*	PUBLIC METHOD																					*/
 /****************************************************************************************************/
 
+/**
+ *	Menu principale du menu Player
+ */
 void				PlayerCLI::handleMenuPlayer(PlayerManager& manager, cSet settings)
 {
 	try
 	{
 		while (true)
 		{
-			CLIUtils::handleTitle(TitleViewer::players);
-			PrintUtils::handleMessages();
+			displayMenuUI();
 
 			if (!manager.isEmpty())
 				PlayerViewer::showFullTableOfPlayers(manager.getPlayers());
 
-			vMenuItem menu = menuPlayer(manager, settings);
+			vMenuItem menu = generateMenuPlayer(manager, settings);
+
+			CLIUtils::displayMenu(menu);
+
 			cString input = CLIUtils::askMenuChoice(menu);
-			
-			CLIUtils::checkInterruption();
-
-
 
 			if (input.empty())
 				continue;
 
-			if (input == "r" || input == "R")
+			if (input == "R")
 				return;
 
 			auto choice = CLIUtils::parseInt(input);

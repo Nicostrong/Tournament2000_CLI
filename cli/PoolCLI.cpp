@@ -8,8 +8,6 @@
 
 #include <vector>
 #include <format>
-#include <limits>
-#include <iostream>
 
 #include "../includes/cli/PoolCLI.hpp"
 #include "../includes/cli/MatchCLI.hpp"
@@ -21,8 +19,6 @@
 #include "../includes/utils/PrintUtils.hpp"
 
 #include "../includes/viewer/PoolViewer.hpp"
-#include "../includes/viewer/TeamViewer.hpp"
-#include "../includes/viewer/MatchViewer.hpp"
 #include "../includes/viewer/TitleViewer.hpp"
 
 /****************************************************************************************************/
@@ -34,7 +30,6 @@ using				cString			=	const std::string&;
 using				cInt			=	const int;
 
 using				pPool			=	Pool*;
-using				cPool			=	const Pool&;
 using				cvpPool			=	const std::vector<Pool*>&;
 
 using				cTour			=	const Tournament&;
@@ -51,34 +46,20 @@ using				cTour			=	const Tournament&;
 /*	PRIVATE METHOD																					*/
 /****************************************************************************************************/
 
-/************************/
-/*  GESTION DU MENU		*/
-/************************/
-
+/**
+ *	Gestion de l affichage du menu principale
+ */
 void				PoolCLI::displayMenuUI(cTour tournament)
 {
 	CLIUtils::handleTitle(TitleViewer::pools);
 	PrintUtils::handleMessages();
 	PoolViewer::showPoolsListWithStatus(tournament);
-
-	//PoolViewer::showFullSummaryPoolStanding(tournament);
-
-	std::cout << "Selectionnez une pool en entrant son id (tapez 'r' pour revenir au menu precedent): ";
 	CLIUtils::checkInterruption();
 }
 
-/****************/
-/*  EXECUTION	*/
-/****************/
-
-/********************/
-/*  HANDLER ACTION	*/
-/********************/
-
-/********************/
-/*  HELPER			*/
-/********************/
-
+/**
+ *	Verification d un id
+ */
 bool				PoolCLI::checkPoolId(cInt id, Tournament& tournament)
 {
 	return (id >= 1 && id <= static_cast<int>(tournament.getPools().size()));
@@ -88,6 +69,9 @@ bool				PoolCLI::checkPoolId(cInt id, Tournament& tournament)
 /*	PUBLIC METHOD																					*/
 /****************************************************************************************************/
 
+/**
+ *	Menu principale du menu Pool
+ */
 void				PoolCLI::handleMenuPool(Tournament& tournament)
 {
 	try
@@ -101,7 +85,7 @@ void				PoolCLI::handleMenuPool(Tournament& tournament)
 
 			displayMenuUI(tournament);
 
-			cString input = CLIUtils::input();
+			cString input = CLIUtils::askString("Selectionnez une pool en entrant son id (tapez 'r' pour revenir au menu precedent):", "R");
 			
 			if (input.empty())
 				continue;

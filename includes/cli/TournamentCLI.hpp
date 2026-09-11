@@ -56,14 +56,12 @@ class				TournamentCLI
 
 		//	Affichage du menu
 		static vMenuItem			displayMenuUI(cTour tournament);
-		static vMenuItem			menuTournament(cTour tournament);
+		static vMenuItem			generateMenuTournament(cTour tournament);
 
 		//	Handlers de saisie
 		static void					executeChoice(cInt choice, Tournament& tournament);
 
 		static void					handleEliminationPhase(pPhase phase, std::function<bool()> generateFn,
 										cString phaseName, cString successMsg, cString errorMsg);
-		static void					handleExport(Tournament& tournament);
-		static cpPhase				getPhaseByMenuChoice(cTour tournament, cInt choice);
 		
 };

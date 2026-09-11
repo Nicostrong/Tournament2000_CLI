@@ -48,18 +48,15 @@ using				vMenuItem		=	std::vector<MenuItem>;
 /*	PRIVATE METHOD																					*/
 /****************************************************************************************************/
 
-/************************/
-/*  GESTION DU MENU		*/
-/************************/
-
 /**
- *	Gestion de l affichage des menu
-*/
+ *	Gestion de l affichage du menu principale
+ */
 vMenuItem			ExportCLI::displayMenuUI(cTour tournament)
 {
+	vMenuItem menu = generateMenuExport(tournament);
+
 	CLIUtils::handleTitle(TitleViewer::exportMenu);
 	PrintUtils::handleMessages();
-	vMenuItem menu = menuExport(tournament);
 	CLIUtils::checkInterruption();
 	return (menu);
 }
@@ -67,48 +64,43 @@ vMenuItem			ExportCLI::displayMenuUI(cTour tournament)
 /**
  *	Affiche les menus sous conditions du tournoi
 */
-vMenuItem			ExportCLI::menuExport(cTour tournament)
+vMenuItem			ExportCLI::generateMenuExport(cTour tournament)
 {
 	std::vector<MenuItem> menuLst =
 	{
-		{"1", "Players"},
-		{"2", "Teams"},
-		{"3", "Pool"}
+		{"1", "Players (csv)"},
+		{"2", "Players (txt)"},
+		{"3", "Teams"},
+		{"4", "Pool"}
 	};
 
 	if (tournament.getSixteenth())
-		menuLst.push_back({"4", "1/16"});
+		menuLst.push_back({"5", "1/16"});
 
 	if (tournament.getEighth())
-		menuLst.push_back({"5", "1/8"});
+		menuLst.push_back({"6", "1/8"});
 
 	if (tournament.getQuarters())
-		menuLst.push_back({"6", "1/4"});
+		menuLst.push_back({"7", "1/4"});
 
 	if (tournament.getSemis())
-		menuLst.push_back({"7", "1/2"});
+		menuLst.push_back({"8", "1/2"});
 
 	if (tournament.getThirdPlace())
-		menuLst.push_back({"8", "Petite Final"});
+		menuLst.push_back({"9", "Petite Final"});
 
 	if (tournament.getFinal())
-		menuLst.push_back({"9", "Final"});
+		menuLst.push_back({"10", "Final"});
 
-	menuLst.push_back({"10", "Full tournament"});
+	menuLst.push_back({"11", "Full tournament"});
 	menuLst.push_back({"R", "Return"});
 	
-	CLIUtils::displayMenu(std::format("TOURNOI : {}", tournament.getSettings().getName()), menuLst);
 	return (menuLst);
 }
 
-
-/********************/
-/*  HANDLER SAISIE	*/
-/********************/
-
 /**
- *	Appel la bonne methode d apres le choix de l utilisateur
-*/
+ *	Aiguillage du menu
+ */
 void				ExportCLI::executeChoice(cInt choice, Tournament& tournament)
 {
 	String filename;
@@ -125,7 +117,25 @@ void				ExportCLI::executeChoice(cInt choice, Tournament& tournament)
 			break;
 
 		case 2:
+			filename = CLIUtils::askString("Entrer le nom du fichier a creer: ", "Players.txt");
+
+			if (Exporter::exportPlayersToTxt(tournament.getPlayers(), filename))
+				PrintUtils::addSuccess("Export of players success.");
+			else
+				PrintUtils::addError("Export of players errors");
+			break;
+
+		case 3:
 			filename = CLIUtils::askString("Entrer le nom du fichier a creer: ", "Team.txt");
+
+			if (Exporter::exportTeamsToTxt(tournament, filename))
+				PrintUtils::addSuccess("Export of teams success.");
+			else
+				PrintUtils::addError("Export of teams errors");
+			break;
+
+		case 4:
+			filename = CLIUtils::askString("Entrer le nom du fichier a creer: ", "Pools.txt");
 
 			if (Exporter::exportPoolsToTxt(tournament, filename))
 				PrintUtils::addSuccess("Export of teams success.");
@@ -133,113 +143,67 @@ void				ExportCLI::executeChoice(cInt choice, Tournament& tournament)
 				PrintUtils::addError("Export of teams errors");
 			break;
 
-		case 3:
-			Exporter::exportPoolsToTxt(tournament, "team.txt");
-			break;
-
-		case 4:
-			if (tournament.getSixteenth())
-			{
-				filename = CLIUtils::askString("Entrer le nom du fichier a creer: ", "sixteenth.txt");
-
-				if (Exporter::exportPoolsToTxt(tournament, filename))
-					PrintUtils::addSuccess("Export of 1/16 success.");
-				else
-					PrintUtils::addError("Export of 1/16 errors.");
-				break;
-			}
-
-			PrintUtils::addError("Export of 1/16 no available.");
-			break;
-
 		case 5:
-			if (tournament.getEighth())
-			{
-				filename = CLIUtils::askString("Entrer le nom du fichier a creer: ", "eighth.txt");
+			filename = CLIUtils::askString("Entrer le nom du fichier a creer: ", "sixteenth.txt");
 
-				if (Exporter::exportPoolsToTxt(tournament, filename))
-					PrintUtils::addSuccess("Export of 1/8 success.");
-				else
-					PrintUtils::addError("Export of 1/8 errors.");
-				break;
-			}
-
-			PrintUtils::addError("Export of 1/8 no available.");
+			if (Exporter::exportPhaseToTxt(tournament.getSixteenth(), filename))
+				PrintUtils::addSuccess("Export of 1/16 success.");
+			else
+				PrintUtils::addError("Export of 1/16 errors.");
 			break;
 
 		case 6:
-			if (tournament.getQuarters())
-			{
-				filename = CLIUtils::askString("Entrer le nom du fichier a creer: ", "quarter.txt");
+			filename = CLIUtils::askString("Entrer le nom du fichier a creer: ", "eighth.txt");
 
-				if (Exporter::exportPoolsToTxt(tournament, filename))
-					PrintUtils::addSuccess("Export of 1/4 success.");
-				else
-					PrintUtils::addError("Export of 1/4 errors.");
-				break;
-			}
-
-			PrintUtils::addError("Export of 1/4 no available.");
+			if (Exporter::exportPhaseToTxt(tournament.getEighth(), filename))
+				PrintUtils::addSuccess("Export of 1/8 success.");
+			else
+				PrintUtils::addError("Export of 1/8 errors.");
 			break;
 
 		case 7:
-			if (tournament.getSemis())
-			{
-				filename = CLIUtils::askString("Entrer le nom du fichier a creer: ", "semis.txt");
+			filename = CLIUtils::askString("Entrer le nom du fichier a creer: ", "quarter.txt");
 
-				if (Exporter::exportPoolsToTxt(tournament, filename))
-					PrintUtils::addSuccess("Export of 1/2 success.");
-				else
-					PrintUtils::addError("Export of 1/2 errors.");
-				break;
-			}
-
-			PrintUtils::addError("Export of 1/2 no available.");
+			if (Exporter::exportPhaseToTxt(tournament.getQuarters(), filename))
+				PrintUtils::addSuccess("Export of 1/4 success.");
+			else
+				PrintUtils::addError("Export of 1/4 errors.");
 			break;
 
 		case 8:
-			if (tournament.getThirdPlace())
-			{
-				filename = CLIUtils::askString("Entrer le nom du fichier a creer: ", "thirdPlace.txt");
+			filename = CLIUtils::askString("Entrer le nom du fichier a creer: ", "semis.txt");
 
-				if (Exporter::exportPoolsToTxt(tournament, filename))
-					PrintUtils::addSuccess("Export of third place match success.");
-				else
-					PrintUtils::addError("Export of third place match errors.");
-				break;
-			}
-
-			PrintUtils::addError("Export of third place match no available.");
+		if (Exporter::exportPhaseToTxt(tournament.getSemis(), filename))
+				PrintUtils::addSuccess("Export of 1/2 success.");
+			else
+				PrintUtils::addError("Export of 1/2 errors.");
 			break;
 
 		case 9:
-			if (tournament.getFinal())
-			{
-				filename = CLIUtils::askString("Entrer le nom du fichier a creer: ", "final.txt");
+			filename = CLIUtils::askString("Entrer le nom du fichier a creer: ", "thirdPlace.txt");
 
-				if (Exporter::exportPoolsToTxt(tournament, filename))
-					PrintUtils::addSuccess("Export of final success.");
-				else
-					PrintUtils::addError("Export of final errors.");
-				break;
-			}
-
-			PrintUtils::addError("Export of final no available.");
+			if (Exporter::exportPhaseToTxt(tournament.getThirdPlace(), filename))
+				PrintUtils::addSuccess("Export of third place match success.");
+			else
+				PrintUtils::addError("Export of third place match errors.");
 			break;
 
 		case 10:
-			if (tournament.getFinal())
-			{
-				filename = CLIUtils::askString("Entrer le nom du fichier a creer: ", "tournament.txt");
+			filename = CLIUtils::askString("Entrer le nom du fichier a creer: ", "final.txt");
 
-				if (Exporter::exportTournamentToTxt(tournament, filename))
-					PrintUtils::addSuccess("Export of full tournament success.");
-				else
-					PrintUtils::addError("Export of full tournament errors.");
-				break;
-			}
+			if (Exporter::exportPhaseToTxt(tournament.getFinal(), filename))
+				PrintUtils::addSuccess("Export of final success.");
+			else
+				PrintUtils::addError("Export of final errors.");
+			break;
 
-			PrintUtils::addError("Export of full tournament no available.");
+		case 11:
+			filename = CLIUtils::askString("Entrer le nom du fichier a creer: ", "tournament.txt");
+
+			if (Exporter::exportTournamentToTxt(tournament, filename))
+				PrintUtils::addSuccess("Export of full tournament success.");
+			else
+				PrintUtils::addError("Export of full tournament errors.");
 			break;
 
 		default:
@@ -370,12 +334,15 @@ void				ExportCLI::handleMenuExport(Tournament& tournament)
 		while (true)
 		{
 			vMenuItem menu = displayMenuUI(tournament);
+
+			CLIUtils::displayMenu(menu);
+
 			String input = CLIUtils::askMenuChoice(menu);
 			
 			if (input.empty())
 				continue;
 
-			if (input == "r" || input== "R")
+			if (input== "R")
 				return;
 
 			auto choice = CLIUtils::parseInt(input);

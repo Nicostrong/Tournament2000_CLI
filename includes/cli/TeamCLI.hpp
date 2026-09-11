@@ -53,7 +53,7 @@ class				TeamCLI
 	private:
 
 		static void					displayMenuUI(cTour tournament);
-		static vMenuItem			menuTeam(pTeam team);
+		static vMenuItem			generateSubmenuTeam(pTeam team);
 		static void					submenuTeam(pTeam team, Tournament& tournament);
 
 		static void					executeChoice(int choice, pTeam team, Tournament& tournament);

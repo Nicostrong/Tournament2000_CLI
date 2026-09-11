@@ -51,7 +51,7 @@ class				ShowCLI
 
 		//	Affichage du menu
 		static vMenuItem			displayMenuUI(cTour tournament);
-		static vMenuItem			menuShow(cTour tournament);
+		static vMenuItem			generateMenuShow(cTour tournament);
 
 		//	Handlers de saisie
 		static void					executeChoice(cInt choice, Tournament& tournament);
