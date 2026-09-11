@@ -66,32 +66,32 @@ vMenuItem			ShowCLI::generateMenuShow(cTour tournament)
 {
 	std::vector<MenuItem> menuLst =
 	{
-		{"1", "Print Player list"},
-		{"2", "Print Team"},
-		{"3", "Print Pool"},
-		{"4", "Print Match"}
+		{"1", "Player list"},
+		{"2", "Team"},
+		{"3", "Pool"}
 	};
 
 	if (tournament.getHasSixteenth() && tournament.isSixteenthUnlocked())
-		menuLst.push_back({"5", "Print 1/16"});
+		menuLst.push_back({"4", "1/16"});
 
 	if (tournament.getHasEighth() && tournament.isEighthUnlocked())
-		menuLst.push_back({"6", "Print 1/8"});
+		menuLst.push_back({"5", "1/8"});
 
 	if (tournament.isQuartersUnlocked())
-		menuLst.push_back({"7", "Print 1/4"});
+		menuLst.push_back({"6", "1/4"});
 
 	if (tournament.isSemisUnlocked())
-		menuLst.push_back({"8", "Print 1/2"});
+		menuLst.push_back({"7", "1/2"});
 
 	if (tournament.isThirdUnlocked())
-		menuLst.push_back({"9", "Print Petite finale"});
+		menuLst.push_back({"8", "Petite finale"});
 
 	if (tournament.isFinalUnlocked())
-		menuLst.push_back({"10", "Print Finale"});
+		menuLst.push_back({"9", "Finale"});
 
-	menuLst.push_back({"11", "Print Tournament"});
-	menuLst.push_back({"12", "Print Settings"});
+	menuLst.push_back({"10", "Tournament"});
+	menuLst.push_back({"11", "Podium"});
+	menuLst.push_back({"12", "Settings"});
 	menuLst.push_back({"R", "Return"});
 
 	return (menuLst);
@@ -104,62 +104,63 @@ void				ShowCLI::executeChoice(cInt choice, Tournament& tournament)
 {
 	switch (choice)
 	{
-		case 1:
-			PlayerViewer::printAll(tournament);
+	case 1:
+			PlayerViewer::showFullTableOfPlayers(tournament.getPlayers());
 			CLIUtils::waitForEnter();
 			break;
 
 		case 2:
-			TeamViewer::printAll(tournament);
-			CLIUtils::waitForEnter();
-			break;
-		case 3:
-			PoolViewer::printAll(tournament);
+			TeamViewer::showTeamsTableDetails(tournament.getTeams());
 			CLIUtils::waitForEnter();
 			break;
 
-		case 4:
-			MatchViewer::printAll(tournament);
+		case 3:
+			PoolViewer::showFullSummaryPoolStanding(tournament);
+			CLIUtils::waitForEnter();
+			break;
+
+	case 4:
+			PhaseViewer::displayPhase(*(tournament.getSixteenth()));
 			CLIUtils::waitForEnter();
 			break;
 
 		case 5:
-			PhaseViewer::printAll(tournament);
+			PhaseViewer::displayPhase(*(tournament.getEighth()));
 			CLIUtils::waitForEnter();
 			break;
 
 		case 6:
-			PhaseViewer::printAll(tournament);
+			PhaseViewer::displayPhase(*(tournament.getQuarters()));
 			CLIUtils::waitForEnter();
 			break;
 
 		case 7:
-			PhaseViewer::printAll(tournament);
+			PhaseViewer::displayPhase(*(tournament.getSemis()));
 			CLIUtils::waitForEnter();
 			break;
 
 		case 8:
-			PhaseViewer::printAll(tournament);
+			PhaseViewer::displayPhase(*(tournament.getThirdPlace()));
 			CLIUtils::waitForEnter();
 			break;
 
 		case 9:
-			PhaseViewer::printAll(tournament);
+			PhaseViewer::displayPhase(*(tournament.getFinal()));
 			CLIUtils::waitForEnter();
 			break;
 
 		case 10:
-			PhaseViewer::printAll(tournament);
+			TournamentViewer::displayFullBracket(tournament);
 			CLIUtils::waitForEnter();
 			break;
 
 		case 11:
-			TournamentViewer::printAll(tournament);
+			TournamentViewer::displayPodium(tournament);
 			CLIUtils::waitForEnter();
 			break;
 
 		case 12:
-			SettingsViewer::printAll(tournament);
+			SettingsViewer::showSettings(tournament.getSettings());
 			CLIUtils::waitForEnter();
 			break;
 

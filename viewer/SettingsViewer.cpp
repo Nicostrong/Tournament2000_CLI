@@ -38,7 +38,7 @@
 /*	PUBLIC METHOD																					*/
 /****************************************************************************************************/
 
-void				SettingsViewer::print(cSet s)
+void				SettingsViewer::showSettings(cSet s)
 {
 	PrintUtils::printSeparator(Color::YELLOW);
 	PrintUtils::printTitle("SYNTHESE DES PARAMETRES");
@@ -73,14 +73,4 @@ void				SettingsViewer::print(cSet s)
 
 	PrintUtils::printSeparator(Color::YELLOW);
 
-}
-
-/**
- * TESTER FUNCTION - TO REMOVED or DELETED
- */
-void				SettingsViewer::printAll(Tournament& tournament)
-{
-	cSet s = tournament.getSettings();
-	PrintUtils::printTitle("SettingsViewer");
-	print(s);
 }

@@ -191,7 +191,7 @@ void				PlayerCLI::handleDeletePlayer(PlayerManager& manager)
 
 	PlayerViewer::showFullTableOfPlayers(manager.getPlayers());
 
-	cInt id = CLIUtils::askInt("ID du participant a supprimer", 0, 999999, -1);
+	cInt id = CLIUtils::askInt("ID du participant a supprimer", 0, static_cast<int>(manager.getPlayers().size()), -1);
 
 	pPlayer player = manager.getPlayerById(static_cast<size_t>(id));
 

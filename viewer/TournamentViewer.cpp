@@ -359,14 +359,3 @@ void				TournamentViewer::displayPodium(cTour tournament)
 
 	std::cout << "══════════════════════════════════════\n";
 }
-
-/**
-* TESTER FUNCTION - TO REMOVED or DELETED
-*/
-void				TournamentViewer::printAll(Tournament& tournament)
-{
-	PrintUtils::printTitle("TournamentViewer");
-
-	displayFullBracket(tournament);
-	displayPodium(tournament);
-}
