@@ -216,7 +216,7 @@ void				PhaseViewer::displayResults(cPhase phase)
  */
 void				PhaseViewer::printAll(Tournament& tournament)
 {
-	PrintUtils::printTitle("PhaseViewer");
+	PrintUtils::printTitle(std::cout, "PhaseViewer");
 
 	Phase* finalPhase = tournament.getFinal();
 

@@ -99,7 +99,7 @@ void				MatchViewer::showDetailsTableOfAllMatches(cvpMatch matches, cString titl
 {
 	TablePrinter table;
 
-	PrintUtils::printTitle(std::format("MATCHES: {}", titleOfStage));
+	PrintUtils::printTitle(std::cout, std::format("MATCHES: {}", titleOfStage));
 
 	table.setHeaders({"Rencontre", "Resultat", "Termine"});
 
@@ -129,9 +129,9 @@ void				MatchViewer::showDetailsTableOfAllMatches(cvpMatch matches, cString titl
  */
 void				MatchViewer::showAllMatchesWithStatus(cvpMatch matches)
 {
-	PrintUtils::printTitle("MATCHES LIST");
+	PrintUtils::printTitle(std::cout, "MATCHES LIST");
 	PrintUtils::writeMatchesList(std::cout, matches, false);
-	PrintUtils::printSeparator();
+	PrintUtils::printSeparator(std::cout);
 }
 
 /**
@@ -139,7 +139,7 @@ void				MatchViewer::showAllMatchesWithStatus(cvpMatch matches)
  */
 void				MatchViewer::printAll(Tournament& tournament)
 {
-	PrintUtils::printTitle("MatchViewer");
+	PrintUtils::printTitle(std::cout, "MatchViewer");
 
 	auto pools = tournament.getPools();
 

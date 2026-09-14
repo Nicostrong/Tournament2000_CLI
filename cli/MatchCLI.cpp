@@ -8,6 +8,7 @@
 
 #include <vector>
 #include <format>
+#include <iostream>
 
 #include "../includes/class/Team.hpp"
 #include "../includes/class/Match.hpp"
@@ -54,9 +55,9 @@ void				MatchCLI::displayMenuUI(vpMatch matches, cString title)
 	PrintUtils::handleMessages();
 
 	if (!title.empty())
-		PrintUtils::printTitle(std::format("MATCHES — {}", title));
+		PrintUtils::printTitle(std::cout, std::format("MATCHES — {}", title));
 	else
-		PrintUtils::printTitle("MATCHES LISTE");
+		PrintUtils::printTitle(std::cout, "MATCHES LISTE");
 
 	MatchViewer::showExtendedTableOfAllMatches(matches);
 	CLIUtils::checkInterruption();

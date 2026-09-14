@@ -48,9 +48,9 @@ void				PrintUtils::printHeader()
 {
 	cString title = "MESSAGES | MESSAGES | MESSAGES | MESSAGES | MESSAGES";
 	
-	printSeparator(Color::BBLUE, '=');
+	printSeparator(std::cout, Color::BBLUE, '=');
 	std::cout << Color::BBLUE << std::format("{:^{}}", title, LENSEPARATOR) << '\n' << Color::RESET;
-	printSeparator(Color::BBLUE, '=');
+	printSeparator(std::cout, Color::BBLUE, '=');
 }
 
 void				PrintUtils::printMessageLines(cString msg, cBool isError)
@@ -122,38 +122,38 @@ void				PrintUtils::handleMessages()
 		printMessage(msgTuple);
 	}
 	
-	printSeparator(Color::BBLUE, '=');
+	printSeparator(std::cout, Color::BBLUE, '=');
 	_messages.clear();
 }
 
-void				PrintUtils::printTitle(StringV title, int len)
+void				PrintUtils::printTitle(std::ostream& out, StringV title, int len)
 {
 	cString titleCenter = std::format(" {} ", title);
 
-	std::cout << std::format("{:=^{}}", titleCenter, len) << std::endl;
+	out << std::format("{:=^{}}", titleCenter, len) << std::endl;
 }
 
-void				PrintUtils::printSeparator(const char c, cInt len)
+void				PrintUtils::printSeparator(std::ostream& out, const char c, cInt len)
 {
 	for (int i = 0; i < len; ++i)
-		std::cout << c;
+		out << c;
 
-	std::cout << std::endl;
+	out << std::endl;
 }
 
-void				PrintUtils::printSeparator(cString color, const char c)
+void				PrintUtils::printSeparator(std::ostream& out, cString color, const char c)
 {
 	if (color.empty())
 	{
-		printSeparator(c);
+		printSeparator(out, c);
 		return;
 	}
-	std::cout << color;
+	out << color;
 
 	for (int i = 0; i < LENSEPARATOR; ++i)
-		std::cout << c;
+		out << c;
 
-	std::cout << Color::RESET << std::endl;
+	out << Color::RESET << std::endl;
 }
 
 void				PrintUtils::writeMatchesList(std::ostream& out, cvpMatch matches, bool toFile)

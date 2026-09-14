@@ -51,7 +51,7 @@ using				vpPool			=	std::vector<Pool*>;
  */
 void				TeamViewer::showTeamCard(cTeam team)
 {
-	PrintUtils::printTitle("TEAM Card");
+	PrintUtils::printTitle(std::cout, "TEAM Card");
 	std::cout << "Team ID: " << team.getId() << std::endl;
 	std::cout << "Nom: " << team.getName() << std::endl;
 
@@ -116,7 +116,7 @@ void				TeamViewer::showTeamsTableDetails(cvpTeam teams)
  */
 void				TeamViewer::showListOfTeamsInPool(cPool pool)
 {
-	PrintUtils::printTitle(std::format("TEAMS IN POOL: {}", pool.getName()));
+	PrintUtils::printTitle(std::cout, std::format("TEAMS IN POOL: {}", pool.getName()));
 
 	for (const auto& team : pool.getTeams())
 		std::cout << std::format("- {}\n", team->getName());
@@ -127,9 +127,9 @@ void				TeamViewer::showListOfTeamsInPool(cPool pool)
  */
 void				TeamViewer::showAllTemasCardInPool(cPool pool)
 {
-	PrintUtils::printSeparator();
-	PrintUtils::printTitle(std::format("COMPOSITION DES EQUIPES - {}", pool.getName()));
-	PrintUtils::printSeparator();
+	PrintUtils::printSeparator(std::cout);
+	PrintUtils::printTitle(std::cout, std::format("COMPOSITION DES EQUIPES - {}", pool.getName()));
+	PrintUtils::printSeparator(std::cout);
 
 	for (cpTeam t : pool.getTeams())
 		TeamViewer::showTeamCard(*t);
@@ -138,7 +138,7 @@ void				TeamViewer::showAllTemasCardInPool(cPool pool)
 
 void				TeamViewer::showSelectedPlayers(cvpPool pools)
 {
-	PrintUtils::printTitle("Selected teams for next stage");
+	PrintUtils::printTitle(std::cout, "Selected teams for next stage");
 
 	TablePrinter table;
 
@@ -168,7 +168,7 @@ void				TeamViewer::showSelectedPlayers(cvpPool pools)
  */
 void				TeamViewer::printAll(Tournament& tournament)
 {
-	PrintUtils::printTitle("TeamViewer");
+	PrintUtils::printTitle(std::cout, "TeamViewer");
 
 	auto teams = tournament.getTeams();
 
@@ -185,6 +185,6 @@ void				TeamViewer::printAll(Tournament& tournament)
 		showAllTemasCardInPool(*pools[0]);
 	}
 
-	PrintUtils::printTitle("Selectedp layers");
+	PrintUtils::printTitle(std::cout, "Selectedp layers");
 	showSelectedPlayers(tournament.getPools());
 }

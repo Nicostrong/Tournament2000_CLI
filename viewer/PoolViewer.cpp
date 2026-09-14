@@ -128,7 +128,7 @@ void				PoolViewer::writeCompleteTable(std::ostream& out, cPool pool, cBool toFi
  */
 void				PoolViewer::showPoolStanding(cPool pool)
 {
-	PrintUtils::printTitle(std::format("CLASSEMENT {}", pool.getName()));
+	PrintUtils::printTitle(std::cout, std::format("CLASSEMENT {}", pool.getName()));
 	writeSimpleTable(std::cout, pool, false);
 }
 
@@ -138,7 +138,7 @@ void				PoolViewer::showPoolStanding(cPool pool)
  */
 void				PoolViewer::showDetailsPoolStanding(cPool pool)
 {
-	PrintUtils::printTitle(std::format("CLASSEMENT DETAILLE {}", pool.getName()));
+	PrintUtils::printTitle(std::cout, std::format("CLASSEMENT DETAILLE {}", pool.getName()));
 	writeCompleteTable(std::cout, pool, false);
 }
 
@@ -178,7 +178,7 @@ void				PoolViewer::showFullSummaryPoolStanding(cTour tournament)
 {
 	for (auto pool: tournament.getPools())
 	{
-		PrintUtils::printTitle(std::format("Pool: {}", pool->getName()));
+		PrintUtils::printTitle(std::cout, std::format("Pool: {}", pool->getName()));
 		showDetailsPoolStanding(*pool);
 		MatchViewer::showDetailsTableOfAllMatches(pool->getMatches(), pool->getName());
 	}
@@ -189,7 +189,7 @@ void				PoolViewer::showFullSummaryPoolStanding(cTour tournament)
  */
 void				PoolViewer::printAll(Tournament& tournament)
 {
-	PrintUtils::printTitle("PoolViewer");
+	PrintUtils::printTitle(std::cout, "PoolViewer");
 
 	auto pools = tournament.getPools();
 
