@@ -20,6 +20,7 @@
 #include "../includes/class/Tournament.hpp"
 
 #include "../includes/cli/PhaseCLI.hpp"
+#include "../includes/cli/CLIUtils.hpp"
 
 #include "../includes/utils/Exporter.hpp"
 #include "../includes/utils/PrintUtils.hpp"
@@ -571,9 +572,10 @@ bool				Exporter::exportPlayersToTxt(cvpPlayer players, cString filename)
 	if (!file.is_open())
 		return (false);
 
-	file << "============================================================\n";
-	file << "                  LISTE DES PARTICIPANTS                    \n";
-	file << "============================================================\n\n";
+
+	PrintUtils::printSeparator(file);
+	PrintUtils::printTitle(file, "LISTE DES PARTICIPANTS");
+	PrintUtils::printSeparator(file);
 
 	TablePrinter table;
 	table.setHeaders({"ID", "Pseudo", "Nom", "Prenom", "Genre"});
@@ -608,11 +610,12 @@ bool				Exporter::exportTeamsToTxt(const std::vector<Team*>& teams, cString file
 	if (!file.is_open())
 		return (false);
 
-	file << "============================================================\n";
-	file << "                     LISTE DES EQUIPES                      \n";
-	file << "============================================================\n\n";
+	PrintUtils::printSeparator(file);
+	PrintUtils::printTitle(file, "LISTE DES EQUIPES");
+	PrintUtils::printSeparator(file);
 
 	TablePrinter table;
+
 	table.setHeaders({"ID", "Equipe", "Membres", "Pts", "Marques", "Encaisses", "Diff"});
 
 	for (const Team* t : teams)
@@ -665,11 +668,12 @@ bool				Exporter::exportMatchesToTxt(const std::vector<Match*>& matches, cString
 	if (!file.is_open())
 		return (false);
 
-	file << "============================================================\n";
-	file << "  " << title << "\n";
-	file << "============================================================\n\n";
+	PrintUtils::printSeparator(file);
+	PrintUtils::printTitle(file, title);
+	PrintUtils::printSeparator(file);
 
 	TablePrinter table;
+
 	table.setHeaders({"Equipe A", "Score A", "Score B", "Equipe B", "Statut", "Vainqueur"});
 
 	for (const Match* m : matches)
@@ -677,8 +681,8 @@ bool				Exporter::exportMatchesToTxt(const std::vector<Match*>& matches, cString
 		if (!m)
 			continue;
 
-		String teamA = m->getTeamA() ? m->getTeamA()->getName() : "Inconnu";
-		String teamB = m->getTeamB() ? m->getTeamB()->getName() : "Inconnu";
+		String teamA = m->getTeamA()->getName();
+		String teamB = m->getTeamB()->getName();
 		String status = m->isFinished() ? "Termine" : "En cours";
 		String winner = "N/A";
 
@@ -714,14 +718,17 @@ bool				Exporter::exportPhaseToTxt(const Phase* phase, cString filename)
 	if (!file.is_open())
 		return (false);
 
-	file << "============================================================\n";
+	PrintUtils::printSeparator(file);
+
 	file << "  PHASE : " << phase->getName() << "\n";
 	file << "  Sets a jouer par rencontre : " << phase->getNbSetToPlay() << "\n";
 	file << "  Statut : " << (phase->isFinished() ? "Terminee" : "En cours") << "\n";
-	file << "============================================================\n\n";
-
-	file << "--- MATCHS DE LA PHASE ---\n\n";
+	
+	PrintUtils::printSeparator(file);
+	PrintUtils::printTitle(file, "MATCHS DE LA PHASE");
+	
 	TablePrinter table;
+
 	table.setHeaders({"Equipe A", "Score A", "Score B", "Equipe B", "Statut"});
 
 	for (const Match* m : phase->getMatches())
@@ -742,7 +749,8 @@ bool				Exporter::exportPhaseToTxt(const Phase* phase, cString filename)
 
 	if (phase->isFinished())
 	{
-		file << "\n--- RESULTATS ---\n\n";
+		PrintUtils::printTitle(file, "RESULTATS");
+
 		file << "Qualifies / Vainqueurs :\n";
 
 		for (const Team* w : phase->getWinners())
@@ -774,15 +782,17 @@ bool				Exporter::exportPoolToTxt(const Pool* pool, cString filename)
 	if (!file.is_open())
 		return (false);
 
-	file << "============================================================\n";
-	file << "  POULE : " << pool->getName() << "\n";
-	file << "============================================================\n\n";
+	PrintUtils::printSeparator(file);
+	PrintUtils::printTitle(file, std::format("POULE : {}", pool->getName()));
+	PrintUtils::printSeparator(file);
+	PrintUtils::printTitle(file, "CLASSEMENT DES EQUIPES");
 
-	file << "--- CLASSEMENT DES EQUIPES ---\n\n";
 	TablePrinter table;
+
 	table.setHeaders({"Rang", "Nom Equipe", "Pts", "Marques", "Encaisses", "Diff"});
 
 	size_t rank = 1;
+
 	for (const Team* t : pool->getTeams())
 	{
 		if (!t)
@@ -800,8 +810,11 @@ bool				Exporter::exportPoolToTxt(const Pool* pool, cString filename)
 
 	table.printTable(file, true);
 
-	file << "\n--- MATCHS DE LA POULE ---\n\n";
+
+	PrintUtils::printTitle(file, "MATCHS DE LA POULE");
+
 	TablePrinter matchPrinter;
+
 	matchPrinter.setHeaders({"Equipe A", "Score A", "Score B", "Equipe B", "Statut"});
 
 	for (const Match* m : pool->getMatches())
@@ -839,21 +852,24 @@ bool				Exporter::exportPoolsToTxt(const std::vector<Pool*>& pools, cString file
 	if (!file.is_open())
 		return (false);
 
-	file << "============================================================\n";
-	file << "                  ENSEMBLE DES POULES                       \n";
-	file << "============================================================\n\n";
+
+	PrintUtils::printSeparator(file);
+	PrintUtils::printTitle(file, "ENSEMBLE DES POULES");
+	PrintUtils::printSeparator(file);
 
 	for (const Pool* pool : pools)
 	{
 		if (!pool)
 			continue;
 
-		file << ">>> " << pool->getName() << " <<<\n\n";
+		PrintUtils::printTitle(file, pool->getName());
 
 		TablePrinter teamPrinter;
+
 		teamPrinter.setHeaders({"Rang", "Nom Equipe", "Pts", "Marques", "Encaisses", "Diff"});
 
 		size_t rank = 1;
+
 		for (const Team* t : pool->getTeams())
 		{
 			if (!t)
@@ -895,19 +911,21 @@ bool				Exporter::exportTournamentToTxt(const Tournament& tournament, cString fi
 
 	const Settings s = tournament.getSettings();
 
-	file << "============================================================\n";
-	file << "  RECAPITULATIF DU TOURNOI : " << s.getName() << "\n";
-	file << "============================================================\n\n";
 
-	file << "--- PARAMETRES DU TOURNOI ---\n";
+	PrintUtils::printSeparator(file);
+	PrintUtils::printTitle(file, std::format("RECAPITULATIF DU TOURNOI: {}", s.getName()));
+	PrintUtils::printSeparator(file);
+	PrintUtils::printTitle(file, "PARAMETRES DU TOURNOI");
+
 	file << "Nombre de participants : " << s.getNbPlayers() << "\n";
 	file << "Nombre de poules       : " << s.getNbPools() << "\n";
 	file << "Terrains disponibles   : " << s.getNbBadmintonCourt() << "\n";
 	file << "Format                 : " << (s.getIsDouble() ? "Double" : "Simple")
 		 << " | " << (s.getIsMixed() ? "Mixte" : "Non-mixte") << "\n\n";
+	PrintUtils::printTitle(file, "PARTICIPANTS");
 
-	file << "--- PARTICIPANTS ---\n\n";
 	TablePrinter playerPrinter;
+
 	playerPrinter.setHeaders({"ID", "Pseudo", "Nom", "Prenom", "Genre"});
 
 	for (const Player* p : tournament.getPlayers())
@@ -927,7 +945,7 @@ bool				Exporter::exportTournamentToTxt(const Tournament& tournament, cString fi
 	playerPrinter.printTable(file, true);
 	file << "\n\n";
 
-	file << "--- CLASSEMENT DES POULES ---\n\n";
+	PrintUtils::printTitle(file, "CLASSEMENT DES POULES");
 
 	for (const Pool* pool : tournament.getPools())
 	{
@@ -937,6 +955,7 @@ bool				Exporter::exportTournamentToTxt(const Tournament& tournament, cString fi
 		file << "[" << pool->getName() << "]\n";
 
 		TablePrinter poolPrinter;
+
 		poolPrinter.setHeaders({"Nom Equipe", "Pts", "Diff"});
 
 		for (const Team* t : pool->getTeams())
@@ -960,9 +979,10 @@ bool				Exporter::exportTournamentToTxt(const Tournament& tournament, cString fi
 		if (!phase)
 			return;
 
-		file << "--- PHASE : " << title << " ---\n\n";
+		PrintUtils::printTitle(file, std::format("PHASE: {}", title));
 
 		TablePrinter phasePrinter;
+
 		phasePrinter.setHeaders({"Equipe A", "Score A", "Score B", "Equipe B"});
 
 		for (const Match* m : phase->getMatches())

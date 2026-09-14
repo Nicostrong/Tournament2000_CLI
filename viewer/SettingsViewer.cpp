@@ -38,11 +38,11 @@
 /*	PUBLIC METHOD																					*/
 /****************************************************************************************************/
 
-void				SettingsViewer::print(cSet s)
+void				SettingsViewer::showSettings(cSet s)
 {
-	PrintUtils::printSeparator(Color::YELLOW);
-	PrintUtils::printTitle("SYNTHESE DES PARAMETRES");
-	PrintUtils::printSeparator(Color::YELLOW);
+	PrintUtils::printSeparator(std::cout, Color::YELLOW);
+	PrintUtils::printTitle(std::cout, "SYNTHESE DES PARAMETRES");
+	PrintUtils::printSeparator(std::cout, Color::YELLOW);
 
 	std::cout << Color::BLUE << "[ TOURNOI ]\n" << Color::RESET;
     std::cout << "\tNom\t\t\t:\t" << s.getName() << "\n";
@@ -71,16 +71,6 @@ void				SettingsViewer::print(cSet s)
 	else
 		std::cout << "\tPetite Finale (3e place):\tNon jouee\n";
 
-	PrintUtils::printSeparator(Color::YELLOW);
+	PrintUtils::printSeparator(std::cout, Color::YELLOW);
 
-}
-
-/**
- * TESTER FUNCTION - TO REMOVED or DELETED
- */
-void				SettingsViewer::printAll(Tournament& tournament)
-{
-	cSet s = tournament.getSettings();
-	PrintUtils::printTitle("SettingsViewer");
-	print(s);
 }

@@ -67,7 +67,7 @@ void				PlayerViewer::showFullTableOfPlayers(cvpPlayer players)
 	if (players.empty())
 		return (PrintUtils::addError("No player to show."));
 
-	PrintUtils::printTitle(std::format("LIST OF PLAYERS ({})", players.size()));
+	PrintUtils::printTitle(std::cout, std::format("LIST OF PLAYERS ({})", players.size()));
 
 	TablePrinter table;
 
@@ -98,7 +98,7 @@ void				PlayerViewer::showFullTableOfPlayers(cvpPlayer players)
  */
 void				PlayerViewer::printAll(Tournament& tournament)
 {
-	PrintUtils::printTitle("PlayerViewer");
+	PrintUtils::printTitle(std::cout, "PlayerViewer");
 
 	auto players = tournament.getPlayers();
 

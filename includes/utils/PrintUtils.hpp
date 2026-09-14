@@ -70,9 +70,9 @@ class				PrintUtils
 		static void					handleMessages();
 
 		//	PRINT
-		static void					printTitle(StringV title,  int len = LENTITLE);
-		static void					printSeparator(char c = '=', int len = LENSEPARATOR);
-		static void					printSeparator(cString color, char c = '=');
+		static void					printTitle(std::ostream& out, StringV title,  int len = LENTITLE);
+		static void					printSeparator(std::ostream& out, char c = '=', int len = LENSEPARATOR);
+		static void					printSeparator(std::ostream& out, cString color, char c = '=');
 
 		//	HELPER
 		static void					writeMatchesList(std::ostream& out, cvpMatch matches, bool toFile);

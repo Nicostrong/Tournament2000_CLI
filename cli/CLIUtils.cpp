@@ -204,7 +204,7 @@ int					CLIUtils::askIntList(StringV prompt, cvInt allowedValues, cInt defaultVa
 void				CLIUtils::displayMenu(std::span<const MenuItem> menus, StringV title)
 {
 	if (!title.empty())
-		PrintUtils::printTitle(title);
+		PrintUtils::printTitle(std::cout, title);
 
 	for (const auto& item : menus)
 		std::cout << Color::BYELLOW << "\t" << item.key << "\t" << Color::RESET << item.label << std::endl;

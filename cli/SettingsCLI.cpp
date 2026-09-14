@@ -198,7 +198,7 @@ void				SettingsCLI::setupWizard(Settings& s)
 			setupMatchRules(s);
 			setupPhaseSets(s);
 
-			SettingsViewer::print(s);
+			SettingsViewer::showSettings(s);
 
 			if (!SettingsChecker::isValid(s, errors))
 				continue;

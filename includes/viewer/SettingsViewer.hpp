@@ -33,7 +33,7 @@ class				SettingsViewer
 {
 	public:
 
-		static void					print(cSet s);
+		static void					showSettings(cSet s);
 
 		static void					printAll(Tournament& tournament);
 
