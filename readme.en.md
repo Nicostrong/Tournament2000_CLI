@@ -22,19 +22,23 @@ A command-line application to manage a fully customizable sports tournament.
       - *[Export](#export)* => Export management.
       - *[Import](#import)* => Import management.
       - *[Show](#show)* => Display management for different phases and elements.
-+ **[Progress](#progress)** => Project progress.
++ **[Future Improvements](#future-improvements)** => Project progress.
 + **[Bugs](#bugs)** => In case of bugs.
 
 ---
 
 ## Features
 
-+ Multi-sports
-+ Complete tournament customization
-+ Import / export player lists
-+ Display and export results
++ Choice of match type (singles / doubles)
++ Choice of gender mix (single-gender / mixed)
++ Fine-tuning of group stage matches
++ Fine-tuning of intermediate stage matches
++ Final match configuration
++ Third-place match configuration
++ Player list import / export
++ Display and export of results
 + Team disqualification system
-+ ...
+
 *[back to top](#table-of-contents)*
 
 ---
@@ -66,11 +70,9 @@ A command-line application to manage a fully customizable sports tournament.
 
 ## Launch
 
-> [!CAUTION]
-> When you launch the program, you are prompted to configure the tournament settings.
+> [!CAUTION] When you launch the program, you are prompted to configure the tournament settings.
 
-> [!IMPORTANT]
-> The settings are immutable. A summary is presented to you at the end of the settings configuration for validation. Once validated, it is impossible to modify the settings.
+> [!IMPORTANT] The settings are immutable. A summary is presented to you at the end of the settings configuration for validation. Once validated, it is impossible to modify the settings.
 
 Here are the steps to follow to launch a tournament:
 
@@ -98,25 +100,25 @@ The Players menu is dynamic, meaning it will only display the actions possible a
 
 <img src="./docs/images/menu/playersMenu.png">
 
-The "Add" menu allows you to register a player manually.
-The "Modify" and "Delete" menus display the list of already registered players and ask you to enter the ID of the player you want to modify/delete.
-The "Import" and "Export" menus ask for the path of the file to read or create.
+The **Add** menu allows you to register a player manually.
+The **Modify** and **Delete** menus display the list of already registered players and ask you to enter the ID of the player you want to modify/delete.
+The **Import** and **Export** menus ask for the path of the file to read or create.
 
-> [!NOTE]
-> Remember to export your participants; you will only need to import them to save time.
+> [!NOTE] Remember to export your participants; you will only need to import them to save time.
 
-The "Show" menu allows you to display one or all already registered players.
+The **Show** menu allows you to display one or all already registered players.
 
-> [!NOTE]
-> The program automatically handles multiple imports while respecting the settings parameters.
-> Importing will not add more players than defined in the settings.
-> Importing respects the settings for both the number of players and gender.
+> [!NOTE] The program automatically handles multiple imports while respecting the settings parameters.
+
+> [!NOTE] Importing will not add more players than defined in the settings.
+
+> [!NOTE] Importing respects the settings for both the number of players and gender.
 
 *[back to top](#table-of-contents)*
 
 ### Tournament
 
-Finally, you are at the heart of the program: the **tournament**. The "Tournament" menu seems quite large and complex, but in reality, it is dynamic, so it will evolve as the tournament progresses.
+Finally, you are at the heart of the program: the *tournament*. The **Tournament** menu seems quite large and complex, but in reality, it is dynamic, so it will evolve as the tournament progresses.
 
 <img src="./docs/images/menu/tournamentMenu.png">
 
@@ -147,8 +149,7 @@ After selecting the ID of the match you want to interact with, you have this men
 
 <img src="./docs/images/menu/matchMenu.png">
 
-> [!note]
-> In all phases of the tournament, there is the same logic for scorekeeping.
+> [!note] In all phases of the tournament, there is the same logic for scorekeeping.
 
 *[back to Tournament menu](#tournament)*
 *[back to top](#table-of-contents)*
@@ -161,49 +162,38 @@ In this menu you will have the possibility to export different data in various f
 
 <img src="./docs/images/menu/exportMenu.png">
 
-> [!NOTE]
-> For each menu, you will be asked for the name of the output file in which the data will be saved.
+> [!NOTE] For each menu, you will be asked for the name of the output file in which the data will be saved.
 
-> [!NOTE]
-> Additionally, this menu is dynamic, so you will only be able to export what is possible.
+> [!NOTE] Additionally, this menu is dynamic, so you will only be able to export what is possible.
 
-### Show
+#### Show
 
 I added this menu to test the different visuals of the program and I kept it because it can be interesting for visualization during the tournament or even at the end.
 
 <img src="./docs/images/menu/showMenu.png">
 
-> [!note]
-> This menu is dynamic, so it will only display what is possible to be displayed.
+> [!note] This menu is dynamic, so it will only display what is possible to be displayed.
 
 *[back to menu](#launch)*
 *[back to top](#table-of-contents)*
 
 ---
 
-## Bugs
+## Future Improvements
 
-> [!note]
-> Perfection does not exist, so if you encounter a problem, please open an *[ISSUE](https://github.com/Nicostrong/Tournament2000_CLI/issues)*
+> [!NOTE] Software is alive and constantly evolving, which is why I will list all future program improvements here.
 
-> [!tip]
-> If you have ideas for improvements, it will be a pleasure to implement them to make this program as versatile as possible.
++ Multi-language support
++ ...
+
+*[back to top](#table-of-contents)*
 
 ---
 
-# HELPER
+## Bugs
 
-> [!note]
-> note
+> [!note] Perfection does not exist, so if you encounter a problem, please open an *[ISSUE](https://github.com/Nicostrong/Tournament2000_CLI/issues)*
 
-> [!warning]
-> warning
+> [!tip] If you have ideas for improvements, it will be a pleasure to implement them to make this program as versatile as possible.
 
-> [!CAUTION]
-> caution
-
-> [!tip]
-> tip
-
-> [!IMPORTANT]
-> important
+*[back to top](#table-of-contents)*
