@@ -4,7 +4,7 @@
 
 # Tournament2000 (CLI)
 
-<img src="./docs/images/screen/mainTitle.png">
+<img src="https://raw.githubusercontent.com/Nicostrong/Tournament2000_CLI/main/docs/images/screen/mainTitle.png">
 
 Une application en ligne de commande pour gérer un tournoi sportif entièrement paramétrable.
 
@@ -64,7 +64,7 @@ Une application en ligne de commande pour gérer un tournoi sportif entièrement
    ./Tournament2000
    ```
 
-<img src="./docs/videos/compiling.gif">
+<img src="https://raw.githubusercontent.com/Nicostrong/Tournament2000_CLI/main/docs/videos/compiling.gif">
 
 *[remonter](#sommaire)*
 
@@ -78,7 +78,7 @@ Une application en ligne de commande pour gérer un tournoi sportif entièrement
 
 Voici les étapes à suivre pour lancer un tournoi :
 
-<img src="./docs/images/menu/mainMenu.png">
+<img src="https://raw.githubusercontent.com/Nicostrong/Tournament2000_CLI/main/docs/images/menu/mainMenu.png">
 
 *[remonter](#sommaire)*
 
@@ -86,11 +86,11 @@ Voici les étapes à suivre pour lancer un tournoi :
 
 Lorsque vous lancez le programme, vous êtes invité à paramétrer les settings. Voici les différents paramètres à renseigner pendant cette étape :
 
-<img src="./docs/images/menu/settingsMenu.png">
+<img src="https://raw.githubusercontent.com/Nicostrong/Tournament2000_CLI/main/docs/images/menu/settingsMenu.png">
 
 Et lorsque vous aurez paramétré les settings sans erreurs, le programme vous affichera un résumé des settings. Si vous voulez faire des modifications, il suffit de dire "Non", sinon vous passerez à l'étape suivante.
 
-<img src="./docs/images/screen/settingsSummary.png">
+<img src="https://raw.githubusercontent.com/Nicostrong/Tournament2000_CLI/main/docs/images/screen/settingsSummary.png">
 
 *[remonter](#sommaire)*
 
@@ -100,7 +100,7 @@ Voici l'étape où vous enregistrez les players pour participer au tournoi. Le n
 
 Le menu Players est dynamique, c'est-à-dire qu'il n'affichera que les actions possibles à l'instant T.
 
-<img src="./docs/images/menu/playersMenu.png">
+<img src="https://raw.githubusercontent.com/Nicostrong/Tournament2000_CLI/main/docs/images/menu/playersMenu.png">
 
 Le menu **Add** vous permet d'enregistrer un player manuellement.
 Les menus **Modify** et **Delete** vous affichent la liste des players déjà inscrits et vous demandent de renseigner l'id du player que vous voulez modifier/supprimer.
@@ -122,13 +122,13 @@ Le menu **Show** vous permet d'afficher un ou tous les players déjà enregistr�
 
 Enfin vous voici au cœur du programme : le *tournoi*. Le menu **Tournament** paraît assez grand et complexe, mais en réalité, il est dynamique, donc il évoluera au fil du déroulement du tournoi.
 
-<img src="./docs/images/menu/tournamentMenu.png">
+<img src="https://raw.githubusercontent.com/Nicostrong/Tournament2000_CLI/main/docs/images/menu/tournamentMenu.png">
 
 #### Teams
 
 Après avoir renseigné l'id de la team avec laquelle vous voulez interagir, vous aurez ce menu qui apparaîtra :
 
-<img src="./docs/images/menu/teamsMenu.png">
+<img src="https://raw.githubusercontent.com/Nicostrong/Tournament2000_CLI/main/docs/images/menu/teamsMenu.png">
 
 Dans le menu **Teams** vous pourrez renommer le nom par défaut de la team, modifier un membre ou la disqualifier. 
 
@@ -139,17 +139,17 @@ Dans le menu **Teams** vous pourrez renommer le nom par défaut de la team, modi
 
 Après avoir renseigné l'id de la pool avec laquelle vous voulez interagir, le programme vous affiche un tableau avec tous les matchs qui doivent être joués.
  
-<img src="./docs/images/screen/pools.png">
+<img src="https://raw.githubusercontent.com/Nicostrong/Tournament2000_CLI/main/docs/images/screen/pools.png">
 
 #### Matchs
 
-<img src="./docs/images/screen/matches.png">
+<img src="https://raw.githubusercontent.com/Nicostrong/Tournament2000_CLI/main/docs/images/screen/matches.png">
 
 *ici, les matchs de la pool 1* 
 
 Après avoir sélectionné l'id du match pour lequel vous voulez interagir, vous avez ce menu qui vous permet de renseigner le score du match ou de le modifier en cas d'erreur.
 
-<img src="./docs/images/menu/matchMenu.png">
+<img src="https://raw.githubusercontent.com/Nicostrong/Tournament2000_CLI/main/docs/images/menu/matchMenu.png">
 
 > [!note] Dans toutes les phases du tournoi, il y a la même logique de prise de score.
 
@@ -162,7 +162,7 @@ Un programme de gestion de tournoi sans possibilité d'exporter les différentes
 
 Dans ce menu vous aurez la possibilité d'exporter les différentes données sous différents formats (csv, txt).
 
-<img src="./docs/images/menu/exportMenu.png">
+<img src="https://raw.githubusercontent.com/Nicostrong/Tournament2000_CLI/main/docs/images/menu/exportMenu.png">
 
 > [!NOTE] Pour chaque menu, on vous demandera le nom du fichier de sortie dans lequel les données seront sauvegardées.
 
@@ -172,7 +172,7 @@ Dans ce menu vous aurez la possibilité d'exporter les différentes données sou
 
 J'ai ajouté ce menu afin de tester les différents visuels du programme et je l'ai laissé car il peut être intéressant pour une visualisation en cours de tournoi ou même à la fin.
 
-<img src="./docs/images/menu/showMenu.png">
+<img src="https://raw.githubusercontent.com/Nicostrong/Tournament2000_CLI/main/docs/images/menu/showMenu.png">
 
 > [!note] Ce menu est dynamique donc il vous affichera uniquement ce qui est possible d'être affiché.
 
