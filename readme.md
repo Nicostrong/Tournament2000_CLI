@@ -1,200 +1,192 @@
 🇫🇷 **Français** | [🇬🇧 Read in English](readme.en.md)
 
+![C++20](https://img.shields.io/badge/C%2B%2B-20-00599C?logo=cplusplus&logoColor=white) ![Build](https://img.shields.io/badge/build-passing-brightgreen)
+
 # Tournament2000 (CLI)
 
-<img src="./docs/images/title.png" width="400" height="300">
+<img src="./docs/images/screen/mainTitle.png">
 
-Une application en ligne de commande pour gerer les tournois de bad au sein d un club.
+Une application en ligne de commande pour gérer un tournoi sportif entièrement paramétrable.
 
 ---
 
 ## Sommaire
 
-+ **[Fonctionnalites](#fonctionnalites)** => toutes les fonctionnalites disponibles du programme.
-+ **[Installation](#installation)** => Comment l installer et l executer.
-+ **[Menus](#menus)** => arbre des menus.
-   + *[Menu players](#players)*
-   + *[Menu Tournament](#tournament)*
-   + *[Menu Export](#export)*
-+ **[Parametrage](#parametrage)** => toute la puissance de la personnalisation.
-+ **[Joueurs](#joueurs)** => import / export des joueurs.
-+ **[Avancement](#avancement)** => Avancement du projet.
++ **[Fonctionnalités](#fonctionnalites)** => Toutes les fonctionnalités disponibles du programme.
++ **[Installation](#installation)** => Comment l'installer et l'exécuter.
++ **[Lancement](#lancement)**
+   + *[Settings](#settings)* => Réglage des settings.
+   + *[Players](#players)* => Enregistrement des players.
+   + *[Tournament](#tournament)* => Lancement du tournoi.
+      - *[Teams](#teams)* => Gestion des teams.
+      - *[Pools](#pools)* => Gestion des matchs de pools.
+      - *[Matchs](#matchs)* => Gestion des matchs.
+      - *[Export](#export)* => Gestion des exportations.
+      - *[Import](#import)* => Gestion des importations.
+      - *[Show](#show)* => Gestion de l'affichage des différentes phases et éléments.
++ **[Évolutions futures](#évolutions-futures)** => La suite a implementer.
 + **[Bug](#bug)** => En cas de bug.
 
 ---
 
-## Fonctionnalites
+## Fonctionnalités
 
-+ Personnalisation complete du tournoi
++ Choix du type de rencontres (simple / duo)
++ Choix de la mixité des rencontres (unigenre / mixte)
++ Paramétrage fin des rencontres en phase de poules
++ Paramétrage fin des rencontres en phases intermédiaires
++ Paramétrage de la finale
++ Paramétrage de la petite finale
 + Import / export de listes de joueurs
-+ Affichage et exportations des resultats
-+ ...
-[remonter](#sommaire)
++ Affichage et exportation des résultats
++ Système de disqualification d'une équipe
+
+*[remonter](#sommaire)*
 
 ---
 
 ## Installation
 
-1. Cloner le depot:
+1. Cloner le dépôt :
    ```bash
    git clone git@github.com:Nicostrong/Tournament2000_CLI.git
    ```
-2. Rentrer dans le dossier clone:
+2. Rentrer dans le dossier cloné :
    ```bash
    cd Tournament2000_CLI
    ```
-3. Executer le Makefile:
+3. Exécuter le Makefile :
    ```bash
    make
    ```
-4. Apres la compilation du programme, executer-le:
+4. Après la compilation du programme, exécutez-le :
    ```bash
    ./Tournament2000
    ```
 
-<img src="./docs/animations/compiling.gif" width="800" height="100">
+<img src="./docs/videos/compiling.gif">
 
 *[remonter](#sommaire)*
 
 ---
 
-## Menu
+## Lancement
 
-> [!CAUTION]
-> Vous devez imperativement definir les settings avant de lancer un tournoi.
+> [!CAUTION] Lorsque vous lancez le programme, vous êtes invité à paramétrer les settings du tournoi.
 
-> [!IMPORTANT]
-> Certains menus sont accessibles selon les reglages definis dans les settings.
+> [!IMPORTANT] Les settings sont immuables, une synthèse vous est présentée à la fin de la prise de settings pour validation. Une fois validés, il est impossible de modifier les settings.
+
+Voici les étapes à suivre pour lancer un tournoi :
+
+<img src="./docs/images/menu/mainMenu.png">
 
 *[remonter](#sommaire)*
 
-### Menu principal
+### Settings
 
-Lorsque vous lancez le programme, vous avez :
+Lorsque vous lancez le programme, vous êtes invité à paramétrer les settings. Voici les différents paramètres à renseigner pendant cette étape :
 
-<p><img src="./docs/images/menu/MainMenuInitial.png" width="200" height="100"></p>
+<img src="./docs/images/menu/settingsMenu.png">
 
-Et lorsque vous aurez parametre les settings sans erreurs et que le nombre de participants est suffisant, vous aurez :
+Et lorsque vous aurez paramétré les settings sans erreurs, le programme vous affichera un résumé des settings. Si vous voulez faire des modifications, il suffit de dire "Non", sinon vous passerez à l'étape suivante.
 
-<p><img src="./docs/images/menu/MainMenu.png" width="200" height="100"></p>
+<img src="./docs/images/screen/settingsSummary.png">
 
-*[remonter au menu](#menu)*
 *[remonter](#sommaire)*
 
 ### Players
 
-C est dans le menu ***players*** que se fait la gestion complete des participants.
-Vous pouvez les saisir a la volee ou les importer depuis un fichier csv.
+Voici l'étape où vous enregistrez les players pour participer au tournoi. Le nombre de players ainsi que leur genre sont définis dans les settings.
 
-> [!TIP]
-> Pensez a exporter vos participants, il vous suffira seulement de les importer pour gagner du temps.
+Le menu Players est dynamique, c'est-à-dire qu'il n'affichera que les actions possibles à l'instant T.
 
-<p><img src="./docs/images/menu/PlayersMenu.png" width="200" height="200"></p>
+<img src="./docs/images/menu/playersMenu.png">
 
-*[remonter au menu](#menu)*
+Le menu **Add** vous permet d'enregistrer un player manuellement.
+Les menus **Modify** et **Delete** vous affichent la liste des players déjà inscrits et vous demandent de renseigner l'id du player que vous voulez modifier/supprimer.
+Les menus **Import** et **Export** vous demandent le chemin du fichier à lire ou à créer.
+
+> [!NOTE] Pensez à exporter vos participants, il vous suffira seulement de les importer pour gagner du temps.
+
+Le menu **Show** vous permet d'afficher un ou tous les players déjà enregistrés.
+
+> [!NOTE] Le programme gère automatiquement les imports multiples en respectant les paramètres des settings.
+
+> [!NOTE] L'importation n'ajoutera pas plus de players que défini dans les settings.
+
+> [!NOTE] L'importation respecte les settings aussi bien pour le nombre de players que pour le genre.
+
 *[remonter](#sommaire)*
 
 ### Tournament
 
-Ce menu s active des lors que les settings sont corrects et que le nombre de participants est suffisant pour lancer un tournoi.
+Enfin vous voici au cœur du programme : le *tournoi*. Le menu **Tournament** paraît assez grand et complexe, mais en réalité, il est dynamique, donc il évoluera au fil du déroulement du tournoi.
 
-<p><img src="./docs/images/menu/TournamentMenu.png" width="200" height="200"></p>
+<img src="./docs/images/menu/tournamentMenu.png">
 
-Ce menu contient lui aussi des menus qui seront actifs au fur et a mesure du deroulement du tournoi.
+#### Teams
 
-Le menu ***Team*** vous permet d afficher les differentes equipes.
-Le menu ***Pools*** gere les rencontres des matchs de poules.
-Le menu ***1***/16 gere les matchs de 1/16 (visibles sous conditions)
-Le menu ***1***/8 gere les matchs de 1/8 (visibles sous conditions)
-Le menu ***1***/4 gere les matchs de 1/4 (visibles sous conditions)
-Le menu ***1***/2 gere les matchs de 1/2 (visibles sous conditions)
-Le menu ***Final*** gere le match de finale (visible sous conditions)
-Le menu ***3rd*** place gere le match pour la troisieme place (visible sous conditions)
-Le menu ***Export*** gere toutes les exportations possibles.
+Après avoir renseigné l'id de la team avec laquelle vous voulez interagir, vous aurez ce menu qui apparaîtra :
 
-Pour les differentes phases du tournoi, chaque menu a le meme sous-menu qui permet de gerer la phase en cours.
+<img src="./docs/images/menu/teamsMenu.png">
 
-<p><img src="./docs/images/menu/StageMenu.png" width="200" height="200"></p>
+Dans le menu **Teams** vous pourrez renommer le nom par défaut de la team, modifier un membre ou la disqualifier. 
 
-*[remonter au menu](#menu)*
+*[remonter au menu Tournament](#tournament)*
+*[remonter](#sommaire)*
+
+#### Pools
+
+Après avoir renseigné l'id de la pool avec laquelle vous voulez interagir, le programme vous affiche un tableau avec tous les matchs qui doivent être joués.
+ 
+<img src="./docs/images/screen/pools.png">
+
+#### Matchs
+
+<img src="./docs/images/screen/matches.png">
+
+*ici, les matchs de la pool 1* 
+
+Après avoir sélectionné l'id du match pour lequel vous voulez interagir, vous avez ce menu qui vous permet de renseigner le score du match ou de le modifier en cas d'erreur.
+
+<img src="./docs/images/menu/matchMenu.png">
+
+> [!note] Dans toutes les phases du tournoi, il y a la même logique de prise de score.
+
+*[remonter au menu Tournament](#tournament)*
 *[remonter](#sommaire)*
 
 ### Export
 
-> [!NOTE] Ce menu vous permet d exporter la quasi-totalite des donnees liees au tournoi.
+Un programme de gestion de tournoi sans possibilité d'exporter les différentes données n'est pas vraiment un programme de gestion de tournoi.
 
-<p><img src="./docs/images/menu/ExportMenu.png" width="200" height="200"></p>
+Dans ce menu vous aurez la possibilité d'exporter les différentes données sous différents formats (csv, txt).
 
-### Arboressance complete
+<img src="./docs/images/menu/exportMenu.png">
 
-<p><img src="./docs/images/menu/Menu.png" width="200" height="200"></p>
+> [!NOTE] Pour chaque menu, on vous demandera le nom du fichier de sortie dans lequel les données seront sauvegardées.
+
+> [!NOTE] De plus, ce menu est dynamique, donc vous ne pourrez exporter que ce qui est possible.
+
+#### Show
+
+J'ai ajouté ce menu afin de tester les différents visuels du programme et je l'ai laissé car il peut être intéressant pour une visualisation en cours de tournoi ou même à la fin.
+
+<img src="./docs/images/menu/showMenu.png">
+
+> [!note] Ce menu est dynamique donc il vous affichera uniquement ce qui est possible d'être affiché.
 
 *[remonter au menu](#menu)*
 *[remonter](#sommaire)*
 
 ---
 
-## Parametrage
+## Évolutions futures
 
-Voici la liste des settings a configurer imperativement:
+> [!NOTE] Un programme vit et est en perpétuelle évolution, c'est pourquoi je listerai ici toutes les futures améliorations du programme.
 
-> [!WARNING]
-> Attention il y a un checker qui verifie la logique des settings, si vous voulez un tournoi de 12 joueurs, il en va de soi que le tournoi ne peut pas etre en double.
-
-### Configuration de tournoi
-
-+ Intitule du tournoi
-
-#### Parametrage des joueurs
-
-+ Nombre total de participant [12:92]
-+ Tournoi en double [o/n]
-+ Tournoi mixte [o/n]
-
-> [!TIP]
-> Si vous n etes pas certain d avoir le nombre suffisant de participants cette option permet a des joueurs de jouer dans plusieurs equipes.
-
-+ Joueur multi-team [o/n] 
-
-### Parametrage des pools
-
-+ Nombre de pool[4/8/16]
-+ Nombre de joueur / equipes par pool [3:8]
-
-### Parametrage des matchs
-
-+ Nombre de terrain disponible [1:12]
-+ Score pour gagner un set [5:30]
-+ Score maxi pour gagner un set [5:30]
-+ Ecart de points necessaire [1:5]
-
-### Parametrage des phases
-
-+ Nombre de set en pool [1:3]
-+ Nombre de set en 1/16^eme^ [1:3]
-+ Nombre de et en 8^eme^ [1:3]
-+ Nombre de set en quarts [1:3]
-+ Nombre de set en demis [1:3]
-+ Nombre de set en final [1:5]
-+ Match pour la 3^eme^ place [o/n]
-+ Nombre de set en petite final [1:3]
-
-*[remonter](#sommaire)*
-
----
-
-## Avancement
-
-- [x] definir les differentes classes du programme.
-- [x] definir les differentes relations entre les classes.
-- [x] implementer la logique metier d un tournoi.
-- [x] implementer l import et l export des joueurs.
-- [x] implementer les menus.
-- [x] implementer les differents affichages des stages du tournoi.
-- [x] implementer les differents exports des stages du tournoi.
-- [ ] gerer l affichage contitionnel lie aux settings.
-- [ ] gerer les afichages conditionnels lie a l avancement du tournoi.
-- [ ] tester avec Valgrind.
++ Support multilingue
++ ...
 
 *[remonter](#sommaire)*
 
@@ -202,26 +194,8 @@ Voici la liste des settings a configurer imperativement:
 
 ## Bug
 
-> [!CAUTION]
-> La perfection n existant pas, si vous recontrer un probleme, merci d ouvrir une [PR](https://github.com/Nicostrong/Tournament2000_CLI/pulls)
+> [!note] La perfection n'existant pas, si vous rencontrez un problème, merci d'ouvrir une *[ISSUE](https://github.com/Nicostrong/Tournament2000_CLI/issues)*
 
+> [!tip] Si vous avez des idées d'améliorations, ce sera avec plaisir de les implémenter pour rendre ce programme le plus polyvalent possible.
 
----
-
-# HELPER
-
-> [!note]
-> note
-
-> [!warning]
-> warning
-
-> [!CAUTION]
-> caution
-
-> [!tip]
-> tip
-
-> [!IMPORTANT]
-> important
-
+*[remonter](#sommaire)*
