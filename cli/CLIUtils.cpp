@@ -100,7 +100,7 @@ std::optional<int>	CLIUtils::parseInt(StringV input)
 
 bool				CLIUtils::askBool(StringV prompt, cBool defaultValue)
 {
-	String defaultStr = defaultValue ? "o/O" : "n/N";
+	String defaultStr = defaultValue ? "Y/n" : "y/N";
 	
 	while (true)
 	{
